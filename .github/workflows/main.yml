@@ -1,0 +1,49 @@
+name: CI PIPELINE
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  eslint:
+    name: Eslint Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: yarn
+      - name: Install ESLINT
+        run: yarn global add eslint
+      - uses: reviewdog/action-eslint@v1
+        with:
+          reporter: github-check
+          eslint_flags: '. --ext .ts,.tsx'
+  test:
+    name: Test
+    needs: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2     # checkout the repo
+      - run: yarn
+      - run: npm test                 # run tests (configured to use jest-junit reporter)
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: junit.xml    # Path to test results
+          reporter: jest-junit        # Format of test results
+  sonarcloud:
+    name: SonarCloud Check
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
