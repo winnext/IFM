@@ -1,13 +1,8 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { classToPlain, instanceToPlain, plainToClass } from 'class-transformer';
-import { ObjectId } from 'mongoose';
-import { ObjectID } from 'typeorm';
 import { FacilityNotFountException } from './commonExceptions/facility.not.found.exception';
-
 import { CreateFacilityDto } from './dtos/create.facility.dto';
-import { TestFacilityDto } from './dtos/test.facility.dto';
 import { Facility, FaciliySchema } from './entities/facility.entity';
 import { FacilityService } from './facility.service';
 import { FacilityRepository } from './repositories/facility.repository';
@@ -85,12 +80,15 @@ describe('FacilityService', () => {
           },
         ]),
       ],
-      providers: [FacilityService, FacilityRepository],
+      providers: [FacilityService, {
+        provide:'FacilityRepositoryInterface',
+        useClass:FacilityRepository
+      }],
     }).compile();
 
     //this is for service which wil  test
     service = testModule.get(FacilityService);
-    repo: testModule.get(FacilityRepository);
+    repo: testModule.get('FacilityRepositoryInterface');
   });
 
   //individual test
@@ -121,7 +119,7 @@ describe('FacilityService', () => {
         await service.findOne(facilityId);
       } catch (err) {
         expect(err).toBeInstanceOf(FacilityNotFountException);
-        expect(err.message).toEqual(`Facility with #${facilityId}} Not Found `);
+        expect(err.message).toEqual(`Facility with #${facilityId} Not Found `);
       }
     });
   });
