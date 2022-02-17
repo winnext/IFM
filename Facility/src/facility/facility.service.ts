@@ -20,11 +20,11 @@ export class FacilityService {
 
   async findOne(_id: string): Promise<Facility> {
     return this.facilityRepository.findOneById(_id)
-    // const facility = await this.facilityModel.findById({ _id }).exec();
-    // if (!facility) {
-    //   throw new FacilityNotFountException(_id);
-    // }
-    // return facility;
+     //const facility = await this.facilityModel.findById({ _id }).exec();
+     //if (!facility) {
+     //  throw new FacilityNotFountException(_id);
+     //}
+     //return facility;
   }
 
   create(createFacilityDto: CreateFacilityDto): Promise<Facility> {

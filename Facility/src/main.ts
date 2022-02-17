@@ -24,6 +24,6 @@ SwaggerModule.setup('api', app, document);
   );
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

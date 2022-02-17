@@ -31,6 +31,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
       return facility;
     } catch (err) {
       console.log(err);
+      throw new  BadRequestException(_id);
     }
   }
   async findAll() {
