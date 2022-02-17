@@ -27,6 +27,7 @@ export class HttpExceptionFilter {
       method: request.method,
       message: exception.message || null,
     };
+    console.log('responese is '+errorResponse)
 
     Logger.error(
       `${request.method} ${request.url}`,
@@ -34,6 +35,6 @@ export class HttpExceptionFilter {
       'ExceptionFilter',
     );
 
-    response.status(status).json(errorResponse);
+     response.status(status).send(errorResponse);
   }
 }
