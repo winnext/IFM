@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsString,
   Length,
-  Max,
 } from 'class-validator';
 
 export class CreateFacilityDto {
