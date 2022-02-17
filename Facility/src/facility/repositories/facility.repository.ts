@@ -1,26 +1,23 @@
-import { BadRequestException, Injectable, UseFilters } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { HttpExceptionFilter } from 'src/common/exceptionFilters/exception.filter';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
-
-import { FacilityNotFountException } from '../commonExceptions/facility.not.found.exception';
-import { CreateFacilityDto } from '../dtos/create.facility.dto';
-import { Facility } from '../entities/facility.entity';
-
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
+import { FacilityNotFountException } from "../commonExceptions/facility.not.found.exception";
+import { CreateFacilityDto } from "../dtos/create.facility.dto";
+import { UpdateFacilityDto } from "../dtos/update.facility.dto";
+import { Facility } from "../entities/facility.entity";
 
 @Injectable()
-@UseFilters(new HttpExceptionFilter())
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(
-    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
+    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>
   ) {}
 
   remove(id: string): Promise<Facility> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
   findWithRelations(relations: any): Promise<Facility[]> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
   async findOneById(_id: string): Promise<Facility> {
     try {
@@ -42,10 +39,18 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return await facility.save();
   }
-  update() {
-    throw new Error('Method not implemented.');
+  async update(_id:string,updateFacilityDto:UpdateFacilityDto) {
+    const updatedFacility = await this.facilityModel
+    .findOneAndUpdate({ _id}, { $set: updateFacilityDto }, { new: true })
+    .exec();
+
+   if (!updatedFacility) {
+     throw new FacilityNotFountException(_id)
+   }
+
+   return updatedFacility;
   }
   delete() {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }
