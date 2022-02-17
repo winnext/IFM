@@ -104,7 +104,7 @@ describe('FacilityService', () => {
   // });
 
   it('should  find specific facility', async () => {
-    const facilityId = '6209eacf2869d8a9a86c2aab';
+    const facilityId = '6209eacf2869d8a9a86c2aac';
     const test = await service.findOne(facilityId);
     const getSameId = test._id.toString() === output._id;
 
