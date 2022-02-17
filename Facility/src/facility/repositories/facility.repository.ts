@@ -20,16 +20,11 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     throw new Error("Method not implemented.");
   }
   async findOneById(_id: string): Promise<Facility> {
-    try {
-      const facility = await this.facilityModel.findById({ _id }).exec();
-      if (!facility) {
-        throw new BadRequestException(_id);
-      }
-      return facility;
-    } catch (err) {
-      console.log(err);
-      throw new BadRequestException(_id);
+    const facility = await this.facilityModel.findById({ _id }).exec();
+    if (!facility) {
+      throw new FacilityNotFountException(_id);
     }
+    return facility;
   }
   async findAll() {
     return await this.facilityModel.find().exec();
