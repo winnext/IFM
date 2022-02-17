@@ -21,6 +21,7 @@ export class FacilityService {
     if (!facility) {
       throw new FacilityNotFountException(id)
     }
+    
     return facility;
   }
 
