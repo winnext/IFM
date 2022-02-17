@@ -23,12 +23,12 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     try {
       const facility = await this.facilityModel.findById({ _id }).exec();
       if (!facility) {
-       throw  new  BadRequestException(_id);
+        throw new BadRequestException(_id);
       }
       return facility;
     } catch (err) {
       console.log(err);
-      throw new  BadRequestException(_id);
+      throw new BadRequestException(_id);
     }
   }
   async findAll() {
@@ -39,18 +39,19 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return await facility.save();
   }
-  async update(_id:string,updateFacilityDto:UpdateFacilityDto) {
+  async update(_id: string, updateFacilityDto: UpdateFacilityDto) {
     const updatedFacility = await this.facilityModel
-    .findOneAndUpdate({ _id}, { $set: updateFacilityDto }, { new: true })
-    .exec();
+      .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
+      .exec();
 
-   if (!updatedFacility) {
-     throw new FacilityNotFountException(_id)
-   }
+    if (!updatedFacility) {
+      throw new FacilityNotFountException(_id);
+    }
 
-   return updatedFacility;
+    return updatedFacility;
   }
-  delete() {
-    throw new Error("Method not implemented.");
+  async delete(_id: string) {
+    const facility = await this.findOneById(_id);
+    return this.facilityModel.remove(facility);
   }
 }

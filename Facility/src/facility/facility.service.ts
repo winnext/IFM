@@ -16,25 +16,12 @@ export class FacilityService {
   }
 
   async findOne(_id: string): Promise<Facility> {
-<<<<<<< HEAD
     return this.facilityRepository.findOneById(_id)
      //const facility = await this.facilityModel.findById({ _id }).exec();
      //if (!facility) {
      //  throw new FacilityNotFountException(_id);
      //}
      //return facility;
-=======
-    const facility = await this.facilityRepository.findOneById(_id);
-
-    return facility;
-
-    //return this.facilityRepository.findOneById(_id);
-    // const facility = await this.facilityModel.findById({ _id }).exec();
-    // if (!facility) {
-    //   throw new FacilityNotFountException(_id);
-    // }
-    // return facility;
->>>>>>> a0aac7be87e73031bd7434c59c1bf77d3925f68e
   }
 
   create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
