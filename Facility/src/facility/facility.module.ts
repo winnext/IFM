@@ -1,25 +1,29 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Facility, FaciliySchema } from './entities/facility.entity';
-import { FacilityController } from './facility.controller';
-import { FacilityService } from './facility.service';
-import { FacilityRepository } from './repositories/facility.repository';
-
-
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { Facility, FaciliySchema } from "./entities/facility.entity";
+import { FacilityController } from "./facility.controller";
+import { FacilityService } from "./facility.service";
+import { FacilityRepository } from "./repositories/facility.repository";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: Facility.name,
-        schema: FaciliySchema,
-      },
-    ]),
+    MongooseModule.forFeature(
+      [
+        {
+          name: Facility.name,
+          schema: FaciliySchema,
+        },
+      ],
+      "facilities"
+    ),
   ],
   controllers: [FacilityController],
-  providers: [FacilityService, {
-    provide:'FacilityRepositoryInterface',
-    useClass:FacilityRepository
-  }],
+  providers: [
+    FacilityService,
+    {
+      provide: "FacilityRepositoryInterface",
+      useClass: FacilityRepository,
+    },
+  ],
 })
 export class FacilityModule {}

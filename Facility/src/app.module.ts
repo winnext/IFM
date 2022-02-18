@@ -5,7 +5,12 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     FacilityModule,ConfigModule.forRoot(),
-    MongooseModule.forRoot('mongodb://localhost:27017/facility'),
+    MongooseModule.forRoot('mongodb://localhost:27017',{
+      connectionName:'facilities',
+      dbName:'facility',
+      user:'user',
+      pass:'pass'
+    }),
   ],
   
 })
