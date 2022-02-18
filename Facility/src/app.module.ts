@@ -4,13 +4,25 @@ import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
-    FacilityModule, ConfigModule,
+    FacilityModule,
+    
     MongooseModule.forRootAsync({
-      inject: [ConfigService],
+      
       useFactory: (config: ConfigService) => ({
-        url: config.get('DATABASE_LINK'),
+        uri: config.get('DATABASE_LINK'),
+        dbName:'facility',
+        user:'user',
+        pass:'pass'
+        
+        
       }),
+      inject: [ConfigService],
+      
     }),
+    
+    ConfigModule.forRoot({
+      isGlobal: true
+    })
   ],
   
 })
