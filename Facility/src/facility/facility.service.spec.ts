@@ -96,15 +96,16 @@ describe('FacilityService', () => {
     expect(service).toBeDefined();
   });
 
-  // it('should  find all facilities', async () => {
-  //   const test = await service.findAll();
+   it('should  find all facilities', async () => {
+    const test = await service.findAll();
 
-  //   const check = test[0].uuid == 'b9a7ec17-c8f3-48f5-a444-d9c310322dce';
-  //   expect(check).toBe(true);
-  // });
+    const check = test[0].uuid == 'b9a7ec17-c8f3-48f5-a444-d9c310322dce';
+    expect(check).toBe(true);
+   });
+
 
   it('should  find specific facility', async () => {
-    const facilityId = '6209eacf2869d8a9a86c2aac';
+    const facilityId = '6209eacf2869d8a9a86c2aab';
     const test = await service.findOne(facilityId);
     const getSameId = test._id.toString() === output._id;
 
