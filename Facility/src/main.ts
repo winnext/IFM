@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
-import { LoggingInterceptor } from './common/interceptors/logger.interceptor';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,7 +23,7 @@ SwaggerModule.setup('api', app, document);
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new LoggingInterceptor());
+  //app.useGlobalInterceptors(new LoggingInterceptor());
   await app.listen(3001);
 }
 bootstrap();

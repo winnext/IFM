@@ -7,15 +7,12 @@ import { FacilityRepository } from "./repositories/facility.repository";
 
 @Module({
   imports: [
-    MongooseModule.forFeature(
-      [
-        {
-          name: Facility.name,
-          schema: FaciliySchema,
-        },
-      ],
-      "facilities"
-    ),
+    MongooseModule.forFeature([
+      {
+        name: Facility.name,
+        schema: FaciliySchema,
+      },
+    ]),
   ],
   controllers: [FacilityController],
   providers: [

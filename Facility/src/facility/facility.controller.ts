@@ -6,9 +6,11 @@ import {
   Param,
   Patch,
   Post,
-
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { LoggerInter } from "src/common/interceptors/logger.interceptor";
+
+
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
 import { UpdateFacilityDto } from "./dtos/update.facility.dto";
 import { Facility } from "./entities/facility.entity";
@@ -25,6 +27,7 @@ export class FacilityController {
     description:
       "If you want to get all facilities in your organization use this route. It takes no path or query params",
   })
+  @LoggerInter()
   @Get("")
   getAllFacilities(): Promise<Facility[]> {
     return this.facilityService.findAll();
