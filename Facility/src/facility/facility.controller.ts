@@ -9,8 +9,6 @@ import {
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LoggerInter } from "src/common/interceptors/logger.interceptor";
-
-
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
 import { UpdateFacilityDto } from "./dtos/update.facility.dto";
 import { Facility } from "./entities/facility.entity";

@@ -1,6 +1,6 @@
 import { Injectable, UseInterceptors } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
 import { FacilityNotFountException } from "../commonExceptions/facility.not.found.exception";
 import { CreateFacilityDto } from "../dtos/create.facility.dto";
@@ -12,18 +12,15 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(
     @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>
   ) {}
-
-  remove(id: string): Promise<Facility> {
-    throw new Error("Method not implemented.");
-  }
   findWithRelations(relations: any): Promise<Facility[]> {
     throw new Error("Method not implemented.");
   }
-  async findOneById(_id: string): Promise<Facility> {
-    const facility = await this.facilityModel.findById({ _id }).exec();
+  async findOneById(id: string): Promise<Facility> {
+    const facility = await this.facilityModel.findById({ _id: id }).exec();
     if (!facility) {
-      throw new FacilityNotFountException(_id);
+      throw new FacilityNotFountException(id);
     }
+
     return facility;
   }
   async findAll() {
