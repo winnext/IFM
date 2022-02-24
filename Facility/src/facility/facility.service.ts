@@ -1,4 +1,6 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Types } from "mongoose";
+import { FacilityNotFountException } from "./commonExceptions/facility.not.found.exception";
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
 import { UpdateFacilityDto } from "./dtos/update.facility.dto";
 import { Facility } from "./entities/facility.entity";
@@ -15,8 +17,9 @@ export class FacilityService {
     return this.facilityRepository.findAll();
   }
 
-  async findOne(_id: string): Promise<Facility> {
-    return this.facilityRepository.findOneById(_id)
+  async findOne(id: string): Promise<Facility> {
+    checkQueryParamIdİsValid(id);
+    return this.facilityRepository.findOneById(id);
   }
 
   create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
@@ -30,5 +33,12 @@ export class FacilityService {
   async remove(id: string) {
     const facility = await this.findOne(id);
     return facility.remove();
+  }
+}
+
+function checkQueryParamIdİsValid(id) {
+  const IsValidobject = Types.ObjectId.isValid(id);
+  if (!IsValidobject) {
+    throw new FacilityNotFountException(id);
   }
 }
