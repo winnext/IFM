@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
-import { ClientKafka } from "@nestjs/microservices";
+
 import { Producer } from "kafkajs";
 import { IQueueService } from "./queueInterface";
 

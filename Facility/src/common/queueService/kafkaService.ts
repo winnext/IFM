@@ -8,7 +8,7 @@ export class KafkaService implements IQueueService {
   });
 
   producer(): Producer {
-    const producer = this.kafka.producer({ allowAutoTopicCreation: false });
+    const producer = this.kafka.producer({ allowAutoTopicCreation: true });
 
     return producer;
   }

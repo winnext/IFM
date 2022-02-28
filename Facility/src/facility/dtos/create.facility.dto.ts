@@ -9,13 +9,13 @@ import {
 export class CreateFacilityDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @Length(1, 50)
   facility_name: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   @Length(1, 50)
   brand_name: string;
 

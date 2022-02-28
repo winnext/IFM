@@ -2,9 +2,10 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { FacilityModule } from "./facility/facility.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { KeycloakModule } from "./facility/keyclock.module";
 @Module({
   imports: [
-    FacilityModule,
+    FacilityModule,KeycloakModule,
 
     MongooseModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
