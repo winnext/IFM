@@ -2,7 +2,7 @@ import { Injectable, UseInterceptors } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
-import { FacilityNotFountException } from "../commonExceptions/facility.not.found.exception";
+import { FacilityNotFountException } from "../../common/notFoundExceptions/facility.not.found.exception";
 import { CreateFacilityDto } from "../dtos/create.facility.dto";
 import { UpdateFacilityDto } from "../dtos/update.facility.dto";
 import { Facility } from "../entities/facility.entity";
@@ -23,8 +23,9 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return facility;
   }
-  async findAll() {
-    return await this.facilityModel.find().exec();
+  async findAll(skip=0,limit=5) {
+    
+    return await this.facilityModel.find().skip(skip).limit(limit).exec();
   }
   async create(createFacilityDto: CreateFacilityDto) {
     const facility = new this.facilityModel(createFacilityDto);

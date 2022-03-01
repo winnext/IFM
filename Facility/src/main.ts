@@ -7,27 +7,32 @@ import { LoggingInterceptor } from './common/interceptors/logger.interceptor';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const config = new DocumentBuilder()
-  .setTitle('Facility Endpoints')
-  .setDescription('Facility Transactions')
-  .setVersion('1.0')
-  .addTag('facility')
-  .build();
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api', app, document);
-
-   app.useGlobalPipes(
-     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted:true
-     }),
-     
-   );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new LoggingInterceptor());
-  app.enableCors();
-  await app.listen(3001);
+  try {
+    const app = await NestFactory.create(AppModule,{abortOnError:false});
+    const config = new DocumentBuilder()
+    .setTitle('Facility Microservice Endpoints')
+    .setDescription('Facility Transactions')
+    .setVersion('1.0')
+    .addTag('facility')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  
+     app.useGlobalPipes(
+       new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted:true
+       }),
+       
+     );
+    app.useGlobalFilters(new HttpExceptionFilter());
+    app.useGlobalInterceptors(new LoggingInterceptor());
+    app.enableCors();
+    await app.listen(3001);
+  } catch (error) {
+    console.log(error)
+  }
+ 
  
 }
 bootstrap();

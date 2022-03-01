@@ -26,7 +26,7 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop()
   type_of_facility: string;
   @Prop()
-  classification_of_facility: string;
+  classification_of_facility: object[];
   @Prop([String])
   label: string[];
   @Prop()

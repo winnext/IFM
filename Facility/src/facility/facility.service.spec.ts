@@ -1,7 +1,7 @@
 
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FacilityNotFountException } from './commonExceptions/facility.not.found.exception';
+import { FacilityNotFountException } from '../common/commonExceptions/facility.not.found.exception';
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { Facility, FaciliySchema } from './entities/facility.entity';
 import { FacilityService } from './facility.service';

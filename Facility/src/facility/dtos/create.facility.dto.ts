@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsAlphanumeric,
   IsNotEmpty,
+  IsObject,
   IsString,
   Length,
 } from 'class-validator';
@@ -27,9 +27,8 @@ export class CreateFacilityDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  @Length(1, 50)
-  classification_of_facility: string;
+  @IsObject()
+  classification_of_facility: object;
 
   @ApiProperty()
   @IsNotEmpty()

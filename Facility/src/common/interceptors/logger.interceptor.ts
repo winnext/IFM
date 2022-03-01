@@ -29,7 +29,7 @@ export class LoggingInterceptor implements NestInterceptor, OnModuleInit {
   ): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const request: Request = ctx.getRequest<Request>();
     const methodKey = context.getHandler().name; // "create" //method name
     const className = context.getClass().name; // "FacilityCOntroller"
 
@@ -42,13 +42,8 @@ export class LoggingInterceptor implements NestInterceptor, OnModuleInit {
       methodKey: methodKey,
       className: className,
     };
-
-    
-
-    console.log(requestInformation);
+    // console.log(requestInformation);
     //send request informations to kafka topic
-
-    console.log(response)
 
     try {
       await this.postKafka.producerTest(

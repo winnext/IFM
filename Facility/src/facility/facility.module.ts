@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ConnectionEnums } from "src/common/const/connection.enum";
+import { RepositoryEnums } from "src/common/const/repository.enum";
 import { Facility, FaciliySchema } from "./entities/facility.entity";
 import { FacilityController } from "./facility.controller";
 import { FacilityService } from "./facility.service";
@@ -12,13 +14,13 @@ import { FacilityRepository } from "./repositories/facility.repository";
         name: Facility.name,
         schema: FaciliySchema,
       },
-    ]),
+    ],ConnectionEnums.FACILITY),
   ],
   controllers: [FacilityController],
   providers: [
     FacilityService,
     {
-      provide: "FacilityRepositoryInterface",
+      provide: RepositoryEnums.FACILITY,
       useClass: FacilityRepository,
     },
   ],

@@ -10,6 +10,9 @@ export abstract class BaseAbstractRepository<T> implements BaseInterfaceReposito
     protected constructor(entity: Model<T>) {
       this.entity = entity;
     }
+  update(id: string, data: any) {
+    throw new Error("Method not implemented.");
+  }
   delete(id: string): Promise<T> {
     throw new Error("Method not implemented.");
   }

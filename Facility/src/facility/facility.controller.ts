@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { LoggerInter } from "src/common/interceptors/logger.interceptor";
@@ -15,6 +16,8 @@ import { Facility } from "./entities/facility.entity";
 
 import { FacilityService } from "./facility.service";
 import { Roles, Unprotected } from "nest-keycloak-connect";
+import { PaginationParams } from "src/common/commonDto/pagination.dto";
+import { query } from "express";
 
 @ApiTags("facility")
 @Controller("facility")
@@ -28,11 +31,11 @@ export class FacilityController {
   })
   //@LoggerInter()
   @Get("/")
-  @Roles({roles: ['facility_client_role_admin']})
-  //@Unprotected()
-  getAllFacilities(): Promise<Facility[]> {
-    console.log('get facilities')
-    return this.facilityService.findAll();
+  //@Roles({roles: ['facility_client_role_admin']})
+  @Unprotected()
+  getAllFacilities(@Query() query:PaginationParams): Promise<Facility[]> {
+    
+    return this.facilityService.findAll(query);
   }
 
   @ApiOperation({
@@ -41,7 +44,8 @@ export class FacilityController {
       "If you want to get specific facility in your organization use this route. It takes  query params which is  id",
   })
   @Get("/:id")
-  @Roles({roles: ['facility_client_role_user']})
+  //@Roles({roles: ['facility_client_role_user']})
+  @Unprotected()
   getFacility(@Param("id") id: string): Promise<Facility> {
     return this.facilityService.findOne(id);
   }
@@ -51,12 +55,11 @@ export class FacilityController {
     description: "Store product structure",
   })
   @Post("")
-  //@Unprotected()
-  @Roles({roles: ['facility_client_role_admin']})
+  @Unprotected()
+  //@Roles({roles: ['facility_client_role_admin']})
   createFacility(
     @Body() createFacilityDto: CreateFacilityDto
   ): Promise<Facility> {
-    
     return this.facilityService.create(createFacilityDto);
   }
 

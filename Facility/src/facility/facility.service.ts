@@ -1,24 +1,27 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { Types } from "mongoose";
-import { FacilityNotFountException } from "./commonExceptions/facility.not.found.exception";
+import { Inject, Injectable } from "@nestjs/common";
+import { PaginationParams } from "src/common/commonDto/pagination.dto";
+
+import { RepositoryEnums } from "src/common/const/repository.enum";
+import { checkObjectIddİsValid } from "src/common/func/objectId.check";
+import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
 import { UpdateFacilityDto } from "./dtos/update.facility.dto";
 import { Facility } from "./entities/facility.entity";
-import { FacilityRepository } from "./repositories/facility.repository";
 
 @Injectable()
 export class FacilityService {
   constructor(
-    @Inject("FacilityRepositoryInterface")
-    private readonly facilityRepository: FacilityRepository
+    @Inject(RepositoryEnums.FACILITY)
+    private readonly facilityRepository: BaseInterfaceRepository<Facility>
   ) {}
 
-  findAll(): Promise<Facility[]> {
-    return this.facilityRepository.findAll();
+  findAll(query: PaginationParams): Promise<Facility[]> {
+    const { skip, limit } = query;
+    return this.facilityRepository.findAll(skip, limit);
   }
 
   async findOne(id: string): Promise<Facility> {
-    checkQueryParamIdİsValid(id);
+    checkObjectIddİsValid(id);
     return this.facilityRepository.findOneById(id);
   }
 
@@ -27,18 +30,12 @@ export class FacilityService {
   }
 
   async update(id: string, updateFacilityDto: UpdateFacilityDto) {
+    checkObjectIddİsValid(id);
     return this.facilityRepository.update(id, updateFacilityDto);
   }
 
   async remove(id: string) {
     const facility = await this.findOne(id);
     return facility.remove();
-  }
-}
-
-function checkQueryParamIdİsValid(id) {
-  const IsValidobject = Types.ObjectId.isValid(id);
-  if (!IsValidobject) {
-    throw new FacilityNotFountException(id);
   }
 }
