@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FaciliySchema = exports.Facility = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const base_object_1 = require("../../common/baseObject/base.object");
 const uuid_1 = require("uuid");
-const base_object_1 = require("../baseObject/base.object");
 let Facility = class Facility extends base_object_1.BasePersistantDocumentObject {
 };
 __decorate([

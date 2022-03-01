@@ -32,8 +32,20 @@ let FacilityRepository = class FacilityRepository {
         }
         return facility;
     }
-    async findAll(skip = 0, limit = 5) {
-        return await this.facilityModel.find().skip(skip).limit(limit).exec();
+    async findAll(skip = 0, limit = 17) {
+        var count = parseInt((await this.facilityModel.find().count()).toString());
+        var skp = parseInt(skip.toString());
+        var lmt = parseInt(limit.toString());
+        if (skp >= count) {
+            skp = count;
+            if (lmt <= skp) {
+                skp = skp - lmt;
+            }
+            else {
+                skp = 0;
+            }
+        }
+        return await this.facilityModel.find().skip(skp).limit(lmt).exec();
     }
     async create(createFacilityDto) {
         const facility = new this.facilityModel(createFacilityDto);
