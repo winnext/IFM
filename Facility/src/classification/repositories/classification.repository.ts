@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { ClassificationNotFountException } from "src/common/notFoundExceptions/facility.not.found.exception";
 import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
 import { CreateClassificationDto } from "../dto/create-classification.dto";
 import { UpdateClassificationDto } from "../dto/update-classification.dto";
@@ -23,7 +24,7 @@ export class ClassificationRepository
       .findById({ _id: id })
       .exec();
     if (!classification) {
-      // throw new FacilityNotFountException(id);
+      throw new ClassificationNotFountException(id);
     }
 
     return classification;
@@ -48,7 +49,7 @@ export class ClassificationRepository
       .exec();
 
     if (!updatedFacility) {
-      //  throw new FacilityNotFountException(_id);
+      throw new ClassificationNotFountException(_id);
     }
 
     return updatedFacility;

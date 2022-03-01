@@ -5,7 +5,7 @@ import { ClassificationNotFountException } from "src/common/notFoundExceptions/f
 import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
 import { CreateClassificationDto } from "./dto/create-classification.dto";
 import { UpdateClassificationDto } from "./dto/update-classification.dto";
-import { Classification } from "./entities/classification.entity"; 
+import { Classification } from "./entities/classification.entity";
 
 @Injectable()
 export class ClassificationService {
@@ -18,7 +18,8 @@ export class ClassificationService {
   }
 
   async findAll(query) {
-    //return await this.classificationRepository.findAll(query);
+    const { skip, limit } = query;
+    return await this.classificationRepository.findAll(skip, limit);
   }
 
   async findOne(id: string) {
