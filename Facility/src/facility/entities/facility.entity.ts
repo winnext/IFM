@@ -1,13 +1,15 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
-import { BasePersistantDocumentObject } from "../baseObject/base.object";
-
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform } from 'class-transformer';
+import { Document } from 'mongoose';
+import { ObjectIdColumn, ObjectID } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { BasePersistantDocumentObject } from '../baseObject/base.object';
 
 export type FacilityDocument = Facility & Document;
 
 @Schema()
 export class Facility extends BasePersistantDocumentObject {
+
   @Prop({
     type: String,
     default: function genUUID() {
@@ -27,7 +29,7 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop()
   type_of_facility: string;
   @Prop()
-  classification_of_facility: object[];
+  classification_of_facility: string;
   @Prop([String])
   label: string[];
   @Prop()

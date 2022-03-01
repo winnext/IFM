@@ -1,38 +1,47 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { PaginationParams } from "src/common/commonDto/pagination.dto";
-
-import { RepositoryEnums } from "src/common/const/repository.enum";
-import { checkObjectIddİsValid } from "src/common/func/objectId.check";
-import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
-import { CreateFacilityDto } from "./dtos/create.facility.dto";
-import { UpdateFacilityDto } from "./dtos/update.facility.dto";
-import { Facility } from "./entities/facility.entity";
+/* eslint-disable import/prefer-default-export */
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateFacilityDto } from './dtos/create.facility.dto';
+import { Facility } from './entities/facility.entity';
+import { FacilityRepository } from './repositories/facility.repository';
 
 @Injectable()
 export class FacilityService {
   constructor(
-    @Inject(RepositoryEnums.FACILITY)
-    private readonly facilityRepository: BaseInterfaceRepository<Facility>
+    @Inject('FacilityRepositoryInterface')
+    private readonly facilityRepository: FacilityRepository,
+    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
   ) {}
 
-  findAll(query: PaginationParams): Promise<Facility[]> {
-    const { skip, limit } = query;
-    return this.facilityRepository.findAll(skip, limit);
+  findAll(): Promise<Facility[]> {
+    return this.facilityRepository.findAll();
   }
 
-  async findOne(id: string): Promise<Facility> {
-    checkObjectIddİsValid(id);
-    return this.facilityRepository.findOneById(id);
+  async findOne(_id: string): Promise<Facility> {
+    return this.facilityRepository.findOneById(_id);
+    // const facility = await this.facilityModel.findById({ _id }).exec();
+    // if (!facility) {
+    //   throw new FacilityNotFountException(_id);
+    // }
+    // return facility;
   }
 
   create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityRepository.create(createFacilityDto);
   }
 
-  async update(id: string, updateFacilityDto: UpdateFacilityDto) {
-    checkObjectIddİsValid(id);
-    return this.facilityRepository.update(id, updateFacilityDto);
-  }
+  // async update(id: string, updateFacilityDto: UpdateFacilityDto) {
+  //   const updatedFacility = await this.facilityModel
+  //     .findOneAndUpdate({ _id: id }, { $set: updateFacilityDto }, { new: true })
+  //     .exec();
+
+  //   if (!updatedFacility) {
+  //     throw new NotFoundException(`Facility #${id} not found`);
+  //   }
+
+  //   return updatedFacility;
+  // }
 
   async remove(id: string) {
     const facility = await this.findOne(id);

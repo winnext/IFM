@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsAlphanumeric,
   IsNotEmpty,
-  IsObject,
   IsString,
   Length,
 } from 'class-validator';
@@ -9,13 +9,13 @@ import {
 export class CreateFacilityDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
+  @IsAlphanumeric()
   @Length(1, 50)
   facility_name: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
+  @IsAlphanumeric()
   @Length(1, 50)
   brand_name: string;
 
@@ -27,8 +27,9 @@ export class CreateFacilityDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsObject()
-  classification_of_facility: object;
+  @IsString()
+  @Length(1, 50)
+  classification_of_facility: string;
 
   @ApiProperty()
   @IsNotEmpty()

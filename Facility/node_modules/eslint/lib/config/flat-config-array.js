@@ -14,6 +14,7 @@ const { flatConfigSchema } = require("./flat-config-schema");
 const { RuleValidator } = require("./rule-validator");
 const { defaultConfig } = require("./default-config");
 const recommendedConfig = require("../../conf/eslint-recommended");
+const allConfig = require("../../conf/eslint-all");
 
 //-----------------------------------------------------------------------------
 // Helpers
@@ -78,13 +79,7 @@ class FlatConfigArray extends ConfigArray {
         }
 
         if (config === "eslint:all") {
-
-            /*
-             * Load `eslint-all.js` here instead of at the top level to avoid loading all rule modules
-             * when it isn't necessary. `eslint-all.js` reads `meta` of rule objects to filter out deprecated ones,
-             * so requiring `eslint-all.js` module loads all rule modules as a consequence.
-             */
-            return require("../../conf/eslint-all");
+            return allConfig;
         }
 
         return config;
