@@ -1,0 +1,15 @@
+.layout-sidebar-orange {
+    $sidebarBgColor:#F57C00;
+    $sidebarBgColorAlt:#EF6C00;
+    $sidebarBorder:0 none;
+    $appNameColor:rgba(0,0,0,0.8);
+    $menuSeparatorBorder: 1px solid rgba(0,0,0,0.1);
+    $menuitemRootTextColor: rgba(0,0,0,0.6);
+    $menuitemTextColor: rgba(0,0,0,0.8);
+    $menuitemHoverBg: rgba(255,255,255,0.1);
+    $menuitemActiveBg: rgba(255,255,255,0.1);
+    $menuitemTextActiveColor: rgba(0,0,0,0.9);
+    $menuitemFocusShadow: 0 0 0 0.2rem rgba(255,255,255,0.1);
+
+    @import '../_sidebar_theme_core';
+}

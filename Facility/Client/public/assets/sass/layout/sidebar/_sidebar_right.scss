@@ -1,0 +1,21 @@
+.layout-sidebar-right {
+    width: $rightSidebarWidth;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    padding: 1rem;
+    overflow: auto;
+    background: $rightSidebarBg;
+    z-index: 999;
+    border-left: $overlayBorder;
+    transform: translateX(100%);
+    transition: transform $animationDuration $animationTimingFunction;
+
+    &.layout-sidebar-right-active {
+        box-shadow: $overlayShadow;
+        transform: translateX(0);
+    }
+}
+
+@import './_sidebar_right_demo';

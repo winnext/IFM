@@ -1,0 +1,21 @@
+/* Right Sidebar Demo Content */
+.layout-sidebar-right {
+    p {
+        font-size: .875rem;
+        color: $textSecondaryColor;
+    }
+
+    .withdraw {
+        margin-top: -.5rem;
+        margin-left: -.5rem;
+        margin-right: -.5rem;
+
+        > div {
+            padding: .5rem;
+        }
+
+        input, button {
+            font-size: .875rem;
+        }
+    }
+}

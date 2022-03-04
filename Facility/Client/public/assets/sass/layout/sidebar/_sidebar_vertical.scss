@@ -1,0 +1,205 @@
+.layout-sidebar {
+    width: $sidebarWidth;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    box-shadow: $overlayShadow;
+    @include flex();
+    @include flex-direction-column();
+    user-select: none;
+    transition: transform $animationDuration $animationTimingFunction;
+
+    .logo {
+        text-align: center;
+        display: block;
+        outline: 0 none;
+        padding: 1rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        transition: background-color $transitionDuration, box-shadow $transitionDuration;
+    }
+
+    .logo-image {
+        width: 2rem;
+        height: 2rem;
+        vertical-align: middle;
+        margin-right: .5rem;
+    }
+
+    .app-name {
+        vertical-align: middle;
+        font-size: 1.5rem;
+        letter-spacing: .2px;
+    }
+}
+
+.layout-menu-container {
+    overflow: auto;
+    flex: 1;
+    padding: 1rem;
+}
+
+.layout-menu {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    .menu-separator {
+        margin: 1rem 0;
+    }
+
+    .layout-root-menuitem {
+        > .layout-menuitem-root-text {
+            font-size: .857rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: .5rem 0 1rem 0;
+        }
+
+        > a,
+        > .p-link {
+            display: none;
+        }
+
+        .layout-menu-tooltip {
+            display: none;
+        }
+
+        .layout-menu-enter {
+            max-height: 0;
+        }
+
+        .layout-menu-enter-active {
+            overflow: hidden;
+            max-height: 1000px;
+            transition: max-height 1s ease-in-out;
+        }
+
+        .layout-menu-enter-done {
+            transform: none;
+        }
+
+        .layout-menu-exit {
+            max-height: 1000px;
+        }
+
+        .layout-menu-exit-active {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.45s cubic-bezier(0, 1, 0, 1);
+        }
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        a,
+        .p-link {
+            @include flex();
+            @include flex-align-center();
+            position: relative;
+            padding: .5rem;
+            font-size: 1rem;
+            border-radius: $borderRadius;
+            outline: 0 none;
+            cursor: pointer;
+            transition: background-color $transitionDuration, box-shadow $transitionDuration;
+            width: 100%;
+
+            .layout-menuitem-icon {
+                margin-right: .5rem;
+            }
+
+            .layout-submenu-toggler {
+                font-size: 75%;
+                margin-left: auto;
+                transition: transform $transitionDuration;
+            }
+
+            &.rotated-icon {
+                .layout-menuitem-icon {
+                    transform: rotate(90deg);
+                }
+            }
+
+            &.active-route {
+                font-weight: 700;
+            }
+        }
+
+        li {
+            &.active-menuitem {
+                border-radius: $borderRadius;
+
+                > a,
+                > .p-link {
+                    .layout-submenu-toggler {
+                        transform: rotate(-180deg);
+                    }
+                }
+
+                .layout-menu-enter-from {
+                    max-height: 0;
+                }
+
+                .layout-menu-enter-to {
+                    max-height: 1000px;
+                }
+
+                .layout-menu-enter-active {
+                    overflow: hidden;
+                    transition: max-height 1s ease-in-out;
+                }
+            }
+
+            .p-badge {
+                margin-left: auto;
+            }
+        }
+
+        ul {
+            overflow: hidden;
+            border-radius: $borderRadius;
+
+            li {
+                a, .p-link {
+                    padding-left: 1.5rem;
+                }
+
+                li {
+                    a, .p-link {
+                        padding-left: 2.5rem;
+                    }
+
+                    li {
+                        a, .p-link {
+                            padding-left: 3.5rem;
+                        }
+
+                        li {
+                            a, .p-link {
+                                padding-left: 4.5rem;
+                            }
+
+                            li {
+                                a, .p-link {
+                                    padding-left: 5.5rem;
+                                }
+
+                                li {
+                                    a, .p-link {
+                                        padding-left: 6.5rem;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

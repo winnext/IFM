@@ -1,13 +1,27 @@
 import { useRoutes, Navigate } from 'react-router-dom';
 
+//layouts
+import AppLayout from './layouts/App/App';
+
 //pages
-import Main from './pages/Main';
+import Dashboard from './layouts/App/components/Dashboard';
+import Facility from './pages/Facility';
+import { NotFound } from './layouts/App/pages/NotFound';
+// import Main from './pages/Main';
 
 export default function Router() {
   return useRoutes([
     {
       path: '/',
-      children: [{ path: '', element: <Main /> }],
+      element: <AppLayout />,
+      children: [
+        { path: '', element: <Dashboard /> },
+        { path: 'facility', element: <Facility /> },
+      ],
+    },
+    {
+      path: '/404',
+      element: <NotFound />,
     },
     { path: '*', element: <Navigate to="/404" replace /> },
   ]);

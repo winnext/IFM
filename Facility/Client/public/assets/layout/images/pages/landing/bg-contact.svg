@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="816px" viewBox="0 0 1440 816" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 2</title>
+    <defs>
+        <linearGradient x1="74.3489499%" y1="34.0230517%" x2="-5.50167633%" y2="74.6645596%" id="linearGradient-1">
+            <stop stop-color="#1F8CE3" offset="0%"></stop>
+            <stop stop-color="#105DA1" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="page-landing" transform="translate(0.000000, -3032.000000)">
+            <g id="landing-contac-footer" transform="translate(0.000000, 3032.000000)">
+                <g id="Group-2" transform="translate(0.000000, 0.508052)">
+                    <polygon id="Rectangle" fill="url(#linearGradient-1)" points="0 93.5093776 1262.5 0.491948017 1440 29.2925254 1440 814.491948 -1.27897692e-12 814.491948"></polygon>
+                    <polygon id="Path" fill="#008EFF" opacity="0.30452474" points="814 37.498956 0 0 0 93"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

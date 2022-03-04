@@ -1,0 +1,225 @@
+.layout-topbar {
+    background: $topbarBg;
+    height: 4rem;
+    padding: 0 2rem;
+    border-bottom: $topbarBottomBorder;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 997;
+    @include flex();
+    @include flex-align-center();
+    @include flex-justify-between();
+    color: $topbarTextColor;
+    transition: margin-left $animationDuration $animationTimingFunction;
+
+    .topbar-left {
+        @include flex();
+        @include flex-align-center();
+
+        .horizontal-logo {
+            display: none;
+        }
+    }
+
+    .menu-button {
+        width: 2.5rem;
+        height: 2.5rem;
+        line-height: 2.5rem;
+        text-align: center;
+        color: $topbarTextColor;
+        overflow: hidden;
+        border-radius: $borderRadius;
+        background: $topbarIconBg;
+        transition: background-color $transitionDuration, box-shadow $transitionDuration;
+        display: block;
+        cursor: pointer;
+        outline: 0 none;
+
+        &:hover {
+            background: $topbarIconHoverBg;
+        }
+
+        &:focus {
+            box-shadow: $focusShadow;
+        }
+
+        i {
+            line-height: inherit;
+            font-size: 1.5rem;
+        }
+    }
+
+    .topbar-separator {
+        display: block;
+        width: 1px;
+        border-left: 1px solid $dividerColor;
+        align-self: stretch;
+        margin: 0 1rem;
+    }
+
+    .mobile-logo {
+        display: none;
+    }
+
+    .viewname {
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+    .topbar-menu {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        @include flex();
+        @include flex-align-center();
+
+        > li {
+            margin-left: 1rem;
+            position: relative;
+
+            &:first {
+                margin-left: 0;
+            }
+
+            &.profile-item {
+                padding: 0 1rem 0 1rem;
+                border-left: 1px solid $dividerColor;
+                border-right: 1px solid $dividerColor;
+
+                > a,
+                > .p-link {
+                    width: auto;
+                    height: auto;
+                    @include flex();
+                    @include flex-align-center();
+                    font-size: .875rem;
+                    font-weight: 600;
+                    padding: 0 .5rem 0 0;
+                }
+
+                .profile-image {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    margin-right: .5rem;
+                }
+            }
+
+            &.right-sidebar-item {
+                > a,
+                > .p-link {
+                    background: $topbarIconBg;
+                }
+            }
+
+            > a,
+            > .p-link {
+                width: 2.5rem;
+                height: 2.5rem;
+                line-height: 2.5rem;
+                text-align: center;
+                color: $topbarTextColor;
+                overflow: hidden;
+                border-radius: $borderRadius;
+                transition: background-color $transitionDuration, box-shadow $transitionDuration;
+                display: block;
+                position: relative;
+                cursor: pointer;
+                user-select: none;
+                outline: 0 none;
+
+                &:hover {
+                    background: $topbarIconHoverBg;
+                }
+
+                &:focus {
+                    box-shadow: $focusShadow;
+                }
+
+                i {
+                    line-height: inherit;
+                    font-size: 1.5rem;
+                }
+
+                .topbar-badge {
+                    position: absolute;
+                    display: block;
+                    right: 0;
+                    top: 0;
+                    width: 1rem;
+                    height: 1rem;
+                    line-height: 1rem;
+                    font-size: .714rem;
+                    border-radius: 50%;
+                    font-weight: 600;
+                    background: $accentColor;
+                    color: $accentTextColor;
+                }
+            }
+
+            > ul {
+                display: none;
+                position: absolute;
+                background: $topbarBg;
+                list-style: none;
+                margin: 0;
+                padding: 1rem;
+                top: 3.25rem;
+                right: 0;
+                z-index: 999;
+                min-width: 250px;
+                border: $overlayBorder;
+                box-shadow: $overlayShadow;
+                animation-duration: .12s;
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+                border-radius: $borderRadius;
+                transform-origin: center top;
+
+                li {
+                    a,
+                    .p-link {
+                        color: $textColor;
+                        padding: .5rem;
+                        @include flex();
+                        @include flex-align-center();
+                        border-radius: $borderRadius;
+                        transition: background-color $transitionDuration;
+                        cursor: pointer;
+                        width: 100%;
+
+                        &:hover {
+                            background: $itemHoverBg;
+                        }
+                    }
+                }
+
+                &.notifications-menu {
+                    .notification-item {
+                        margin-left: .5rem;
+                    }
+
+                    .notification-summary {
+                        font-weight: 600;
+                    }
+
+                    .notification-detail {
+                        color: $textSecondaryColor;
+                    }
+                }
+
+                &.profile-menu {
+                    span {
+                        margin-left: .5rem;
+                    }
+                }
+            }
+
+            &.active-menuitem {
+                > ul {
+                    display: block;
+                }
+            }
+        }
+    }
+}
