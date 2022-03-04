@@ -8,7 +8,7 @@ export declare class FacilityRepository implements BaseInterfaceRepository<Facil
     constructor(facilityModel: Model<Facility>);
     findWithRelations(relations: any): Promise<Facility[]>;
     findOneById(id: string): Promise<Facility>;
-    findAll(skip?: number, limit?: number): Promise<(Facility & {
+    findAll(page?: number, limit?: number): Promise<(Facility & {
         _id: any;
     })[]>;
     create(createFacilityDto: CreateFacilityDto): Promise<Facility & {

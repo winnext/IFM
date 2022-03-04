@@ -32,20 +32,24 @@ let FacilityRepository = class FacilityRepository {
         }
         return facility;
     }
-    async findAll(skip = 0, limit = 17) {
+    async findAll(page = 1, limit = 5) {
         var count = parseInt((await this.facilityModel.find().count()).toString());
-        var skp = parseInt(skip.toString());
+        var pagecount = Math.ceil(count / lmt);
+        var pg = parseInt(page.toString());
         var lmt = parseInt(limit.toString());
-        if (skp >= count) {
-            skp = count;
-            if (lmt <= skp) {
-                skp = skp - lmt;
-            }
-            else {
-                skp = 0;
+        if (pg > pagecount) {
+            pg = pagecount;
+        }
+        var skip = pg * lmt;
+        if (skip >= count) {
+            skip = count - lmt;
+            if (skip < 0) {
+                skip = 0;
             }
         }
-        return await this.facilityModel.find().skip(skp).limit(lmt).exec();
+        var result = await this.facilityModel.find().skip(skip).limit(lmt).exec();
+        console.log(result);
+        return result;
     }
     async create(createFacilityDto) {
         const facility = new this.facilityModel(createFacilityDto);

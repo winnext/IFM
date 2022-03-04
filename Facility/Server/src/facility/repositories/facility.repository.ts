@@ -23,27 +23,28 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return facility;
   }
-  async findAll(skip=0,limit=17) {
+    async findAll(page=1,limit=5) {
     var count = parseInt((await this.facilityModel.find().count()).toString());
-    var skp = parseInt(skip.toString());
+    var pagecount = Math.ceil(count / lmt);
+    var pg = parseInt(page.toString());
     var lmt = parseInt(limit.toString());
-    //var page = Math.ceil(count / lmt);
-    
-    if (skp >= count)
-      {
-          skp = count;
-      if (lmt <= skp )
-        {
-          skp = skp - lmt;
-        }
-      else {
-           skp = 0;
-        }  
+    if (pg > pagecount) {
+      pg = pagecount;
     }
-     
+    var skip = pg * lmt;
+    if (skip >= count) {
+      skip = count - lmt;
+      if (skip < 0) {
+        skip = 0;
+      }
+    }
+     var result =  await this.facilityModel.find().skip(skip).limit(lmt).exec();
+     //result.push = { "count": count, "page": pg, "limit": lmt };
+     console.log(result);
     
-    return await this.facilityModel.find().skip(skp).limit(lmt).exec();
+    return result;
   }
+
   async create(createFacilityDto: CreateFacilityDto) {
     const facility = new this.facilityModel(createFacilityDto);
 

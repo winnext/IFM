@@ -1,4 +1,4 @@
 export declare class PaginationParams {
-    skip?: number;
+    page?: number;
     limit?: number;
 }

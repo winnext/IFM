@@ -21,8 +21,8 @@ let FacilityService = class FacilityService {
         this.facilityRepository = facilityRepository;
     }
     findAll(query) {
-        const { skip, limit } = query;
-        return this.facilityRepository.findAll(skip, limit);
+        const { page, limit } = query;
+        return this.facilityRepository.findAll(page, limit);
     }
     async findOne(id) {
         return this.facilityRepository.findOneById(id);

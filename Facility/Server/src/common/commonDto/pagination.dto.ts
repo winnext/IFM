@@ -5,8 +5,8 @@ export class PaginationParams {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @Min(0)
-  skip?: number;
+  @Min(1)
+  page?: number;
  
   @IsOptional()
   @Type(() => Number)

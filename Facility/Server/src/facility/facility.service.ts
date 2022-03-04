@@ -16,8 +16,8 @@ export class FacilityService {
   ) {}
 
   findAll(query: PaginationParams): Promise<Facility[]> {
-    const { skip, limit } = query;
-    return this.facilityRepository.findAll(skip, limit);
+    const { page, limit } = query;
+    return this.facilityRepository.findAll(page, limit);
   }
 
   async findOne(id: string): Promise<Facility> {
