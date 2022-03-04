@@ -7,6 +7,7 @@ import { CreateFacilityDto } from "../dtos/create.facility.dto";
 import { UpdateFacilityDto } from "../dtos/update.facility.dto";
 import { Facility } from "../entities/facility.entity";
 
+
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(
@@ -39,10 +40,12 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
       }
     }
      var result =  await this.facilityModel.find().skip(skip).limit(lmt).exec();
-     //result.push = { "count": count, "page": pg, "limit": lmt };
-     console.log(result);
+     const pagination={ "count": count, "page": pg, "limit": lmt }
+     const facility=[]
+     facility.push(result)
+     facility.push(pagination)
     
-    return result;
+    return facility;
   }
 
   async create(createFacilityDto: CreateFacilityDto) {

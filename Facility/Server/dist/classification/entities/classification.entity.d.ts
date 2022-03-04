@@ -1,6 +1,6 @@
-/// <reference types="mongoose/types/PipelineStage" />
-/// <reference types="mongoose/types/Error" />
-/// <reference types="mongoose/types/Connection" />
+/// <reference types="mongoose/types/pipelinestage" />
+/// <reference types="mongoose/types/error" />
+/// <reference types="mongoose/types/connection" />
 import { Document } from "mongoose";
 export declare type ClassificationDocument = Classification & Document;
 export declare class Classification extends Document {

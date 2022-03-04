@@ -48,8 +48,11 @@ let FacilityRepository = class FacilityRepository {
             }
         }
         var result = await this.facilityModel.find().skip(skip).limit(lmt).exec();
-        console.log(result);
-        return result;
+        const pagination = { "count": count, "page": pg, "limit": lmt };
+        const facility = [];
+        facility.push(result);
+        facility.push(pagination);
+        return facility;
     }
     async create(createFacilityDto) {
         const facility = new this.facilityModel(createFacilityDto);
