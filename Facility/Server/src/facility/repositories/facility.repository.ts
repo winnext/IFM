@@ -24,7 +24,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return facility;
   }
-    async findAll(page=1,limit=5) {
+    async findAll(page=0,limit=5) {
     var count = parseInt((await this.facilityModel.find().count()).toString());
     var pagecount = Math.ceil(count / lmt);
     var pg = parseInt(page.toString());

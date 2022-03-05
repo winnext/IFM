@@ -5,131 +5,152 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
+// import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import ProductService from '../layouts/App/service/ProductService';
+import FacilityService from '../services/facility';
 
 const Facility = () => {
-  let emptyProduct = {
-    id: null,
-    name: '',
-    image: null,
-    description: '',
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: 'INSTOCK',
+  let emptyFacility = {
+    _id: '',
+    facility_name: '',
+    brand_name: '',
+    type_of_facility: '',
+    classification_of_facility: [{}],
+    label: [''],
+    country: '',
+    address: '',
   };
 
-  const [products, setProducts] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
+  const [facilities, setFacilities] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [lazyParams, setLazyParams] = useState({
+    first: 0,
+    rows: 5,
+    page: 0,
+    sortField: null,
+    sortOrder: null,
+  });
+  const [countFacilities, setCountFacilities] = useState(0);
+  const [facilityDialog, setFacilityDialog] = useState(false);
+  const [deleteFacilityDialog, setDeleteFacilityDialog] = useState(false);
+  const [deleteFacilitiesDialog, setDeleteFacilitiesDialog] = useState(false);
+  const [facility, setFacility] = useState(emptyFacility);
+  const [selectedFacilities, setSelectedFacilities] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
 
   useEffect(() => {
-    const productService = new ProductService();
-    productService.getProducts().then((data) => setProducts(data));
-  }, []);
+    loadLazyData();
+    // FacilityService.test();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lazyParams]);
 
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
+  const onPage = (event) => {
+    console.log(event);
+    setLazyParams(event);
+  };
+
+  const loadLazyData = () => {
+    setLoading(true);
+    setTimeout(() => {
+      FacilityService.findAll({
+        page: lazyParams.page,
+        limit: lazyParams.rows,
+      }).then((response) => {
+        setFacilities(response.data[0]);
+        setCountFacilities(response.data[1].count);
+        setLoading(false);
+      });
+    }, 300);
   };
 
   const openNew = () => {
-    setProduct(emptyProduct);
+    setFacility(emptyFacility);
     setSubmitted(false);
-    setProductDialog(true);
+    setFacilityDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
-    setProductDialog(false);
+    setFacilityDialog(false);
   };
 
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
+  const hideDeleteFacilityDialog = () => {
+    setDeleteFacilityDialog(false);
   };
 
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
+  const hideDeleteFacilitiesDialog = () => {
+    setDeleteFacilitiesDialog(false);
   };
 
-  const saveProduct = () => {
+  const saveFacility = () => {
     setSubmitted(true);
 
-    if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
-      if (product.id) {
-        const index = findIndexById(product.id);
+    if (facility.name.trim()) {
+      let _facilities = [...facilities];
+      let _facility = { ...facility };
+      if (facility.id) {
+        const index = findIndexById(facility.id);
 
-        _products[index] = _product;
+        _facilities[index] = _facility;
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
-          detail: 'Product Updated',
+          detail: 'Facility Updated',
           life: 3000,
         });
       } else {
-        _product.id = createId();
-        _product.image = 'product-placeholder.svg';
-        _products.push(_product);
+        _facility.id = createId();
+        _facility.image = 'facility-placeholder.svg';
+        _facilities.push(_facility);
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
-          detail: 'Product Created',
+          detail: 'Facility Created',
           life: 3000,
         });
       }
 
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptyProduct);
+      setFacilities(_facilities);
+      setFacilityDialog(false);
+      setFacility(emptyFacility);
     }
   };
 
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
+  const editFacility = (facility) => {
+    setFacility({ ...facility });
+    setFacilityDialog(true);
   };
 
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
+  const confirmDeleteFacility = (facility) => {
+    setFacility(facility);
+    setDeleteFacilityDialog(true);
   };
 
-  const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+  const deleteFacility = () => {
+    let _facilities = facilities.filter((val) => val.id !== facility.id);
+    setFacilities(_facilities);
+    setDeleteFacilityDialog(false);
+    setFacility(emptyFacility);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
-      detail: 'Product Deleted',
+      detail: 'Facility Deleted',
       life: 3000,
     });
   };
 
   const findIndexById = (id) => {
     let index = -1;
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < facilities.length; i++) {
+      if (facilities[i].id === id) {
         index = i;
         break;
       }
@@ -153,42 +174,44 @@ const Facility = () => {
   };
 
   const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
+    setDeleteFacilitiesDialog(true);
   };
 
-  const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
-    setProducts(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
+  const deleteSelectedFacilities = () => {
+    let _facilities = facilities.filter(
+      (val) => !selectedFacilities.includes(val)
+    );
+    setFacilities(_facilities);
+    setDeleteFacilitiesDialog(false);
+    setSelectedFacilities(null);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
-      detail: 'Products Deleted',
+      detail: 'Facilities Deleted',
       life: 3000,
     });
   };
 
   const onCategoryChange = (e) => {
-    let _product = { ...product };
-    _product['category'] = e.value;
-    setProduct(_product);
+    let _facility = { ...facility };
+    _facility['category'] = e.value;
+    setFacility(_facility);
   };
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
-    _product[`${name}`] = val;
+    let _facility = { ...facility };
+    _facility[`${name}`] = val;
 
-    setProduct(_product);
+    setFacility(_facility);
   };
 
   const onInputNumberChange = (e, name) => {
     const val = e.value || 0;
-    let _product = { ...product };
-    _product[`${name}`] = val;
+    let _facility = { ...facility };
+    _facility[`${name}`] = val;
 
-    setProduct(_product);
+    setFacility(_facility);
   };
 
   const leftToolbarTemplate = () => {
@@ -206,7 +229,7 @@ const Facility = () => {
             icon="pi pi-trash"
             className="p-button-danger"
             onClick={confirmDeleteSelected}
-            disabled={!selectedProducts || !selectedProducts.length}
+            disabled={!selectedFacilities || !selectedFacilities.length}
           />
         </div>
       </React.Fragment>
@@ -234,77 +257,77 @@ const Facility = () => {
     );
   };
 
-  const codeBodyTemplate = (rowData) => {
+  const facilityNameBodyTemplate = (rowData) => {
     return (
       <>
-        <span className="p-column-title">Code</span>
-        {rowData.code}
+        <span className="p-column-title">Facility Name</span>
+        {rowData.facility_name}
       </>
     );
   };
 
-  const nameBodyTemplate = (rowData) => {
+  const brandNameBodyTemplate = (rowData) => {
     return (
       <>
-        <span className="p-column-title">Name</span>
-        {rowData.name}
+        <span className="p-column-title">Brand Name</span>
+        {rowData.brand_name}
       </>
     );
   };
 
-  const imageBodyTemplate = (rowData) => {
+  const typeOfFacilityNameBodyTemplate = (rowData) => {
     return (
       <>
-        <span className="p-column-title">Image</span>
-        <img
-          src={`assets/demo/images/product/${rowData.image}`}
-          alt={rowData.image}
-          className="shadow-2"
-          width="100"
-        />
+        <span className="p-column-title">Type of Facility</span>
+        {rowData.type_of_facility}
       </>
     );
   };
 
-  const priceBodyTemplate = (rowData) => {
+  const countryBodyTemplate = (rowData) => {
     return (
       <>
-        <span className="p-column-title">Price</span>
-        {formatCurrency(rowData.price)}
+        <span className="p-column-title">Country</span>
+        {rowData.country}
       </>
     );
   };
 
-  const categoryBodyTemplate = (rowData) => {
+  const addressBodyTemplate = (rowData) => {
     return (
       <>
-        <span className="p-column-title">Category</span>
-        {rowData.category}
+        <span className="p-column-title">Address</span>
+        {rowData.address}
       </>
     );
   };
 
-  const ratingBodyTemplate = (rowData) => {
-    return (
-      <>
-        <span className="p-column-title">Reviews</span>
-        <Rating value={rowData.rating} readonly cancel={false} />
-      </>
-    );
-  };
+  // const imageBodyTemplate = (rowData) => {
+  //   return (
+  //     <>
+  //       <span className="p-column-title">Image</span>
+  //       <img
+  //         src={`assets/demo/images/facility/${rowData.image}`}
+  //         alt={rowData.image}
+  //         className="shadow-2"
+  //         width="100"
+  //       />
+  //     </>
+  //   );
+  // };
 
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <>
-        <span className="p-column-title">Status</span>
-        <span
-          className={`product-badge status-${rowData.inventoryStatus.toLowerCase()}`}
-        >
-          {rowData.inventoryStatus}
-        </span>
-      </>
-    );
-  };
+  // const statusBodyTemplate = (rowData) => {
+  //   return (
+  //     <>
+  //       <span className="p-column-title">Status</span>
+  //       <span
+  //         className={`facility-badge status-${rowData.inventoryStatus.toLowerCase()}`}
+  //       >
+  //         {rowData.inventoryStatus}
+  //       </span>
+  //     </>
+  //   );
+  // };
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -312,12 +335,12 @@ const Facility = () => {
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-success mr-2"
-          onClick={() => editProduct(rowData)}
+          onClick={() => editFacility(rowData)}
         />
         <Button
           icon="pi pi-trash"
           className="p-button-rounded p-button-warning mt-2"
-          onClick={() => confirmDeleteProduct(rowData)}
+          onClick={() => confirmDeleteFacility(rowData)}
         />
       </div>
     );
@@ -325,7 +348,7 @@ const Facility = () => {
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-      <h5 className="m-0">Manage Products</h5>
+      <h5 className="m-0">Manage Facilities</h5>
       <span className="block mt-2 md:mt-0 p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -337,7 +360,7 @@ const Facility = () => {
     </div>
   );
 
-  const productDialogFooter = (
+  const facilityDialogFooter = (
     <>
       <Button
         label="Cancel"
@@ -349,39 +372,39 @@ const Facility = () => {
         label="Save"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={saveProduct}
+        onClick={saveFacility}
       />
     </>
   );
-  const deleteProductDialogFooter = (
+  const deleteFacilityDialogFooter = (
     <>
       <Button
         label="No"
         icon="pi pi-times"
         className="p-button-text"
-        onClick={hideDeleteProductDialog}
+        onClick={hideDeleteFacilityDialog}
       />
       <Button
         label="Yes"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteProduct}
+        onClick={deleteFacility}
       />
     </>
   );
-  const deleteProductsDialogFooter = (
+  const deleteFacilitiesDialogFooter = (
     <>
       <Button
         label="No"
         icon="pi pi-times"
         className="p-button-text"
-        onClick={hideDeleteProductsDialog}
+        onClick={hideDeleteFacilitiesDialog}
       />
       <Button
         label="Yes"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteSelectedProducts}
+        onClick={deleteSelectedFacilities}
       />
     </>
   );
@@ -399,20 +422,23 @@ const Facility = () => {
 
           <DataTable
             ref={dt}
-            value={products}
-            selection={selectedProducts}
-            onSelectionChange={(e) => setSelectedProducts(e.value)}
-            dataKey="id"
+            value={facilities}
+            selection={selectedFacilities}
+            onSelectionChange={(e) => setSelectedFacilities(e.value)}
+            dataKey="_id"
+            onPage={onPage}
+            first={lazyParams.first}
             paginator
-            rows={10}
+            rows={lazyParams.rows}
+            loading={loading}
+            lazy
             rowsPerPageOptions={[5, 10, 25]}
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-            totalRecords={100}
-            lazy
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} facilities"
+            totalRecords={countFacilities}
             globalFilter={globalFilter}
-            emptyMessage="No products found."
+            emptyMessage="No facilities found."
             header={header}
             responsiveLayout="scroll"
           >
@@ -421,43 +447,43 @@ const Facility = () => {
               headerStyle={{ width: '3rem' }}
             ></Column>
             <Column
-              field="code"
-              header="Code"
+              field="facility_name"
+              header="Facility Name"
               sortable
-              body={codeBodyTemplate}
+              body={facilityNameBodyTemplate}
               headerStyle={{ width: '14%', minWidth: '10rem' }}
             ></Column>
             <Column
-              field="name"
-              header="Name"
+              field="brand_name"
+              header="Brand Name"
               sortable
-              body={nameBodyTemplate}
+              body={brandNameBodyTemplate}
               headerStyle={{ width: '14%', minWidth: '10rem' }}
             ></Column>
             <Column
+              field="type_of_facility"
+              header="Type of Facility"
+              sortable
+              body={typeOfFacilityNameBodyTemplate}
+              headerStyle={{ width: '14%', minWidth: '10rem' }}
+            ></Column>
+            <Column
+              field="country"
+              header="Country"
+              sortable
+              body={countryBodyTemplate}
+              headerStyle={{ width: '14%', minWidth: '10rem' }}
+            ></Column>
+            <Column
+              field="address"
+              header="Address"
+              sortable
+              body={addressBodyTemplate}
+              headerStyle={{ width: '14%', minWidth: '10rem' }}
+            ></Column>
+            {/* <Column
               header="Image"
               body={imageBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
-            ></Column>
-            <Column
-              field="price"
-              header="Price"
-              body={priceBodyTemplate}
-              sortable
-              headerStyle={{ width: '14%', minWidth: '8rem' }}
-            ></Column>
-            <Column
-              field="category"
-              header="Category"
-              sortable
-              body={categoryBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
-            ></Column>
-            <Column
-              field="rating"
-              header="Reviews"
-              body={ratingBodyTemplate}
-              sortable
               headerStyle={{ width: '14%', minWidth: '10rem' }}
             ></Column>
             <Column
@@ -466,23 +492,23 @@ const Facility = () => {
               body={statusBodyTemplate}
               sortable
               headerStyle={{ width: '14%', minWidth: '10rem' }}
-            ></Column>
+            ></Column> */}
             <Column body={actionBodyTemplate}></Column>
           </DataTable>
 
           <Dialog
-            visible={productDialog}
+            visible={facilityDialog}
             style={{ width: '450px' }}
-            header="Product Details"
+            header="Facility Details"
             modal
             className="p-fluid"
-            footer={productDialogFooter}
+            footer={facilityDialogFooter}
             onHide={hideDialog}
           >
-            {product.image && (
+            {facility.image && (
               <img
-                src={`assets/demo/images/product/${product.image}`}
-                alt={product.image}
+                src={`assets/demo/images/facility/${facility.image}`}
+                alt={facility.image}
                 width="150"
                 className="mt-0 mx-auto mb-5 block shadow-2"
               />
@@ -491,15 +517,15 @@ const Facility = () => {
               <label htmlFor="name">Name</label>
               <InputText
                 id="name"
-                value={product.name}
+                value={facility.name}
                 onChange={(e) => onInputChange(e, 'name')}
                 required
                 autoFocus
                 className={classNames({
-                  'p-invalid': submitted && !product.name,
+                  'p-invalid': submitted && !facility.name,
                 })}
               />
-              {submitted && !product.name && (
+              {submitted && !facility.name && (
                 <small className="p-invalid">Name is required.</small>
               )}
             </div>
@@ -507,7 +533,7 @@ const Facility = () => {
               <label htmlFor="description">Description</label>
               <InputTextarea
                 id="description"
-                value={product.description}
+                value={facility.description}
                 onChange={(e) => onInputChange(e, 'description')}
                 required
                 rows={3}
@@ -524,7 +550,7 @@ const Facility = () => {
                     name="category"
                     value="Accessories"
                     onChange={onCategoryChange}
-                    checked={product.category === 'Accessories'}
+                    checked={facility.category === 'Accessories'}
                   />
                   <label htmlFor="category1">Accessories</label>
                 </div>
@@ -534,7 +560,7 @@ const Facility = () => {
                     name="category"
                     value="Clothing"
                     onChange={onCategoryChange}
-                    checked={product.category === 'Clothing'}
+                    checked={facility.category === 'Clothing'}
                   />
                   <label htmlFor="category2">Clothing</label>
                 </div>
@@ -544,7 +570,7 @@ const Facility = () => {
                     name="category"
                     value="Electronics"
                     onChange={onCategoryChange}
-                    checked={product.category === 'Electronics'}
+                    checked={facility.category === 'Electronics'}
                   />
                   <label htmlFor="category3">Electronics</label>
                 </div>
@@ -554,7 +580,7 @@ const Facility = () => {
                     name="category"
                     value="Fitness"
                     onChange={onCategoryChange}
-                    checked={product.category === 'Fitness'}
+                    checked={facility.category === 'Fitness'}
                   />
                   <label htmlFor="category4">Fitness</label>
                 </div>
@@ -566,7 +592,7 @@ const Facility = () => {
                 <label htmlFor="price">Price</label>
                 <InputNumber
                   id="price"
-                  value={product.price}
+                  value={facility.price}
                   onValueChange={(e) => onInputNumberChange(e, 'price')}
                   mode="currency"
                   currency="USD"
@@ -577,7 +603,7 @@ const Facility = () => {
                 <label htmlFor="quantity">Quantity</label>
                 <InputNumber
                   id="quantity"
-                  value={product.quantity}
+                  value={facility.quantity}
                   onValueChange={(e) => onInputNumberChange(e, 'quantity')}
                   integeronly
                 />
@@ -586,42 +612,42 @@ const Facility = () => {
           </Dialog>
 
           <Dialog
-            visible={deleteProductDialog}
+            visible={deleteFacilityDialog}
             style={{ width: '450px' }}
             header="Confirm"
             modal
-            footer={deleteProductDialogFooter}
-            onHide={hideDeleteProductDialog}
+            footer={deleteFacilityDialogFooter}
+            onHide={hideDeleteFacilityDialog}
           >
             <div className="flex align-items-center justify-content-center">
               <i
                 className="pi pi-exclamation-triangle mr-3"
                 style={{ fontSize: '2rem' }}
               />
-              {product && (
+              {facility && (
                 <span>
-                  Are you sure you want to delete <b>{product.name}</b>?
+                  Are you sure you want to delete <b>{facility.name}</b>?
                 </span>
               )}
             </div>
           </Dialog>
 
           <Dialog
-            visible={deleteProductsDialog}
+            visible={deleteFacilitiesDialog}
             style={{ width: '450px' }}
             header="Confirm"
             modal
-            footer={deleteProductsDialogFooter}
-            onHide={hideDeleteProductsDialog}
+            footer={deleteFacilitiesDialogFooter}
+            onHide={hideDeleteFacilitiesDialog}
           >
             <div className="flex align-items-center justify-content-center">
               <i
                 className="pi pi-exclamation-triangle mr-3"
                 style={{ fontSize: '2rem' }}
               />
-              {product && (
+              {facility && (
                 <span>
-                  Are you sure you want to delete the selected products?
+                  Are you sure you want to delete the selected facilities?
                 </span>
               )}
             </div>
