@@ -40,6 +40,7 @@ const DefineFacility = ({
   submitted: boolean;
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
   hideDialog: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   toast: React.MutableRefObject<any>;
   loadLazyData: () => void;
 }) => {
