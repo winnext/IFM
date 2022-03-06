@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
+// import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
@@ -7,12 +7,10 @@ import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 // import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import FacilityService from '../services/facility';
+import DefineFacility from '../components/Facility/DefineFacility';
 
 const Facility = () => {
   let emptyFacility = {
@@ -20,10 +18,11 @@ const Facility = () => {
     facility_name: '',
     brand_name: '',
     type_of_facility: '',
-    classification_of_facility: [{}],
-    label: [''],
     country: '',
     address: '',
+    classification_of_facility: [{}],
+    label: [''],
+    __v: 0,
   };
 
   const [facilities, setFacilities] = useState(null);
@@ -42,7 +41,7 @@ const Facility = () => {
   const [facility, setFacility] = useState(emptyFacility);
   const [selectedFacilities, setSelectedFacilities] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [globalFilter, setGlobalFilter] = useState('');
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -53,22 +52,19 @@ const Facility = () => {
   }, [lazyParams]);
 
   const onPage = (event) => {
-    console.log(event);
-    setLazyParams(event);
+    if (globalFilter === '') setLazyParams(event);
   };
 
   const loadLazyData = () => {
     setLoading(true);
-    setTimeout(() => {
-      FacilityService.findAll({
-        page: lazyParams.page,
-        limit: lazyParams.rows,
-      }).then((response) => {
-        setFacilities(response.data[0]);
-        setCountFacilities(response.data[1].count);
-        setLoading(false);
-      });
-    }, 300);
+    FacilityService.findAll({
+      page: lazyParams.page,
+      limit: lazyParams.rows,
+    }).then((response) => {
+      setFacilities(response.data[0]);
+      setCountFacilities(response.data[1].count);
+      setLoading(false);
+    });
   };
 
   const openNew = () => {
@@ -92,36 +88,35 @@ const Facility = () => {
 
   const saveFacility = () => {
     setSubmitted(true);
+    // if (facility.name.trim()) {
+    //   let _facilities = [...facilities];
+    //   let _facility = { ...facility };
+    //   if (facility.id) {
+    //     const index = findIndexById(facility.id);
 
-    if (facility.name.trim()) {
-      let _facilities = [...facilities];
-      let _facility = { ...facility };
-      if (facility.id) {
-        const index = findIndexById(facility.id);
+    //     _facilities[index] = _facility;
+    //     toast.current.show({
+    //       severity: 'success',
+    //       summary: 'Successful',
+    //       detail: 'Facility Updated',
+    //       life: 3000,
+    //     });
+    //   } else {
+    //     _facility.id = createId();
+    //     _facility.image = 'facility-placeholder.svg';
+    //     _facilities.push(_facility);
+    //     toast.current.show({
+    //       severity: 'success',
+    //       summary: 'Successful',
+    //       detail: 'Facility Created',
+    //       life: 3000,
+    //     });
+    //   }
 
-        _facilities[index] = _facility;
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Facility Updated',
-          life: 3000,
-        });
-      } else {
-        _facility.id = createId();
-        _facility.image = 'facility-placeholder.svg';
-        _facilities.push(_facility);
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Facility Created',
-          life: 3000,
-        });
-      }
-
-      setFacilities(_facilities);
-      setFacilityDialog(false);
-      setFacility(emptyFacility);
-    }
+    //   setFacilities(_facilities);
+    //   setFacilityDialog(false);
+    //   setFacility(emptyFacility);
+    // }
   };
 
   const editFacility = (facility) => {
@@ -147,28 +142,6 @@ const Facility = () => {
     });
   };
 
-  const findIndexById = (id) => {
-    let index = -1;
-    for (let i = 0; i < facilities.length; i++) {
-      if (facilities[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
-  };
-
-  const createId = () => {
-    let id = '';
-    let chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
-  };
-
   const exportCSV = () => {
     dt.current.exportCSV();
   };
@@ -190,28 +163,6 @@ const Facility = () => {
       detail: 'Facilities Deleted',
       life: 3000,
     });
-  };
-
-  const onCategoryChange = (e) => {
-    let _facility = { ...facility };
-    _facility['category'] = e.value;
-    setFacility(_facility);
-  };
-
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || '';
-    let _facility = { ...facility };
-    _facility[`${name}`] = val;
-
-    setFacility(_facility);
-  };
-
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _facility = { ...facility };
-    _facility[`${name}`] = val;
-
-    setFacility(_facility);
   };
 
   const leftToolbarTemplate = () => {
@@ -505,110 +456,13 @@ const Facility = () => {
             footer={facilityDialogFooter}
             onHide={hideDialog}
           >
-            {facility.image && (
-              <img
-                src={`assets/demo/images/facility/${facility.image}`}
-                alt={facility.image}
-                width="150"
-                className="mt-0 mx-auto mb-5 block shadow-2"
-              />
-            )}
-            <div className="field">
-              <label htmlFor="name">Name</label>
-              <InputText
-                id="name"
-                value={facility.name}
-                onChange={(e) => onInputChange(e, 'name')}
-                required
-                autoFocus
-                className={classNames({
-                  'p-invalid': submitted && !facility.name,
-                })}
-              />
-              {submitted && !facility.name && (
-                <small className="p-invalid">Name is required.</small>
-              )}
-            </div>
-            <div className="field">
-              <label htmlFor="description">Description</label>
-              <InputTextarea
-                id="description"
-                value={facility.description}
-                onChange={(e) => onInputChange(e, 'description')}
-                required
-                rows={3}
-                cols={20}
-              />
-            </div>
-
-            <div className="field">
-              <label className="mb-3">Category</label>
-              <div className="formgrid grid">
-                <div className="field-radiobutton col-6">
-                  <RadioButton
-                    inputId="category1"
-                    name="category"
-                    value="Accessories"
-                    onChange={onCategoryChange}
-                    checked={facility.category === 'Accessories'}
-                  />
-                  <label htmlFor="category1">Accessories</label>
-                </div>
-                <div className="field-radiobutton col-6">
-                  <RadioButton
-                    inputId="category2"
-                    name="category"
-                    value="Clothing"
-                    onChange={onCategoryChange}
-                    checked={facility.category === 'Clothing'}
-                  />
-                  <label htmlFor="category2">Clothing</label>
-                </div>
-                <div className="field-radiobutton col-6">
-                  <RadioButton
-                    inputId="category3"
-                    name="category"
-                    value="Electronics"
-                    onChange={onCategoryChange}
-                    checked={facility.category === 'Electronics'}
-                  />
-                  <label htmlFor="category3">Electronics</label>
-                </div>
-                <div className="field-radiobutton col-6">
-                  <RadioButton
-                    inputId="category4"
-                    name="category"
-                    value="Fitness"
-                    onChange={onCategoryChange}
-                    checked={facility.category === 'Fitness'}
-                  />
-                  <label htmlFor="category4">Fitness</label>
-                </div>
-              </div>
-            </div>
-
-            <div className="formgrid grid">
-              <div className="field col">
-                <label htmlFor="price">Price</label>
-                <InputNumber
-                  id="price"
-                  value={facility.price}
-                  onValueChange={(e) => onInputNumberChange(e, 'price')}
-                  mode="currency"
-                  currency="USD"
-                  locale="en-US"
-                />
-              </div>
-              <div className="field col">
-                <label htmlFor="quantity">Quantity</label>
-                <InputNumber
-                  id="quantity"
-                  value={facility.quantity}
-                  onValueChange={(e) => onInputNumberChange(e, 'quantity')}
-                  integeronly
-                />
-              </div>
-            </div>
+            <DefineFacility
+              submitted={submitted}
+              setSubmitted={setSubmitted}
+              hideDialog={hideDialog}
+              toast={toast}
+              loadLazyData={loadLazyData}
+            />
           </Dialog>
 
           <Dialog

@@ -7,12 +7,27 @@ interface PaginationParams {
   limit?: number;
 }
 
+interface Facility {
+  facility_name: string;
+  brand_name: string;
+  type_of_facility: string;
+  classification_of_facility: object;
+  country: string;
+  city: string;
+  address: string;
+  label: string[];
+}
+
 const findAll = async (query: PaginationParams) => {
   return axios.get(url + `?page=${query.page}&limit=${query.limit}`);
 };
 
 const findOne = async (id: string) => {
-  return axios.post(url, { id });
+  return axios.get(url + '/' + id);
+};
+
+const create = async (facility: Facility) => {
+  return axios.post(url, facility);
 };
 
 const test = async () => {
@@ -37,6 +52,6 @@ const test = async () => {
   }
 };
 
-const service = { findAll, findOne, test };
+const service = { findAll, findOne, create, test };
 
 export default service;
