@@ -88,35 +88,6 @@ const Facility = () => {
 
   const saveFacility = () => {
     setSubmitted(true);
-    // if (facility.name.trim()) {
-    //   let _facilities = [...facilities];
-    //   let _facility = { ...facility };
-    //   if (facility.id) {
-    //     const index = findIndexById(facility.id);
-
-    //     _facilities[index] = _facility;
-    //     toast.current.show({
-    //       severity: 'success',
-    //       summary: 'Successful',
-    //       detail: 'Facility Updated',
-    //       life: 3000,
-    //     });
-    //   } else {
-    //     _facility.id = createId();
-    //     _facility.image = 'facility-placeholder.svg';
-    //     _facilities.push(_facility);
-    //     toast.current.show({
-    //       severity: 'success',
-    //       summary: 'Successful',
-    //       detail: 'Facility Created',
-    //       life: 3000,
-    //     });
-    //   }
-
-    //   setFacilities(_facilities);
-    //   setFacilityDialog(false);
-    //   setFacility(emptyFacility);
-    // }
   };
 
   const editFacility = (facility) => {
@@ -130,15 +101,19 @@ const Facility = () => {
   };
 
   const deleteFacility = () => {
-    let _facilities = facilities.filter((val) => val.id !== facility.id);
-    setFacilities(_facilities);
-    setDeleteFacilityDialog(false);
-    setFacility(emptyFacility);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Facility Deleted',
-      life: 3000,
+    FacilityService.remove(facility._id).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        toast.current.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Facility Deleted',
+          life: 3000,
+        });
+        setDeleteFacilityDialog(false);
+        setFacility(emptyFacility);
+        loadLazyData();
+      }
     });
   };
 
@@ -150,13 +125,13 @@ const Facility = () => {
     setDeleteFacilitiesDialog(true);
   };
 
-  const deleteSelectedFacilities = () => {
-    let _facilities = facilities.filter(
-      (val) => !selectedFacilities.includes(val)
-    );
-    setFacilities(_facilities);
+  const deleteSelectedFacilities = async () => {
+    await selectedFacilities.forEach(async (item) => {
+      await FacilityService.remove(item._id);
+    });
     setDeleteFacilitiesDialog(false);
     setSelectedFacilities(null);
+    loadLazyData();
     toast.current.show({
       severity: 'success',
       summary: 'Successful',

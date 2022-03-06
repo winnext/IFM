@@ -30,6 +30,10 @@ const create = async (facility: Facility) => {
   return axios.post(url, facility);
 };
 
+const remove = async (id: string) => {
+  return axios.delete(url + '/' + id);
+};
+
 const test = async () => {
   for (let i = 1; i < 31; i++) {
     await axios
@@ -52,6 +56,6 @@ const test = async () => {
   }
 };
 
-const service = { findAll, findOne, create, test };
+const service = { findAll, findOne, create, remove, test };
 
 export default service;
