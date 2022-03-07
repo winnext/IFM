@@ -19,9 +19,10 @@ const Facility = () => {
     brand_name: '',
     type_of_facility: '',
     country: '',
+    city: '',
     address: '',
     classification_of_facility: [{}],
-    label: [''],
+    label: [],
     __v: 0,
   };
 
@@ -37,9 +38,7 @@ const Facility = () => {
   const [countFacilities, setCountFacilities] = useState(0);
   const [facilityDialog, setFacilityDialog] = useState(false);
   const [deleteFacilityDialog, setDeleteFacilityDialog] = useState(false);
-  const [deleteFacilitiesDialog, setDeleteFacilitiesDialog] = useState(false);
   const [facility, setFacility] = useState(emptyFacility);
-  const [selectedFacilities, setSelectedFacilities] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
   const toast = useRef(null);
@@ -82,10 +81,6 @@ const Facility = () => {
     setDeleteFacilityDialog(false);
   };
 
-  const hideDeleteFacilitiesDialog = () => {
-    setDeleteFacilitiesDialog(false);
-  };
-
   const saveFacility = () => {
     setSubmitted(true);
   };
@@ -121,25 +116,6 @@ const Facility = () => {
     dt.current.exportCSV();
   };
 
-  const confirmDeleteSelected = () => {
-    setDeleteFacilitiesDialog(true);
-  };
-
-  const deleteSelectedFacilities = async () => {
-    await selectedFacilities.forEach(async (item) => {
-      await FacilityService.remove(item._id);
-    });
-    setDeleteFacilitiesDialog(false);
-    setSelectedFacilities(null);
-    loadLazyData();
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Facilities Deleted',
-      life: 3000,
-    });
-  };
-
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
@@ -149,13 +125,6 @@ const Facility = () => {
             icon="pi pi-plus"
             className="p-button-success mr-2"
             onClick={openNew}
-          />
-          <Button
-            label="Delete"
-            icon="pi pi-trash"
-            className="p-button-danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedFacilities || !selectedFacilities.length}
           />
         </div>
       </React.Fragment>
@@ -318,22 +287,6 @@ const Facility = () => {
       />
     </>
   );
-  const deleteFacilitiesDialogFooter = (
-    <>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        className="p-button-text"
-        onClick={hideDeleteFacilitiesDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        className="p-button-text"
-        onClick={deleteSelectedFacilities}
-      />
-    </>
-  );
 
   return (
     <div className="grid crud-demo">
@@ -349,8 +302,6 @@ const Facility = () => {
           <DataTable
             ref={dt}
             value={facilities}
-            selection={selectedFacilities}
-            onSelectionChange={(e) => setSelectedFacilities(e.value)}
             dataKey="_id"
             onPage={onPage}
             first={lazyParams.first}
@@ -368,10 +319,6 @@ const Facility = () => {
             header={header}
             responsiveLayout="scroll"
           >
-            <Column
-              selectionMode="multiple"
-              headerStyle={{ width: '3rem' }}
-            ></Column>
             <Column
               field="facility_name"
               header="Facility Name"
@@ -437,6 +384,7 @@ const Facility = () => {
               hideDialog={hideDialog}
               toast={toast}
               loadLazyData={loadLazyData}
+              facility={facility}
             />
           </Dialog>
 
@@ -456,27 +404,6 @@ const Facility = () => {
               {facility && (
                 <span>
                   Are you sure you want to delete <b>{facility.name}</b>?
-                </span>
-              )}
-            </div>
-          </Dialog>
-
-          <Dialog
-            visible={deleteFacilitiesDialog}
-            style={{ width: '450px' }}
-            header="Confirm"
-            modal
-            footer={deleteFacilitiesDialogFooter}
-            onHide={hideDeleteFacilitiesDialog}
-          >
-            <div className="flex align-items-center justify-content-center">
-              <i
-                className="pi pi-exclamation-triangle mr-3"
-                style={{ fontSize: '2rem' }}
-              />
-              {facility && (
-                <span>
-                  Are you sure you want to delete the selected facilities?
                 </span>
               )}
             </div>

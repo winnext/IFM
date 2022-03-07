@@ -8,14 +8,17 @@ interface PaginationParams {
 }
 
 interface Facility {
+  _id?: string;
   facility_name: string;
   brand_name: string;
   type_of_facility: string;
-  classification_of_facility: object;
+  classification_of_facility: object | string;
   country: string;
   city: string;
   address: string;
   label: string[];
+  uuid?: string;
+  __v?: number;
 }
 
 const findAll = async (query: PaginationParams) => {
@@ -28,6 +31,11 @@ const findOne = async (id: string) => {
 
 const create = async (facility: Facility) => {
   return axios.post(url, facility);
+};
+
+const update = async (id: string, facility: Facility) => {
+  console.log(facility);
+  return axios.patch(url + '/' + id, facility);
 };
 
 const remove = async (id: string) => {
@@ -56,6 +64,6 @@ const test = async () => {
   }
 };
 
-const service = { findAll, findOne, create, remove, test };
+const service = { findAll, findOne, create, update, remove, test };
 
 export default service;
