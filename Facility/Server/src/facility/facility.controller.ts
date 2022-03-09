@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
@@ -81,5 +82,23 @@ export class FacilityController {
   @Delete("/:_id")
   deleteFacility(@Param("_id") id: string) {
     return this.facilityService.remove(id);
+  }
+
+  @ApiOperation({
+    summary: "Load facility excel file ",
+    description:
+      "***",
+  })
+  //@Roles({roles: ['facility_client_role_user']})
+  @Unprotected()
+  @Post("createfacilities")
+  async createFacilitiesByExcel(@Res() res) {
+    const xlsxFile = require("read-excel-file/node");
+    const facilityRows = await xlsxFile("./uploads/data.xlsx").then((rows) => {
+      return rows;
+    });
+    const  createdFacilitiesCount = await this.facilityService.createAll(facilityRows);
+    console.log("*********************************"+facilityRows);
+    return res.send("createdFacilitiesCount = "+createdFacilitiesCount);
   }
 }

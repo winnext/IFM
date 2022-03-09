@@ -27,6 +27,13 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(1, 50),
     __metadata("design:type", String)
+], CreateFacilityDto.prototype, "locations", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Length)(1, 50),
+    __metadata("design:type", String)
 ], CreateFacilityDto.prototype, "brand_name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),

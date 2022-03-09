@@ -41,6 +41,15 @@ let FacilityController = class FacilityController {
     deleteFacility(id) {
         return this.facilityService.remove(id);
     }
+    async createFacilitiesByExcel(res) {
+        const xlsxFile = require("read-excel-file/node");
+        const facilityRows = await xlsxFile("./uploads/data.xlsx").then((rows) => {
+            return rows;
+        });
+        const createdFacilitiesCount = await this.facilityService.createAll(facilityRows);
+        console.log("*********************************" + facilityRows);
+        return res.send("createdFacilitiesCount = " + createdFacilitiesCount);
+    }
 };
 __decorate([
     (0, swagger_1.ApiOperation)({
@@ -99,6 +108,18 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], FacilityController.prototype, "deleteFacility", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: "Load facility excel file ",
+        description: "***",
+    }),
+    (0, nest_keycloak_connect_1.Unprotected)(),
+    (0, common_1.Post)("createfacilities"),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], FacilityController.prototype, "createFacilitiesByExcel", null);
 FacilityController = __decorate([
     (0, swagger_1.ApiTags)("Facility"),
     (0, common_1.Controller)("facility"),

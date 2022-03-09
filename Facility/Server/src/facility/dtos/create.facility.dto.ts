@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsObject,
+  IsOptional,
   IsString,
   Length,
 } from 'class-validator';
@@ -12,6 +13,12 @@ export class CreateFacilityDto {
   @IsString()
   @Length(1, 50)
   facility_name: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  locations: string;
 
   @ApiProperty()
   @IsNotEmpty()

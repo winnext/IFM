@@ -11,4 +11,5 @@ export declare class FacilityService {
     create(createFacilityDto: CreateFacilityDto): Promise<Facility>;
     update(id: string, updateFacilityDto: UpdateFacilityDto): Promise<any>;
     remove(id: string): Promise<Facility>;
+    createAll(rows: Facility[]): number;
 }

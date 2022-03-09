@@ -13,4 +13,5 @@ export declare class FacilityController {
     createFacility(createFacilityDto: CreateFacilityDto): Promise<Facility>;
     updateFacility(id: string, updateFacilityDto: UpdateFacilityDto): Promise<any>;
     deleteFacility(id: string): Promise<Facility>;
+    createFacilitiesByExcel(res: any): Promise<any>;
 }
