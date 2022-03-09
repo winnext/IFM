@@ -1,4 +1,9 @@
-import { Injectable, UseInterceptors } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UseInterceptors,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
@@ -6,7 +11,6 @@ import { FacilityNotFountException } from "../../common/notFoundExceptions/facil
 import { CreateFacilityDto } from "../dtos/create.facility.dto";
 import { UpdateFacilityDto } from "../dtos/update.facility.dto";
 import { Facility } from "../entities/facility.entity";
-
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
@@ -24,7 +28,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return facility;
   }
-    async findAll(page=0,limit=5) {
+  async findAll(page = 0, limit = 5) {
     var count = parseInt((await this.facilityModel.find().count()).toString());
     var pagecount = Math.ceil(count / lmt);
     var pg = parseInt(page.toString());
@@ -39,12 +43,12 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
         skip = 0;
       }
     }
-     var result =  await this.facilityModel.find().skip(skip).limit(lmt).exec();
-     const pagination={ "count": count, "page": pg, "limit": lmt }
-     const facility=[]
-     facility.push(result)
-     facility.push(pagination)
-    
+    var result = await this.facilityModel.find().skip(skip).limit(lmt).exec();
+    const pagination = { count: count, page: pg, limit: lmt };
+    const facility = [];
+    facility.push(result);
+    facility.push(pagination);
+
     return facility;
   }
 

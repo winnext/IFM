@@ -4,5 +4,5 @@ export declare class PostKafka {
     private service;
     constructor(service: IQueueService);
     producer: Producer;
-    producerTest(topicName: string, message: string): Promise<void>;
+    producerSendMessage(topicName: string, message: string): Promise<void>;
 }

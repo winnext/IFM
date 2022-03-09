@@ -9,18 +9,21 @@ import {
   Query,
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { LoggerInter } from "src/common/interceptors/logger.interceptor";
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
 import { UpdateFacilityDto } from "./dtos/update.facility.dto";
 import { Facility } from "./entities/facility.entity";
 import { FacilityService } from "./facility.service";
 import { Roles, Unprotected } from "nest-keycloak-connect";
 import { PaginationParams } from "src/common/commonDto/pagination.dto";
+import { I18n, I18nContext, I18nService } from "nestjs-i18n";
 
-@ApiTags("facility")
+@ApiTags("Facility")
 @Controller("facility")
 export class FacilityController {
-  constructor(private readonly facilityService: FacilityService) {}
+  constructor(
+    private readonly facilityService: FacilityService,
+    private readonly i18n: I18nService
+  ) {}
 
   @ApiOperation({
     summary: "Gets all facilities ",
@@ -31,7 +34,10 @@ export class FacilityController {
   @Get("/")
   //@Roles({roles: ['facility_client_role_admin']})
   @Unprotected()
-  getAllFacilities(@Query() query: PaginationParams): Promise<Facility[]> {
+  async getAllFacilities(
+    @Query() query: PaginationParams,
+    @I18n() i18n: I18nContext
+  ): Promise<Facility[]> {
     return this.facilityService.findAll(query);
   }
 

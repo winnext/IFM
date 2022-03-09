@@ -16,14 +16,13 @@ let PostKafka = class PostKafka {
         this.service = service;
         this.producer = this.service.producer();
     }
-    async producerTest(topicName, message) {
+    async producerSendMessage(topicName, message) {
         await this.producer.connect();
         await this.producer.send({
             topic: topicName,
             messages: [
                 {
                     value: message,
-                    key: "123",
                 },
             ],
         });

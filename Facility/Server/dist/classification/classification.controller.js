@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClassificationController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
 const classification_service_1 = require("./classification.service");
 const create_classification_dto_1 = require("./dto/create-classification.dto");
@@ -80,6 +81,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "remove", null);
 ClassificationController = __decorate([
+    (0, swagger_1.ApiTags)("Classification"),
     (0, common_1.Controller)("classification"),
     __metadata("design:paramtypes", [classification_service_1.ClassificationService])
 ], ClassificationController);

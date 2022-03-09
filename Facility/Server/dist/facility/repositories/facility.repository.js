@@ -48,7 +48,7 @@ let FacilityRepository = class FacilityRepository {
             }
         }
         var result = await this.facilityModel.find().skip(skip).limit(lmt).exec();
-        const pagination = { "count": count, "page": pg, "limit": lmt };
+        const pagination = { count: count, page: pg, limit: lmt };
         const facility = [];
         facility.push(result);
         facility.push(pagination);

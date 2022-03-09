@@ -1,6 +1,6 @@
-/// <reference types="mongoose/types/pipelinestage" />
-/// <reference types="mongoose/types/error" />
-/// <reference types="mongoose/types/connection" />
+/// <reference types="mongoose/types/PipelineStage" />
+/// <reference types="mongoose/types/Error" />
+/// <reference types="mongoose/types/Connection" />
 import { Document } from "mongoose";
 import { BasePersistantDocumentObject } from "src/common/baseObject/base.object";
 export declare type FacilityDocument = Facility & Document;

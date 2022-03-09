@@ -8,11 +8,13 @@ import {
   Delete,
   Query,
 } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { Unprotected } from "nest-keycloak-connect";
 import { ClassificationService } from "./classification.service";
 import { CreateClassificationDto } from "./dto/create-classification.dto";
 import { UpdateClassificationDto } from "./dto/update-classification.dto";
 
+@ApiTags("Classification")
 @Controller("classification")
 export class ClassificationController {
   constructor(private readonly classificationService: ClassificationService) {}

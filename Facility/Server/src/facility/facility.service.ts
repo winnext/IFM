@@ -21,7 +21,6 @@ export class FacilityService {
   }
 
   async findOne(id: string): Promise<Facility> {
-    
     return this.facilityRepository.findOneById(id);
   }
 

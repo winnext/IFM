@@ -9,12 +9,15 @@ import { FacilityRepository } from "./repositories/facility.repository";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: Facility.name,
-        schema: FaciliySchema,
-      },
-    ],ConnectionEnums.FACILITY),
+    MongooseModule.forFeature(
+      [
+        {
+          name: Facility.name,
+          schema: FaciliySchema,
+        },
+      ],
+      ConnectionEnums.FACILITY
+    ),
   ],
   controllers: [FacilityController],
   providers: [
