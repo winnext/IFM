@@ -1,26 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 // import { classNames } from 'primereact/utils';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Toast } from 'primereact/toast';
-import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Toast } from "primereact/toast";
+import { Button } from "primereact/button";
+import { FileUpload } from "primereact/fileupload";
 // import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import FacilityService from '../services/facility';
-import DefineFacility from '../components/Facility/DefineFacility';
+import { Toolbar } from "primereact/toolbar";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
+import FacilityService from "../services/facility";
+import DefineFacility from "../components/Facility/DefineFacility";
 
 const Facility = () => {
   let emptyFacility = {
-    _id: '',
-    facility_name: '',
-    brand_name: '',
-    type_of_facility: '',
-    country: '',
-    city: '',
-    address: '',
+    _id: "",
+    facility_name: "",
+    brand_name: "",
+    type_of_facility: "",
+    country: "",
+    city: "",
+    address: "",
     classification_of_facility: [{}],
     label: [],
     __v: 0,
@@ -40,7 +40,7 @@ const Facility = () => {
   const [deleteFacilityDialog, setDeleteFacilityDialog] = useState(false);
   const [facility, setFacility] = useState(emptyFacility);
   const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState("");
   const toast = useRef(null);
   const dt = useRef(null);
 
@@ -51,7 +51,7 @@ const Facility = () => {
   }, [lazyParams]);
 
   const onPage = (event) => {
-    if (globalFilter === '') setLazyParams(event);
+    if (globalFilter === "") setLazyParams(event);
   };
 
   const loadLazyData = () => {
@@ -96,20 +96,32 @@ const Facility = () => {
   };
 
   const deleteFacility = () => {
-    FacilityService.remove(facility._id).then((response) => {
-      console.log(response);
-      if (response.status === 200) {
+    FacilityService.remove(facility._id)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Facility Deleted",
+            life: 3000,
+          });
+          setDeleteFacilityDialog(false);
+          setFacility(emptyFacility);
+          loadLazyData();
+        }
+      })
+      .catch((err) => {
         toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Facility Deleted',
-          life: 3000,
+          severity: "error",
+          summary: "Error",
+          detail: err.message,
+          life: 2000,
         });
         setDeleteFacilityDialog(false);
         setFacility(emptyFacility);
         loadLazyData();
-      }
-    });
+      });
   };
 
   const exportCSV = () => {
@@ -324,35 +336,35 @@ const Facility = () => {
               header="Facility Name"
               sortable
               body={facilityNameBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
+              headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
             <Column
               field="brand_name"
               header="Brand Name"
               sortable
               body={brandNameBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
+              headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
             <Column
               field="type_of_facility"
               header="Type of Facility"
               sortable
               body={typeOfFacilityNameBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
+              headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
             <Column
               field="country"
               header="Country"
               sortable
               body={countryBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
+              headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
             <Column
               field="address"
               header="Address"
               sortable
               body={addressBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
+              headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
             {/* <Column
               header="Image"
@@ -371,7 +383,7 @@ const Facility = () => {
 
           <Dialog
             visible={facilityDialog}
-            style={{ width: '450px' }}
+            style={{ width: "450px" }}
             header="Facility Details"
             modal
             className="p-fluid"
@@ -390,7 +402,7 @@ const Facility = () => {
 
           <Dialog
             visible={deleteFacilityDialog}
-            style={{ width: '450px' }}
+            style={{ width: "450px" }}
             header="Confirm"
             modal
             footer={deleteFacilityDialogFooter}
@@ -399,7 +411,7 @@ const Facility = () => {
             <div className="flex align-items-center justify-content-center">
               <i
                 className="pi pi-exclamation-triangle mr-3"
-                style={{ fontSize: '2rem' }}
+                style={{ fontSize: "2rem" }}
               />
               {facility && (
                 <span>
