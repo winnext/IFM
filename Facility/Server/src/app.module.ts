@@ -10,6 +10,7 @@ import { I18nModule, I18nJsonParser } from "nestjs-i18n";
 import * as path from "path";
 import { APP_FILTER } from "@nestjs/core";
 import { HttpExceptionFilter } from "./common/exceptionFilters/exception.filter";
+import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from "joi";
 
 @Module({
@@ -58,6 +59,8 @@ import * as Joi from "joi";
     }),
 
     ClassificationModule,
+
+    MessagebrokerModule,
   ],
   providers: [
     {

@@ -19,6 +19,7 @@ const nestjs_i18n_1 = require("nestjs-i18n");
 const path = require("path");
 const core_1 = require("@nestjs/core");
 const exception_filter_1 = require("./common/exceptionFilters/exception.filter");
+const messagebroker_module_1 = require("./messagebroker/messagebroker.module");
 const Joi = require("joi");
 let AppModule = class AppModule {
     configure(consumer) {
@@ -68,6 +69,7 @@ AppModule = __decorate([
                 }),
             }),
             classification_module_1.ClassificationModule,
+            messagebroker_module_1.MessagebrokerModule,
         ],
         providers: [
             {

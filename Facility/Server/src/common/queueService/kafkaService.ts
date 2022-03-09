@@ -1,15 +1,20 @@
+import { ConfigService } from "@nestjs/config";
 import { Kafka, Producer } from "kafkajs";
 import { IQueueService } from "./queueInterface";
 
 export class KafkaService implements IQueueService {
+  configService: ConfigService;
   kafka = new Kafka({
-    clientId: "kafka_ornek_1",
-    brokers: ["172.19.100.120:9092"],
+    clientId: process.env.KAFKA_CLIENT_ID,
+    brokers: [process.env.KAFKA_BROKER],
   });
 
   producer(): Producer {
-    const producer = this.kafka.producer({ allowAutoTopicCreation: true });
-
-    return producer;
+    try {
+      const producer = this.kafka.producer({ allowAutoTopicCreation: false });
+      return producer;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

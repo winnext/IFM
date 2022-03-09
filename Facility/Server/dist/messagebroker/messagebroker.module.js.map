@@ -1,0 +1,1 @@
+{"version":3,"file":"messagebroker.module.js","sourceRoot":"","sources":["../../src/messagebroker/messagebroker.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,yEAAqE;AAKrE,IAAa,mBAAmB,GAAhC,MAAa,mBAAmB;CAAG,CAAA;AAAtB,mBAAmB;IAH/B,IAAA,eAAM,EAAC;QACN,WAAW,EAAE,CAAC,kDAAuB,CAAC;KACvC,CAAC;GACW,mBAAmB,CAAG;AAAtB,kDAAmB"}

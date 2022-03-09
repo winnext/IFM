@@ -52,7 +52,8 @@ __decorate([
     __param(0, (0, common_1.Query)()),
     __param(1, (0, nestjs_i18n_1.I18n)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pagination_dto_1.PaginationParams, nestjs_i18n_1.I18nContext]),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationParams,
+        nestjs_i18n_1.I18nContext]),
     __metadata("design:returntype", Promise)
 ], FacilityController.prototype, "getAllFacilities", null);
 __decorate([
@@ -101,7 +102,8 @@ __decorate([
 FacilityController = __decorate([
     (0, swagger_1.ApiTags)("Facility"),
     (0, common_1.Controller)("facility"),
-    __metadata("design:paramtypes", [facility_service_1.FacilityService, nestjs_i18n_1.I18nService])
+    __metadata("design:paramtypes", [facility_service_1.FacilityService,
+        nestjs_i18n_1.I18nService])
 ], FacilityController);
 exports.FacilityController = FacilityController;
 //# sourceMappingURL=facility.controller.js.map

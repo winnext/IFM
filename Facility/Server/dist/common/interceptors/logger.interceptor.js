@@ -16,9 +16,7 @@ class LoggingInterceptor {
         if (query._id) {
             (0, objectId_check_1.checkObjectIddİsValid)(query._id);
         }
-        return next
-            .handle()
-            .pipe((0, operators_1.tap)());
+        return next.handle().pipe((0, operators_1.tap)());
     }
 }
 exports.LoggingInterceptor = LoggingInterceptor;

@@ -673,6 +673,15 @@
   "resolved" "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-1.0.1.tgz"
   "version" "1.0.1"
 
+"@nestjs/microservices@^8.0.0", "@nestjs/microservices@^8.4.0":
+  "integrity" "sha512-vQFrMvT0AO7IWt6ZU7Te0dKbcWTjznhkQEvLNMegYUniPDl2bBdA3aYSwbQET63Db14+tq8iZasa4cDlnKPXWQ=="
+  "resolved" "https://registry.npmjs.org/@nestjs/microservices/-/microservices-8.4.0.tgz"
+  "version" "8.4.0"
+  dependencies:
+    "iterare" "1.2.1"
+    "json-socket" "0.3.0"
+    "tslib" "2.3.1"
+
 "@nestjs/mongoose@^9.0.2":
   "integrity" "sha512-v4Umk3hssJ1RJJIe2LBVHvrsGfY+srq2nfOVCw36PGe7+eObzSBIryMJi+h2mTZpYIohNRGM2O66clEmhctYQQ=="
   "resolved" "https://registry.npmjs.org/@nestjs/mongoose/-/mongoose-9.0.2.tgz"
@@ -3795,6 +3804,11 @@
   "resolved" "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz"
   "version" "1.0.0"
 
+"json-socket@0.3.0":
+  "integrity" "sha512-jc8ZbUnYIWdxERFWQKVgwSLkGSe+kyzvmYxwNaRgx/c8NNyuHes4UHnPM3LUrAFXUx1BhNJ94n1h/KCRlbvV0g=="
+  "resolved" "https://registry.npmjs.org/json-socket/-/json-socket-0.3.0.tgz"
+  "version" "0.3.0"
+
 "json-stable-stringify-without-jsonify@^1.0.1":
   "integrity" "sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE="
   "resolved" "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
@@ -3837,7 +3851,7 @@
     "elliptic" "^6.5.4"
     "safe-buffer" "^5.0.1"
 
-"kafkajs@^1.16.0":
+"kafkajs@*", "kafkajs@^1.16.0":
   "integrity" "sha512-+Rcfu2hyQ/jv5skqRY8xA7Ra+mmRkDAzCaLDYbkGtgsNKpzxPWiLbk8ub0dgr4EbWrN1Zb4BCXHUkD6+zYfdWg=="
   "resolved" "https://registry.npmjs.org/kafkajs/-/kafkajs-1.16.0.tgz"
   "version" "1.16.0"
