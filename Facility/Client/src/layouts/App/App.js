@@ -1,28 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
-import { Outlet, useLocation } from 'react-router-dom';
-import menu from '../../menu';
+import React, { useState, useEffect, useRef } from "react";
+import { classNames } from "primereact/utils";
+import { Outlet, useLocation } from "react-router-dom";
+import menu from "../../menu";
+import { useAppSelector } from "../../app/hook";
 
-import AppTopbar from './AppTopbar';
-import AppFooter from './AppFooter';
-import AppConfig from './AppConfig';
-import AppSearch from './AppSearch';
-import AppRightMenu from './AppRightMenu';
-import AppBreadcrumb from './AppBreadcrumb';
+import AppTopbar from "./AppTopbar";
+import AppFooter from "./AppFooter";
+import AppConfig from "./AppConfig";
+import AppSearch from "./AppSearch";
+import AppRightMenu from "./AppRightMenu";
+import AppBreadcrumb from "./AppBreadcrumb";
 
-import PrimeReact from 'primereact/api';
-import { Tooltip } from 'primereact/tooltip';
+import PrimeReact from "primereact/api";
+import { Tooltip } from "primereact/tooltip";
 
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import 'primeflex/primeflex.css';
-import './App.scss';
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+import "primeflex/primeflex.css";
+import "./App.scss";
 
 const App = () => {
   const [menuActive, setMenuActive] = useState(false);
-  const [menuMode, setMenuMode] = useState('static');
-  const [colorScheme, setColorScheme] = useState('light');
-  const [menuTheme, setMenuTheme] = useState('layout-sidebar-darkgray');
+  const [menuMode, setMenuMode] = useState("static");
+  const [colorScheme, setColorScheme] = useState("light");
+  const [menuTheme, setMenuTheme] = useState("layout-sidebar-darkgray");
   const [overlayMenuActive, setOverlayMenuActive] = useState(false);
   const [staticMenuDesktopInactive, setStaticMenuDesktopInactive] =
     useState(false);
@@ -33,13 +34,15 @@ const App = () => {
     useState(false);
   const [rightMenuActive, setRightMenuActive] = useState(false);
   const [configActive, setConfigActive] = useState(false);
-  const [inputStyle, setInputStyle] = useState('outlined');
+  const [inputStyle, setInputStyle] = useState("outlined");
   const [ripple, setRipple] = useState(false);
-  const [logoColor, setLogoColor] = useState('white');
-  const [componentTheme, setComponentTheme] = useState('blue');
-  const [logoUrl, setLogoUrl] = useState('assets/layout/images/logo-dark.svg');
+  const [logoColor, setLogoColor] = useState("white");
+  const [componentTheme, setComponentTheme] = useState("blue");
+  const [logoUrl, setLogoUrl] = useState("assets/layout/images/logo-dark.svg");
   const copyTooltipRef = useRef();
   const location = useLocation();
+
+  const auth = useAppSelector((state) => state.auth);
 
   let menuClick = false;
   let searchClick = false;
@@ -197,8 +200,8 @@ const App = () => {
   }, [staticMenuMobileActive]);
 
   useEffect(() => {
-    changeStyleSheetUrl('layout-css', 'layout-' + colorScheme + '.css', 1);
-    changeStyleSheetUrl('theme-css', 'theme-' + colorScheme + '.css', 1);
+    changeStyleSheetUrl("layout-css", "layout-" + colorScheme + ".css", 1);
+    changeStyleSheetUrl("theme-css", "theme-" + colorScheme + ".css", 1);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onInputStyleChange = (inputStyle) => {
@@ -207,16 +210,16 @@ const App = () => {
 
   const changeMenuTheme = (name, logoColor, componentTheme) => {
     onMenuThemeChange(name);
-    changeStyleSheetUrl('theme-css', componentTheme, 2);
+    changeStyleSheetUrl("theme-css", componentTheme, 2);
     setComponentTheme(componentTheme);
 
-    const appLogoLink = document.getElementById('app-logo');
+    const appLogoLink = document.getElementById("app-logo");
     const appLogoUrl = `assets/layout/images/logo-${
-      logoColor === 'dark' ? 'dark' : 'white'
+      logoColor === "dark" ? "dark" : "white"
     }.svg`;
-    const horizontalLogoLink = document.getElementById('logo-horizontal');
+    const horizontalLogoLink = document.getElementById("logo-horizontal");
     const horizontalLogoUrl = `assets/layout/images/logo-${
-      logoColor === 'dark' ? 'dark' : 'white'
+      logoColor === "dark" ? "dark" : "white"
     }.svg`;
 
     if (appLogoLink) {
@@ -230,22 +233,22 @@ const App = () => {
 
   const changeComponentTheme = (theme) => {
     setComponentTheme(theme);
-    changeStyleSheetUrl('theme-css', theme, 3);
+    changeStyleSheetUrl("theme-css", theme, 3);
   };
 
   const changeColorScheme = (e) => {
     setColorScheme(e.value);
 
     const scheme = e.value;
-    changeStyleSheetUrl('layout-css', 'layout-' + scheme + '.css', 1);
-    changeStyleSheetUrl('theme-css', 'theme-' + scheme + '.css', 1);
+    changeStyleSheetUrl("layout-css", "layout-" + scheme + ".css", 1);
+    changeStyleSheetUrl("theme-css", "theme-" + scheme + ".css", 1);
 
     changeLogo(scheme);
   };
 
   const changeStyleSheetUrl = (id, value, from) => {
     const element = document.getElementById(id);
-    const urlTokens = element.getAttribute('href').split('/');
+    const urlTokens = element.getAttribute("href").split("/");
 
     if (from === 1) {
       // which function invoked this function
@@ -260,30 +263,30 @@ const App = () => {
       urlTokens[urlTokens.length - 2] = value;
     }
 
-    const newURL = urlTokens.join('/');
+    const newURL = urlTokens.join("/");
 
     replaceLink(element, newURL);
   };
 
   const changeLogo = (scheme) => {
-    const appLogoLink = document.getElementById('app-logo');
-    const mobileLogoLink = document.getElementById('logo-mobile');
-    const invoiceLogoLink = document.getElementById('invoice-logo');
-    const footerLogoLink = document.getElementById('footer-logo');
-    const horizontalLogoLink = document.getElementById('logo-horizontal');
+    const appLogoLink = document.getElementById("app-logo");
+    const mobileLogoLink = document.getElementById("logo-mobile");
+    const invoiceLogoLink = document.getElementById("invoice-logo");
+    const footerLogoLink = document.getElementById("footer-logo");
+    const horizontalLogoLink = document.getElementById("logo-horizontal");
     setLogoUrl(
-      `assets/layout/images/logo-${scheme === 'light' ? 'dark' : 'white'}.svg`
+      `assets/layout/images/logo-${scheme === "light" ? "dark" : "white"}.svg`
     );
 
     if (appLogoLink) {
       appLogoLink.src = `assets/layout/images/logo-${
-        scheme === 'light' ? logoColor : 'white'
+        scheme === "light" ? logoColor : "white"
       }.svg`;
     }
 
     if (horizontalLogoLink) {
       horizontalLogoLink.src = `assets/layout/images/logo-${
-        scheme === 'light' ? logoColor : 'white'
+        scheme === "light" ? logoColor : "white"
       }.svg`;
     }
 
@@ -302,22 +305,22 @@ const App = () => {
 
   const replaceLink = (linkElement, href) => {
     if (isIE()) {
-      linkElement.setAttribute('href', href);
+      linkElement.setAttribute("href", href);
     } else {
-      const id = linkElement.getAttribute('id');
+      const id = linkElement.getAttribute("id");
       const cloneLinkElement = linkElement.cloneNode(true);
 
-      cloneLinkElement.setAttribute('href', href);
-      cloneLinkElement.setAttribute('id', id + '-clone');
+      cloneLinkElement.setAttribute("href", href);
+      cloneLinkElement.setAttribute("id", id + "-clone");
 
       linkElement.parentNode.insertBefore(
         cloneLinkElement,
         linkElement.nextSibling
       );
 
-      cloneLinkElement.addEventListener('load', () => {
+      cloneLinkElement.addEventListener("load", () => {
         linkElement.remove();
-        cloneLinkElement.setAttribute('id', id);
+        cloneLinkElement.setAttribute("id", id);
       });
     }
   };
@@ -414,12 +417,12 @@ const App = () => {
   };
 
   const onMenuThemeChange = (name) => {
-    setMenuTheme('layout-sidebar-' + name);
+    setMenuTheme("layout-sidebar-" + name);
   };
 
   const onMenuModeChange = (e) => {
     setMenuMode(e.value);
-    if (e.value === 'static') {
+    if (e.value === "static") {
       setStaticMenuDesktopInactive(false);
     }
   };
@@ -488,36 +491,36 @@ const App = () => {
 
   const blockBodyScroll = () => {
     if (document.body.classList) {
-      document.body.classList.add('blocked-scroll');
+      document.body.classList.add("blocked-scroll");
     } else {
-      document.body.className += ' blocked-scroll';
+      document.body.className += " blocked-scroll";
     }
   };
 
   const unblockBodyScroll = () => {
     if (document.body.classList) {
-      document.body.classList.remove('blocked-scroll');
+      document.body.classList.remove("blocked-scroll");
     } else {
       document.body.className = document.body.className.replace(
         new RegExp(
-          '(^|\\b)' + 'blocked-scroll'.split(' ').join('|') + '(\\b|$)',
-          'gi'
+          "(^|\\b)" + "blocked-scroll".split(" ").join("|") + "(\\b|$)",
+          "gi"
         ),
-        ' '
+        " "
       );
     }
   };
 
   const isSlim = () => {
-    return menuMode === 'slim';
+    return menuMode === "slim";
   };
 
   const isHorizontal = () => {
-    return menuMode === 'horizontal';
+    return menuMode === "horizontal";
   };
 
   const isOverlay = () => {
-    return menuMode === 'overlay';
+    return menuMode === "overlay";
   };
 
   const isDesktop = () => {
@@ -525,22 +528,22 @@ const App = () => {
   };
 
   const containerClassName = classNames(
-    'layout-wrapper',
+    "layout-wrapper",
     {
-      'layout-overlay': menuMode === 'overlay',
-      'layout-static': menuMode === 'static',
-      'layout-slim': menuMode === 'slim',
-      'layout-horizontal': menuMode === 'horizontal',
-      'layout-sidebar-dim': colorScheme === 'dim',
-      'layout-sidebar-dark': colorScheme === 'dark',
-      'layout-overlay-active': overlayMenuActive,
-      'layout-mobile-active': staticMenuMobileActive,
-      'layout-static-inactive':
-        staticMenuDesktopInactive && menuMode === 'static',
-      'p-input-filled': inputStyle === 'filled',
-      'p-ripple-disabled': !ripple,
+      "layout-overlay": menuMode === "overlay",
+      "layout-static": menuMode === "static",
+      "layout-slim": menuMode === "slim",
+      "layout-horizontal": menuMode === "horizontal",
+      "layout-sidebar-dim": colorScheme === "dim",
+      "layout-sidebar-dark": colorScheme === "dark",
+      "layout-overlay-active": overlayMenuActive,
+      "layout-mobile-active": staticMenuMobileActive,
+      "layout-static-inactive":
+        staticMenuDesktopInactive && menuMode === "static",
+      "p-input-filled": inputStyle === "filled",
+      "p-ripple-disabled": !ripple,
     },
-    colorScheme === 'light' ? menuTheme : ''
+    colorScheme === "light" ? menuTheme : ""
   );
 
   return (
@@ -568,7 +571,7 @@ const App = () => {
           onTopbarUserMenu={onTopbarUserMenuButtonClick}
           onRightMenuClick={onRightMenuButtonClick}
           onRightMenuButtonClick={onRightMenuButtonClick}
-          menu={menu}
+          menu={auth.auth.auth ? menu : []}
           menuMode={menuMode}
           menuActive={menuActive}
           staticMenuMobileActive={staticMenuMobileActive}
@@ -580,7 +583,7 @@ const App = () => {
         <div className="layout-content">
           <div
             className="layout-breadcrumb viewname"
-            style={{ textTransform: 'uppercase' }}
+            style={{ textTransform: "uppercase" }}
           >
             <AppBreadcrumb routers={routers} />
           </div>
@@ -607,7 +610,7 @@ const App = () => {
               />
             );
           })} */}
-          <Outlet />
+          {auth.auth.auth ? <Outlet /> : null}
         </div>
 
         <AppFooter />

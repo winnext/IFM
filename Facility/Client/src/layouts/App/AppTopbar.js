@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import AppBreadcrumb from './AppBreadcrumb';
 import AppMenu from './AppMenu';
+import { useAppDispatch, useAppSelector } from "../../app/hook";
+import {login,logout} from "../../features/auth/authSlice"
 
 const AppTopbar = (props) => {
-  const [auth, setAuth] = useState(false);
+  const dispatch = useAppDispatch()
+  const auth = useAppSelector(state => state.auth)
+
+  const Login = ()=>{
+    dispatch(login({
+      id:'123',
+      type:'admin',
+      name:'omer',
+
+    }))
+  }
+
+  const Logout = ()=>{
+    dispatch(logout())
+  }
+
   const notificationsItemClassName = classNames('notifications-item', {
     'active-menuitem': props.topbarNotificationMenuActive,
   });
@@ -65,7 +82,7 @@ const AppTopbar = (props) => {
 
       <div className="topbar-right">
         <ul className="topbar-menu">
-          {auth ? (
+          {auth.auth.auth ? (
             <>
               <li className="search-item">
                 <button
@@ -192,7 +209,7 @@ const AppTopbar = (props) => {
                     <button
                       type="button"
                       className="p-link"
-                      onClick={() => setAuth(false)}
+                      onClick={Logout}
                     >
                       <i className="pi pi-power-off"></i>
                       <span>Logout</span>
@@ -213,7 +230,7 @@ const AppTopbar = (props) => {
             </>
           ) : (
             <li className="right-sidebar-item">
-              <Button label="Login" onClick={() => setAuth(true)} />
+              <Button label="Login" onClick={Login} />
             </li>
           )}
         </ul>
