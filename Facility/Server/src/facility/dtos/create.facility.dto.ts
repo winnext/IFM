@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsDate,
   IsNotEmpty,
   IsObject,
   IsOptional,
@@ -58,4 +59,7 @@ export class CreateFacilityDto {
   @IsString()
   @Length(1, 100)
   address: string;
+
+  @IsDate()
+  updatedAt = new Date();
 }

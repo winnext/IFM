@@ -1,4 +1,3 @@
 export interface IQueueService {
-    producer();
-  
-  }
+  producer();
+}

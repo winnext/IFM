@@ -13,6 +13,9 @@ exports.UpdateFacilityDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class UpdateFacilityDto {
+    constructor() {
+        this.updatedAt = new Date();
+    }
 }
 __decorate([
     (0, swagger_1.ApiProperty)(),
@@ -75,5 +78,9 @@ __decorate([
     (0, class_validator_1.Length)(1, 100),
     __metadata("design:type", String)
 ], UpdateFacilityDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsDate)(),
+    __metadata("design:type", Object)
+], UpdateFacilityDto.prototype, "updatedAt", void 0);
 exports.UpdateFacilityDto = UpdateFacilityDto;
 //# sourceMappingURL=update.facility.dto.js.map

@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Timestamp } from "bson";
 import { Document } from "mongoose";
 import { BasePersistantDocumentObject } from "src/common/baseObject/base.object";
 import { v4 as uuidv4 } from "uuid";
-
 
 export type FacilityDocument = Facility & Document;
 
@@ -33,9 +33,28 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop()
   country: string;
 
+  @Prop({
+    type: Timestamp,
+    default: function genDate() {
+      return new Date();
+    },
+  })
+  createdAt: Timestamp;
+
+  @Prop()
+  updatedAt: Timestamp;
+
   city: string;
   @Prop()
   address: string;
+
+  @Prop({
+    type: String,
+    default: function getClassName() {
+      return Facility.name;
+    },
+  })
+  class_name: string;
 }
 
 export const FaciliySchema = SchemaFactory.createForClass(Facility);

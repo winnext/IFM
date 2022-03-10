@@ -8,4 +8,5 @@ export declare class CreateFacilityDto {
     country: string;
     city: string;
     address: string;
+    updatedAt: Date;
 }

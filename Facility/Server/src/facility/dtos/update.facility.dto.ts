@@ -1,10 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsAlphanumeric,
+  IsDate,
   IsOptional,
   IsString,
   Length,
-} from 'class-validator';
+} from "class-validator";
 
 export class UpdateFacilityDto {
   @ApiProperty()
@@ -18,7 +19,7 @@ export class UpdateFacilityDto {
   @IsString()
   @Length(1, 50)
   locations: string;
-  
+
   @ApiProperty()
   @IsOptional()
   @IsAlphanumeric()
@@ -58,4 +59,7 @@ export class UpdateFacilityDto {
   @IsString()
   @Length(1, 100)
   address: string;
+
+  @IsDate()
+  updatedAt = new Date();
 }

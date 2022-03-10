@@ -32,7 +32,7 @@ AppModule = __decorate([
             facility_module_1.FacilityModule,
             keyclock_module_1.KeycloakModule,
             nestjs_i18n_1.I18nModule.forRoot({
-                fallbackLanguage: "tr",
+                fallbackLanguage: "en",
                 fallbacks: {
                     en: "en",
                     tr: "tr",

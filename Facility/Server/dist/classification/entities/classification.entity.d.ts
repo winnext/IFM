@@ -7,5 +7,6 @@ export declare class Classification extends Document {
     uuid: string;
     code: string;
     name: string;
+    class_name: string;
 }
 export declare const ClassificationSchema: import("mongoose").Schema<Classification, import("mongoose").Model<Classification, any, any, any>, any, any>;

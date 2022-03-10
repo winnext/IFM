@@ -72,6 +72,7 @@ export class FacilityController {
     description: "update  facility structure",
   })
   @Patch("/:_id")
+  @Unprotected()
   updateFacility(
     @Param("_id") id: string,
     @Body() updateFacilityDto: UpdateFacilityDto

@@ -95,6 +95,7 @@ __decorate([
         description: "update  facility structure",
     }),
     (0, common_1.Patch)("/:_id"),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Param)("_id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

@@ -13,6 +13,9 @@ exports.CreateFacilityDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateFacilityDto {
+    constructor() {
+        this.updatedAt = new Date();
+    }
 }
 __decorate([
     (0, swagger_1.ApiProperty)(),
@@ -23,7 +26,7 @@ __decorate([
 ], CreateFacilityDto.prototype, "facility_name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Length)(1, 50),
     __metadata("design:type", String)
@@ -74,5 +77,9 @@ __decorate([
     (0, class_validator_1.Length)(1, 100),
     __metadata("design:type", String)
 ], CreateFacilityDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsDate)(),
+    __metadata("design:type", Object)
+], CreateFacilityDto.prototype, "updatedAt", void 0);
 exports.CreateFacilityDto = CreateFacilityDto;
 //# sourceMappingURL=create.facility.dto.js.map

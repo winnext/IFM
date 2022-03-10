@@ -20,6 +20,14 @@ export class Classification extends Document {
   @Prop()
   name: string;
 
+  @Prop({
+    type: String,
+    default: function getClassName() {
+      return Classification.name;
+    },
+  })
+  class_name: string;
 }
 
-export const ClassificationSchema = SchemaFactory.createForClass(Classification);
+export const ClassificationSchema =
+  SchemaFactory.createForClass(Classification);

@@ -4,17 +4,13 @@ import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { LoggingInterceptor } from "./common/interceptors/logger.interceptor";
 import { MongoExceptionFilter } from "./common/exceptionFilters/mongo.exception";
-import { ClientKafka, KafkaOptions, Transport } from "@nestjs/microservices";
-import { KafkaConfig } from "kafkajs";
-import { ConfigService } from "@nestjs/config";
 import { kafkaOptions } from "./common/options/message.broker.options";
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule, { abortOnError: false });
-   
-    app.connectMicroservice(kafkaOptions)
-    ;
+
+    app.connectMicroservice(kafkaOptions);
 
     const config = new DocumentBuilder()
       .setTitle("Facility Microservice Endpoints")
@@ -28,6 +24,7 @@ async function bootstrap() {
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
+
         forbidNonWhitelisted: true,
       })
     );

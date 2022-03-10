@@ -8,12 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var Facility_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FaciliySchema = exports.Facility = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+const bson_1 = require("bson");
 const base_object_1 = require("../../common/baseObject/base.object");
 const uuid_1 = require("uuid");
-let Facility = class Facility extends base_object_1.BasePersistantDocumentObject {
+let Facility = Facility_1 = class Facility extends base_object_1.BasePersistantDocumentObject {
 };
 __decorate([
     (0, mongoose_1.Prop)({
@@ -53,10 +55,32 @@ __decorate([
     __metadata("design:type", String)
 ], Facility.prototype, "country", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({
+        type: bson_1.Timestamp,
+        default: function genDate() {
+            return new Date();
+        },
+    }),
+    __metadata("design:type", bson_1.Timestamp)
+], Facility.prototype, "createdAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", bson_1.Timestamp)
+], Facility.prototype, "updatedAt", void 0);
+__decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Facility.prototype, "address", void 0);
-Facility = __decorate([
+__decorate([
+    (0, mongoose_1.Prop)({
+        type: String,
+        default: function getClassName() {
+            return Facility_1.name;
+        },
+    }),
+    __metadata("design:type", String)
+], Facility.prototype, "class_name", void 0);
+Facility = Facility_1 = __decorate([
     (0, mongoose_1.Schema)()
 ], Facility);
 exports.Facility = Facility;

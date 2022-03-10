@@ -18,7 +18,7 @@ import * as Joi from "joi";
     FacilityModule,
     KeycloakModule,
     I18nModule.forRoot({
-      fallbackLanguage: "tr",
+      fallbackLanguage: "en",
       fallbacks: {
         en: "en",
         tr: "tr",
