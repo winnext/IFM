@@ -12,9 +12,13 @@ import { APP_FILTER } from "@nestjs/core";
 import { HttpExceptionFilter } from "./common/exceptionFilters/exception.filter";
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from "joi";
+import { MulterModule } from "@nestjs/platform-express";
 
 @Module({
   imports: [
+    MulterModule.register({
+      dest: './upload',
+    }),
     FacilityModule,
     KeycloakModule,
     I18nModule.forRoot({
