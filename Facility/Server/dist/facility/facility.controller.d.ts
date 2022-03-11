@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
 import { UpdateFacilityDto } from "./dtos/update.facility.dto";
 import { Facility } from "./entities/facility.entity";
@@ -13,5 +14,5 @@ export declare class FacilityController {
     createFacility(createFacilityDto: CreateFacilityDto): Promise<Facility>;
     updateFacility(id: string, updateFacilityDto: UpdateFacilityDto): Promise<any>;
     deleteFacility(id: string): Promise<Facility>;
-    createFacilitiesByExcel(res: any): Promise<any>;
+    createFacilitiesByCsv(res: any, file: Express.Multer.File): Promise<any>;
 }
