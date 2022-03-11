@@ -51,10 +51,6 @@ __decorate([
     __metadata("design:type", Array)
 ], Facility.prototype, "label", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Facility.prototype, "country", void 0);
-__decorate([
     (0, mongoose_1.Prop)({
         type: bson_1.Timestamp,
         default: function genDate() {
@@ -69,7 +65,7 @@ __decorate([
 ], Facility.prototype, "updatedAt", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
+    __metadata("design:type", Array)
 ], Facility.prototype, "address", void 0);
 __decorate([
     (0, mongoose_1.Prop)({

@@ -81,6 +81,7 @@ export class FacilityController {
   }
 
   @Delete("/:_id")
+  @Unprotected()
   deleteFacility(@Param("_id") id: string) {
     return this.facilityService.remove(id);
   }

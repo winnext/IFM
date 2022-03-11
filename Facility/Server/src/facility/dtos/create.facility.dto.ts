@@ -7,6 +7,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
+import { Adress } from '../entities/facility.entity';
 
 export class CreateFacilityDto {
   @ApiProperty()
@@ -44,21 +45,7 @@ export class CreateFacilityDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  @Length(1, 50)
-  country: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  @Length(1, 50)
-  city: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  @Length(1, 100)
-  address: string;
+  address: Adress;
 
   @IsDate()
   updatedAt = new Date();

@@ -119,7 +119,7 @@ const Facility = () => {
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: err.message,
+          detail: err.response.data.message,
           life: 2000,
         });
         setDeleteFacilityDialog(false);

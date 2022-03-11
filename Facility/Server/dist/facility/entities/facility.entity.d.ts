@@ -5,6 +5,11 @@ import { Timestamp } from "bson";
 import { Document } from "mongoose";
 import { BasePersistantDocumentObject } from "src/common/baseObject/base.object";
 export declare type FacilityDocument = Facility & Document;
+export declare type Adress = {
+    country: string;
+    city: string;
+    adress: string;
+};
 export declare class Facility extends BasePersistantDocumentObject {
     uuid: string;
     facility_name: string;
@@ -13,11 +18,9 @@ export declare class Facility extends BasePersistantDocumentObject {
     type_of_facility: string;
     classification_of_facility: object[];
     label: string[];
-    country: string;
     createdAt: Timestamp;
     updatedAt: Timestamp;
-    city: string;
-    address: string;
+    address: Adress[];
     class_name: string;
 }
 export declare const FaciliySchema: import("mongoose").Schema<Facility, import("mongoose").Model<Facility, any, any, any>, any, any>;

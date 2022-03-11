@@ -1,3 +1,4 @@
+import { Adress } from '../entities/facility.entity';
 export declare class CreateFacilityDto {
     facility_name: string;
     locations: string;
@@ -5,8 +6,6 @@ export declare class CreateFacilityDto {
     type_of_facility: string;
     classification_of_facility: object;
     label: string[];
-    country: string;
-    city: string;
-    address: string;
+    address: Adress;
     updatedAt: Date;
 }

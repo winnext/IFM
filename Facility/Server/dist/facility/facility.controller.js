@@ -104,6 +104,7 @@ __decorate([
 ], FacilityController.prototype, "updateFacility", null);
 __decorate([
     (0, common_1.Delete)("/:_id"),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Param)("_id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

@@ -6,6 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 
 export type FacilityDocument = Facility & Document;
 
+
+ export type  Adress={
+  country:string,
+  city:string,
+  adress:string
+ }
+
 @Schema()
 export class Facility extends BasePersistantDocumentObject {
   @Prop({
@@ -30,8 +37,6 @@ export class Facility extends BasePersistantDocumentObject {
   classification_of_facility: object[];
   @Prop([String])
   label: string[];
-  @Prop()
-  country: string;
 
   @Prop({
     type: Timestamp,
@@ -44,9 +49,8 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop()
   updatedAt: Timestamp;
 
-  city: string;
   @Prop()
-  address: string;
+  address: Adress[];
 
   @Prop({
     type: String,

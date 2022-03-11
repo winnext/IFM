@@ -3,25 +3,19 @@ import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import AppBreadcrumb from './AppBreadcrumb';
+import keycloak from '../../keycloak';
 import AppMenu from './AppMenu';
-import { useAppDispatch, useAppSelector } from "../../app/hook";
-import {login,logout} from "../../features/auth/authSlice"
+import { useAppSelector } from "../../app/hook";
 
 const AppTopbar = (props) => {
-  const dispatch = useAppDispatch()
   const auth = useAppSelector(state => state.auth)
 
   const Login = ()=>{
-    dispatch(login({
-      id:'123',
-      type:'admin',
-      name:'omer',
-
-    }))
+    keycloak.login()
   }
 
   const Logout = ()=>{
-    dispatch(logout())
+    keycloak.logout()
   }
 
   const notificationsItemClassName = classNames('notifications-item', {
@@ -178,7 +172,7 @@ const AppTopbar = (props) => {
                     alt="diamond-layout"
                     className="profile-image"
                   />
-                  <span className="profile-name">Amelia Stone</span>
+                  <span className="profile-name">{auth.auth.name}</span>
                 </button>
                 <ul className="profile-menu fade-in-up">
                   <li>
