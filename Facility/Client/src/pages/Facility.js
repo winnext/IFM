@@ -109,9 +109,13 @@ const Facility = () => {
           setDeleteFacilityDialog(false);
           setFacility(emptyFacility);
           loadLazyData();
+        } else {
+          console.log(response);
         }
       })
       .catch((err) => {
+        console.log(err.message);
+     
         toast.current.show({
           severity: "error",
           summary: "Error",
