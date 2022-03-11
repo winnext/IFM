@@ -19,10 +19,7 @@ async function bootstrap() {
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         swagger_1.SwaggerModule.setup("api", app, document);
-        app.useGlobalPipes(new common_1.ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-        }));
+        app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
         app.useGlobalFilters(new mongo_exception_1.MongoExceptionFilter());
         app.useGlobalInterceptors(new logger_interceptor_1.LoggingInterceptor());
         app.enableCors();
