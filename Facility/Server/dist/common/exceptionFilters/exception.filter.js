@@ -22,6 +22,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         this.postKafka = new post_kafka_1.PostKafka(new kafkaService_1.KafkaService());
     }
     async catch(exception, host) {
+        console.log(exception);
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
         const request = ctx.getRequest();
@@ -34,6 +35,14 @@ let HttpExceptionFilter = class HttpExceptionFilter {
             method: request.method,
         };
         switch (exception.getStatus()) {
+            case 400:
+                try {
+                    response.status(status).json(exception.getResponse());
+                }
+                catch (error) {
+                    console.log("FACILITY_EXCEPTION topic cannot connected due to " + error);
+                }
+                break;
             case 401:
                 try {
                     const message = await this.i18n.translate(i18n_enum_1.I18NEnums.USER_NOT_HAVE_PERMISSION, {
@@ -67,6 +76,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     : response.status(status).json({ status, message: result.message });
                 break;
             default:
+                response.status(status);
                 break;
         }
     }
