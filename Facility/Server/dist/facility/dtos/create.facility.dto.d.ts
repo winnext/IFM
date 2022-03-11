@@ -1,4 +1,4 @@
-import { Adress } from '../entities/facility.entity';
+import { Adress } from '../entities/facility.address';
 export declare class CreateFacilityDto {
     facility_name: string;
     locations: string;

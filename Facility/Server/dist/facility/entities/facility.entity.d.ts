@@ -4,12 +4,8 @@
 import { Timestamp } from "bson";
 import { Document } from "mongoose";
 import { BasePersistantDocumentObject } from "src/common/baseObject/base.object";
+import { Adress } from "./facility.address";
 export declare type FacilityDocument = Facility & Document;
-export declare type Adress = {
-    country: string;
-    city: string;
-    adress: string;
-};
 export declare class Facility extends BasePersistantDocumentObject {
     uuid: string;
     facility_name: string;

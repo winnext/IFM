@@ -7,7 +7,8 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { Adress } from '../entities/facility.entity';
+import { Adress } from '../entities/facility.address';
+
 
 export class CreateFacilityDto {
   @ApiProperty()

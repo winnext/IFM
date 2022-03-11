@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateFacilityDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const facility_address_1 = require("../entities/facility.address");
 class CreateFacilityDto {
     constructor() {
         this.updatedAt = new Date();
@@ -59,7 +60,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", facility_address_1.Adress)
 ], CreateFacilityDto.prototype, "address", void 0);
 __decorate([
     (0, class_validator_1.IsDate)(),
