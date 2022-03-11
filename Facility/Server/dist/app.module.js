@@ -21,6 +21,7 @@ const core_1 = require("@nestjs/core");
 const exception_filter_1 = require("./common/exceptionFilters/exception.filter");
 const messagebroker_module_1 = require("./messagebroker/messagebroker.module");
 const Joi = require("joi");
+const platform_express_1 = require("@nestjs/platform-express");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(apploggermiddleware_1.AppLoggerMiddleware).forRoutes("*");
@@ -29,6 +30,9 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            platform_express_1.MulterModule.register({
+                dest: './upload',
+            }),
             facility_module_1.FacilityModule,
             keyclock_module_1.KeycloakModule,
             nestjs_i18n_1.I18nModule.forRoot({

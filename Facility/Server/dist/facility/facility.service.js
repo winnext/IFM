@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacilityService = void 0;
 const common_1 = require("@nestjs/common");
+const fs_1 = require("fs");
 const repository_enum_1 = require("../common/const/repository.enum");
 const objectId_check_1 = require("../common/func/objectId.check");
 let FacilityService = class FacilityService {
@@ -38,27 +39,31 @@ let FacilityService = class FacilityService {
         const facility = await this.findOne(id);
         return facility.remove();
     }
-    createAll(rows) {
-        var j = 0;
-        for (let i = 0; i < rows.length; i++) {
-            if (i !== 0) {
+    async createAll(file) {
+        var fs = require('fs');
+        var csv = require('csv-parser');
+        var multer = require('multer');
+        try {
+            fs;
+            (0, fs_1.createReadStream)(file.path).pipe(csv()).on('data', (data) => {
                 const dto = {
-                    facility_name: rows[i][0],
-                    locations: rows[i][1],
-                    brand_name: rows[i][2],
-                    type_of_facility: rows[i][3],
-                    classification_of_facility: rows[i][4],
-                    label: rows[i][5],
-                    country: rows[i][6],
-                    city: rows[i][7],
-                    address: rows[i][8],
+                    facility_name: data.facility_name,
+                    locations: data.locations,
+                    brand_name: data.brand_name,
+                    type_of_facility: data.type_of_facility,
+                    classification_of_facility: data.classification_of_facility,
+                    label: data.facility_name,
+                    country: data.label,
+                    city: data.city,
+                    address: data.address,
                 };
                 this.facilityRepository.create(dto);
-                j = j + 1;
-            }
+            });
+            return "success";
         }
-        console.log("================================" + j);
-        return j;
+        catch (_a) {
+            return "failed";
+        }
     }
 };
 FacilityService = __decorate([

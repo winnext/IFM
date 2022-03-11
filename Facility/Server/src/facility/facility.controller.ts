@@ -8,6 +8,8 @@ import {
   Post,
   Query,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreateFacilityDto } from "./dtos/create.facility.dto";
@@ -17,6 +19,8 @@ import { FacilityService } from "./facility.service";
 import { Roles, Unprotected } from "nest-keycloak-connect";
 import { PaginationParams } from "src/common/commonDto/pagination.dto";
 import { I18n, I18nContext, I18nService } from "nestjs-i18n";
+import { diskStorage } from "multer";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("Facility")
 @Controller("facility")
@@ -85,7 +89,7 @@ export class FacilityController {
   deleteFacility(@Param("_id") id: string) {
     return this.facilityService.remove(id);
   }
-
+  /*
   @ApiOperation({
     summary: "Load facility excel file ",
     description:
@@ -102,5 +106,23 @@ export class FacilityController {
     const  createdFacilitiesCount = await this.facilityService.createAll(facilityRows);
     console.log("*********************************"+facilityRows);
     return res.send("createdFacilitiesCount = "+createdFacilitiesCount);
+  }
+  */
+
+  @ApiOperation({
+    summary: "Load facility cs file ",
+    description:
+      "***",
+  })
+  //@Roles({roles: ['facility_client_role_user']})
+  @Unprotected()
+  @Post("createfacilities")
+  @UseInterceptors(
+    FileInterceptor('file', {
+    storage: diskStorage({destination: './upload',}), 
+  }),
+  )
+  async createFacilitiesByCsv(@Res() res, @UploadedFile() file: Express.Multer.File) {
+    return res.send( await this.facilityService.createAll(file));
   }
 }
