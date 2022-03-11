@@ -99,23 +99,22 @@ const Facility = () => {
     FacilityService.remove(facility._id)
       .then((response) => {
         console.log(response);
-        if (response.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "Facility Deleted",
-            life: 3000,
-          });
-          setDeleteFacilityDialog(false);
-          setFacility(emptyFacility);
-          loadLazyData();
-        }
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Facility Deleted",
+          life: 3000,
+        });
+        setDeleteFacilityDialog(false);
+        setFacility(emptyFacility);
+        loadLazyData();
       })
       .catch((err) => {
+        console.log(err);
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: err.message,
+          detail: err.response.data.message,
           life: 2000,
         });
         setDeleteFacilityDialog(false);
