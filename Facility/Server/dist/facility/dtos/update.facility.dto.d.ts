@@ -1,12 +1,5 @@
-export declare class UpdateFacilityDto {
-    facility_name: string;
-    locations: string;
-    brand_name: string;
-    type_of_facility: string;
-    classification_of_facility: string;
-    label: string[];
-    country: string;
-    city: string;
-    address: string;
-    updatedAt: Date;
+import { CreateFacilityDto } from "./create.facility.dto";
+declare const UpdateFacilityDto_base: import("@nestjs/common").Type<Partial<CreateFacilityDto>>;
+export declare class UpdateFacilityDto extends UpdateFacilityDto_base {
 }
+export {};
