@@ -27,7 +27,6 @@ import { FileInterceptor } from "@nestjs/platform-express";
 export class FacilityController {
   constructor(
     private readonly facilityService: FacilityService,
-    private readonly i18n: I18nService
   ) {}
 
   @ApiOperation({
@@ -40,8 +39,7 @@ export class FacilityController {
   @Roles({roles: ['facility_client_role_admin']})
   //@Unprotected()
   async getAllFacilities(
-    @Query() query: PaginationParams,
-    @I18n() i18n: I18nContext
+    @Query() query: PaginationParams
   ): Promise<Facility[]> {
     return this.facilityService.findAll(query);
   }
@@ -91,25 +89,6 @@ export class FacilityController {
   deleteFacility(@Param("_id") id: string) {
     return this.facilityService.remove(id);
   }
-  /*
-  @ApiOperation({
-    summary: "Load facility excel file ",
-    description:
-      "***",
-  })
-  //@Roles({roles: ['facility_client_role_user']})
-  @Unprotected()
-  @Post("createfacilities")
-  async createFacilitiesByExcel(@Res() res) {
-    const xlsxFile = require("read-excel-file/node");
-    const facilityRows = await xlsxFile("./uploads/data.xlsx").then((rows) => {
-      return rows;
-    });
-    const  createdFacilitiesCount = await this.facilityService.createAll(facilityRows);
-    console.log("*********************************"+facilityRows);
-    return res.send("createdFacilitiesCount = "+createdFacilitiesCount);
-  }
-  */
 
   @ApiOperation({
     summary: "Load facility cs file ",
