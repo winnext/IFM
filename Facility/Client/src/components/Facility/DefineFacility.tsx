@@ -85,7 +85,15 @@ const DefineFacility = ({
           });
           hideDialog();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
+          hideDialog();
+        });
     } else {
       FacilityService.update(facility._id, {
         ...data,
@@ -103,7 +111,15 @@ const DefineFacility = ({
           });
           hideDialog();
         })
-        .catch((err) => console.log(err.response));
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
+          hideDialog();
+        });
     }
   };
 
@@ -146,7 +162,7 @@ const DefineFacility = ({
             name="type_of_facility"
             rules={{ required: "Type Of Facility is required." }}
             control={control}
-            defaultValue={{ name: facility.type_of_facility }}
+            defaultValue={facility.type_of_facility !== '' ? { name: facility.type_of_facility } : undefined}
             render={({ field }) => (
               <Dropdown
                 filter

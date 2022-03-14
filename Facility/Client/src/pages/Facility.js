@@ -64,7 +64,13 @@ const Facility = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+        setLoading(false);
       });
   };
 
@@ -114,7 +120,7 @@ const Facility = () => {
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: err.response.data.message,
+          detail: err.response ? err.response.data.message : err.message,
           life: 2000,
         });
         setDeleteFacilityDialog(false);

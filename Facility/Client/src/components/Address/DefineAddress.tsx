@@ -92,7 +92,7 @@ const DefineAddress = ({
             name="country"
             rules={{ required: "Country is required." }}
             control={control}
-            defaultValue={countries.find(item=>item.name===address.country)}
+            defaultValue={address.country !== '' ? countries.find(item=>item.name===address.country):undefined}
             render={({ field }) => (
               <Dropdown
                 optionLabel="name"
@@ -129,7 +129,7 @@ const DefineAddress = ({
             name="city"
             rules={{ required: "City is required." }}
             control={control}
-            defaultValue={{name:address.city}}
+            defaultValue={address.city !== '' ? {name:address.city}:undefined}
             render={({ field }) => (
               <Dropdown
                 optionLabel="name"
