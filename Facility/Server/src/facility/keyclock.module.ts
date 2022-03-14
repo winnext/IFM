@@ -11,10 +11,10 @@ import { APP_GUARD } from "@nestjs/core";
 @Module({
   imports: [
     KeycloakConnectModule.register({
-      authServerUrl: "http://localhost:8180/auth",
+      authServerUrl: "http://172.19.100.120:8080/auth",
       realm: "IFM",
       clientId: "ifm_facility_client",
-      secret: "1kHbsr43BDlLtT5QkgrgMYCB3ZDtXeEA",
+      secret: "cBh97xovn2wC70DbnZfupiH4t1vQoDrU",
 
       // Secret key of the client taken from keycloak server
     }),
