@@ -7,15 +7,20 @@ interface PaginationParams {
   limit?: number;
 }
 
+interface Address{
+  title: string;
+  country: string;
+  city: string;
+  address: string;
+}
+
 interface Facility {
   _id?: string;
   facility_name: string;
   brand_name: string;
   type_of_facility: string;
   classification_of_facility: object | string;
-  country: string;
-  city: string;
-  address: string;
+  address?: Address[];
   label: string[];
   uuid?: string;
   __v?: number;

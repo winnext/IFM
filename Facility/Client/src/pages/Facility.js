@@ -18,11 +18,9 @@ const Facility = () => {
     facility_name: "",
     brand_name: "",
     type_of_facility: "",
-    country: "",
-    city: "",
-    address: "",
+    address: [],
     classification_of_facility: [{}],
-    label: [],
+    hastags: [],
     __v: 0,
   };
 
@@ -59,11 +57,15 @@ const Facility = () => {
     FacilityService.findAll({
       page: lazyParams.page,
       limit: lazyParams.rows,
-    }).then((response) => {
-      setFacilities(response.data[0]);
-      setCountFacilities(response.data[1].count);
-      setLoading(false);
-    });
+    })
+      .then((response) => {
+        setFacilities(response.data[0]);
+        setCountFacilities(response.data[1].count);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const openNew = () => {
@@ -86,7 +88,7 @@ const Facility = () => {
   };
 
   const editFacility = (facility) => {
-    setFacility({ ...facility });
+    setFacility(facility);
     setFacilityDialog(true);
   };
 
@@ -98,24 +100,17 @@ const Facility = () => {
   const deleteFacility = () => {
     FacilityService.remove(facility._id)
       .then((response) => {
-        console.log(response);
-        if (response.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "Facility Deleted",
-            life: 3000,
-          });
-          setDeleteFacilityDialog(false);
-          setFacility(emptyFacility);
-          loadLazyData();
-        } else {
-          console.log(response);
-        }
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Facility Deleted",
+          life: 3000,
+        });
+        setDeleteFacilityDialog(false);
+        setFacility(emptyFacility);
+        loadLazyData();
       })
       .catch((err) => {
-        console.log(err.message);
-     
         toast.current.show({
           severity: "error",
           summary: "Error",
@@ -194,51 +189,6 @@ const Facility = () => {
       </>
     );
   };
-
-  const countryBodyTemplate = (rowData) => {
-    return (
-      <>
-        <span className="p-column-title">Country</span>
-        {rowData.country}
-      </>
-    );
-  };
-
-  const addressBodyTemplate = (rowData) => {
-    return (
-      <>
-        <span className="p-column-title">Address</span>
-        {rowData.address}
-      </>
-    );
-  };
-
-  // const imageBodyTemplate = (rowData) => {
-  //   return (
-  //     <>
-  //       <span className="p-column-title">Image</span>
-  //       <img
-  //         src={`assets/demo/images/facility/${rowData.image}`}
-  //         alt={rowData.image}
-  //         className="shadow-2"
-  //         width="100"
-  //       />
-  //     </>
-  //   );
-  // };
-
-  // const statusBodyTemplate = (rowData) => {
-  //   return (
-  //     <>
-  //       <span className="p-column-title">Status</span>
-  //       <span
-  //         className={`facility-badge status-${rowData.inventoryStatus.toLowerCase()}`}
-  //       >
-  //         {rowData.inventoryStatus}
-  //       </span>
-  //     </>
-  //   );
-  // };
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -356,32 +306,6 @@ const Facility = () => {
               body={typeOfFacilityNameBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
-            <Column
-              field="country"
-              header="Country"
-              sortable
-              body={countryBodyTemplate}
-              headerStyle={{ width: "14%", minWidth: "10rem" }}
-            ></Column>
-            <Column
-              field="address"
-              header="Address"
-              sortable
-              body={addressBodyTemplate}
-              headerStyle={{ width: "14%", minWidth: "10rem" }}
-            ></Column>
-            {/* <Column
-              header="Image"
-              body={imageBodyTemplate}
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
-            ></Column>
-            <Column
-              field="inventoryStatus"
-              header="Status"
-              body={statusBodyTemplate}
-              sortable
-              headerStyle={{ width: '14%', minWidth: '10rem' }}
-            ></Column> */}
             <Column body={actionBodyTemplate}></Column>
           </DataTable>
 
