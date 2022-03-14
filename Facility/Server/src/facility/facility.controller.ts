@@ -37,8 +37,8 @@ export class FacilityController {
   })
   //@LoggerInter()
   @Get("/")
-  //@Roles({roles: ['facility_client_role_admin']})
-  @Unprotected()
+  @Roles({roles: ['facility_client_role_admin']})
+  //@Unprotected()
   async getAllFacilities(
     @Query() query: PaginationParams,
     @I18n() i18n: I18nContext
@@ -52,8 +52,8 @@ export class FacilityController {
       "If you want to get specific facility in your organization use this route. It takes  query params which is  id",
   })
   @Get("/:_id")
-  //@Roles({roles: ['facility_client_role_user']})
-  @Unprotected()
+  @Roles({roles: ['facility_client_role_user']})
+  //@Unprotected()
   getFacility(@Param("_id") id: string): Promise<Facility> {
     return this.facilityService.findOne(id);
   }
@@ -63,8 +63,8 @@ export class FacilityController {
     description: "Store product structure",
   })
   @Post("")
-  @Unprotected()
-  //@Roles({roles: ['facility_client_role_admin']})
+  //@Unprotected()
+  @Roles({roles: ['facility_client_role_admin']})
   createFacility(
     @Body() createFacilityDto: CreateFacilityDto
   ): Promise<Facility> {
@@ -76,7 +76,8 @@ export class FacilityController {
     description: "update  facility structure",
   })
   @Patch("/:_id")
-  @Unprotected()
+  //@Unprotected()
+  @Roles({roles: ['facility_client_role_admin']})
   updateFacility(
     @Param("_id") id: string,
     @Body() updateFacilityDto: UpdateFacilityDto
@@ -85,7 +86,8 @@ export class FacilityController {
   }
 
   @Delete("/:_id")
-  @Unprotected()
+  //@Unprotected()
+  @Roles({roles: ['facility_client_role_admin']})
   deleteFacility(@Param("_id") id: string) {
     return this.facilityService.remove(id);
   }
@@ -114,8 +116,8 @@ export class FacilityController {
     description:
       "***",
   })
-  //@Roles({roles: ['facility_client_role_user']})
-  @Unprotected()
+  @Roles({roles: ['facility_client_role_admin']})
+  //@Unprotected()
   @Post("createfacilities")
   @UseInterceptors(
     FileInterceptor('file', {
