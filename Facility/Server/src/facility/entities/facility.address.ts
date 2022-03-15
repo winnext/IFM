@@ -20,5 +20,5 @@ export class Adress  {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    adress: string;
+    address: string;
   };

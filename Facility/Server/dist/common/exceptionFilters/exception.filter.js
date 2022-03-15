@@ -34,7 +34,6 @@ let HttpExceptionFilter = class HttpExceptionFilter {
             path: request.url,
             method: request.method,
             body: request.body,
-            userToken: request.headers["authorization"] || null,
         };
         const errorResponseLog = {
             timestamp: new Date().toLocaleDateString(),
@@ -46,6 +45,11 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         switch (exception.getStatus()) {
             case 400:
                 try {
+                    const finalExcep = {
+                        errorResponseLog,
+                        requestInformation,
+                    };
+                    await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
                     response.status(status).json(exception.getResponse());
                 }
                 catch (error) {

@@ -26,7 +26,7 @@ class LoggingInterceptor {
             path: request.url,
             method: request.method,
             body: request.body,
-            userToken: request.headers["authorization"] || null,
+            user: request.user || null
         };
         const now = Date.now();
         response.on("close", async () => {

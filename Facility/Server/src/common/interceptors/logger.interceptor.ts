@@ -30,13 +30,14 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
     const query = request.params;
-
     const requestInformation = {
       timestamp: new Date(),
       path: request.url,
       method: request.method,
       body: request.body,
-      userToken: request.headers["authorization"] || null,
+      //userToken: request.headers["authorization"] || null,
+      user:request.user || null
+      
     };
     const now = Date.now();
    

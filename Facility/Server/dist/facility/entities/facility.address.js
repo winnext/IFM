@@ -37,7 +37,7 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], Adress.prototype, "adress", void 0);
+], Adress.prototype, "address", void 0);
 exports.Adress = Adress;
 ;
 //# sourceMappingURL=facility.address.js.map

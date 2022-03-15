@@ -34,7 +34,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
       method: request.method,
       body: request.body,
-      userToken: request.headers["authorization"] || null,
     };
 
     const errorResponseLog = {
@@ -46,7 +45,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
     switch (exception.getStatus()) {
       case 400:
-        try {
+        try {  
+          const finalExcep = {
+            errorResponseLog,
+            requestInformation,
+          };
+          await this.postKafka.producerSendMessage(
+            FacilityTopics.FACILITY_EXCEPTIONS,
+            JSON.stringify(finalExcep)
+          );
           response.status(status).json(exception.getResponse());
         } catch (error) {
           console.log(
