@@ -28,6 +28,7 @@
     "@nestjs/mongoose": "^9.0.2",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.2.0",
+    "@nestjs/typeorm": "^8.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "commenintertest": "^1.0.0",
@@ -38,11 +39,13 @@
     "mongoose": "^6.2.1",
     "nest-keycloak-connect": "^1.8.1",
     "nestjs-i18n": "^8.2.2",
+    "pg": "^8.7.3",
     "read-excel-file": "^5.2.28",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.3.0",
+    "typeorm": "^0.2.45",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

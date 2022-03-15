@@ -22,6 +22,7 @@ let AppLoggerMiddleware = class AppLoggerMiddleware {
     use(request, response, next) {
         const { ip, method, path: url } = request;
         const userAgent = request.get("user-agent") || "";
+        const query = request.params;
         const requestInformation = {
             timestamp: new Date(),
             path: request.url,

@@ -7,6 +7,7 @@ import {
 import { Request, Response, NextFunction } from "express";
 import { I18nService } from "nestjs-i18n";
 import { FacilityTopics } from "../const/kafta.topic.enum";
+import { checkObjectIddİsValid } from "../func/objectId.check";
 import { KafkaService } from "../queueService/kafkaService";
 import { PostKafka } from "../queueService/post-kafka";
 
@@ -14,7 +15,7 @@ import { PostKafka } from "../queueService/post-kafka";
 export class AppLoggerMiddleware implements NestMiddleware {
   postKafka
   constructor(){ this.postKafka = new PostKafka(new KafkaService());}
- 
+  
 
   private readonly i18n: I18nService;
   private logger = new Logger("HTTP");
@@ -22,7 +23,9 @@ export class AppLoggerMiddleware implements NestMiddleware {
   use(request: Request, response: Response, next: NextFunction): void {
     const { ip, method, path: url } = request;
     const userAgent = request.get("user-agent") || "";
-
+    const query = request.params;
+   
+    
     const requestInformation = {
       timestamp: new Date(),
       path: request.url,
@@ -56,3 +59,4 @@ export class AppLoggerMiddleware implements NestMiddleware {
     next();
   }
 }
+

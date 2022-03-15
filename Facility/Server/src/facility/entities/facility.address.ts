@@ -5,6 +5,11 @@ export class Adress  {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
+    title: string;
+    
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
     country: string;
     
     @ApiProperty()

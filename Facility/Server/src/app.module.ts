@@ -73,10 +73,11 @@ import { MulterModule } from "@nestjs/platform-express";
     },
   ],
 })
+/*
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AppLoggerMiddleware).forRoutes("*");
   }
 }
-
-//export class AppModule {}
+*/
+export class AppModule {}
