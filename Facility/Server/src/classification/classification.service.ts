@@ -18,7 +18,6 @@ export class ClassificationService {
   }
 
   async findAll(query) {
-    const { skip, limit } = query;
     return await this.classificationRepository.findAll(query);
   }
 

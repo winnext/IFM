@@ -25,7 +25,6 @@ let ClassificationService = class ClassificationService {
         return await this.classificationRepository.create(createClassificationDto);
     }
     async findAll(query) {
-        const { skip, limit } = query;
         return await this.classificationRepository.findAll(query);
     }
     async findOne(id) {

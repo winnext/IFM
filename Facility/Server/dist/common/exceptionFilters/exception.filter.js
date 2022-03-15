@@ -25,9 +25,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
         const request = ctx.getRequest();
-        const status = exception instanceof common_1.HttpException
-            ? exception.getStatus()
-            : common_1.HttpStatus.INTERNAL_SERVER_ERROR;
+        const status = exception instanceof common_1.HttpException ? exception.getStatus() : common_1.HttpStatus.INTERNAL_SERVER_ERROR;
         const requestInformation = {
             timestamp: new Date(),
             user: request.user || null,
@@ -82,7 +80,6 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                         requestInformation,
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-                    console.log(clientResponse);
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
@@ -122,9 +119,11 @@ HttpExceptionFilter = __decorate([
 ], HttpExceptionFilter);
 exports.HttpExceptionFilter = HttpExceptionFilter;
 async function getI18nMessage(i18n, request) {
+    var _a;
+    const username = ((_a = request.user) === null || _a === void 0 ? void 0 : _a.preferred_name) || 'Guest';
     return await i18n.translate(i18n_enum_1.I18NEnums.USER_NOT_HAVE_PERMISSION, {
         lang: request.i18nLang,
-        args: { username: request.user.preferred_username },
+        args: { username },
     });
 }
 //# sourceMappingURL=exception.filter.js.map
