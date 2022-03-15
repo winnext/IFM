@@ -70,7 +70,6 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                 break;
             case 404:
                 let result = exception.getResponse();
-                console.log(result);
                 try {
                     const message = await this.i18n.translate(result.key, {
                         lang: ctx.getRequest().i18nLang,
@@ -84,7 +83,6 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
                     console.log(`FACILITY_EXCEPTION sending to topic`);
-                    console.log(finalExcep);
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
