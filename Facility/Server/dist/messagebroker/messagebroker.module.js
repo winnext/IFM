@@ -13,7 +13,7 @@ let MessagebrokerModule = class MessagebrokerModule {
 };
 MessagebrokerModule = __decorate([
     (0, common_1.Module)({
-        controllers: [messagebroker_controller_1.MessagebrokerController]
+        controllers: [messagebroker_controller_1.MessagebrokerController],
     })
 ], MessagebrokerModule);
 exports.MessagebrokerModule = MessagebrokerModule;

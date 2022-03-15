@@ -22,8 +22,7 @@ let FacilityService = class FacilityService {
         this.facilityRepository = facilityRepository;
     }
     findAll(query) {
-        const { page, limit } = query;
-        return this.facilityRepository.findAll(page, limit);
+        return this.facilityRepository.findAll(query);
     }
     async findOne(id) {
         return this.facilityRepository.findOneById(id);
@@ -40,12 +39,13 @@ let FacilityService = class FacilityService {
         return facility.remove();
     }
     async createAll(file) {
-        var fs = require('fs');
-        var csv = require('csv-parser');
-        var multer = require('multer');
+        const fs = require('fs');
+        const csv = require('csv-parser');
         try {
             fs;
-            (0, fs_1.createReadStream)(file.path).pipe(csv()).on('data', (data) => {
+            (0, fs_1.createReadStream)(file.path)
+                .pipe(csv())
+                .on('data', (data) => {
                 const dto = {
                     facility_name: data.facility_name,
                     locations: data.locations,
@@ -59,10 +59,10 @@ let FacilityService = class FacilityService {
                 };
                 this.facilityRepository.create(dto);
             });
-            return "success";
+            return 'success';
         }
         catch (_a) {
-            return "failed";
+            return 'failed';
         }
     }
 };

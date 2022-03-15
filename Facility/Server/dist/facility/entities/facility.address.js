@@ -39,5 +39,4 @@ __decorate([
     __metadata("design:type", String)
 ], Adress.prototype, "address", void 0);
 exports.Adress = Adress;
-;
 //# sourceMappingURL=facility.address.js.map

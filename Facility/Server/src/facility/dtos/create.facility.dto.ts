@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDate,
   IsNotEmpty,
@@ -7,10 +7,9 @@ import {
   IsString,
   Length,
   ValidateNested,
- 
-} from "class-validator";
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { Adress } from "../entities/facility.address";
+import { Adress } from '../entities/facility.address';
 
 export class CreateFacilityDto {
   @ApiProperty()
@@ -47,8 +46,8 @@ export class CreateFacilityDto {
   label: string[];
 
   @ApiProperty()
-  @ValidateNested({each:true})
-  @Type(()=>Adress)
+  @ValidateNested({ each: true })
+  @Type(() => Adress)
   address: Adress;
 
   @IsDate()

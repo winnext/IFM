@@ -13,7 +13,7 @@ function LoggerInter() {
 exports.LoggerInter = LoggerInter;
 class LoggingInterceptor {
     constructor() {
-        this.logger = new common_1.Logger("HTTP");
+        this.logger = new common_1.Logger('HTTP');
         this.postKafka = new post_kafka_1.PostKafka(new kafkaService_1.KafkaService());
     }
     async intercept(context, next) {
@@ -26,10 +26,10 @@ class LoggingInterceptor {
             path: request.url,
             method: request.method,
             body: request.body,
-            user: request.user || null
+            user: request.user || null,
         };
         const now = Date.now();
-        response.on("close", async () => {
+        response.on('close', async () => {
             const { statusCode, statusMessage } = response;
             const responseInformation = {
                 statusCode,
@@ -39,10 +39,10 @@ class LoggingInterceptor {
             const log = { requestInformation, responseInformation };
             try {
                 await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_LOGGER, JSON.stringify(log));
-                console.log("FACILITY_LOGGER topic send succesful");
+                console.log('FACILITY_LOGGER topic send succesful');
             }
             catch (error) {
-                console.log("FACILITY_LOGGER topic cannot connected due to " + error);
+                console.log('FACILITY_LOGGER topic cannot connected due to ' + error);
             }
             this.logger.log(`${JSON.stringify(log)}   `);
         });

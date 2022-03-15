@@ -1,8 +1,8 @@
-import { Model } from "mongoose";
-import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
-import { CreateClassificationDto } from "../dto/create-classification.dto";
-import { UpdateClassificationDto } from "../dto/update-classification.dto";
-import { Classification } from "../entities/classification.entity";
+import { Model } from 'mongoose';
+import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { CreateClassificationDto } from '../dto/create-classification.dto';
+import { UpdateClassificationDto } from '../dto/update-classification.dto';
+import { Classification } from '../entities/classification.entity';
 export declare class ClassificationRepository implements BaseInterfaceRepository<Classification> {
     private readonly classificationModel;
     constructor(classificationModel: Model<Classification>);

@@ -7,15 +7,15 @@ import {
   Param,
   Delete,
   Query,
-} from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { Unprotected } from "nest-keycloak-connect";
-import { ClassificationService } from "./classification.service";
-import { CreateClassificationDto } from "./dto/create-classification.dto";
-import { UpdateClassificationDto } from "./dto/update-classification.dto";
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Unprotected } from 'nest-keycloak-connect';
+import { ClassificationService } from './classification.service';
+import { CreateClassificationDto } from './dto/create-classification.dto';
+import { UpdateClassificationDto } from './dto/update-classification.dto';
 
-@ApiTags("Classification")
-@Controller("classification")
+@ApiTags('Classification')
+@Controller('classification')
 export class ClassificationController {
   constructor(private readonly classificationService: ClassificationService) {}
 
@@ -31,24 +31,24 @@ export class ClassificationController {
     return this.classificationService.findAll(query);
   }
 
-  @Get(":id")
+  @Get(':id')
   @Unprotected()
-  findOne(@Param("id") id: string) {
+  findOne(@Param('id') id: string) {
     return this.classificationService.findOne(id);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   @Unprotected()
   update(
-    @Param("id") id: string,
-    @Body() updateClassificationDto: UpdateClassificationDto
+    @Param('id') id: string,
+    @Body() updateClassificationDto: UpdateClassificationDto,
   ) {
     return this.classificationService.update(id, updateClassificationDto);
   }
 
-  @Delete(":id")
+  @Delete(':id')
   @Unprotected()
-  remove(@Param("id") id: string) {
+  remove(@Param('id') id: string) {
     return this.classificationService.remove(id);
   }
 }

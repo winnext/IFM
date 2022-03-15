@@ -1,16 +1,15 @@
 import {
-  ArgumentsHost,
   BadGatewayException,
   Catch,
   ConflictException,
   ExceptionFilter,
   InternalServerErrorException,
-} from "@nestjs/common";
-import { MongoError } from "mongodb";
+} from '@nestjs/common';
+import { MongoError } from 'mongodb';
 
 @Catch(MongoError)
 export class MongoExceptionFilter implements ExceptionFilter {
-  catch(exception: MongoError, host: ArgumentsHost) {
+  catch(exception: MongoError) {
     switch (exception.code) {
       case 112: // write conflict (when a transaction is failed)
         throw new BadGatewayException();

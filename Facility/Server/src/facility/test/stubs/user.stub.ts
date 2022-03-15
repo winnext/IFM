@@ -1,5 +1,3 @@
-import { Facility } from 'src/facility/entities/facility.entity';
-
 export const facilityStub = () => {
   return {
     uuid: 'b9a7ec17-c8f3-48f5-a444-d9c310322dcf',
@@ -12,6 +10,5 @@ export const facilityStub = () => {
     facility_name: 'test',
     locations: 'istanbul',
     city: 'İstanbul',
-
   };
 };

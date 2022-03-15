@@ -10,98 +10,96 @@ import {
   Res,
   UploadedFile,
   UseInterceptors,
-} from "@nestjs/common";
-import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { CreateFacilityDto } from "./dtos/create.facility.dto";
-import { UpdateFacilityDto } from "./dtos/update.facility.dto";
-import { Facility } from "./entities/facility.entity";
-import { FacilityService } from "./facility.service";
-import { Roles, Unprotected } from "nest-keycloak-connect";
-import { PaginationParams } from "src/common/commonDto/pagination.dto";
-import { diskStorage } from "multer";
-import { FileInterceptor } from "@nestjs/platform-express";
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateFacilityDto } from './dtos/create.facility.dto';
+import { UpdateFacilityDto } from './dtos/update.facility.dto';
+import { Facility } from './entities/facility.entity';
+import { FacilityService } from './facility.service';
+import { Roles, Unprotected } from 'nest-keycloak-connect';
+import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@ApiTags("Facility")
-@Controller("facility")
+@ApiTags('Facility')
+@Controller('facility')
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
 
   @ApiOperation({
-    summary: "Gets all facilities ",
+    summary: 'Gets all facilities ',
     description:
-      "If you want to get all facilities in your organization use this route. It takes no path or query params",
+      'If you want to get all facilities in your organization use this route. It takes no path or query params',
   })
   //@LoggerInter()
-  @Get("/")
-  @Roles({ roles: ["facility_client_role_admin"] })
-  //@Unprotected()
-  async getAllFacilities(
-    @Query() query: PaginationParams
-  ): Promise<Facility[]> {
-    return this.facilityService.findAll(query);
+  @Get('/')
+  //@Roles({ roles: ['facility_client_role_admin'] })
+  @Unprotected()
+  async getAllFacilities(@Body() body: PaginationParams): Promise<Facility[]> {
+    return this.facilityService.findAll(body);
   }
 
   @ApiOperation({
-    summary: "Gets facility with id ",
+    summary: 'Gets facility with id ',
     description:
-      "If you want to get specific facility in your organization use this route. It takes  query params which is  id",
+      'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
   })
-  @Get("/:_id")
-  @Roles({ roles: ["facility_client_role_user"] })
+  @Get('/:_id')
+  @Roles({ roles: ['facility_client_role_user'] })
   //@Unprotected()
-  getFacility(@Param("_id") id: string): Promise<Facility> {
+  getFacility(@Param('_id') id: string): Promise<Facility> {
     return this.facilityService.findOne(id);
   }
 
   @ApiBody({
     type: CreateFacilityDto,
-    description: "Store product structure",
+    description: 'Store product structure',
   })
-  @Post("")
+  @Post('')
   //@Unprotected()
-  @Roles({ roles: ["facility_client_role_admin"] })
+  @Roles({ roles: ['facility_client_role_admin'] })
   createFacility(
-    @Body() createFacilityDto: CreateFacilityDto
+    @Body() createFacilityDto: CreateFacilityDto,
   ): Promise<Facility> {
     return this.facilityService.create(createFacilityDto);
   }
 
   @ApiBody({
     type: UpdateFacilityDto,
-    description: "update  facility structure",
+    description: 'update  facility structure',
   })
-  @Patch("/:_id")
+  @Patch('/:_id')
   @Unprotected()
   //@Roles({ roles: ["facility_client_role_admin"] })
   updateFacility(
-    @Param("_id") id: string,
-    @Body() updateFacilityDto: UpdateFacilityDto
+    @Param('_id') id: string,
+    @Body() updateFacilityDto: UpdateFacilityDto,
   ) {
     return this.facilityService.update(id, updateFacilityDto);
   }
 
-  @Delete("/:_id")
+  @Delete('/:_id')
   @Unprotected()
   //@Roles({ roles: ["facility_client_role_admin"] })
-  deleteFacility(@Param("_id") id: string) {
+  deleteFacility(@Param('_id') id: string) {
     return this.facilityService.remove(id);
   }
 
   @ApiOperation({
-    summary: "Load facility cs file ",
-    description: "***",
+    summary: 'Load facility cs file ',
+    description: '***',
   })
-  @Roles({ roles: ["facility_client_role_admin"] })
+  @Roles({ roles: ['facility_client_role_admin'] })
   //@Unprotected()
-  @Post("createfacilities")
+  @Post('createfacilities')
   @UseInterceptors(
-    FileInterceptor("file", {
-      storage: diskStorage({ destination: "./upload" }),
-    })
+    FileInterceptor('file', {
+      storage: diskStorage({ destination: './upload' }),
+    }),
   )
   async createFacilitiesByCsv(
     @Res() res,
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile() file: Express.Multer.File,
   ) {
     return res.send(await this.facilityService.createAll(file));
   }

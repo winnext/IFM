@@ -1,16 +1,16 @@
-import { I18nService } from "nestjs-i18n";
+import { I18nService } from 'nestjs-i18n';
 import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
   HttpException,
   HttpStatus,
-} from "@nestjs/common";
-import { Request, Response } from "express";
-import { I18NEnums } from "../const/i18n.enum";
-import { KafkaService } from "../queueService/kafkaService";
-import { PostKafka } from "../queueService/post-kafka";
-import { FacilityTopics } from "../const/kafta.topic.enum";
+} from '@nestjs/common';
+import { Response } from 'express';
+import { I18NEnums } from '../const/i18n.enum';
+import { KafkaService } from '../queueService/kafkaService';
+import { PostKafka } from '../queueService/post-kafka';
+import { FacilityTopics } from '../const/kafta.topic.enum';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -45,25 +45,26 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
     switch (exception.getStatus()) {
       case 400:
-        try {  
+        try {
           const finalExcep = {
             errorResponseLog,
             requestInformation,
           };
           await this.postKafka.producerSendMessage(
             FacilityTopics.FACILITY_EXCEPTIONS,
-            JSON.stringify(finalExcep)
+            JSON.stringify(finalExcep),
           );
           response.status(status).json(exception.getResponse());
         } catch (error) {
           console.log(
-            "FACILITY_EXCEPTION topic cannot connected due to " + error
+            'FACILITY_EXCEPTION topic cannot connected due to ' + error,
           );
         }
         break;
       case 401:
         try {
-          const message = getI18nMessage(this.i18n, request);
+          const message = await getI18nMessage(this.i18n, request);
+
           const clientResponse = { status, message };
           const finalExcep = {
             errorResponseLog,
@@ -73,17 +74,39 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
           await this.postKafka.producerSendMessage(
             FacilityTopics.FACILITY_EXCEPTIONS,
-            JSON.stringify(finalExcep)
+            JSON.stringify(finalExcep),
           );
           response.status(status).json(clientResponse);
         } catch (error) {
           console.log(
-            "FACILITY_EXCEPTION topic cannot connected due to " + error
+            'FACILITY_EXCEPTION topic cannot connected due to ' + error,
+          );
+        }
+        break;
+      case 403:
+        try {
+          const message = await getI18nMessage(this.i18n, request);
+          const clientResponse = { status, message };
+          const finalExcep = {
+            errorResponseLog,
+            clientResponse,
+            requestInformation,
+          };
+
+          await this.postKafka.producerSendMessage(
+            FacilityTopics.FACILITY_EXCEPTIONS,
+            JSON.stringify(finalExcep),
+          );
+          console.log(clientResponse);
+          response.status(status).json(clientResponse);
+        } catch (error) {
+          console.log(
+            'FACILITY_EXCEPTION topic cannot connected due to ' + error,
           );
         }
         break;
       case 404:
-        let result: any = exception.getResponse();
+        const result: any = exception.getResponse();
         try {
           const message = await this.i18n.translate(result.key, {
             lang: ctx.getRequest().i18nLang,
@@ -98,7 +121,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           };
           await this.postKafka.producerSendMessage(
             FacilityTopics.FACILITY_EXCEPTIONS,
-            JSON.stringify(finalExcep)
+            JSON.stringify(finalExcep),
           );
           console.log(`FACILITY_EXCEPTION sending to topic`);
           response.status(status).json(clientResponse);
@@ -117,6 +140,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
 async function getI18nMessage(i18n: I18nService, request) {
   return await i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {
     lang: request.i18nLang,
-    args: { username: "Test User" },
+    args: { username: request.user.preferred_username },
   });
 }

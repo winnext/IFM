@@ -1,24 +1,20 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UseInterceptors,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
-import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
-import { FacilityNotFountException } from "../../common/notFoundExceptions/facility.not.found.exception";
-import { CreateFacilityDto } from "../dtos/create.facility.dto";
-import { UpdateFacilityDto } from "../dtos/update.facility.dto";
-import { Facility } from "../entities/facility.entity";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { FacilityNotFountException } from '../../common/notFoundExceptions/facility.not.found.exception';
+import { CreateFacilityDto } from '../dtos/create.facility.dto';
+import { UpdateFacilityDto } from '../dtos/update.facility.dto';
+import { Facility } from '../entities/facility.entity';
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(
-    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>
+    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
   ) {}
   findWithRelations(relations: any): Promise<Facility[]> {
-    throw new Error("Method not implemented.");
+    throw new Error(relations);
   }
   async findOneById(id: string): Promise<Facility> {
     const facility = await this.facilityModel.findById({ _id: id }).exec();
@@ -28,22 +24,35 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
     return facility;
   }
-  async findAll(page = 0, limit = 5) {
-    var count = parseInt((await this.facilityModel.find().count()).toString());
-    var pagecount = Math.ceil(count / lmt);
-    var pg = parseInt(page.toString());
-    var lmt = parseInt(limit.toString());
+  async findAll(data: PaginationParams) {
+    let { page, limit, orderBy, orderByColumn } = data;
+    page = page || 0;
+    limit = limit || 5;
+    orderBy = orderBy || 'ascending';
+
+    orderByColumn = orderByColumn || 'FacilityName';
+    const count = parseInt(
+      (await this.facilityModel.find().count()).toString(),
+    );
+    const pagecount = Math.ceil(count / limit);
+    let pg = parseInt(page.toString());
+    const lmt = parseInt(limit.toString());
     if (pg > pagecount) {
       pg = pagecount;
     }
-    var skip = pg * lmt;
+    let skip = pg * lmt;
     if (skip >= count) {
       skip = count - lmt;
       if (skip < 0) {
         skip = 0;
       }
     }
-    var result = await this.facilityModel.find().skip(skip).limit(lmt).exec();
+    const result = await this.facilityModel
+      .find()
+      .skip(skip)
+      .limit(lmt)
+      .sort([[orderByColumn, orderBy]])
+      .exec();
     const pagination = { count: count, page: pg, limit: lmt };
     const facility = [];
     facility.push(result);

@@ -1,5 +1,5 @@
-import { Producer } from "kafkajs";
-import { IQueueService } from "./queueInterface";
+import { Producer } from 'kafkajs';
+import { IQueueService } from './queueInterface';
 export declare class PostKafka {
     private service;
     constructor(service: IQueueService);

@@ -18,10 +18,10 @@ const microservices_1 = require("@nestjs/microservices");
 const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
 let MessagebrokerController = class MessagebrokerController {
     exceptionListener(message) {
-        console.log("this is from message broker exception listener" + message.value);
+        console.log('this is from message broker exception listener' + message.value);
     }
     loggerListene(message) {
-        console.log("this is from message broker logger listener" + message.value);
+        console.log('this is from message broker logger listener' + message.value);
     }
 };
 __decorate([
@@ -39,7 +39,7 @@ __decorate([
     __metadata("design:returntype", Object)
 ], MessagebrokerController.prototype, "loggerListene", null);
 MessagebrokerController = __decorate([
-    (0, common_1.Controller)("messagebroker")
+    (0, common_1.Controller)('messagebroker')
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map

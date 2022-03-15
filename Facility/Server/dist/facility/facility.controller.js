@@ -26,8 +26,8 @@ let FacilityController = class FacilityController {
     constructor(facilityService) {
         this.facilityService = facilityService;
     }
-    async getAllFacilities(query) {
-        return this.facilityService.findAll(query);
+    async getAllFacilities(body) {
+        return this.facilityService.findAll(body);
     }
     getFacility(id) {
         return this.facilityService.findOne(id);
@@ -47,24 +47,24 @@ let FacilityController = class FacilityController {
 };
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: "Gets all facilities ",
-        description: "If you want to get all facilities in your organization use this route. It takes no path or query params",
+        summary: 'Gets all facilities ',
+        description: 'If you want to get all facilities in your organization use this route. It takes no path or query params',
     }),
-    (0, common_1.Get)("/"),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ["facility_client_role_admin"] }),
-    __param(0, (0, common_1.Query)()),
+    (0, common_1.Get)('/'),
+    (0, nest_keycloak_connect_1.Unprotected)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
     __metadata("design:returntype", Promise)
 ], FacilityController.prototype, "getAllFacilities", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: "Gets facility with id ",
-        description: "If you want to get specific facility in your organization use this route. It takes  query params which is  id",
+        summary: 'Gets facility with id ',
+        description: 'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
     }),
-    (0, common_1.Get)("/:_id"),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ["facility_client_role_user"] }),
-    __param(0, (0, common_1.Param)("_id")),
+    (0, common_1.Get)('/:_id'),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_user'] }),
+    __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -72,10 +72,10 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiBody)({
         type: create_facility_dto_1.CreateFacilityDto,
-        description: "Store product structure",
+        description: 'Store product structure',
     }),
-    (0, common_1.Post)(""),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ["facility_client_role_admin"] }),
+    (0, common_1.Post)(''),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_facility_dto_1.CreateFacilityDto]),
@@ -84,33 +84,33 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiBody)({
         type: update_facility_dto_1.UpdateFacilityDto,
-        description: "update  facility structure",
+        description: 'update  facility structure',
     }),
-    (0, common_1.Patch)("/:_id"),
+    (0, common_1.Patch)('/:_id'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Param)("_id")),
+    __param(0, (0, common_1.Param)('_id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_facility_dto_1.UpdateFacilityDto]),
     __metadata("design:returntype", void 0)
 ], FacilityController.prototype, "updateFacility", null);
 __decorate([
-    (0, common_1.Delete)("/:_id"),
+    (0, common_1.Delete)('/:_id'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Param)("_id")),
+    __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], FacilityController.prototype, "deleteFacility", null);
 __decorate([
     (0, swagger_1.ApiOperation)({
-        summary: "Load facility cs file ",
-        description: "***",
+        summary: 'Load facility cs file ',
+        description: '***',
     }),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ["facility_client_role_admin"] }),
-    (0, common_1.Post)("createfacilities"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
-        storage: (0, multer_1.diskStorage)({ destination: "./upload" }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
+    (0, common_1.Post)('createfacilities'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        storage: (0, multer_1.diskStorage)({ destination: './upload' }),
     })),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.UploadedFile)()),
@@ -119,8 +119,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], FacilityController.prototype, "createFacilitiesByCsv", null);
 FacilityController = __decorate([
-    (0, swagger_1.ApiTags)("Facility"),
-    (0, common_1.Controller)("facility"),
+    (0, swagger_1.ApiTags)('Facility'),
+    (0, common_1.Controller)('facility'),
     __metadata("design:paramtypes", [facility_service_1.FacilityService])
 ], FacilityController);
 exports.FacilityController = FacilityController;

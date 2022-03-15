@@ -1,2 +1,2 @@
-import { KafkaOptions } from "@nestjs/microservices";
+import { KafkaOptions } from '@nestjs/microservices';
 export declare const kafkaOptions: KafkaOptions;

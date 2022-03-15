@@ -1,14 +1,14 @@
-import { Module } from "@nestjs/common";
-import { ClassificationService } from "./classification.service";
-import { ClassificationController } from "./classification.controller";
+import { Module } from '@nestjs/common';
+import { ClassificationService } from './classification.service';
+import { ClassificationController } from './classification.controller';
 import {
   Classification,
   ClassificationSchema,
-} from "./entities/classification.entity";
-import { MongooseModule } from "@nestjs/mongoose";
-import { ConnectionEnums } from "src/common/const/connection.enum";
-import { ClassificationRepository } from "./repositories/classification.repository";
-import { RepositoryEnums } from "src/common/const/repository.enum";
+} from './entities/classification.entity';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConnectionEnums } from 'src/common/const/connection.enum';
+import { ClassificationRepository } from './repositories/classification.repository';
+import { RepositoryEnums } from 'src/common/const/repository.enum';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { RepositoryEnums } from "src/common/const/repository.enum";
           schema: ClassificationSchema,
         },
       ],
-      ConnectionEnums.CLASSIFICATION
+      ConnectionEnums.CLASSIFICATION,
     ),
   ],
   controllers: [ClassificationController],

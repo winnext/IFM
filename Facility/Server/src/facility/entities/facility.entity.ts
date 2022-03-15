@@ -1,13 +1,11 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Timestamp } from "bson";
-import { Document } from "mongoose";
-import { BasePersistantDocumentObject } from "src/common/baseObject/base.object";
-import { v4 as uuidv4 } from "uuid";
-import { Adress } from "./facility.address";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Timestamp } from 'bson';
+import { Document } from 'mongoose';
+import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
+import { v4 as uuidv4 } from 'uuid';
+import { Adress } from './facility.address';
 
 export type FacilityDocument = Facility & Document;
-
-
 
 @Schema()
 export class Facility extends BasePersistantDocumentObject {

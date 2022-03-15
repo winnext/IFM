@@ -1,20 +1,20 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 
 import {
   KeycloakConnectModule,
   ResourceGuard,
   RoleGuard,
   AuthGuard,
-} from "nest-keycloak-connect";
-import { APP_GUARD } from "@nestjs/core";
+} from 'nest-keycloak-connect';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     KeycloakConnectModule.register({
-      authServerUrl: "http://172.19.100.120:8080/auth",
-      realm: "IFM",
-      clientId: "ifm_facility_client",
-      secret: "cBh97xovn2wC70DbnZfupiH4t1vQoDrU",
+      authServerUrl: 'http://172.19.100.120:8080/auth',
+      realm: 'IFM',
+      clientId: 'ifm_facility_client',
+      secret: 'cBh97xovn2wC70DbnZfupiH4t1vQoDrU',
 
       // Secret key of the client taken from keycloak server
     }),

@@ -12,13 +12,13 @@ async function bootstrap() {
         const app = await core_1.NestFactory.create(app_module_1.AppModule, { abortOnError: false });
         app.connectMicroservice(message_broker_options_1.kafkaOptions);
         const config = new swagger_1.DocumentBuilder()
-            .setTitle("Facility Microservice Endpoints")
-            .setDescription("Facility Transactions")
-            .setVersion("1.0")
-            .addTag("facility")
+            .setTitle('Facility Microservice Endpoints')
+            .setDescription('Facility Transactions')
+            .setVersion('1.0')
+            .addTag('facility')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, config);
-        swagger_1.SwaggerModule.setup("api", app, document);
+        swagger_1.SwaggerModule.setup('api', app, document);
         app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
         app.useGlobalFilters(new mongo_exception_1.MongoExceptionFilter());
         app.useGlobalInterceptors(new logger_interceptor_1.LoggingInterceptor());

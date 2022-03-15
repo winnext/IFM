@@ -1,5 +1,4 @@
-
 export enum RepositoryEnums {
-    FACILITY="facility",
-    CLASSIFICATION="classification"
+  FACILITY = 'facility',
+  CLASSIFICATION = 'classification',
 }

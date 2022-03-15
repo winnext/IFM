@@ -23,7 +23,7 @@ let ClassificationRepository = class ClassificationRepository {
         this.classificationModel = classificationModel;
     }
     findWithRelations(relations) {
-        throw new Error("Method not implemented.");
+        throw new Error(relations);
     }
     async findOneById(id) {
         const classification = await this.classificationModel

@@ -10,7 +10,7 @@ exports.MongoExceptionFilter = void 0;
 const common_1 = require("@nestjs/common");
 const mongodb_1 = require("mongodb");
 let MongoExceptionFilter = class MongoExceptionFilter {
-    catch(exception, host) {
+    catch(exception) {
         switch (exception.code) {
             case 112:
                 throw new common_1.BadGatewayException();

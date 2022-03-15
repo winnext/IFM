@@ -1,5 +1,4 @@
-
 export enum ConnectionEnums {
-    FACILITY="facility",
-    CLASSIFICATION="classification"
+  FACILITY = 'facility',
+  CLASSIFICATION = 'classification',
 }

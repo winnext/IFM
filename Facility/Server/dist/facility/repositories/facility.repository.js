@@ -23,7 +23,7 @@ let FacilityRepository = class FacilityRepository {
         this.facilityModel = facilityModel;
     }
     findWithRelations(relations) {
-        throw new Error("Method not implemented.");
+        throw new Error(relations);
     }
     async findOneById(id) {
         const facility = await this.facilityModel.findById({ _id: id }).exec();
@@ -32,22 +32,32 @@ let FacilityRepository = class FacilityRepository {
         }
         return facility;
     }
-    async findAll(page = 0, limit = 5) {
-        var count = parseInt((await this.facilityModel.find().count()).toString());
-        var pagecount = Math.ceil(count / lmt);
-        var pg = parseInt(page.toString());
-        var lmt = parseInt(limit.toString());
+    async findAll(data) {
+        let { page, limit, orderBy, orderByColumn } = data;
+        page = page || 0;
+        limit = limit || 5;
+        orderBy = orderBy || 'ascending';
+        orderByColumn = orderByColumn || 'FacilityName';
+        const count = parseInt((await this.facilityModel.find().count()).toString());
+        const pagecount = Math.ceil(count / limit);
+        let pg = parseInt(page.toString());
+        const lmt = parseInt(limit.toString());
         if (pg > pagecount) {
             pg = pagecount;
         }
-        var skip = pg * lmt;
+        let skip = pg * lmt;
         if (skip >= count) {
             skip = count - lmt;
             if (skip < 0) {
                 skip = 0;
             }
         }
-        var result = await this.facilityModel.find().skip(skip).limit(lmt).exec();
+        const result = await this.facilityModel
+            .find()
+            .skip(skip)
+            .limit(lmt)
+            .sort([[orderByColumn, orderBy]])
+            .exec();
         const pagination = { count: count, page: pg, limit: lmt };
         const facility = [];
         facility.push(result);

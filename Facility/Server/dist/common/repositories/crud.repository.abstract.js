@@ -6,11 +6,11 @@ class BaseAbstractRepository {
     constructor(entity) {
         this.entity = entity;
     }
-    update(id, data) {
-        throw new Error("Method not implemented.");
+    update(_id, data) {
+        throw new Error('Method not implemented.');
     }
-    delete(id) {
-        throw new Error("Method not implemented.");
+    delete(_id) {
+        throw new Error('Method not implemented.');
     }
     async create(data) {
         return await this.entity.create(data);

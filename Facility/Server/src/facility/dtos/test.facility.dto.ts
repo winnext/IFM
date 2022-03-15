@@ -1,5 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
-
 export class TestFacilityDto {
   _id?: string;
 
@@ -14,10 +12,10 @@ export class TestFacilityDto {
   label: string[];
 
   country: string;
-  
+
   address: string;
 
   uuid: string;
-  
-  __v?: Number;
+
+  __v?: number;
 }

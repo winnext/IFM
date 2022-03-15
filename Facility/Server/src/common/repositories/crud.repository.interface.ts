@@ -7,7 +7,7 @@ export interface BaseInterfaceRepository<T> {
 
   //findByCondition(filterCondition: any): Promise<T>;
 
-  findAll(skip, limit): Promise<T[]>;
+  findAll(data: T | any): Promise<T[]>;
 
   delete(id: string): Promise<T>;
 

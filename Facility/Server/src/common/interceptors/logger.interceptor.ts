@@ -3,15 +3,14 @@ import {
   ExecutionContext,
   CallHandler,
   UseInterceptors,
-  OnModuleInit,
   Logger,
-} from "@nestjs/common";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
-import { FacilityTopics } from "../const/kafta.topic.enum";
-import { checkObjectIddİsValid } from "../func/objectId.check";
-import { KafkaService } from "../queueService/kafkaService";
-import { PostKafka } from "../queueService/post-kafka";
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { FacilityTopics } from '../const/kafta.topic.enum';
+import { checkObjectIddİsValid } from '../func/objectId.check';
+import { KafkaService } from '../queueService/kafkaService';
+import { PostKafka } from '../queueService/post-kafka';
 export function LoggerInter() {
   return UseInterceptors(new LoggingInterceptor());
 }
@@ -21,10 +20,10 @@ export class LoggingInterceptor implements NestInterceptor {
   constructor() {
     this.postKafka = new PostKafka(new KafkaService());
   }
-  private logger = new Logger("HTTP");
+  private logger = new Logger('HTTP');
   async intercept(
     context: ExecutionContext,
-    next: CallHandler
+    next: CallHandler,
   ): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
@@ -36,13 +35,11 @@ export class LoggingInterceptor implements NestInterceptor {
       method: request.method,
       body: request.body,
       //userToken: request.headers["authorization"] || null,
-      user:request.user || null
-      
+      user: request.user || null,
     };
     const now = Date.now();
-   
 
-    response.on("close", async () => {
+    response.on('close', async () => {
       const { statusCode, statusMessage } = response;
       const responseInformation = {
         statusCode,
@@ -53,11 +50,11 @@ export class LoggingInterceptor implements NestInterceptor {
       try {
         await this.postKafka.producerSendMessage(
           FacilityTopics.FACILITY_LOGGER,
-          JSON.stringify(log)
+          JSON.stringify(log),
         );
-        console.log("FACILITY_LOGGER topic send succesful");
+        console.log('FACILITY_LOGGER topic send succesful');
       } catch (error) {
-        console.log("FACILITY_LOGGER topic cannot connected due to " + error);
+        console.log('FACILITY_LOGGER topic cannot connected due to ' + error);
       }
       this.logger.log(`${JSON.stringify(log)}   `);
     });

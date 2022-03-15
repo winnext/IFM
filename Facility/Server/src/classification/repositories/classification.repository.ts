@@ -1,12 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { ClassificationNotFountException } from "src/common/notFoundExceptions/facility.not.found.exception";
-import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
-import { CreateClassificationDto } from "../dto/create-classification.dto";
-import { UpdateClassificationDto } from "../dto/update-classification.dto";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
+import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { CreateClassificationDto } from '../dto/create-classification.dto';
+import { UpdateClassificationDto } from '../dto/update-classification.dto';
 
-import { Classification } from "../entities/classification.entity";
+import { Classification } from '../entities/classification.entity';
 
 @Injectable()
 export class ClassificationRepository
@@ -14,10 +14,10 @@ export class ClassificationRepository
 {
   constructor(
     @InjectModel(Classification.name)
-    private readonly classificationModel: Model<Classification>
+    private readonly classificationModel: Model<Classification>,
   ) {}
   findWithRelations(relations: any): Promise<Classification[]> {
-    throw new Error("Method not implemented.");
+    throw new Error(relations);
   }
   async findOneById(id: string): Promise<Classification> {
     const classification = await this.classificationModel
@@ -34,7 +34,7 @@ export class ClassificationRepository
   }
   async create(createClassificationDto: CreateClassificationDto) {
     const classification = new this.classificationModel(
-      createClassificationDto
+      createClassificationDto,
     );
 
     return await classification.save();
@@ -44,7 +44,7 @@ export class ClassificationRepository
       .findOneAndUpdate(
         { _id },
         { $set: updateClassificationto },
-        { new: true }
+        { new: true },
       )
       .exec();
 

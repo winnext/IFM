@@ -1,6 +1,6 @@
-import { ClassificationService } from "./classification.service";
-import { CreateClassificationDto } from "./dto/create-classification.dto";
-import { UpdateClassificationDto } from "./dto/update-classification.dto";
+import { ClassificationService } from './classification.service';
+import { CreateClassificationDto } from './dto/create-classification.dto';
+import { UpdateClassificationDto } from './dto/update-classification.dto';
 export declare class ClassificationController {
     private readonly classificationService;
     constructor(classificationService: ClassificationService);

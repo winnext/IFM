@@ -56,33 +56,33 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(":id"),
+    (0, common_1.Get)(':id'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(":id"),
+    (0, common_1.Patch)(':id'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_classification_dto_1.UpdateClassificationDto]),
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(":id"),
+    (0, common_1.Delete)(':id'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Param)("id")),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "remove", null);
 ClassificationController = __decorate([
-    (0, swagger_1.ApiTags)("Classification"),
-    (0, common_1.Controller)("classification"),
+    (0, swagger_1.ApiTags)('Classification'),
+    (0, common_1.Controller)('classification'),
     __metadata("design:paramtypes", [classification_service_1.ClassificationService])
 ], ClassificationController);
 exports.ClassificationController = ClassificationController;

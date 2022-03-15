@@ -1,10 +1,10 @@
 /// <reference types="mongoose/types/PipelineStage" />
 /// <reference types="mongoose/types/Error" />
 /// <reference types="mongoose/types/Connection" />
-import { Timestamp } from "bson";
-import { Document } from "mongoose";
-import { BasePersistantDocumentObject } from "src/common/baseObject/base.object";
-import { Adress } from "./facility.address";
+import { Timestamp } from 'bson';
+import { Document } from 'mongoose';
+import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
+import { Adress } from './facility.address';
 export declare type FacilityDocument = Facility & Document;
 export declare class Facility extends BasePersistantDocumentObject {
     uuid: string;

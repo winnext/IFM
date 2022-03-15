@@ -1,10 +1,10 @@
-import { Model } from "mongoose";
-import { BaseInterfaceRepository } from "./crud.repository.interface";
+import { Model } from 'mongoose';
+import { BaseInterfaceRepository } from './crud.repository.interface';
 export declare abstract class BaseAbstractRepository<T> implements BaseInterfaceRepository<T> {
     private entity;
     protected constructor(entity: Model<T>);
-    update(id: string, data: any): void;
-    delete(id: string): Promise<T>;
+    update(_id: string, data: any): void;
+    delete(_id: string): Promise<T>;
     create(data: T | any): Promise<T>;
     findOneById(id: string): Promise<T>;
     findWithRelations(relations: any): Promise<T[]>;

@@ -26,7 +26,7 @@ let ClassificationService = class ClassificationService {
     }
     async findAll(query) {
         const { skip, limit } = query;
-        return await this.classificationRepository.findAll(skip, limit);
+        return await this.classificationRepository.findAll(query);
     }
     async findOne(id) {
         (0, objectId_check_1.checkObjectIddİsValid)(id);

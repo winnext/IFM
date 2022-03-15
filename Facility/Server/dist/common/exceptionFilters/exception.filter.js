@@ -53,12 +53,12 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     response.status(status).json(exception.getResponse());
                 }
                 catch (error) {
-                    console.log("FACILITY_EXCEPTION topic cannot connected due to " + error);
+                    console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
                 }
                 break;
             case 401:
                 try {
-                    const message = getI18nMessage(this.i18n, request);
+                    const message = await getI18nMessage(this.i18n, request);
                     const clientResponse = { status, message };
                     const finalExcep = {
                         errorResponseLog,
@@ -69,11 +69,28 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
-                    console.log("FACILITY_EXCEPTION topic cannot connected due to " + error);
+                    console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+                }
+                break;
+            case 403:
+                try {
+                    const message = await getI18nMessage(this.i18n, request);
+                    const clientResponse = { status, message };
+                    const finalExcep = {
+                        errorResponseLog,
+                        clientResponse,
+                        requestInformation,
+                    };
+                    await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
+                    console.log(clientResponse);
+                    response.status(status).json(clientResponse);
+                }
+                catch (error) {
+                    console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
                 }
                 break;
             case 404:
-                let result = exception.getResponse();
+                const result = exception.getResponse();
                 try {
                     const message = await this.i18n.translate(result.key, {
                         lang: ctx.getRequest().i18nLang,
@@ -107,7 +124,7 @@ exports.HttpExceptionFilter = HttpExceptionFilter;
 async function getI18nMessage(i18n, request) {
     return await i18n.translate(i18n_enum_1.I18NEnums.USER_NOT_HAVE_PERMISSION, {
         lang: request.i18nLang,
-        args: { username: "Test User" },
+        args: { username: request.user.preferred_username },
     });
 }
 //# sourceMappingURL=exception.filter.js.map

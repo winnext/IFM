@@ -1,7 +1,7 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { Producer } from "kafkajs";
-import { IQueueService } from "./queueInterface";
+import { Producer } from 'kafkajs';
+import { IQueueService } from './queueInterface';
 
 @Injectable()
 export class PostKafka {

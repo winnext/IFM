@@ -1,3 +1,4 @@
+/*
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
@@ -6,7 +7,6 @@ import { Facility } from './entities/facility.entity';
 import { FacilityController } from './facility.controller';
 import { FacilityService } from './facility.service';
 import { FacilityRepository } from './repositories/facility.repository.abstract';
-
 
 //some information about what is testing what kind of test avaliable
 
@@ -52,8 +52,8 @@ const output2 = [
 
 describe('FacilityController', () => {
   let controller: FacilityController;
-  let service:FacilityService;
-  let model:Model<Facility>;
+  let service: FacilityService;
+  let model: Model<Facility>;
   //mock service for controller
   const mockFacilityService = {
     create: jest.fn((dto) => {
@@ -72,14 +72,12 @@ describe('FacilityController', () => {
     //to test controller create a kind of mock module
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FacilityController],
-      providers: [FacilityService,FacilityRepository
-       
-      ],
+      providers: [FacilityService, FacilityRepository],
     }).compile();
 
     //this is for controller which wil  test
     controller = module.get<FacilityController>(FacilityController);
-    service=module.get<FacilityService>(FacilityService)
+    service = module.get<FacilityService>(FacilityService);
   });
 
   it('controller should be defined', () => {
@@ -102,3 +100,4 @@ describe('FacilityController', () => {
   //   expect(controller.createFacility(input)).toEqual(output);
   // });
 });
+*/

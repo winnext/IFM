@@ -16,10 +16,10 @@ KeycloakModule = __decorate([
     (0, common_1.Module)({
         imports: [
             nest_keycloak_connect_1.KeycloakConnectModule.register({
-                authServerUrl: "http://172.19.100.120:8080/auth",
-                realm: "IFM",
-                clientId: "ifm_facility_client",
-                secret: "cBh97xovn2wC70DbnZfupiH4t1vQoDrU",
+                authServerUrl: 'http://172.19.100.120:8080/auth',
+                realm: 'IFM',
+                clientId: 'ifm_facility_client',
+                secret: 'cBh97xovn2wC70DbnZfupiH4t1vQoDrU',
             }),
         ],
         providers: [

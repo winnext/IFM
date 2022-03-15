@@ -8,5 +8,5 @@ export declare class TestFacilityDto {
     country: string;
     address: string;
     uuid: string;
-    __v?: Number;
+    __v?: number;
 }

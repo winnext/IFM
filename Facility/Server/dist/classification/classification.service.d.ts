@@ -1,7 +1,7 @@
-import { BaseInterfaceRepository } from "src/common/repositories/crud.repository.interface";
-import { CreateClassificationDto } from "./dto/create-classification.dto";
-import { UpdateClassificationDto } from "./dto/update-classification.dto";
-import { Classification } from "./entities/classification.entity";
+import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { CreateClassificationDto } from './dto/create-classification.dto';
+import { UpdateClassificationDto } from './dto/update-classification.dto';
+import { Classification } from './entities/classification.entity';
 export declare class ClassificationService {
     private readonly classificationRepository;
     constructor(classificationRepository: BaseInterfaceRepository<Classification>);
