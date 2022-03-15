@@ -6,7 +6,9 @@ import {
   IsOptional,
   IsString,
   Length,
+ 
 } from "class-validator";
+import { ValidateNested } from "src/common/func/validate.nested.object";
 import { Adress } from "../entities/facility.address";
 
 export class CreateFacilityDto {
@@ -44,7 +46,7 @@ export class CreateFacilityDto {
   label: string[];
 
   @ApiProperty()
-  @IsNotEmpty()
+  @ValidateNested(Adress)
   address: Adress;
 
   @IsDate()
