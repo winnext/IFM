@@ -21,9 +21,6 @@ import "./App.scss";
 
 const App = () => {
   const [menuActive, setMenuActive] = useState(false);
-  const [menuMode, setMenuMode] = useState("static");
-  const [colorScheme, setColorScheme] = useState("light");
-  const [menuTheme, setMenuTheme] = useState("layout-sidebar-darkgray");
   const [overlayMenuActive, setOverlayMenuActive] = useState(false);
   const [staticMenuDesktopInactive, setStaticMenuDesktopInactive] =
     useState(false);
@@ -37,12 +34,31 @@ const App = () => {
   const [inputStyle, setInputStyle] = useState("outlined");
   const [ripple, setRipple] = useState(false);
   const [logoColor, setLogoColor] = useState("white");
-  const [componentTheme, setComponentTheme] = useState("blue");
   const [logoUrl, setLogoUrl] = useState("assets/layout/images/logo-dark.svg");
+  const [menuMode, setMenuMode] = useState(localStorage.getItem('menumode'));
+  const [colorScheme, setColorScheme] = useState(localStorage.getItem('colorscheme'));
+  const [menuTheme, setMenuTheme] = useState(localStorage.getItem("menutheme"));
+  const [componentTheme, setComponentTheme] = useState("pink");
   const copyTooltipRef = useRef();
   const location = useLocation();
 
   const auth = useAppSelector((state) => state.auth);
+
+  if (menuMode === null) {
+    setMenuMode("static");
+  }
+
+  if (colorScheme === null) {
+    setColorScheme("light");
+  }
+
+  if (menuTheme === null) {
+    setMenuTheme("layout-sidebar-darkgray");
+  }
+
+  if (componentTheme === null) {
+    setComponentTheme("blue");
+  }
 
   let menuClick = false;
   let searchClick = false;
@@ -212,15 +228,16 @@ const App = () => {
     onMenuThemeChange(name);
     changeStyleSheetUrl("theme-css", componentTheme, 2);
     setComponentTheme(componentTheme);
+    localStorage.setItem("componenttheme", componentTheme);
+
+
 
     const appLogoLink = document.getElementById("app-logo");
-    const appLogoUrl = `assets/layout/images/logo-${
-      logoColor === "dark" ? "dark" : "white"
-    }.svg`;
+    const appLogoUrl = `assets/layout/images/logo-${logoColor === "dark" ? "dark" : "white"
+      }.svg`;
     const horizontalLogoLink = document.getElementById("logo-horizontal");
-    const horizontalLogoUrl = `assets/layout/images/logo-${
-      logoColor === "dark" ? "dark" : "white"
-    }.svg`;
+    const horizontalLogoUrl = `assets/layout/images/logo-${logoColor === "dark" ? "dark" : "white"
+      }.svg`;
 
     if (appLogoLink) {
       appLogoLink.src = appLogoUrl;
@@ -233,11 +250,13 @@ const App = () => {
 
   const changeComponentTheme = (theme) => {
     setComponentTheme(theme);
+    localStorage.setItem("componenttheme", theme);
     changeStyleSheetUrl("theme-css", theme, 3);
   };
 
   const changeColorScheme = (e) => {
     setColorScheme(e.value);
+    localStorage.setItem("colorscheme", e.value)
 
     const scheme = e.value;
     changeStyleSheetUrl("layout-css", "layout-" + scheme + ".css", 1);
@@ -279,15 +298,13 @@ const App = () => {
     );
 
     if (appLogoLink) {
-      appLogoLink.src = `assets/layout/images/logo-${
-        scheme === "light" ? logoColor : "white"
-      }.svg`;
+      appLogoLink.src = `assets/layout/images/logo-${scheme === "light" ? logoColor : "white"
+        }.svg`;
     }
 
     if (horizontalLogoLink) {
-      horizontalLogoLink.src = `assets/layout/images/logo-${
-        scheme === "light" ? logoColor : "white"
-      }.svg`;
+      horizontalLogoLink.src = `assets/layout/images/logo-${scheme === "light" ? logoColor : "white"
+        }.svg`;
     }
 
     if (mobileLogoLink) {
@@ -418,10 +435,12 @@ const App = () => {
 
   const onMenuThemeChange = (name) => {
     setMenuTheme("layout-sidebar-" + name);
+    localStorage.setItem("menutheme", "layout-sidebar-" + name);
   };
 
   const onMenuModeChange = (e) => {
     setMenuMode(e.value);
+    localStorage.setItem('menumode', e.value);
     if (e.value === "static") {
       setStaticMenuDesktopInactive(false);
     }
