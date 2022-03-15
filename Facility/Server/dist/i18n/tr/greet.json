@@ -2,6 +2,7 @@
     "HELLO_MESSAGE": "Merhaba {username}",
     "FACILITY_NOT_FOUND": "#{id} no lu kayıt bulunamadı",
     "USER_NOT_HAVE_PERMISSION": "kullanıcı '{username}' bu işlem için izniniz yoktur.Yöneticinizle irtibata geçiniz ",
+    "OBJECTID_NOT_VALID":"girdiğiniz ıd #{id} geçerli değil",
     "GOODBYE_MESSAGE": "İyi günler {username}",
     "USER_ADDED_PRODUCT": "{0.username} added {1.productName} to cart",
     "SETUP": {

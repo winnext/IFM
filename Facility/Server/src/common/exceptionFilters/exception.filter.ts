@@ -20,19 +20,29 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.postKafka = new PostKafka(new KafkaService());
   }
   async catch(exception: HttpException, host: ArgumentsHost) {
-    console.log(exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const request = ctx.getRequest();
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    const requestInformation = {
+      timestamp: new Date(),
+      user: request.user || null,
+      path: request.url,
+      method: request.method,
+      body: request.body,
+      userToken: request.headers["authorization"] || null,
+    };
+
     const errorResponseLog = {
       timestamp: new Date().toLocaleDateString(),
       path: request.url,
       method: request.method,
+      status,
+      message: exception.message,
     };
     switch (exception.getStatus()) {
       case 400:
@@ -46,20 +56,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
       case 401:
         try {
-          const message = await this.i18n.translate(
-            I18NEnums.USER_NOT_HAVE_PERMISSION,
-            {
-              lang: ctx.getRequest().i18nLang,
-              args: { username: "Test User" },
-            }
-          );
-          const clientResponse = { status: status, message };
+          const message = getI18nMessage(this.i18n, request);
+          const clientResponse = { status, message };
+          const finalExcep = {
+            errorResponseLog,
+            clientResponse,
+            requestInformation,
+          };
 
           await this.postKafka.producerSendMessage(
             FacilityTopics.FACILITY_EXCEPTIONS,
-            JSON.stringify({ ...errorResponseLog, ...clientResponse })
+            JSON.stringify(finalExcep)
           );
-
           response.status(status).json(clientResponse);
         } catch (error) {
           console.log(
@@ -70,60 +78,38 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case 404:
         let result: any = exception.getResponse();
         try {
-          result = await this.i18n.translate(result.key, {
+          const message = await this.i18n.translate(result.key, {
             lang: ctx.getRequest().i18nLang,
             args: result.args,
           });
-          const clientResponse = { status: status, result };
+
+          const clientResponse = { status, message };
+          const finalExcep = {
+            errorResponseLog,
+            clientResponse,
+            requestInformation,
+          };
           await this.postKafka.producerSendMessage(
             FacilityTopics.FACILITY_EXCEPTIONS,
-            JSON.stringify({ ...errorResponseLog, ...clientResponse })
+            JSON.stringify(finalExcep)
           );
           console.log(`FACILITY_EXCEPTION sending to topic`);
+          response.status(status).json(clientResponse);
         } catch (error) {
           console.log(error);
         }
-
-        typeof result === "string"
-          ? response.status(status).json({ status: status, message: result })
-          : response.status(status).json({ status, message: result.message });
         break;
 
       default:
-        response.status(status);
+        response.status(status).json(exception.message);
         break;
     }
-
-    /*
-    if(exception.getStatus()===404){
-        let result: any = exception.getResponse();
-    try {
-      result = await this.i18n.translate(result.key, {
-        lang: ctx.getRequest().i18nLang,
-        args: result.args,
-      });
-    } catch (error) {
-        console.log(error)
-    }
-
-    typeof result === "string"
-      ? response.status(status).json({ status: status, message: result })
-      : response.status(status).json({ status, message: result.message });
-    }else{
-        let result: any = exception.getResponse();
-        try {
-          const message= await this.i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {
-              lang:ctx.getRequest().i18nLang,
-              args: { username: 'Toon' },
-            }); 
-            console.log(message)
-            response.status(status).json({ status: status, message})
-        } catch (error) {
-            console.log(error)
-        }
-    }
-*/
-
-    //response.status(status).json( statusMessage );
   }
+}
+
+async function getI18nMessage(i18n: I18nService, request) {
+  return await i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {
+    lang: request.i18nLang,
+    args: { username: "Test User" },
+  });
 }

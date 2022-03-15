@@ -20,15 +20,13 @@ const update_facility_dto_1 = require("./dtos/update.facility.dto");
 const facility_service_1 = require("./facility.service");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
 const pagination_dto_1 = require("../common/commonDto/pagination.dto");
-const nestjs_i18n_1 = require("nestjs-i18n");
 const multer_1 = require("multer");
 const platform_express_1 = require("@nestjs/platform-express");
 let FacilityController = class FacilityController {
-    constructor(facilityService, i18n) {
+    constructor(facilityService) {
         this.facilityService = facilityService;
-        this.i18n = i18n;
     }
-    async getAllFacilities(query, i18n) {
+    async getAllFacilities(query) {
         return this.facilityService.findAll(query);
     }
     getFacility(id) {
@@ -53,12 +51,10 @@ __decorate([
         description: "If you want to get all facilities in your organization use this route. It takes no path or query params",
     }),
     (0, common_1.Get)("/"),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Query)()),
-    __param(1, (0, nestjs_i18n_1.I18n)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pagination_dto_1.PaginationParams,
-        nestjs_i18n_1.I18nContext]),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
     __metadata("design:returntype", Promise)
 ], FacilityController.prototype, "getAllFacilities", null);
 __decorate([
@@ -67,7 +63,7 @@ __decorate([
         description: "If you want to get specific facility in your organization use this route. It takes  query params which is  id",
     }),
     (0, common_1.Get)("/:_id"),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_user'] }),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Param)("_id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -79,7 +75,7 @@ __decorate([
         description: "Store product structure",
     }),
     (0, common_1.Post)(""),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_facility_dto_1.CreateFacilityDto]),
@@ -91,7 +87,7 @@ __decorate([
         description: "update  facility structure",
     }),
     (0, common_1.Patch)("/:_id"),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Param)("_id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -100,7 +96,7 @@ __decorate([
 ], FacilityController.prototype, "updateFacility", null);
 __decorate([
     (0, common_1.Delete)("/:_id"),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
+    (0, nest_keycloak_connect_1.Unprotected)(),
     __param(0, (0, common_1.Param)("_id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -111,10 +107,10 @@ __decorate([
         summary: "Load facility cs file ",
         description: "***",
     }),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ["facility_client_role_admin"] }),
     (0, common_1.Post)("createfacilities"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
-        storage: (0, multer_1.diskStorage)({ destination: './upload', }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
+        storage: (0, multer_1.diskStorage)({ destination: "./upload" }),
     })),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.UploadedFile)()),
@@ -125,8 +121,7 @@ __decorate([
 FacilityController = __decorate([
     (0, swagger_1.ApiTags)("Facility"),
     (0, common_1.Controller)("facility"),
-    __metadata("design:paramtypes", [facility_service_1.FacilityService,
-        nestjs_i18n_1.I18nService])
+    __metadata("design:paramtypes", [facility_service_1.FacilityService])
 ], FacilityController);
 exports.FacilityController = FacilityController;
 //# sourceMappingURL=facility.controller.js.map

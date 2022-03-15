@@ -2,6 +2,7 @@
     "HELLO_MESSAGE": "Hello {username}",
     "FACILITY_NOT_FOUND": "Facility with this id #{id} not found ",
     "USER_NOT_HAVE_PERMISSION": "user '{username}' has no permission. Plese contact with admin ",
+    "OBJECTID_NOT_VALID":"given ıd #{id} is not valid",
     "GOODBYE_MESSAGE": "Goodbye {username}",
     "USER_ADDED_PRODUCT": "{0.username} added {1.productName} to cart",
     "SETUP": {

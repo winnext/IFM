@@ -14,7 +14,6 @@ const config_1 = require("@nestjs/config");
 const keyclock_module_1 = require("./facility/keyclock.module");
 const classification_module_1 = require("./classification/classification.module");
 const connection_enum_1 = require("./common/const/connection.enum");
-const apploggermiddleware_1 = require("./common/interceptors/apploggermiddleware");
 const nestjs_i18n_1 = require("nestjs-i18n");
 const path = require("path");
 const core_1 = require("@nestjs/core");
@@ -23,9 +22,6 @@ const messagebroker_module_1 = require("./messagebroker/messagebroker.module");
 const Joi = require("joi");
 const platform_express_1 = require("@nestjs/platform-express");
 let AppModule = class AppModule {
-    configure(consumer) {
-        consumer.apply(apploggermiddleware_1.AppLoggerMiddleware).forRoutes("*");
-    }
 };
 AppModule = __decorate([
     (0, common_1.Module)({

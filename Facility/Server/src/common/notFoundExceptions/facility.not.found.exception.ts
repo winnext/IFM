@@ -1,14 +1,16 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
+import { I18NEnums } from "../const/i18n.enum";
 
 export function FacilityNotFountException(id) {
   throw new HttpException(
-    { key: "greet.FACILITY_NOT_FOUND", args: { id: id } },
+    { key: I18NEnums.FACILITY_NOT_FOUND, args: { id: id } },
     HttpStatus.NOT_FOUND
   );
 }
 
-export class ClassificationNotFountException extends HttpException {
-  constructor(id: string) {
-    super(`Classification with #${id} Not Found `, HttpStatus.BAD_REQUEST);
-  }
+export function ClassificationNotFountException(id) {
+  throw new HttpException(
+    { key: I18NEnums.CLASSIFICATION_NOT_FOUND, args: { id: id } },
+    HttpStatus.NOT_FOUND
+  );
 }
