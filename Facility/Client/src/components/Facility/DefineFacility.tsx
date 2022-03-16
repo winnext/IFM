@@ -7,6 +7,26 @@ import { Chips } from "primereact/chips";
 import { Dropdown } from "primereact/dropdown";
 import FacilityService from "../../services/facility";
 import Addresses from "../Address/Addresses";
+import { TreeSelect } from "primereact/treeselect";
+import { useAppSelector } from "../../app/hook";
+
+interface Node {
+  key: string;
+  name: string;
+  code: string;
+  selectable?: boolean | undefined;
+  children: Node[];
+}
+
+const copyNode = (node: Node): Node => {
+  return {
+    key: node.key,
+    name: node.name,
+    code: node.code,
+    selectable: node.selectable,
+    children: [],
+  };
+};
 
 interface Params {
   submitted: boolean;
@@ -29,8 +49,7 @@ interface Facility {
   facility_name: string;
   brand_name: string;
   type_of_facility: string;
-  country: string;
-  city: string;
+  classification_of_facility: Node;
   address: Address[];
   label: string[];
   __v: number;
@@ -41,6 +60,7 @@ type Inputs = {
   brand_name: string;
   type_of_facility: { name: string };
   address?: Address[];
+  classification_of_facility: string;
   label: string[];
 };
 
@@ -65,15 +85,56 @@ const DefineFacility = ({
     formState: { errors },
   } = useForm<Inputs>();
 
-  const [addresses,setAddresses] = useState<Address[]>(facility.address);
+  const [addresses, setAddresses] = useState<Address[]>(facility.address);
+  const tree = useAppSelector((state) => state.tree);
+
+  const findNode = (search: string, data: Node[]): Node | undefined => {
+    for(let node of data){
+      if(node.key === search){
+        return node;
+      }
+      const found = findNode(search, node.children);
+      if(found){
+        return found;
+      }
+    }
+  };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    var node = findNode(
+      data.classification_of_facility,
+      tree.classificationsOfFacility
+    );
+    console.log({node})
+    // var list: Node[] = [];
+
+    // if (node) {
+    //   list.push(node);
+    // }
+
+    // while (node && node.parentKey !== "") {
+    //   node = findNode(node.parentKey, tree.classificationsOfFacility);
+    //   if (node) {
+    //     list.unshift(node);
+    //   }
+    // }
+
+    // var result:Node = copyNode(list[0]);
+    // var temp:Node = result
+    
+    // for (let i = 0; i < list.length - 1; i++) {
+    //   temp.children.push(copyNode(list[i + 1]));
+    //   temp = temp.children[0];
+    // }
+
+    // console.log({classification:temp,tree:result})
+
     if (facility._id === "") {
       FacilityService.create({
         ...data,
         address: addresses,
         type_of_facility: data.type_of_facility.name,
-        classification_of_facility: {},
+        classification_of_facility: {node},
       })
         .then((res) => {
           loadLazyData();
@@ -97,9 +158,9 @@ const DefineFacility = ({
     } else {
       FacilityService.update(facility._id, {
         ...data,
-        address:addresses,
+        address: addresses,
         type_of_facility: data.type_of_facility.name,
-        classification_of_facility: {},
+        classification_of_facility: {node},
       })
         .then((res) => {
           loadLazyData();
@@ -162,7 +223,11 @@ const DefineFacility = ({
             name="type_of_facility"
             rules={{ required: "Type Of Facility is required." }}
             control={control}
-            defaultValue={facility.type_of_facility !== '' ? { name: facility.type_of_facility } : undefined}
+            defaultValue={
+              facility.type_of_facility !== ""
+                ? { name: facility.type_of_facility }
+                : undefined
+            }
             render={({ field }) => (
               <Dropdown
                 filter
@@ -176,6 +241,28 @@ const DefineFacility = ({
             )}
           />
           {errors.type_of_facility && (
+            <small className="p-error block">This field is required.</small>
+          )}
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Classification of Facility</h5>
+          <Controller
+            name="classification_of_facility"
+            rules={{ required: "Classification of Facility is required." }}
+            control={control}
+            render={({ field }) => (
+              <TreeSelect
+                value={field.value}
+                options={tree.classificationsOfFacility}
+                className={errors.classification_of_facility && "p-invalid"}
+                onChange={(e) => field.onChange(e.value)}
+                filter
+                filterBy="name,code"
+                placeholder="Select Classification of Facility"
+              ></TreeSelect>
+            )}
+          />
+          {errors.classification_of_facility && (
             <small className="p-error block">This field is required.</small>
           )}
         </div>

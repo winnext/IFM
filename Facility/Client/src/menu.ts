@@ -6,7 +6,7 @@ export default [
     items: [
       { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', to: '/' },
       { label: 'Facility', icon: 'pi pi-fw pi-pencil', to: '/facility' },
-      { label: 'CrudDemo', icon: 'pi pi-fw pi-circle-fill', to: '/crud' },
+      { label: 'Classifications', icon: 'pi pi-fw pi-align-left', to: '/classifications' },
     ],
   },
   // {

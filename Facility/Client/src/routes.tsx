@@ -6,8 +6,8 @@ import AppLayout from './layouts/App/App';
 //pages
 import Dashboard from './layouts/App/components/Dashboard';
 import Facility from './pages/Facility';
+import Classifications from './pages/Classifications';
 import { NotFound } from './layouts/App/pages/NotFound';
-import CrudDemo from './layouts/App/pages/CrudDemo';
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -18,7 +18,7 @@ export default function Router() {
       children: [
         { path: '', element: <Dashboard /> },
         { path: 'facility', element: <Facility /> },
-        { path: 'crud', element: <CrudDemo /> },
+        { path: 'classifications', element: <Classifications /> },
       ],
     },
     {

@@ -57,6 +57,9 @@ const Facility = () => {
     FacilityService.findAll({
       page: lazyParams.page,
       limit: lazyParams.rows,
+      sortField: lazyParams.sortField,
+      sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
+
     })
       .then((response) => {
         setFacilities(response.data[0]);
@@ -72,6 +75,10 @@ const Facility = () => {
         });
         setLoading(false);
       });
+  };
+
+  const onSort = (event) => {
+    setLazyParams(prev=>({...prev,...event}));
   };
 
   const openNew = () => {
@@ -290,6 +297,9 @@ const Facility = () => {
             emptyMessage="No facilities found."
             header={header}
             responsiveLayout="scroll"
+            onSort={onSort}
+            sortField={lazyParams.sortField}
+            sortOrder={lazyParams.sortOrder}
           >
             <Column
               field="facility_name"

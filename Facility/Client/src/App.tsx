@@ -18,12 +18,13 @@ function App() {
       window.location.reload();
     } else {
       axios.defaults.headers.common['Authorization'] = "Bearer " + keycloak.token;
+      console.log(keycloak.tokenParsed)
       if(keycloak.token !== undefined){
         dispatch(
           login({
             id: "123",
             type: "admin",
-            name: keycloak.tokenParsed ? keycloak.tokenParsed.preferred_username: "omer",
+            name: keycloak.tokenParsed ? keycloak.tokenParsed.given_name: "No Name",
             token: keycloak.token ? keycloak.token : "",
           })
         );
