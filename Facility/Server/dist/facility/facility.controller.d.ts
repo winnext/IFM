@@ -7,7 +7,7 @@ import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 export declare class FacilityController {
     private readonly facilityService;
     constructor(facilityService: FacilityService);
-    getAllFacilities(body: PaginationParams): Promise<Facility[]>;
+    getAllFacilities(params: PaginationParams): Promise<Facility[]>;
     getFacility(id: string): Promise<Facility>;
     createFacility(createFacilityDto: CreateFacilityDto): Promise<Facility>;
     updateFacility(id: string, updateFacilityDto: UpdateFacilityDto): Promise<any>;

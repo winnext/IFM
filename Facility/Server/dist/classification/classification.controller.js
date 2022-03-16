@@ -16,6 +16,7 @@ exports.ClassificationController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
+const pagination_dto_1 = require("../common/commonDto/pagination.dto");
 const classification_service_1 = require("./classification.service");
 const create_classification_dto_1 = require("./dto/create-classification.dto");
 const update_classification_dto_1 = require("./dto/update-classification.dto");
@@ -26,8 +27,8 @@ let ClassificationController = class ClassificationController {
     create(createClassificationDto) {
         return this.classificationService.create(createClassificationDto);
     }
-    findAll(query) {
-        return this.classificationService.findAll(query);
+    findAll(paramDto) {
+        return this.classificationService.findAll(paramDto);
     }
     findOne(id) {
         return this.classificationService.findOne(id);
@@ -50,9 +51,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Query)()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "findAll", null);
 __decorate([

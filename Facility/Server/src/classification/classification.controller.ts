@@ -1,15 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
+import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { ClassificationService } from './classification.service';
 import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
@@ -27,8 +19,8 @@ export class ClassificationController {
 
   @Get()
   @Unprotected()
-  findAll(@Query() query) {
-    return this.classificationService.findAll(query);
+  findAll(@Body() paramDto: PaginationParams) {
+    return this.classificationService.findAll(paramDto);
   }
 
   @Get(':id')
@@ -39,10 +31,7 @@ export class ClassificationController {
 
   @Patch(':id')
   @Unprotected()
-  update(
-    @Param('id') id: string,
-    @Body() updateClassificationDto: UpdateClassificationDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateClassificationDto: UpdateClassificationDto) {
     return this.classificationService.update(id, updateClassificationDto);
   }
 

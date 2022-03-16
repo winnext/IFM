@@ -26,16 +26,43 @@ let ClassificationRepository = class ClassificationRepository {
         throw new Error(relations);
     }
     async findOneById(id) {
-        const classification = await this.classificationModel
-            .findById({ _id: id })
-            .exec();
+        const classification = await this.classificationModel.findById({ _id: id }).exec();
         if (!classification) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(id);
         }
         return classification;
     }
-    async findAll() {
-        return await this.classificationModel.find().exec();
+    async findAll(data) {
+        let { page, limit, orderBy, orderByColumn } = data;
+        page = page || 0;
+        limit = limit || 5;
+        orderBy = orderBy || 'ascending';
+        orderByColumn = orderByColumn || 'name';
+        const count = parseInt((await this.classificationModel.find().count()).toString());
+        const pagecount = Math.ceil(count / limit);
+        let pg = parseInt(page.toString());
+        const lmt = parseInt(limit.toString());
+        if (pg > pagecount) {
+            pg = pagecount;
+        }
+        let skip = pg * lmt;
+        if (skip >= count) {
+            skip = count - lmt;
+            if (skip < 0) {
+                skip = 0;
+            }
+        }
+        const result = await this.classificationModel
+            .find()
+            .skip(skip)
+            .limit(lmt)
+            .sort([[orderByColumn, orderBy]])
+            .exec();
+        const pagination = { count: count, page: pg, limit: lmt };
+        const classification = [];
+        classification.push(result);
+        classification.push(pagination);
+        return classification;
     }
     async create(createClassificationDto) {
         const classification = new this.classificationModel(createClassificationDto);

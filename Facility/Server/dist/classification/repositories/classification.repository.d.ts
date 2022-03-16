@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
@@ -8,9 +9,7 @@ export declare class ClassificationRepository implements BaseInterfaceRepository
     constructor(classificationModel: Model<Classification>);
     findWithRelations(relations: any): Promise<Classification[]>;
     findOneById(id: string): Promise<Classification>;
-    findAll(): Promise<(Classification & {
-        _id: any;
-    })[]>;
+    findAll(data: PaginationParams): Promise<any[]>;
     create(createClassificationDto: CreateClassificationDto): Promise<Classification & {
         _id: any;
     }>;
