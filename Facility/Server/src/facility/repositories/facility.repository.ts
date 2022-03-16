@@ -10,9 +10,7 @@ import { Facility } from '../entities/facility.entity';
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
-  constructor(
-    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
-  ) {}
+  constructor(@InjectModel(Facility.name) private readonly facilityModel: Model<Facility>) {}
   findWithRelations(relations: any): Promise<Facility[]> {
     throw new Error(relations);
   }
@@ -29,11 +27,9 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     page = page || 0;
     limit = limit || 5;
     orderBy = orderBy || 'ascending';
-
     orderByColumn = orderByColumn || 'FacilityName';
-    const count = parseInt(
-      (await this.facilityModel.find().count()).toString(),
-    );
+
+    const count = parseInt((await this.facilityModel.find().count()).toString());
     const pagecount = Math.ceil(count / limit);
     let pg = parseInt(page.toString());
     const lmt = parseInt(limit.toString());

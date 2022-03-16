@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -34,8 +35,9 @@ export class FacilityController {
   @Get('/')
   //@Roles({ roles: ['facility_client_role_admin'] })
   @Unprotected()
-  async getAllFacilities(@Body() body: PaginationParams): Promise<Facility[]> {
-    return this.facilityService.findAll(body);
+  async getAllFacilities(@Query() params: PaginationParams): Promise<Facility[]> {
+    console.log(params);
+    return this.facilityService.findAll(params);
   }
 
   @ApiOperation({
@@ -57,9 +59,7 @@ export class FacilityController {
   @Post('')
   //@Unprotected()
   @Roles({ roles: ['facility_client_role_admin'] })
-  createFacility(
-    @Body() createFacilityDto: CreateFacilityDto,
-  ): Promise<Facility> {
+  createFacility(@Body() createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityService.create(createFacilityDto);
   }
 
@@ -70,10 +70,7 @@ export class FacilityController {
   @Patch('/:_id')
   @Unprotected()
   //@Roles({ roles: ["facility_client_role_admin"] })
-  updateFacility(
-    @Param('_id') id: string,
-    @Body() updateFacilityDto: UpdateFacilityDto,
-  ) {
+  updateFacility(@Param('_id') id: string, @Body() updateFacilityDto: UpdateFacilityDto) {
     return this.facilityService.update(id, updateFacilityDto);
   }
 
@@ -96,10 +93,7 @@ export class FacilityController {
       storage: diskStorage({ destination: './upload' }),
     }),
   )
-  async createFacilitiesByCsv(
-    @Res() res,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  async createFacilitiesByCsv(@Res() res, @UploadedFile() file: Express.Multer.File) {
     return res.send(await this.facilityService.createAll(file));
   }
 }

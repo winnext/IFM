@@ -28,10 +28,7 @@ export class ClassificationService {
 
   async update(id: string, updateClassificationDto: UpdateClassificationDto) {
     checkObjectIddİsValid(id);
-    return await this.classificationRepository.update(
-      id,
-      updateClassificationDto,
-    );
+    return await this.classificationRepository.update(id, updateClassificationDto);
   }
 
   async remove(id: string) {
