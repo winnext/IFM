@@ -10,11 +10,11 @@ import { useAppSelector } from "../../app/hook";
 const AppTopbar = (props) => {
   const auth = useAppSelector(state => state.auth)
 
-  const Login = ()=>{
+  const Login = () => {
     keycloak.login()
   }
 
-  const Logout = ()=>{
+  const Logout = () => {
     keycloak.logout()
   }
 
@@ -178,7 +178,7 @@ const AppTopbar = (props) => {
                   <li>
                     <button type="button" className="p-link">
                       <i className="pi pi-user"></i>
-                      <span>Profile</span>
+                      <a href='http://172.19.100.120:8080/auth/realms/IFM/account' target="blank" ><span>Profile</span></a>
                     </button>
                   </li>
                   <li>
