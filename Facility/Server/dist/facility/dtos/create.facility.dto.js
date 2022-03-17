@@ -49,7 +49,7 @@ __decorate([
 ], CreateFacilityDto.prototype, "type_of_facility", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], CreateFacilityDto.prototype, "classifications", void 0);
 __decorate([

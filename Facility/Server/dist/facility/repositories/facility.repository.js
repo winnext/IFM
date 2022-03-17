@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const classification_entity_1 = require("../../classification/entities/classification.entity");
+const objectId_check_1 = require("../../common/func/objectId.check");
 const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
 const facility_entity_1 = require("../entities/facility.entity");
 let FacilityRepository = class FacilityRepository {
@@ -70,6 +71,10 @@ let FacilityRepository = class FacilityRepository {
         return facility;
     }
     async create(createFacilityDto) {
+        const { classifications } = createFacilityDto;
+        classifications.map((classification) => {
+            (0, objectId_check_1.checkObjectIddİsValid)(classification);
+        });
         const facility = new this.facilityModel(createFacilityDto);
         return await facility.save();
     }

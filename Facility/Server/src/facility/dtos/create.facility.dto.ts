@@ -30,7 +30,7 @@ export class CreateFacilityDto {
   type_of_facility: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   classifications: Classification[];
 
   @ApiProperty()

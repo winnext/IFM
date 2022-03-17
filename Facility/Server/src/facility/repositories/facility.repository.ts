@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Classification } from 'src/classification/entities/classification.entity';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { FacilityNotFountException } from '../../common/notFoundExceptions/facility.not.found.exception';
 import { CreateFacilityDto } from '../dtos/create.facility.dto';
@@ -65,6 +66,11 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   }
 
   async create(createFacilityDto: CreateFacilityDto) {
+    const { classifications } = createFacilityDto;
+
+    classifications.map((classification) => {
+      checkObjectIddİsValid(classification);
+    });
     const facility = new this.facilityModel(createFacilityDto);
 
     return await facility.save();
