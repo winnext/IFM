@@ -36,7 +36,6 @@ export class FacilityController {
   @Get('/')
   @Roles({ roles: ['facility_client_role_admin'] })
   async getAllFacilities(@Query() params: PaginationParams): Promise<Facility[]> {
-    console.log(params);
     return this.facilityService.findAll(params);
   }
 

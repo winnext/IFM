@@ -27,7 +27,6 @@ let FacilityController = class FacilityController {
         this.facilityService = facilityService;
     }
     async getAllFacilities(params) {
-        console.log(params);
         return this.facilityService.findAll(params);
     }
     getFacility(id) {
