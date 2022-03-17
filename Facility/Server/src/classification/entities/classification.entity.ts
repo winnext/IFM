@@ -27,7 +27,9 @@ export class Classification extends Document {
     },
   })
   class_name: string;
+
+  @Prop({ type: Object })
+  detail: object;
 }
 
-export const ClassificationSchema =
-  SchemaFactory.createForClass(Classification);
+export const ClassificationSchema = SchemaFactory.createForClass(Classification);

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsObject, IsString, Length } from 'class-validator';
 
 export class CreateClassificationDto {
   @ApiProperty()
@@ -13,4 +13,8 @@ export class CreateClassificationDto {
   @IsString()
   @Length(1, 50)
   name: string;
+
+  @ApiProperty()
+  @IsObject()
+  detail: object;
 }
