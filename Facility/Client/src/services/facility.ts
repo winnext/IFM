@@ -5,6 +5,8 @@ const url = process.env.REACT_APP_API_URL + 'facility';
 interface PaginationParams {
   page?: number;
   limit?: number;
+  sortField?: string;
+  sortKind?: string;
 }
 
 interface Address{
@@ -27,7 +29,7 @@ interface Facility {
 }
 
 const findAll = async (query: PaginationParams) => {
-  return axios.get(url + `?page=${query.page}&limit=${query.limit}`);
+  return axios.get(url + `?page=${query.page}&limit=${query.limit}&orderBy=${query.sortKind}&orderByColumn=${query.sortField}`);
 };
 
 const findOne = async (id: string) => {
