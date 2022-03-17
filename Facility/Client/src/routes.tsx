@@ -6,7 +6,7 @@ import AppLayout from './layouts/App/App';
 //pages
 import Dashboard from './layouts/App/components/Dashboard';
 import Facility from './pages/Facility';
-import Classifications from './pages/Classifications';
+import Classifications from './pages/Classifications/Classifications';
 import { NotFound } from './layouts/App/pages/NotFound';
 // import Main from './pages/Main';
 
