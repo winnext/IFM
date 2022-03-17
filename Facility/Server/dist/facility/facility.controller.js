@@ -52,7 +52,7 @@ __decorate([
         description: 'If you want to get all facilities in your organization use this route. It takes no path or query params',
     }),
     (0, common_1.Get)('/'),
-    (0, nest_keycloak_connect_1.Unprotected)(),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
@@ -64,7 +64,7 @@ __decorate([
         description: 'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
     }),
     (0, common_1.Get)('/:_id'),
-    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_user'] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
     __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -88,7 +88,7 @@ __decorate([
         description: 'update  facility structure',
     }),
     (0, common_1.Patch)('/:_id'),
-    (0, nest_keycloak_connect_1.Unprotected)(),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
     __param(0, (0, common_1.Param)('_id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -97,7 +97,7 @@ __decorate([
 ], FacilityController.prototype, "updateFacility", null);
 __decorate([
     (0, common_1.Delete)('/:_id'),
-    (0, nest_keycloak_connect_1.Unprotected)(),
+    (0, nest_keycloak_connect_1.Roles)({ roles: ['facility_client_role_admin'] }),
     __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -122,6 +122,7 @@ __decorate([
 FacilityController = __decorate([
     (0, swagger_1.ApiTags)('Facility'),
     (0, common_1.Controller)('facility'),
+    (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     __metadata("design:paramtypes", [facility_service_1.FacilityService])
 ], FacilityController);
 exports.FacilityController = FacilityController;

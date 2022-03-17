@@ -8,5 +8,6 @@ export declare class Classification extends Document {
     code: string;
     name: string;
     class_name: string;
+    detail: object;
 }
 export declare const ClassificationSchema: import("mongoose").Schema<Classification, import("mongoose").Model<Classification, any, any, any>, any, any>;

@@ -28,5 +28,10 @@ __decorate([
     (0, class_validator_1.Length)(1, 50),
     __metadata("design:type", String)
 ], CreateClassificationDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateClassificationDto.prototype, "detail", void 0);
 exports.CreateClassificationDto = CreateClassificationDto;
 //# sourceMappingURL=create-classification.dto.js.map

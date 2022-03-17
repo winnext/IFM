@@ -42,6 +42,10 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Classification.prototype, "class_name", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Object }),
+    __metadata("design:type", Object)
+], Classification.prototype, "detail", void 0);
 Classification = Classification_1 = __decorate([
     (0, mongoose_1.Schema)()
 ], Classification);

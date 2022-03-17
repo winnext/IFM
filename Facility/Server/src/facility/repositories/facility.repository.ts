@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Classification } from 'src/classification/entities/classification.entity';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { FacilityNotFountException } from '../../common/notFoundExceptions/facility.not.found.exception';
@@ -10,12 +11,18 @@ import { Facility } from '../entities/facility.entity';
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
-  constructor(@InjectModel(Facility.name) private readonly facilityModel: Model<Facility>) {}
+  constructor(
+    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
+    @InjectModel(Classification.name) private readonly classificationModel: Model<Classification>,
+  ) {}
   findWithRelations(relations: any): Promise<Facility[]> {
     throw new Error(relations);
   }
   async findOneById(id: string): Promise<Facility> {
-    const facility = await this.facilityModel.findById({ _id: id }).exec();
+    const facility = await this.facilityModel
+      .findById({ _id: id })
+      .populate('classifications', '', this.classificationModel)
+      .exec();
     if (!facility) {
       throw new FacilityNotFountException(id);
     }
@@ -23,11 +30,11 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     return facility;
   }
   async findAll(data: PaginationParams) {
-    let { page, limit, orderBy, orderByColumn } = data;
+    let { page, limit } = data;
     page = page || 0;
     limit = limit || 5;
-    orderBy = orderBy || 'ascending';
-    orderByColumn = orderByColumn || 'FacilityName';
+    const orderBy = data.orderBy || 'ascending';
+    const orderByColumn = data.orderByColumn || 'FacilityName';
 
     const count = parseInt((await this.facilityModel.find().count()).toString());
     const pagecount = Math.ceil(count / limit);

@@ -16,28 +16,33 @@ exports.FacilityRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const classification_entity_1 = require("../../classification/entities/classification.entity");
 const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
 const facility_entity_1 = require("../entities/facility.entity");
 let FacilityRepository = class FacilityRepository {
-    constructor(facilityModel) {
+    constructor(facilityModel, classificationModel) {
         this.facilityModel = facilityModel;
+        this.classificationModel = classificationModel;
     }
     findWithRelations(relations) {
         throw new Error(relations);
     }
     async findOneById(id) {
-        const facility = await this.facilityModel.findById({ _id: id }).exec();
+        const facility = await this.facilityModel
+            .findById({ _id: id })
+            .populate('classifications', '', this.classificationModel)
+            .exec();
         if (!facility) {
             throw new facility_not_found_exception_1.FacilityNotFountException(id);
         }
         return facility;
     }
     async findAll(data) {
-        let { page, limit, orderBy, orderByColumn } = data;
+        let { page, limit } = data;
         page = page || 0;
         limit = limit || 5;
-        orderBy = orderBy || 'ascending';
-        orderByColumn = orderByColumn || 'FacilityName';
+        const orderBy = data.orderBy || 'ascending';
+        const orderByColumn = data.orderByColumn || 'FacilityName';
         const count = parseInt((await this.facilityModel.find().count()).toString());
         const pagecount = Math.ceil(count / limit);
         let pg = parseInt(page.toString());
@@ -85,7 +90,9 @@ let FacilityRepository = class FacilityRepository {
 FacilityRepository = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(facility_entity_1.Facility.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(classification_entity_1.Classification.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], FacilityRepository);
 exports.FacilityRepository = FacilityRepository;
 //# sourceMappingURL=facility.repository.js.map

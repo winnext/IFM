@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Timestamp } from 'bson';
-import { Document } from 'mongoose';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Document, Types, Schema as MongooseSchema } from 'mongoose';
+import { Classification } from 'src/classification/entities/classification.entity';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
 import { v4 as uuidv4 } from 'uuid';
 import { Adress } from './facility.address';
@@ -27,8 +30,8 @@ export class Facility extends BasePersistantDocumentObject {
   brand_name: string;
   @Prop()
   type_of_facility: string;
-  @Prop()
-  classification_of_facility: object[];
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: Classification.name }])
+  classifications: Classification[];
   @Prop([String])
   label: string[];
 

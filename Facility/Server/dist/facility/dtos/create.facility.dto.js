@@ -50,9 +50,8 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
-], CreateFacilityDto.prototype, "classification_of_facility", void 0);
+    __metadata("design:type", Array)
+], CreateFacilityDto.prototype, "classifications", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),

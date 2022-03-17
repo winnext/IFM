@@ -11,18 +11,19 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
 import { FacilityService } from './facility.service';
-import { Roles, Unprotected } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Facility')
 @Controller('facility')
+@ApiBearerAuth('JWT-auth')
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
 
@@ -33,8 +34,7 @@ export class FacilityController {
   })
   //@LoggerInter()
   @Get('/')
-  //@Roles({ roles: ['facility_client_role_admin'] })
-  @Unprotected()
+  @Roles({ roles: ['facility_client_role_admin'] })
   async getAllFacilities(@Query() params: PaginationParams): Promise<Facility[]> {
     console.log(params);
     return this.facilityService.findAll(params);
@@ -46,8 +46,7 @@ export class FacilityController {
       'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
   })
   @Get('/:_id')
-  @Roles({ roles: ['facility_client_role_user'] })
-  //@Unprotected()
+  @Roles({ roles: ['facility_client_role_admin'] })
   getFacility(@Param('_id') id: string): Promise<Facility> {
     return this.facilityService.findOne(id);
   }
@@ -57,7 +56,6 @@ export class FacilityController {
     description: 'Store product structure',
   })
   @Post('')
-  //@Unprotected()
   @Roles({ roles: ['facility_client_role_admin'] })
   createFacility(@Body() createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityService.create(createFacilityDto);
@@ -68,15 +66,13 @@ export class FacilityController {
     description: 'update  facility structure',
   })
   @Patch('/:_id')
-  @Unprotected()
-  //@Roles({ roles: ["facility_client_role_admin"] })
+  @Roles({ roles: ['facility_client_role_admin'] })
   updateFacility(@Param('_id') id: string, @Body() updateFacilityDto: UpdateFacilityDto) {
     return this.facilityService.update(id, updateFacilityDto);
   }
 
   @Delete('/:_id')
-  @Unprotected()
-  //@Roles({ roles: ["facility_client_role_admin"] })
+  @Roles({ roles: ['facility_client_role_admin'] })
   deleteFacility(@Param('_id') id: string) {
     return this.facilityService.remove(id);
   }
@@ -86,7 +82,6 @@ export class FacilityController {
     description: '***',
   })
   @Roles({ roles: ['facility_client_role_admin'] })
-  //@Unprotected()
   @Post('createfacilities')
   @UseInterceptors(
     FileInterceptor('file', {

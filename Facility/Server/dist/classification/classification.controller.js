@@ -51,7 +51,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
     __metadata("design:returntype", void 0)

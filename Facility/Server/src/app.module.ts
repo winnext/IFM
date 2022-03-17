@@ -21,7 +21,7 @@ import { MulterModule } from '@nestjs/platform-express';
     FacilityModule,
     KeycloakModule,
     I18nModule.forRoot({
-      fallbackLanguage: 'en',
+      fallbackLanguage: 'tr',
       fallbacks: {
         en: 'en',
         tr: 'tr',

@@ -1,10 +1,4 @@
-import {
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  UseInterceptors,
-  Logger,
-} from '@nestjs/common';
+import { NestInterceptor, ExecutionContext, CallHandler, UseInterceptors, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { FacilityTopics } from '../const/kafta.topic.enum';
@@ -21,10 +15,7 @@ export class LoggingInterceptor implements NestInterceptor {
     this.postKafka = new PostKafka(new KafkaService());
   }
   private logger = new Logger('HTTP');
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<any>> {
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
     const response = ctx.getResponse();
@@ -48,10 +39,7 @@ export class LoggingInterceptor implements NestInterceptor {
       };
       const log = { requestInformation, responseInformation };
       try {
-        await this.postKafka.producerSendMessage(
-          FacilityTopics.FACILITY_LOGGER,
-          JSON.stringify(log),
-        );
+        await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_LOGGER, JSON.stringify(log));
         console.log('FACILITY_LOGGER topic send succesful');
       } catch (error) {
         console.log('FACILITY_LOGGER topic cannot connected due to ' + error);

@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacilityModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const classification_entity_1 = require("../classification/entities/classification.entity");
 const connection_enum_1 = require("../common/const/connection.enum");
 const repository_enum_1 = require("../common/const/repository.enum");
 const facility_entity_1 = require("./entities/facility.entity");
@@ -26,6 +27,12 @@ FacilityModule = __decorate([
                     schema: facility_entity_1.FaciliySchema,
                 },
             ], connection_enum_1.ConnectionEnums.FACILITY),
+            mongoose_1.MongooseModule.forFeature([
+                {
+                    name: classification_entity_1.Classification.name,
+                    schema: classification_entity_1.ClassificationSchema,
+                },
+            ], connection_enum_1.ConnectionEnums.CLASSIFICATION),
         ],
         controllers: [facility_controller_1.FacilityController],
         providers: [

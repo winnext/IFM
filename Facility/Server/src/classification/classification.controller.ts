@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
@@ -19,7 +19,7 @@ export class ClassificationController {
 
   @Get()
   @Unprotected()
-  findAll(@Body() paramDto: PaginationParams) {
+  findAll(@Query() paramDto: PaginationParams) {
     return this.classificationService.findAll(paramDto);
   }
 
