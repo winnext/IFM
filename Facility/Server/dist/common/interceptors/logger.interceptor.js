@@ -28,6 +28,7 @@ class LoggingInterceptor {
             body: request.body,
             user: request.user || null,
         };
+        const method = request.method;
         const now = Date.now();
         const url = request.url;
         const parsedUrl = url.match(/^\/[^\?\/]*/);
@@ -54,8 +55,8 @@ class LoggingInterceptor {
         }
         return next.handle().pipe((0, operators_1.tap)(async (responseBody) => {
             try {
-                if (request.method !== 'GET') {
-                    await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION, JSON.stringify(responseBody), finalParsedUrl);
+                if (method !== 'GET') {
+                    await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION, JSON.stringify(responseBody), parsedUrl[0]);
                     console.log('Operetaion topic sen successfully');
                 }
             }

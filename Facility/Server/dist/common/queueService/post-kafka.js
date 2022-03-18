@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostKafka = void 0;
 const common_1 = require("@nestjs/common");
+const uuid_1 = require("uuid");
 let PostKafka = class PostKafka {
     constructor(service) {
         this.service = service;
@@ -22,7 +23,7 @@ let PostKafka = class PostKafka {
             topic: topicName,
             messages: [
                 {
-                    key: key || '',
+                    key: key || (0, uuid_1.v4)(),
                     value: message,
                 },
             ],

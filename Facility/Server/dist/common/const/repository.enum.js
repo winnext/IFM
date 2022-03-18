@@ -6,5 +6,7 @@ var RepositoryEnums;
     RepositoryEnums["FACILITY"] = "facility";
     RepositoryEnums["CLASSIFICATION"] = "classification";
     RepositoryEnums["FACILITYSTRUCTURE"] = "facilitystructure";
+    RepositoryEnums["FACILITY_HISTORY"] = "facility_history";
+    RepositoryEnums["CLASSIFICATION_HISTORY"] = "classification_history";
 })(RepositoryEnums = exports.RepositoryEnums || (exports.RepositoryEnums = {}));
 //# sourceMappingURL=repository.enum.js.map

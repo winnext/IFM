@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Producer } from 'kafkajs';
 import { IQueueService } from './queueInterface';
-
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class PostKafka {
   constructor(private service: IQueueService) {}
@@ -15,7 +15,7 @@ export class PostKafka {
       topic: topicName,
       messages: [
         {
-          key: key || '',
+          key: key || uuidv4(),
           value: message,
         },
       ],
