@@ -29,6 +29,9 @@ class LoggingInterceptor {
             user: request.user || null,
         };
         const now = Date.now();
+        const url = request.url;
+        const parsedUrl = url.match(/^\/[^\?\/]*/);
+        const finalParsedUrl = request.method.toLowerCase() + parsedUrl[0].replace('/', '_');
         response.on('close', async () => {
             const { statusCode, statusMessage } = response;
             const responseInformation = {
@@ -49,7 +52,17 @@ class LoggingInterceptor {
         if (query._id) {
             (0, objectId_check_1.checkObjectIddİsValid)(query._id);
         }
-        return next.handle().pipe((0, operators_1.tap)());
+        return next.handle().pipe((0, operators_1.tap)(async (responseBody) => {
+            try {
+                if (request.method !== 'GET') {
+                    await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION, JSON.stringify(responseBody), finalParsedUrl);
+                    console.log('Operetaion topic sen successfully');
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }));
     }
 }
 exports.LoggingInterceptor = LoggingInterceptor;

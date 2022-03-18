@@ -1,5 +1,5 @@
 import { I18nService } from 'nestjs-i18n';
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { I18NEnums } from '../const/i18n.enum';
 import { KafkaService } from '../queueService/kafkaService';
@@ -13,6 +13,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private readonly i18n: I18nService) {
     this.postKafka = new PostKafka(new KafkaService());
   }
+  private logger = new Logger('HTTP');
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -34,7 +35,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status,
       message: exception.message,
     };
-    console.log(exception.getStatus());
+
     switch (exception.getStatus()) {
       case 400:
         try {
@@ -43,6 +44,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             requestInformation,
           };
           await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
+          this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(exception.getResponse());
         } catch (error) {
           console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
@@ -59,6 +61,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           };
           await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
           console.log(`FACILITY_EXCEPTION sending to topic from code 401`);
+          this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(clientResponse);
         } catch (error) {
           console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
@@ -74,7 +77,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             requestInformation,
           };
           await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-          console.log(`FACILITY_EXCEPTION sending to topic from code 403`);
+          this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(clientResponse);
         } catch (error) {
           console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
@@ -97,7 +100,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             requestInformation,
           };
           await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-          console.log(`FACILITY_EXCEPTION sending to topic from code 404`);
+          this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(clientResponse);
         } catch (error) {
           console.log(error);
@@ -112,8 +115,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 }
 
 async function getI18nMessage(i18n: I18nService, request) {
-  console.log('this is from 401-403 exception code ' + request.user?.preferred_username);
-  const username = request.user?.preferred_username || 'Guest';
+  const username = request.user?.name || 'Guest';
   return await i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {
     lang: request.i18nLang,
     args: { username },

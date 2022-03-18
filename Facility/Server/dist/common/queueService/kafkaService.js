@@ -11,7 +11,7 @@ class KafkaService {
     }
     producer() {
         try {
-            const producer = this.kafka.producer({ allowAutoTopicCreation: false });
+            const producer = this.kafka.producer({ allowAutoTopicCreation: true });
             return producer;
         }
         catch (error) {
