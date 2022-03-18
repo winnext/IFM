@@ -6,7 +6,7 @@ interface Node{
     label: string,
     name: string,
     code: string,
-    selectable?: boolean | undefined,
+    selectable: boolean,
     children: Node[]
 }
 
@@ -36,6 +36,7 @@ const initialState: TreeState = {
                   label: "0-0-0 : Class 1-0-0",
                   code:"0-0-0",
                   name: "Node 1.1",
+                  selectable:true,
                   children:[]
                 },
               ],
@@ -47,6 +48,7 @@ const initialState: TreeState = {
           label:"1 : Class 2",
           code:"1",
           name: "Class 2",
+          selectable:true,
           children:[]
         },
     ],

@@ -41,7 +41,6 @@ const create = async (facility: Facility) => {
 };
 
 const update = async (id: string, facility: Facility) => {
-  console.log(facility);
   return axios.patch(url + '/' + id, facility);
 };
 

@@ -176,9 +176,9 @@ const AppTopbar = (props) => {
                 </button>
                 <ul className="profile-menu fade-in-up">
                   <li>
-                    <button type="button" className="p-link">
+                    <button type="button" className="p-link" onClick={()=>keycloak.accountManagement()}>
                       <i className="pi pi-user"></i>
-                      <a href='http://172.19.100.120:8080/auth/realms/IFM/account' target="blank" ><span>Profile</span></a>
+                      <span>Profile</span>
                     </button>
                   </li>
                   <li>

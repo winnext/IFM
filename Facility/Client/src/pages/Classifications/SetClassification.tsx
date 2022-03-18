@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tree } from "primereact/tree";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "primereact/button";
@@ -6,20 +6,38 @@ import { ContextMenu } from "primereact/contextmenu";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
-import { useAppDispatch, useAppSelector } from "../app/hook";
-import { save } from "../features/tree/treeSlice";
 import { InputText } from "primereact/inputtext";
+import ClassificationsService from "../../services/classifications";
+
+interface ClassificationInterface {
+  _id?: string;
+  name: string;
+  code: string;
+  detail: {
+    key?: string;
+    label?: string;
+    selectable?: boolean;
+    children?: Node[];
+  };
+}
 
 interface Node {
+  _id?: string;
   key: string;
   label: string;
   name: string;
   code: string;
-  selectable?: boolean | undefined;
-  children?: Node[] | undefined;
+  selectable: boolean;
+  children: Node[];
 }
 
-const Classifications = () => {
+const SetClassification = ({
+  classification,
+  loadLazyData
+}: {
+  classification: ClassificationInterface;
+  loadLazyData: ()=>void
+}) => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -27,6 +45,7 @@ const Classifications = () => {
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
+
   const menu = [
     {
       label: "Add Item",
@@ -43,11 +62,12 @@ const Classifications = () => {
       },
     },
   ];
-  const dispatch = useAppDispatch();
 
-  const tree = useAppSelector((state) => state.tree);
+  const [data, setData] = useState<Node[]>([]);
 
-  const [data, setData] = useState<Node[]>(tree.classificationsOfFacility);
+  useEffect(() => {
+    setData(classification.detail.children || []);
+  }, [classification]);
 
   const findNodeAndAddItem = (
     search: string,
@@ -61,6 +81,8 @@ const Classifications = () => {
           label: code + " : " + name,
           name: name,
           code: code,
+          selectable: false,
+          children: [],
         };
         node.children = node.children ? [...node.children, newNode] : [newNode];
         return node;
@@ -77,7 +99,7 @@ const Classifications = () => {
     return nodes.map((node) => {
       node.children = node.children
         ? node.children.filter((child) => child.key !== search)
-        : undefined;
+        : [];
       findNodeAndDelete(search, node.children ? node.children : []);
       return node;
     })[0];
@@ -85,7 +107,7 @@ const Classifications = () => {
 
   const fixNodes = (nodes: Node[]) => {
     return nodes.map((node) => {
-      if (node.children === undefined || node.children.length === 0) {
+      if (node.children.length === 0) {
         node.selectable = true;
       } else {
         fixNodes(node.children);
@@ -96,16 +118,17 @@ const Classifications = () => {
   };
 
   const addItem = (key: string) => {
-    if(selectedNodeKey === ""){
+    if (selectedNodeKey === "") {
       const newNode = {
         key: uuidv4(),
         label: code + " : " + name,
         name: name,
         code: code,
+        selectable: false,
+        children: [],
       };
-      setData(prev=>[...prev, newNode]);
-    }
-    else{
+      setData((prev) => [...prev, newNode]);
+    } else {
       const temp = JSON.parse(JSON.stringify(data));
       findNodeAndAddItem(key, temp);
       setData(temp);
@@ -125,8 +148,32 @@ const Classifications = () => {
   const saveTree = () => {
     const temp = JSON.parse(JSON.stringify(data));
     fixNodes(temp);
-    dispatch(save(temp));
-    showSuccess("Saved!");
+    const _id = classification._id;
+    const _classification = {
+      code: classification.code,
+      name: classification.name,
+      detail: {
+        ...classification.detail,
+        children: temp,
+        selectable: temp.length === 0 ? true : false,
+      },
+    };
+    if (_id) {
+      ClassificationsService.update(_id, _classification)
+        .then((res) => {
+          showSuccess("Saved!");
+          loadLazyData()
+        })
+        .catch((err) => {
+          console.log(err.response);
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
+        });
+    }
   };
 
   const showSuccess = (detail: string) => {
@@ -161,17 +208,19 @@ const Classifications = () => {
   };
 
   const footer = () => {
-    return <div>
-      <Button
-        label="Add Root Item"
-        icon="pi pi-plus"
-        onClick={() => {
-          setSelectedNodeKey("");
-          setAddDia(true)
-        }}
-        autoFocus
-      />
-    </div>;
+    return (
+      <div>
+        <Button
+          label="Add Item"
+          icon="pi pi-plus"
+          onClick={() => {
+            setSelectedNodeKey("");
+            setAddDia(true);
+          }}
+          autoFocus
+        />
+      </div>
+    );
   };
 
   return (
@@ -187,7 +236,7 @@ const Classifications = () => {
         accept={() => deleteItem(selectedNodeKey)}
       />
       <Dialog
-        header="Add New Node"
+        header="Add New Item"
         visible={addDia}
         style={{ width: "40vw" }}
         footer={renderFooter}
@@ -211,7 +260,8 @@ const Classifications = () => {
           />
         </div>
       </Dialog>
-      <h1>Classifications</h1>
+      <h1>Edit Classification</h1>
+      <h3>Code : {classification.code}</h3>
       <div className="field">
         <Tree
           value={data}
@@ -239,4 +289,4 @@ const Classifications = () => {
   );
 };
 
-export default Classifications;
+export default SetClassification;
