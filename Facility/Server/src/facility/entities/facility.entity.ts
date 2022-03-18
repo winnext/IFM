@@ -35,6 +35,8 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop([String])
   label: string[];
 
+  @Prop({type:Object})
+  pathtoChosenNodeClassification: object;
   @Prop({
     type: Timestamp,
     default: function genDate() {

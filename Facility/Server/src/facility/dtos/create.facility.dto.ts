@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
+import { IsDate, IsNotEmpty, IsObject, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Adress } from '../entities/facility.address';
 
@@ -32,6 +32,11 @@ export class CreateFacilityDto {
   @ApiProperty()
   @IsOptional()
   classifications: Classification[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsObject()
+  pathtoChosenNodeClassification: object;
 
   @ApiProperty()
   @IsNotEmpty()
