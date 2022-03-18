@@ -19,6 +19,7 @@ const kafta_topic_enum_1 = require("../const/kafta.topic.enum");
 let HttpExceptionFilter = class HttpExceptionFilter {
     constructor(i18n) {
         this.i18n = i18n;
+        this.logger = new common_1.Logger('HTTP');
         this.postKafka = new post_kafka_1.PostKafka(new kafkaService_1.KafkaService());
     }
     async catch(exception, host) {
@@ -40,7 +41,6 @@ let HttpExceptionFilter = class HttpExceptionFilter {
             status,
             message: exception.message,
         };
-        console.log(exception.getStatus());
         switch (exception.getStatus()) {
             case 400:
                 try {
@@ -49,6 +49,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                         requestInformation,
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
+                    this.logger.warn(`${JSON.stringify(finalExcep)}   `);
                     response.status(status).json(exception.getResponse());
                 }
                 catch (error) {
@@ -66,6 +67,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
                     console.log(`FACILITY_EXCEPTION sending to topic from code 401`);
+                    this.logger.warn(`${JSON.stringify(finalExcep)}   `);
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
@@ -82,7 +84,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                         requestInformation,
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-                    console.log(`FACILITY_EXCEPTION sending to topic from code 403`);
+                    this.logger.warn(`${JSON.stringify(finalExcep)}   `);
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
@@ -106,7 +108,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                         requestInformation,
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-                    console.log(`FACILITY_EXCEPTION sending to topic from code 404`);
+                    this.logger.warn(`${JSON.stringify(finalExcep)}   `);
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
@@ -125,9 +127,8 @@ HttpExceptionFilter = __decorate([
 ], HttpExceptionFilter);
 exports.HttpExceptionFilter = HttpExceptionFilter;
 async function getI18nMessage(i18n, request) {
-    var _a, _b;
-    console.log('this is from 401-403 exception code ' + ((_a = request.user) === null || _a === void 0 ? void 0 : _a.preferred_username));
-    const username = ((_b = request.user) === null || _b === void 0 ? void 0 : _b.preferred_username) || 'Guest';
+    var _a;
+    const username = ((_a = request.user) === null || _a === void 0 ? void 0 : _a.name) || 'Guest';
     return await i18n.translate(i18n_enum_1.I18NEnums.USER_NOT_HAVE_PERMISSION, {
         lang: request.i18nLang,
         args: { username },

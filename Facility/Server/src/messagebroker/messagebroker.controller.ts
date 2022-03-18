@@ -6,13 +6,16 @@ import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
 export class MessagebrokerController {
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)
   exceptionListener(@Payload() message): any {
-    console.log(
-      'this is from message broker exception listener' + message.value,
-    );
+    console.log('this is from message broker exception listener' + message.value);
   }
 
   @MessagePattern(FacilityTopics.FACILITY_LOGGER)
-  loggerListene(@Payload() message): any {
+  loggerListener(@Payload() message): any {
     console.log('this is from message broker logger listener' + message.value);
+  }
+
+  @MessagePattern(FacilityTopics.FACILITY_OPERATION)
+  operationListener(@Payload() message): any {
+    console.log('this is from operation message listener' + message.value);
   }
 }

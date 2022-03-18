@@ -9,12 +9,13 @@ export class PostKafka {
 
   producer: Producer = this.service.producer();
 
-  async producerSendMessage(topicName: string, message: string) {
+  async producerSendMessage(topicName: string, message: string, key?: string) {
     await this.producer.connect();
     await this.producer.send({
       topic: topicName,
       messages: [
         {
+          key: key || '',
           value: message,
         },
       ],

@@ -20,8 +20,11 @@ let MessagebrokerController = class MessagebrokerController {
     exceptionListener(message) {
         console.log('this is from message broker exception listener' + message.value);
     }
-    loggerListene(message) {
+    loggerListener(message) {
         console.log('this is from message broker logger listener' + message.value);
+    }
+    operationListener(message) {
+        console.log('this is from operation message listener' + message.value);
     }
 };
 __decorate([
@@ -37,7 +40,14 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Object)
-], MessagebrokerController.prototype, "loggerListene", null);
+], MessagebrokerController.prototype, "loggerListener", null);
+__decorate([
+    (0, microservices_1.MessagePattern)(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION),
+    __param(0, (0, microservices_1.Payload)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Object)
+], MessagebrokerController.prototype, "operationListener", null);
 MessagebrokerController = __decorate([
     (0, common_1.Controller)('messagebroker')
 ], MessagebrokerController);

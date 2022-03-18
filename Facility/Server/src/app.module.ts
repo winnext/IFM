@@ -12,6 +12,7 @@ import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter'
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
+import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
 
 @Module({
   imports: [
@@ -64,6 +65,8 @@ import { MulterModule } from '@nestjs/platform-express';
     ClassificationModule,
 
     MessagebrokerModule,
+
+    FacilityStructuresModule,
   ],
   providers: [
     {
