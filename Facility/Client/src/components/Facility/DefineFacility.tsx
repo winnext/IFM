@@ -67,7 +67,7 @@ const typesOfFacility = [
   { name: "University" },
 ];
 
-const facility_classfication = "6236218a184a28678498dc46"
+const facility_classfication = process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
 
 const DefineFacility = ({
   submitted,
