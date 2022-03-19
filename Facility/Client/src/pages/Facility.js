@@ -19,7 +19,13 @@ const Facility = () => {
     brand_name: "",
     type_of_facility: "",
     address: [],
-    classification_of_facility: [{}],
+    classifications: {},
+    pathtoChosenNodeClassification: {
+      node: {
+        key: "",
+      },
+      result: [],
+    },
     hastags: [],
     __v: 0,
   };
@@ -59,7 +65,6 @@ const Facility = () => {
       limit: lazyParams.rows,
       sortField: lazyParams.sortField,
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
-
     })
       .then((response) => {
         setFacilities(response.data[0]);
@@ -78,7 +83,7 @@ const Facility = () => {
   };
 
   const onSort = (event) => {
-    setLazyParams(prev=>({...prev,...event}));
+    setLazyParams((prev) => ({ ...prev, ...event }));
   };
 
   const openNew = () => {

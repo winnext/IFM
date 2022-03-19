@@ -9,6 +9,16 @@ interface PaginationParams {
   sortKind?: string;
 }
 
+interface ClassificationInterface {
+  _id?: string;
+  name: string;
+  code: string;
+  detail: {
+    root:Node
+  };
+  __v?: number;
+}
+
 interface Node {
   key: string;
   label: string;
@@ -16,19 +26,6 @@ interface Node {
   code: string;
   selectable: boolean;
   children: Node[];
-}
-
-interface ClassificationInterface {
-  _id?: string;
-  name: string;
-  code: string;
-  detail: {
-    key?: string;
-    label?: string;
-    selectable?: boolean;
-    children?: Node[];
-  };
-  __v?: number;
 }
 
 const findAll = async (query: PaginationParams) => {

@@ -8,21 +8,19 @@ import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
 import ClassificationsService from "../../services/classifications";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface ClassificationInterface {
   _id?: string;
   name: string;
   code: string;
   detail: {
-    key?: string;
-    label?: string;
-    selectable?: boolean;
-    children?: Node[];
+    root:Node
   };
+  __v?: number;
 }
 
 interface Node {
-  _id?: string;
   key: string;
   label: string;
   name: string;
@@ -31,14 +29,24 @@ interface Node {
   children: Node[];
 }
 
-const SetClassification = ({
-  classification,
-  loadLazyData
-}: {
-  classification: ClassificationInterface;
-  loadLazyData: ()=>void
-}) => {
+const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
+  const [loading,setLoading] = useState(true);
+  const [classification, setClassification] = useState<ClassificationInterface>({
+    _id: "",
+    name: "",
+    code: "",
+    detail: {
+      root: {
+        key: "",
+        label: "",
+        name: "",
+        code: "",
+        selectable: true,
+        children: [],
+      },
+    },
+  });
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [addDia, setAddDia] = useState(false);
@@ -64,10 +72,32 @@ const SetClassification = ({
   ];
 
   const [data, setData] = useState<Node[]>([]);
+  const params = useParams()
+  const navigate = useNavigate()
+
+  const getClassification = ()=>{
+    const id = params.id || "";
+    ClassificationsService.findOne(id).then((res) => {
+      setClassification(res.data);
+      setData([res.data.detail.root] || []);
+      setLoading(false);
+    }).catch(err=>{
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response ? err.response.data.message : err.message,
+        life: 2000,
+      });
+      setTimeout(()=>{
+        navigate("/classifications")
+      },2000)
+    })
+  }
 
   useEffect(() => {
-    setData(classification.detail.children || []);
-  }, [classification]);
+    getClassification();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const findNodeAndAddItem = (
     search: string,
@@ -139,6 +169,27 @@ const SetClassification = ({
   };
 
   const deleteItem = (key: string) => {
+    if (classification.detail.root.key === key) {
+      ClassificationsService.remove(classification._id || "")
+        .then(() => {
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Classification Deleted",
+            life: 2000,
+          });
+          navigate("/classifications");
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
+        });
+        return
+    }
     var temp: Node[] = JSON.parse(JSON.stringify(data));
     temp = temp.filter((node) => node.key !== key);
     findNodeAndDelete(key, temp);
@@ -153,16 +204,17 @@ const SetClassification = ({
       code: classification.code,
       name: classification.name,
       detail: {
-        ...classification.detail,
-        children: temp,
-        selectable: temp.length === 0 ? true : false,
+        root:{
+          ...classification.detail.root,
+          children: temp[0].children,
+          selectable: temp[0].children.length === 0 ? true : false,
+        }
       },
     };
     if (_id) {
       ClassificationsService.update(_id, _classification)
         .then((res) => {
           showSuccess("Saved!");
-          loadLazyData()
         })
         .catch((err) => {
           console.log(err.response);
@@ -207,21 +259,12 @@ const SetClassification = ({
     );
   };
 
-  const footer = () => {
-    return (
-      <div>
-        <Button
-          label="Add Item"
-          icon="pi pi-plus"
-          onClick={() => {
-            setSelectedNodeKey("");
-            setAddDia(true);
-          }}
-          autoFocus
-        />
+  if(loading){
+    return <div>
+      <Toast ref={toast} position="top-right" />
+      Loading...
       </div>
-    );
-  };
+  }
 
   return (
     <div className="container">
@@ -272,12 +315,20 @@ const SetClassification = ({
           }
           onContextMenu={(event) => cm.current.show(event.originalEvent)}
           onDragDrop={(event: any) => {
+            if(event.value.length > 1){
+              toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: "You can't drag here.",
+                life: 1000,
+              });
+              return
+            }
             setData(event.value);
           }}
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          footer={footer}
         />
       </div>
       <div className="field">
