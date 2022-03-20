@@ -50,9 +50,14 @@ const SetClassification = () => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [addDia, setAddDia] = useState(false);
+  const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
+  const [data, setData] = useState<Node[]>([]);
+
+  const params = useParams()
+  const navigate = useNavigate()
 
   const menu = [
     {
@@ -63,6 +68,18 @@ const SetClassification = () => {
       },
     },
     {
+      label: "Edit Item",
+      icon: "pi pi-pencil",
+      command: () => {
+        const node = findNode(selectedNodeKey, data);
+        if(node){
+          setName(node.node.name);
+          setCode(node.node.code);
+        }
+        setEditDia(true);
+      },
+    },
+    {
       label: "Delete",
       icon: "pi pi-trash",
       command: () => {
@@ -70,10 +87,6 @@ const SetClassification = () => {
       },
     },
   ];
-
-  const [data, setData] = useState<Node[]>([]);
-  const params = useParams()
-  const navigate = useNavigate()
 
   const getClassification = ()=>{
     const id = params.id || "";
@@ -121,6 +134,22 @@ const SetClassification = () => {
     })[0];
   };
 
+  const findNodeAndChangeItem = (
+    search: string,
+    nodes: Node[]
+  ): Node | undefined => {
+    if (nodes.length === 0) return undefined;
+    return nodes.map((node) => {
+      if (node.key === search) {
+        node.code = code;
+        node.name = name;
+        node.label = code + " : " + name;
+        return node;
+      }
+      return findNodeAndChangeItem(search, node.children ? node.children : []);
+    })[0];
+  };
+
   const findNodeAndDelete = (
     search: string,
     nodes: Node[]
@@ -147,26 +176,40 @@ const SetClassification = () => {
     });
   };
 
-  const addItem = (key: string) => {
-    if (selectedNodeKey === "") {
-      const newNode = {
-        key: uuidv4(),
-        label: code + " : " + name,
-        name: name,
-        code: code,
-        selectable: false,
-        children: [],
-      };
-      setData((prev) => [...prev, newNode]);
-    } else {
-      const temp = JSON.parse(JSON.stringify(data));
-      findNodeAndAddItem(key, temp);
-      setData(temp);
+  const findNode = (
+    search: string,
+    data: Node[],
+    result: Node[] = []
+  ): { node: Node; result: Node[] } | undefined => {
+    for (let node of data) {
+      var _result = [...result, node];
+      if (node.key === search) {
+        return { node: node, result: _result };
+      }
+      const found = findNode(search, node.children, _result);
+      if (found) {
+        return { node: found.node, result: found.result };
+      }
     }
+  };
+
+  const addItem = (key: string) => {
+    const temp = JSON.parse(JSON.stringify(data));
+    findNodeAndAddItem(key, temp);
+    setData(temp);
     setName("");
     setCode("");
     setAddDia(false);
   };
+
+  const saveItem = (key:string) => {
+    const temp = JSON.parse(JSON.stringify(data));
+    findNodeAndChangeItem(key, temp);
+    setData(temp);
+    setName("");
+    setCode("");
+    setEditDia(false);
+  }
 
   const deleteItem = (key: string) => {
     if (classification.detail.root.key === key) {
@@ -201,11 +244,14 @@ const SetClassification = () => {
     fixNodes(temp);
     const _id = classification._id;
     const _classification = {
-      code: classification.code,
-      name: classification.name,
+      code: temp[0].code,
+      name: temp[0].name,
       detail: {
         root:{
           ...classification.detail.root,
+          code: temp[0].code,
+          name: temp[0].name,
+          label: temp[0].label,
           children: temp[0].children,
           selectable: temp[0].children.length === 0 ? true : false,
         }
@@ -217,7 +263,6 @@ const SetClassification = () => {
           showSuccess("Saved!");
         })
         .catch((err) => {
-          console.log(err.response);
           toast.current.show({
             severity: "error",
             summary: "Error",
@@ -237,11 +282,11 @@ const SetClassification = () => {
     });
   };
 
-  const renderFooter = () => {
+  const renderFooterAdd = () => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => {
             setAddDia(false);
@@ -250,9 +295,32 @@ const SetClassification = () => {
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Add"
           icon="pi pi-check"
           onClick={() => addItem(selectedNodeKey)}
+          autoFocus
+        />
+      </div>
+    );
+  };
+
+  const renderFooterEdit = () => {
+    return (
+      <div>
+        <Button
+          label="Cancel"
+          icon="pi pi-times"
+          onClick={() => {
+            setEditDia(false);
+            setName("");
+            setCode("")
+          }}
+          className="p-button-text"
+        />
+        <Button
+          label="Save"
+          icon="pi pi-check"
+          onClick={() => saveItem(selectedNodeKey)}
           autoFocus
         />
       </div>
@@ -282,10 +350,37 @@ const SetClassification = () => {
         header="Add New Item"
         visible={addDia}
         style={{ width: "40vw" }}
-        footer={renderFooter}
+        footer={renderFooterAdd}
         onHide={() => {
           setName("");
+          setCode("");
           setAddDia(false);
+        }}
+      >
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Code</h5>
+          <InputText
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+          />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Name</h5>
+          <InputText
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        </div>
+      </Dialog>
+      <Dialog
+        header="Edit Item"
+        visible={editDia}
+        style={{ width: "40vw" }}
+        footer={renderFooterEdit}
+        onHide={() => {
+          setName("");
+          setCode("");
+          setEditDia(false);
         }}
       >
         <div className="field">

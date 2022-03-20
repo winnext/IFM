@@ -33,29 +33,9 @@ interface Node {
 
 const Classifications = () => {
   // const tree = useAppSelector((state) => state.tree);
-  const emptyClassification = {
-    _id: "",
-    name: "",
-    code: "",
-    detail: {
-      root: {
-        key: "",
-        label: "",
-        name: "",
-        code: "",
-        selectable: true,
-        children: [],
-      },
-    },
-  };
 
   const navigate = useNavigate();
-
-  const [classification, setClassification] =
-    useState<ClassificationInterface>(emptyClassification);
   const [data, setData] = useState<ClassificationInterface[]>([]);
-  const [deleteClassificationDialog, setDeleteClassificationDialog] =
-    useState(false);
   const [addDia, setAddDia] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -188,25 +168,6 @@ const Classifications = () => {
     );
   };
 
-  const actionBodyTemplate = (rowData: any) => {
-    return (
-      <div className="actions">
-        <Button
-          icon="pi pi-pencil"
-          className="p-button-rounded p-button-success mr-2"
-          onClick={() => {}}
-        />
-        <Button
-          icon="pi pi-trash"
-          className="p-button-rounded p-button-warning mt-2"
-          onClick={() => {
-            setClassification(rowData);
-            setDeleteClassificationDialog(true);
-          }}
-        />
-      </div>
-    );
-  };
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
@@ -223,54 +184,6 @@ const Classifications = () => {
       </React.Fragment>
     );
   };
-
-  const deleteClassification = () => {
-    if (classification._id) {
-      ClassificationsService.remove(classification._id)
-        .then((res) => {
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "Facility Deleted",
-            life: 3000,
-          });
-          loadLazyData();
-        })
-        .catch((err) => {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: err.response ? err.response.data.message : err.message,
-            life: 2000,
-          });
-        });
-    } else {
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Error",
-        life: 2000,
-      });
-    }
-    setDeleteClassificationDialog(false);
-  };
-
-  const deleteClassificationDialogFooter = (
-    <>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        className="p-button-text"
-        onClick={() => setDeleteClassificationDialog(false)}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        className="p-button-text"
-        onClick={deleteClassification}
-      />
-    </>
-  );
 
   return (
     <div>
@@ -303,9 +216,8 @@ const Classifications = () => {
         sortField={lazyParams.sortField}
         sortOrder={lazyParams.sortOrder}
       >
-        <Column field="code" header="Code"></Column>
-        <Column field="name" header="Name"></Column>
-        <Column body={actionBodyTemplate}></Column>
+        <Column field="code" header="Code" sortable></Column>
+        <Column field="name" header="Name" sortable></Column>
       </DataTable>
       <Dialog
         header="Add New Classification"
@@ -330,26 +242,6 @@ const Classifications = () => {
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
-        </div>
-      </Dialog>
-      <Dialog
-        visible={deleteClassificationDialog}
-        style={{ width: "450px" }}
-        header="Confirm"
-        modal
-        footer={deleteClassificationDialogFooter}
-        onHide={() => setDeleteClassificationDialog(false)}
-      >
-        <div className="flex align-items-center justify-content-center">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: "2rem" }}
-          />
-          {classification && (
-            <span>
-              Are you sure you want to delete <b>{classification.name}</b>?
-            </span>
-          )}
         </div>
       </Dialog>
     </div>
