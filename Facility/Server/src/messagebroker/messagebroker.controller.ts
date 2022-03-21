@@ -1,20 +1,17 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+
 import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
-import { ClassificationHistoryService } from './classification.historyservice';
-import { ClassificationHistory } from './entities/classification.history.entity';
-import { FacilityHistory } from './entities/facility.history.entity';
-import { FacilityHistoryService } from './facility.historry.service';
+import { ClassificationHistoryService } from 'src/history/classification.historyservice';
+import { FacilityHistoryService } from 'src/history/facility.historry.service';
 
 @Controller('messagebroker')
 @Unprotected()
 export class MessagebrokerController {
   constructor(
-    private readonly facilityHistoryService: FacilityHistoryService,
-    private readonly classificationHistoryService: ClassificationHistoryService,
+    private facilityHistoryService: FacilityHistoryService,
+    private classificationHistoryService: ClassificationHistoryService,
   ) {}
 
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)
@@ -39,15 +36,5 @@ export class MessagebrokerController {
       const classification = { classification: message.value };
       await this.classificationHistoryService.create(classification);
     }
-  }
-
-  @Get('/facility')
-  async getAll(@Query() query: PaginationParams): Promise<FacilityHistory[]> {
-    return await this.facilityHistoryService.findAll(query);
-  }
-
-  @Get('classification')
-  async getAllClassification(@Query() query: PaginationParams): Promise<ClassificationHistory[]> {
-    return await this.classificationHistoryService.findAll(query);
   }
 }

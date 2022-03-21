@@ -16,13 +16,13 @@ export class ClassificationHistoryRepository implements BaseInterfaceRepository<
   findWithRelations(relations: any): Promise<ClassificationHistory[]> {
     throw new Error(relations);
   }
-  async findOneById(id: string): Promise<ClassificationHistory> {
-    const classification = await this.classificationHistoryModel.findById({ _id: id }).exec();
-    if (!classification) {
+  async findOneById(id: string): Promise<ClassificationHistory[]> {
+    const classificationHistory = await this.classificationHistoryModel.find({ 'classification._id': id }).exec();
+    if (!classificationHistory) {
       throw new ClassificationNotFountException(id);
     }
 
-    return classification;
+    return classificationHistory;
   }
   async findAll(data: PaginationParams) {
     let { page, limit } = data;
@@ -61,7 +61,6 @@ export class ClassificationHistoryRepository implements BaseInterfaceRepository<
 
   async create(createClassificationDto: CreateClassificationHistoryDto) {
     const classification = new this.classificationHistoryModel(createClassificationDto);
-
 
     return await classification.save();
   }

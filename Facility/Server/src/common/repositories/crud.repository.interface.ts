@@ -3,7 +3,7 @@ export interface BaseInterfaceRepository<T> {
 
   create(data: T | any): Promise<T>;
 
-  findOneById(id: string): Promise<T>;
+  findOneById(id: string);
 
   //findByCondition(filterCondition: any): Promise<T>;
 

@@ -13,6 +13,7 @@ import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
 import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -67,6 +68,8 @@ import { FacilityStructuresModule } from './facility-structures/facility-structu
     MessagebrokerModule,
 
     FacilityStructuresModule,
+
+    HistoryModule,
   ],
   providers: [
     {

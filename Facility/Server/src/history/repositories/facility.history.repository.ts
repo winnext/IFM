@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
+import { FacilityNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 
 import { FacilityHistory } from '../entities/facility.history.entity';
@@ -16,14 +16,15 @@ export class FacilityHistoryRepository implements BaseInterfaceRepository<Facili
   findWithRelations(relations: any): Promise<FacilityHistory[]> {
     throw new Error(relations);
   }
-  async findOneById(id: string): Promise<FacilityHistory> {
-    const classification = await this.facilityHistoryModel.findById({ _id: id }).exec();
-    if (!classification) {
-      throw new ClassificationNotFountException(id);
+  async findOneById(id: string): Promise<FacilityHistory[]> {
+    const facilityHistory = await this.facilityHistoryModel.find({ 'facility._id': id }).exec();
+    if (!facilityHistory) {
+      throw new FacilityNotFountException(id);
     }
 
-    return classification;
+    return facilityHistory;
   }
+
   async findAll(data: PaginationParams) {
     let { page, limit } = data;
     page = page || 0;

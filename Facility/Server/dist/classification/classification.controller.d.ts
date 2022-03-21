@@ -7,7 +7,7 @@ export declare class ClassificationController {
     constructor(classificationService: ClassificationService);
     create(createClassificationDto: CreateClassificationDto): Promise<import("./entities/classification.entity").Classification>;
     findAll(paramDto: PaginationParams): Promise<import("./entities/classification.entity").Classification[]>;
-    findOne(id: string): Promise<import("./entities/classification.entity").Classification>;
+    findOne(id: string): Promise<any>;
     update(id: string, updateClassificationDto: UpdateClassificationDto): Promise<any>;
-    remove(id: string): Promise<import("./entities/classification.entity").Classification>;
+    remove(id: string): Promise<any>;
 }

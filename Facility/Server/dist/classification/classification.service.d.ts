@@ -7,7 +7,7 @@ export declare class ClassificationService {
     constructor(classificationRepository: BaseInterfaceRepository<Classification>);
     create(createClassificationDto: CreateClassificationDto): Promise<Classification>;
     findAll(query: any): Promise<Classification[]>;
-    findOne(id: string): Promise<Classification>;
+    findOne(id: string): Promise<any>;
     update(id: string, updateClassificationDto: UpdateClassificationDto): Promise<any>;
-    remove(id: string): Promise<Classification>;
+    remove(id: string): Promise<any>;
 }

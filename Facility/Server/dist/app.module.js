@@ -22,6 +22,7 @@ const messagebroker_module_1 = require("./messagebroker/messagebroker.module");
 const Joi = require("joi");
 const platform_express_1 = require("@nestjs/platform-express");
 const facility_structures_module_1 = require("./facility-structures/facility-structures.module");
+const history_module_1 = require("./history/history.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -72,6 +73,7 @@ AppModule = __decorate([
             classification_module_1.ClassificationModule,
             messagebroker_module_1.MessagebrokerModule,
             facility_structures_module_1.FacilityStructuresModule,
+            history_module_1.HistoryModule,
         ],
         providers: [
             {
