@@ -6,52 +6,36 @@ import { v4 as uuidv4 } from "uuid";
 import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState, useRef } from "react";
 // import { useAppDispatch, useAppSelector } from "../../app/hook";
-import SetClassification from "./SetClassification";
 // import { save } from "../../features/tree/treeSlice";
 import ClassificationsService from "../../services/classifications";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
+import { useNavigate } from "react-router-dom";
 
 interface ClassificationInterface {
   _id?: string;
   name: string;
   code: string;
   detail: {
-    key?: string;
-    label?: string;
-    selectable?: boolean;
-    children?: Node[];
+    root: Node;
   };
+  __v?: number;
 }
 
 interface Node {
-  _id?: string;
   key: string;
   label: string;
   name: string;
   code: string;
   selectable: boolean;
   children: Node[];
-  __v?: number;
 }
 
 const Classifications = () => {
   // const tree = useAppSelector((state) => state.tree);
-  const emptyClassification = {
-    _id: "",
-    name: "",
-    code: "",
-    detail: {
-      key: "",
-      label: "",
-      selectable: false,
-      children: [],
-    },
-  }
-  const [classification,setClassification] = useState<ClassificationInterface>(emptyClassification)
+
+  const navigate = useNavigate();
   const [data, setData] = useState<ClassificationInterface[]>([]);
-  const [selectedClassification, setSelectedClassification] = React.useState();
-  const [deleteClassificationDialog, setDeleteClassificationDialog] = useState(false);
   const [addDia, setAddDia] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -83,7 +67,6 @@ const Classifications = () => {
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
     })
       .then((response) => {
-        console.log(response.data)
         setData(response.data[0]);
         setCountClassifications(response.data[1].count);
         setLoading(false);
@@ -106,10 +89,14 @@ const Classifications = () => {
       name: name,
       code: code,
       detail: {
-        key: uuidv4(),
-        label: code + " : " + name,
-        selectable: true,
-        children: [],
+        root: {
+          key: uuidv4(),
+          name: name,
+          code: code,
+          label: code + " : " + name,
+          selectable: true,
+          children: [],
+        },
       },
     };
 
@@ -163,7 +150,7 @@ const Classifications = () => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => {
             setAddDia(false);
@@ -172,7 +159,7 @@ const Classifications = () => {
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Add"
           icon="pi pi-check"
           onClick={() => addItem()}
           autoFocus
@@ -181,20 +168,6 @@ const Classifications = () => {
     );
   };
 
-  const actionBodyTemplate = (rowData: any) => {
-    return (
-      <div className="actions">
-        <Button
-          icon="pi pi-trash"
-          className="p-button-rounded p-button-warning mt-2"
-          onClick={() => {
-            setClassification(rowData);
-            setDeleteClassificationDialog(true);
-          }}
-        />
-      </div>
-    );
-  };
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
@@ -211,57 +184,6 @@ const Classifications = () => {
       </React.Fragment>
     );
   };
-
-  const deleteClassification = ()=>{
-    if(classification._id){
-      ClassificationsService.remove(classification._id)
-        .then((res) => {
-          toast.current.show({
-            severity: "success",
-            summary: "Successful",
-            detail: "Facility Deleted",
-            life: 3000,
-          });
-          loadLazyData();
-        }
-        )
-        .catch((err) => {
-          toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: err.response ? err.response.data.message : err.message,
-            life: 2000,
-          });
-        }
-        );
-    }
-    else{
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Error",
-        life: 2000,
-      });
-    }
-    setDeleteClassificationDialog(false);
-  }
-
-  const deleteClassificationDialogFooter = (
-    <>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        className="p-button-text"
-        onClick={()=>setDeleteClassificationDialog(false)}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        className="p-button-text"
-        onClick={deleteClassification}
-      />
-    </>
-  );
 
   return (
     <div>
@@ -287,34 +209,16 @@ const Classifications = () => {
         header={header}
         selectionMode="single"
         onSelectionChange={(e) => {
-          setSelectedClassification(e.value);
+          navigate("/classifications/" + e.value._id);
         }}
         responsiveLayout="scroll"
         onSort={onSort}
         sortField={lazyParams.sortField}
         sortOrder={lazyParams.sortOrder}
       >
-        <Column field="code" header="Code"></Column>
-        <Column field="name" header="Name"></Column>
-        <Column body={actionBodyTemplate}></Column>
+        <Column field="code" header="Code" sortable></Column>
+        <Column field="name" header="Name" sortable></Column>
       </DataTable>
-      {/* <DataTable
-        footer={footer}
-        value={tree.classificationsOfFacility}
-        selectionMode="single"
-        onSelectionChange={(e) => {
-          console.log(e.value);
-          setSelectedClassification(e.value);
-        }}
-        dataKey="id"
-        responsiveLayout="scroll"
-      >
-        <Column field="code" header="Code"></Column>
-        <Column field="name" header="Name"></Column>
-      </DataTable> */}
-      {selectedClassification && (
-        <SetClassification classification={selectedClassification} loadLazyData={loadLazyData} />
-      )}
       <Dialog
         header="Add New Classification"
         visible={addDia}
@@ -340,26 +244,6 @@ const Classifications = () => {
           />
         </div>
       </Dialog>
-      <Dialog
-            visible={deleteClassificationDialog}
-            style={{ width: "450px" }}
-            header="Confirm"
-            modal
-            footer={deleteClassificationDialogFooter}
-            onHide={()=>setDeleteClassificationDialog(false)}
-          >
-            <div className="flex align-items-center justify-content-center">
-              <i
-                className="pi pi-exclamation-triangle mr-3"
-                style={{ fontSize: "2rem" }}
-              />
-              {classification && (
-                <span>
-                  Are you sure you want to delete <b>{classification.name}</b>?
-                </span>
-              )}
-            </div>
-          </Dialog>
     </div>
   );
 };

@@ -16,7 +16,8 @@ const AppBreadcrumb = (props) => {
   const location = useLocation();
   const pathname = location.pathname;
 
-  let name = pathname.replace('/', '');
+  const temp = pathname.split('/')
+  let name = temp[1]
   if (props.routers) {
     let currentRouter = props.routers.find(
       (router) => router.path === pathname

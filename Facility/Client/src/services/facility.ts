@@ -21,7 +21,11 @@ interface Facility {
   facility_name: string;
   brand_name: string;
   type_of_facility: string;
-  classification_of_facility: object | string;
+  classifications: object;
+  pathtoChosenNodeClassification: {
+    node:object,
+    result: Array<any>
+  };
   address?: Address[];
   label: string[];
   uuid?: string;
