@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const microservices_1 = require("@nestjs/microservices");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
 const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
-const classification_historyservice_1 = require("../history/classification.historyservice");
-const facility_historry_service_1 = require("../history/facility.historry.service");
+const classification_history_service_1 = require("../history/classification.history.service");
+const facility_history_service_1 = require("../history/facility.history.service");
 let MessagebrokerController = class MessagebrokerController {
     constructor(facilityHistoryService, classificationHistoryService) {
         this.facilityHistoryService = facilityHistoryService;
@@ -34,17 +34,14 @@ let MessagebrokerController = class MessagebrokerController {
         console.log(message.key);
         switch (message.key) {
             case '/facility':
-                console.log('facility history');
                 const facility = { facility: message.value };
                 await this.facilityHistoryService.create(facility);
                 break;
             case '/classification':
-                console.log('classification history');
                 const classification = { classification: message.value };
                 await this.classificationHistoryService.create(classification);
                 break;
             default:
-                console.log('unknown facility');
                 return 'undefined history call';
         }
     }
@@ -73,8 +70,8 @@ __decorate([
 MessagebrokerController = __decorate([
     (0, common_1.Controller)('messagebroker'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __metadata("design:paramtypes", [facility_historry_service_1.FacilityHistoryService,
-        classification_historyservice_1.ClassificationHistoryService])
+    __metadata("design:paramtypes", [facility_history_service_1.FacilityHistoryService,
+        classification_history_service_1.ClassificationHistoryService])
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map

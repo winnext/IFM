@@ -32,7 +32,6 @@ class LoggingInterceptor {
         const now = Date.now();
         const url = request.url;
         const parsedUrl = url.match(/^\/[^\?\/]*/);
-        const finalParsedUrl = request.method.toLowerCase() + parsedUrl[0].replace('/', '_');
         response.on('close', async () => {
             const { statusCode, statusMessage } = response;
             const responseInformation = {

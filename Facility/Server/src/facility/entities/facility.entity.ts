@@ -34,7 +34,7 @@ export class Facility extends BasePersistantDocumentObject {
   label: string[];
 
   @Prop({ type: Object })
-  pathToChosenNodeClassification: object[];
+  pathToChosenNodeClassification: object;
   @Prop({
     type: Date,
     default: function genDate() {

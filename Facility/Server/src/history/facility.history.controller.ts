@@ -5,7 +5,7 @@ import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 
 import { ClassificationHistory } from './entities/classification.history.entity';
 import { FacilityHistory } from './entities/facility.history.entity';
-import { FacilityHistoryService } from './facility.historry.service';
+import { FacilityHistoryService } from './facility.history.service';
 
 @ApiTags('Facility_History')
 @Controller('facilityHistory')

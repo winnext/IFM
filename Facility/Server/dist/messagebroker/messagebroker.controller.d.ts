@@ -1,5 +1,5 @@
-import { ClassificationHistoryService } from 'src/history/classification.historyservice';
-import { FacilityHistoryService } from 'src/history/facility.historry.service';
+import { ClassificationHistoryService } from 'src/history/classification.history.service';
+import { FacilityHistoryService } from 'src/history/facility.history.service';
 export declare class MessagebrokerController {
     private facilityHistoryService;
     private classificationHistoryService;

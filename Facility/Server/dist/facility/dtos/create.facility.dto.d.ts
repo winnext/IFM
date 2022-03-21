@@ -6,7 +6,7 @@ export declare class CreateFacilityDto {
     brand_name: string;
     type_of_facility: string;
     classifications: Classification[];
-    pathtoChosenNodeClassification: object[];
+    pathToChosenNodeClassification: object;
     label: string[];
     address: Adress;
     updatedAt: Date;

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsObject, IsOptional, IsString, Length } from 'class-validator';
-import { Facility } from 'src/facility/entities/facility.entity';
 
 export class CreateFacilityStructureDto {
   @ApiProperty()

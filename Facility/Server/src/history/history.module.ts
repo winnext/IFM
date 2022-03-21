@@ -6,8 +6,8 @@ import { FacilityHistory, FaciliyHistorySchema } from './entities/facility.histo
 import { ClassificationHistoryController } from './classification.history.controller';
 import { FacilityHistoryController } from './facility.history.controller';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { ClassificationHistoryService } from './classification.historyservice';
-import { FacilityHistoryService } from './facility.historry.service';
+import { ClassificationHistoryService } from './classification.history.service';
+import { FacilityHistoryService } from './facility.history.service';
 import { ClassificationHistoryRepository } from './repositories/classification.history.repository';
 import { FacilityHistoryRepository } from './repositories/facility.history.repository';
 
