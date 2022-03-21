@@ -11,11 +11,11 @@ import { ClassificationHistory } from './entities/classification.history.entity'
 export class ClassificationHistoryController {
   constructor(private readonly classificationHistoryService: ClassificationHistoryService) {}
 
-  @Get('classification')
+  @Get('')
   async getAllClassification(@Query() query: PaginationParams): Promise<ClassificationHistory[]> {
     return await this.classificationHistoryService.findAll(query);
   }
-  @Get('classification/:id')
+  @Get(':id')
   async getClassificationHistory(@Param('id') _id: string): Promise<ClassificationHistory[]> {
     return await this.classificationHistoryService.findOne(_id);
   }
