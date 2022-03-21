@@ -37,7 +37,8 @@ export class MessagebrokerController {
         await this.classificationHistoryService.create(classification);
         break;
       default:
-        return 'undefined history call';
+        console.log('undefined history call from facility microservice');
+        break;
     }
   }
 }

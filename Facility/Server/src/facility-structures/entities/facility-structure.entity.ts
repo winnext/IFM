@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
 import { Facility } from 'src/facility/entities/facility.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { Document, Types, Schema as MongooseSchema } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Timestamp } from 'bson';
 export type FacilityStructureDocument = FacilityStructure & Document;
 @Schema()

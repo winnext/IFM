@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
 import { CreateFacilityHistoryDto } from './dtos/create.facility.history.dto';
 import { FacilityHistory } from './entities/facility.history.entity';
 
@@ -9,7 +9,7 @@ import { FacilityHistory } from './entities/facility.history.entity';
 export class FacilityHistoryService {
   constructor(
     @Inject(RepositoryEnums.FACILITY_HISTORY)
-    private readonly facilityHistoryRepository: BaseInterfaceRepository<FacilityHistory>,
+    private readonly facilityHistoryRepository: BaseHistoryRepositoryInterface<FacilityHistory>,
   ) {}
   async create(createFacilityHistoryDto: CreateFacilityHistoryDto) {
     return await this.facilityHistoryRepository.create(createFacilityHistoryDto);

@@ -3,19 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { FacilityNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
 
 import { FacilityHistory } from '../entities/facility.history.entity';
 
 @Injectable()
-export class FacilityHistoryRepository implements BaseInterfaceRepository<FacilityHistory> {
+export class FacilityHistoryRepository implements BaseHistoryRepositoryInterface<FacilityHistory> {
   constructor(
     @InjectModel(FacilityHistory.name)
     private readonly facilityHistoryModel: Model<FacilityHistory>,
   ) {}
-  findWithRelations(relations: any): Promise<FacilityHistory[]> {
-    throw new Error(relations);
-  }
+
   async findOneById(id: string): Promise<FacilityHistory[]> {
     const facilityHistory = await this.facilityHistoryModel.find({ 'facility._id': id }).exec();
     if (!facilityHistory) {
@@ -50,7 +48,7 @@ export class FacilityHistoryRepository implements BaseInterfaceRepository<Facili
       .find()
       .skip(skip)
       .limit(lmt)
-      // .sort([[orderByColumn, orderBy]])
+      .sort({ 'facility.updatedAt': 1 })
       .exec();
     const pagination = { count: count, page: pg, limit: lmt };
     const facility = [];
@@ -64,11 +62,5 @@ export class FacilityHistoryRepository implements BaseInterfaceRepository<Facili
     const facility = new this.facilityHistoryModel(createClassificationDto);
 
     return await facility.save();
-  }
-  async update(_id: string, updateClassificationto) {
-    throw new Error(updateClassificationto);
-  }
-  async delete(_id: string) {
-    return null;
   }
 }

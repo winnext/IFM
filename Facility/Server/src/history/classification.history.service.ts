@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
 import { CreateClassificationHistoryDto } from './dtos/create.classification.history.dto';
 import { ClassificationHistory } from './entities/classification.history.entity';
 
@@ -9,7 +9,7 @@ import { ClassificationHistory } from './entities/classification.history.entity'
 export class ClassificationHistoryService {
   constructor(
     @Inject(RepositoryEnums.CLASSIFICATION_HISTORY)
-    private readonly classificationHistoryRepository: BaseInterfaceRepository<ClassificationHistory>,
+    private readonly classificationHistoryRepository: BaseHistoryRepositoryInterface<ClassificationHistory>,
   ) {}
   async create(createFacilityHistoryDto: CreateClassificationHistoryDto) {
     return await this.classificationHistoryRepository.create(createFacilityHistoryDto);

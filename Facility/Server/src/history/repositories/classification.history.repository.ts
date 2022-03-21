@@ -3,19 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
 import { CreateClassificationHistoryDto } from '../dtos/create.classification.history.dto';
 import { ClassificationHistory } from '../entities/classification.history.entity';
 
 @Injectable()
-export class ClassificationHistoryRepository implements BaseInterfaceRepository<ClassificationHistory> {
+export class ClassificationHistoryRepository implements BaseHistoryRepositoryInterface<ClassificationHistory> {
   constructor(
     @InjectModel(ClassificationHistory.name)
     private readonly classificationHistoryModel: Model<ClassificationHistory>,
   ) {}
-  findWithRelations(relations: any): Promise<ClassificationHistory[]> {
-    throw new Error(relations);
-  }
+
   async findOneById(id: string): Promise<ClassificationHistory[]> {
     const classificationHistory = await this.classificationHistoryModel.find({ 'classification._id': id }).exec();
     if (!classificationHistory) {
@@ -49,7 +47,7 @@ export class ClassificationHistoryRepository implements BaseInterfaceRepository<
       .find()
       .skip(skip)
       .limit(lmt)
-      // .sort([[orderByColumn, orderBy]])
+      .sort({ 'classification.updatedAt': 1 })
       .exec();
     const pagination = { count: count, page: pg, limit: lmt };
     const classification = [];
@@ -63,11 +61,5 @@ export class ClassificationHistoryRepository implements BaseInterfaceRepository<
     const classification = new this.classificationHistoryModel(createClassificationDto);
 
     return await classification.save();
-  }
-  async update(_id: string, updateClassificationto) {
-    throw new Error(updateClassificationto);
-  }
-  async delete(_id: string) {
-    return null;
   }
 }
