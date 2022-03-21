@@ -12,7 +12,6 @@ var Facility_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FaciliySchema = exports.Facility = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const bson_1 = require("bson");
 const mongoose_2 = require("mongoose");
 const classification_entity_1 = require("../../classification/entities/classification.entity");
 const base_object_1 = require("../../common/baseObject/base.object");
@@ -53,17 +52,21 @@ __decorate([
     __metadata("design:type", Array)
 ], Facility.prototype, "label", void 0);
 __decorate([
+    (0, mongoose_1.Prop)({ type: Object }),
+    __metadata("design:type", Object)
+], Facility.prototype, "pathtoChosenNodeClassification", void 0);
+__decorate([
     (0, mongoose_1.Prop)({
-        type: bson_1.Timestamp,
+        type: Date,
         default: function genDate() {
             return new Date();
         },
     }),
-    __metadata("design:type", bson_1.Timestamp)
+    __metadata("design:type", Date)
 ], Facility.prototype, "createdAt", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
-    __metadata("design:type", bson_1.Timestamp)
+    __metadata("design:type", Date)
 ], Facility.prototype, "updatedAt", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

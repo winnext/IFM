@@ -1,7 +1,6 @@
 /// <reference types="mongoose/types/PipelineStage" />
 /// <reference types="mongoose/types/Error" />
 /// <reference types="mongoose/types/Connection" />
-import { Timestamp } from 'bson';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Classification } from 'src/classification/entities/classification.entity';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
@@ -15,8 +14,9 @@ export declare class Facility extends BasePersistantDocumentObject {
     type_of_facility: string;
     classifications: Classification[];
     label: string[];
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
+    pathtoChosenNodeClassification: object;
+    createdAt: Date;
+    updatedAt: Date;
     address: Adress[];
     class_name: string;
 }

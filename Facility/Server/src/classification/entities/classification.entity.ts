@@ -30,6 +30,17 @@ export class Classification extends Document {
 
   @Prop({ type: Object })
   detail: object;
+
+  @Prop({
+    type: Date,
+    default: function genDate() {
+      return new Date();
+    },
+  })
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export const ClassificationSchema = SchemaFactory.createForClass(Classification);

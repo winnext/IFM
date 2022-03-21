@@ -1,6 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Timestamp } from 'bson';
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 import { Classification } from 'src/classification/entities/classification.entity';
@@ -35,18 +33,18 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop([String])
   label: string[];
 
-  @Prop({type:Object})
-  pathtoChosenNodeClassification: object;
+  @Prop({ type: Object })
+  pathToChosenNodeClassification: object[];
   @Prop({
-    type: Timestamp,
+    type: Date,
     default: function genDate() {
       return new Date();
     },
   })
-  createdAt: Timestamp;
+  createdAt: Date;
 
   @Prop()
-  updatedAt: Timestamp;
+  updatedAt: Date;
 
   @Prop()
   address: Adress[];
