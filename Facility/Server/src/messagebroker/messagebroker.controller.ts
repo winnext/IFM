@@ -1,10 +1,10 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { Unprotected } from 'nest-keycloak-connect';
 
 import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
-import { ClassificationHistoryService } from 'src/history/classification.historyservice';
-import { FacilityHistoryService } from 'src/history/facility.historry.service';
+import { ClassificationHistoryService } from 'src/history/classification.history.service';
+import { FacilityHistoryService } from 'src/history/facility.history.service';
 
 @Controller('messagebroker')
 @Unprotected()
@@ -29,17 +29,14 @@ export class MessagebrokerController {
     console.log(message.key);
     switch (message.key) {
       case '/facility':
-        console.log('facility history');
         const facility = { facility: message.value };
         await this.facilityHistoryService.create(facility);
         break;
       case '/classification':
-        console.log('classification history');
         const classification = { classification: message.value };
         await this.classificationHistoryService.create(classification);
         break;
       default:
-        console.log('unknown facility');
         return 'undefined history call';
     }
   }

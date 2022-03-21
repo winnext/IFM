@@ -36,7 +36,7 @@ export class CreateFacilityDto {
   @ApiProperty()
   @IsOptional()
   @IsObject()
-  pathtoChosenNodeClassification: object[];
+  pathToChosenNodeClassification: object;
 
   @ApiProperty()
   @IsNotEmpty()

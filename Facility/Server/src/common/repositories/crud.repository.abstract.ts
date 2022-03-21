@@ -3,9 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { BaseInterfaceRepository } from './crud.repository.interface';
 
-export abstract class BaseAbstractRepository<T>
-  implements BaseInterfaceRepository<T>
-{
+export abstract class BaseAbstractRepository<T> implements BaseInterfaceRepository<T> {
   private entity: Model<T>;
 
   protected constructor(entity: Model<T>) {

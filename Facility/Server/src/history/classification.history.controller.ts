@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { ClassificationHistoryService } from './classification.historyservice';
+import { ClassificationHistoryService } from './classification.history.service';
 import { ClassificationHistory } from './entities/classification.history.entity';
 
 @ApiTags('Classification_History')
