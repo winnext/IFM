@@ -53,8 +53,8 @@ __decorate([
 ], Facility.prototype, "label", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Object }),
-    __metadata("design:type", Object)
-], Facility.prototype, "pathtoChosenNodeClassification", void 0);
+    __metadata("design:type", Array)
+], Facility.prototype, "pathToChosenNodeClassification", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         type: Date,

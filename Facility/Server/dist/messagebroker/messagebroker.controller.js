@@ -32,15 +32,20 @@ let MessagebrokerController = class MessagebrokerController {
     }
     async operationListener(message) {
         console.log(message.key);
-        if (message.key === '/facility') {
-            console.log('facility history');
-            const facility = { facility: message.value };
-            await this.facilityHistoryService.create(facility);
-        }
-        else {
-            console.log('classification history');
-            const classification = { classification: message.value };
-            await this.classificationHistoryService.create(classification);
+        switch (message.key) {
+            case '/facility':
+                console.log('facility history');
+                const facility = { facility: message.value };
+                await this.facilityHistoryService.create(facility);
+                break;
+            case '/classification':
+                console.log('classification history');
+                const classification = { classification: message.value };
+                await this.classificationHistoryService.create(classification);
+                break;
+            default:
+                console.log('unknown facility');
+                return 'undefined history call';
         }
     }
 };

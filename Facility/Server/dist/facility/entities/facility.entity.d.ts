@@ -14,7 +14,7 @@ export declare class Facility extends BasePersistantDocumentObject {
     type_of_facility: string;
     classifications: Classification[];
     label: string[];
-    pathtoChosenNodeClassification: object;
+    pathToChosenNodeClassification: object[];
     createdAt: Date;
     updatedAt: Date;
     address: Adress[];
