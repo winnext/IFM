@@ -43,9 +43,9 @@ interface Facility {
   brand_name: string;
   type_of_facility: string;
   classifications: object;
-  pathtoChosenNodeClassification: {
-    node:Node,
-    result: Array<any>
+  pathToChosenNodeClassification: {
+    node: Node;
+    result: Array<any>;
   };
   address: Address[];
   label: string[];
@@ -67,7 +67,8 @@ const typesOfFacility = [
   { name: "University" },
 ];
 
-const facility_classfication = process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
+const facility_classfication =
+  process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
 
 const DefineFacility = ({
   submitted,
@@ -131,14 +132,13 @@ const DefineFacility = ({
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     var node = findNode(data.classifications, classifications);
 
-
     if (facility._id === "") {
       FacilityService.create({
         ...data,
         address: addresses,
         type_of_facility: data.type_of_facility.name,
         classifications: [facility_classfication],
-        pathtoChosenNodeClassification: node || {
+        pathToChosenNodeClassification: node || {
           node: {},
           result: [],
         },
@@ -168,7 +168,7 @@ const DefineFacility = ({
         address: addresses,
         type_of_facility: data.type_of_facility.name,
         classifications: [facility_classfication],
-        pathtoChosenNodeClassification: node || {
+        pathToChosenNodeClassification: node || {
           node: {},
           result: [],
         },
@@ -184,7 +184,6 @@ const DefineFacility = ({
           hideDialog();
         })
         .catch((err) => {
-          console.log("dsa")
           toast.current.show({
             severity: "error",
             summary: "Error",
@@ -254,7 +253,11 @@ const DefineFacility = ({
             name="classifications"
             rules={{ required: "Classification of Facility is required." }}
             control={control}
-            defaultValue={facility.pathtoChosenNodeClassification ? facility.pathtoChosenNodeClassification.node.key : ""}
+            defaultValue={
+              facility.pathToChosenNodeClassification
+                ? facility.pathToChosenNodeClassification.node.key
+                : ""
+            }
             render={({ field }) => (
               <TreeSelect
                 value={field.value}

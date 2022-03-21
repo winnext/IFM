@@ -22,7 +22,7 @@ interface Facility {
   brand_name: string;
   type_of_facility: string;
   classifications: object;
-  pathtoChosenNodeClassification: {
+  pathToChosenNodeClassification: {
     node:object,
     result: Array<any>
   };

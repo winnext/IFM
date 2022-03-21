@@ -54,7 +54,6 @@ const Classifications = () => {
 
   useEffect(() => {
     loadLazyData();
-    // FacilityService.test();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lazyParams]);
 
@@ -105,7 +104,7 @@ const Classifications = () => {
         toast.current.show({
           severity: "success",
           summary: "Successful",
-          detail: "Facility Created",
+          detail: "Classification Created",
           life: 3000,
         });
         loadLazyData();
@@ -134,7 +133,7 @@ const Classifications = () => {
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-      <h5 className="m-0">Manage Facilities</h5>
+      <h5 className="m-0">Manage Classifications</h5>
       <span className="block mt-2 md:mt-0">
         <InputText
           type="search"
@@ -202,7 +201,7 @@ const Classifications = () => {
         rowsPerPageOptions={[5, 10, 25]}
         className="datatable-responsive"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} facilities"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} classifications"
         totalRecords={countClassifications}
         globalFilter={globalFilter}
         emptyMessage="No classifications found."
