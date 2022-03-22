@@ -8,4 +8,10 @@ export class CreateFacilityHistoryDto {
   @IsObject()
   @Type(() => Object)
   facility: object;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObject()
+  @Type(() => Object)
+  user: object;
 }

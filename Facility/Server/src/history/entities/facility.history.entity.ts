@@ -10,6 +10,9 @@ export type FacilityDocument = FacilityHistory & Document;
 export class FacilityHistory extends BasePersistantDocumentObject {
   @Prop({ type: Object })
   facility: object;
+
+  @Prop({ type: Object })
+  user: object;
 }
 
 export const FaciliyHistorySchema = SchemaFactory.createForClass(FacilityHistory);

@@ -22,7 +22,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   async findOneById(id: string): Promise<Facility> {
     const facility = await this.facilityModel
       .findById({ _id: id })
-      .populate('classifications', '', this.classificationModel)
+      // .populate('classifications', '', this.classificationModel)
       .exec();
     if (!facility) {
       throw new FacilityNotFountException(id);
@@ -76,6 +76,12 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     return await facility.save();
   }
   async update(_id: string, updateFacilityDto: UpdateFacilityDto) {
+    const { classifications } = updateFacilityDto;
+
+    classifications.map((classification) => {
+      checkObjectIddİsValid(classification);
+    });
+
     const updatedFacility = await this.facilityModel
       .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
       .exec();

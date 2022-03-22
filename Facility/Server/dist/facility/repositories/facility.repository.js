@@ -31,7 +31,6 @@ let FacilityRepository = class FacilityRepository {
     async findOneById(id) {
         const facility = await this.facilityModel
             .findById({ _id: id })
-            .populate('classifications', '', this.classificationModel)
             .exec();
         if (!facility) {
             throw new facility_not_found_exception_1.FacilityNotFountException(id);
@@ -79,6 +78,10 @@ let FacilityRepository = class FacilityRepository {
         return await facility.save();
     }
     async update(_id, updateFacilityDto) {
+        const { classifications } = updateFacilityDto;
+        classifications.map((classification) => {
+            (0, objectId_check_1.checkObjectIddİsValid)(classification);
+        });
         const updatedFacility = await this.facilityModel
             .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
             .exec();

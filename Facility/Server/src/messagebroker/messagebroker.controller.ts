@@ -29,12 +29,12 @@ export class MessagebrokerController {
     console.log(message.key);
     switch (message.key) {
       case '/facility':
-        const facility = { facility: message.value };
-        await this.facilityHistoryService.create(facility);
+        const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
+        await this.facilityHistoryService.create(facilityHistory);
         break;
       case '/classification':
-        const classification = { classification: message.value };
-        await this.classificationHistoryService.create(classification);
+        const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
+        await this.classificationHistoryService.create(classificationHistory);
         break;
       default:
         console.log('undefined history call from facility microservice');

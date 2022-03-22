@@ -8,4 +8,10 @@ export class CreateClassificationHistoryDto {
   @IsObject()
   @Type(() => Object)
   classification: object;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObject()
+  @Type(() => Object)
+  user: object;
 }

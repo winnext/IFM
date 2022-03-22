@@ -1,4 +1,5 @@
 import { NestInterceptor, ExecutionContext, CallHandler, UseInterceptors, Logger } from '@nestjs/common';
+import { object } from 'joi';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { FacilityTopics } from '../const/kafta.topic.enum';
@@ -28,6 +29,7 @@ export class LoggingInterceptor implements NestInterceptor {
       //userToken: request.headers["authorization"] || null,
       user: request.user || null,
     };
+    const user:object=request.user
     const method = request.method;
     const now = Date.now();
     const url = request.url;
@@ -55,10 +57,11 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(async (responseBody) => {
         try {
+          const finalResponse = { responseBody, user };
           if (method !== 'GET') {
             await this.postKafka.producerSendMessage(
               FacilityTopics.FACILITY_OPERATION,
-              JSON.stringify(responseBody),
+              JSON.stringify(finalResponse),
               parsedUrl[0],
             );
             console.log('Operetaion topic sen successfully');

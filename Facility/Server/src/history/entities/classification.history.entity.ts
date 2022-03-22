@@ -10,6 +10,9 @@ export type ClassificationHİstoryDocument = ClassificationHistory & Document;
 export class ClassificationHistory extends BasePersistantDocumentObject {
   @Prop({ type: Object })
   classification: object;
+
+  @Prop({ type: Object })
+  user: object;
 }
 
 export const ClassificationHistorySchema = SchemaFactory.createForClass(ClassificationHistory);

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { FacilityNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
 import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
+import { CreateFacilityHistoryDto } from '../dtos/create.facility.history.dto';
 
 import { FacilityHistory } from '../entities/facility.history.entity';
 
@@ -58,7 +59,7 @@ export class FacilityHistoryRepository implements BaseHistoryRepositoryInterface
     return facility;
   }
 
-  async create(createClassificationDto: FacilityHistory) {
+  async create(createClassificationDto: CreateFacilityHistoryDto) {
     const facility = new this.facilityHistoryModel(createClassificationDto);
 
     return await facility.save();
