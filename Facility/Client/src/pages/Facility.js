@@ -19,14 +19,12 @@ const Facility = () => {
     brand_name: "",
     type_of_facility: "",
     address: [],
-    classifications: {},
-    pathtoChosenNodeClassification: {
-      node: {
-        key: "",
-      },
-      result: [],
-    },
-    hastags: [],
+    classifications: [{
+      classificationId: "",
+      rootKey: "",
+      leafKey: "",
+    }],
+    label: [],
     __v: 0,
   };
 

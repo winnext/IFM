@@ -18,6 +18,7 @@ function App() {
       } else {
         axios.defaults.headers.common["Authorization"] =
           "Bearer " + keycloak.token;
+        console.log(keycloak.token)
         if (keycloak.token !== undefined) {
           dispatch(
             login({
