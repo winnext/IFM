@@ -1,6 +1,7 @@
-import { Controller } from '@nestjs/common';
+import { CACHE_MANAGER, Controller, Inject } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { Unprotected } from 'nest-keycloak-connect';
+import { PathEnums } from 'src/common/const/path.enum';
 
 import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
 import { ClassificationHistoryService } from 'src/history/classification.history.service';
@@ -12,6 +13,7 @@ export class MessagebrokerController {
   constructor(
     private facilityHistoryService: FacilityHistoryService,
     private classificationHistoryService: ClassificationHistoryService,
+    @Inject(CACHE_MANAGER) private cacheManager,
   ) {}
 
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)
@@ -26,13 +28,14 @@ export class MessagebrokerController {
 
   @EventPattern(FacilityTopics.FACILITY_OPERATION)
   async operationListener(@Payload() message): Promise<any> {
-    console.log(message.key);
     switch (message.key) {
-      case '/facility':
+      case PathEnums.FACILITY:
+        await this.cacheManager.del(PathEnums.FACILITY, () => console.log('clear facility cache is done'));
         const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
         await this.facilityHistoryService.create(facilityHistory);
         break;
-      case '/classification':
+      case PathEnums.CLASSIFICATION:
+        await this.cacheManager.del(PathEnums.CLASSIFICATION, () => console.log('clear classification cache is done'));
         const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
         await this.classificationHistoryService.create(classificationHistory);
         break;

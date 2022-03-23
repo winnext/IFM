@@ -1,0 +1,19 @@
+import { Column, Entity, ManyToOne, ObjectID, ObjectIdColumn } from "typeorm";
+import { User } from "./user.entity";
+
+
+@Entity()
+export class Book {
+
+    
+    @ObjectIdColumn()
+    id: ObjectID;
+
+    @Column()
+    name: string;
+
+    @Column()
+    @ManyToOne(()=>User, user => user.books,{cascade:true})
+    user:User;
+
+}

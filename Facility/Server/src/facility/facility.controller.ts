@@ -11,7 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
@@ -82,6 +82,18 @@ export class FacilityController {
     description: '***',
   })
   @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @Post('createfacilities')
   @UseInterceptors(
     FileInterceptor('file', {

@@ -28,6 +28,11 @@ let AppModule = class AppModule {
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            common_1.CacheModule.register({
+                isGlobal: true,
+                ttl: 1800,
+                max: 150,
+            }),
             platform_express_1.MulterModule.register({
                 dest: './upload',
             }),
@@ -79,6 +84,10 @@ AppModule = __decorate([
             {
                 provide: core_1.APP_FILTER,
                 useClass: exception_filter_1.HttpExceptionFilter,
+            },
+            {
+                provide: core_1.APP_INTERCEPTOR,
+                useClass: common_1.CacheInterceptor,
             },
         ],
     })

@@ -870,6 +870,11 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/cache-manager@^3.4.3":
+  "integrity" "sha512-71aBXoFYXZW4TnDHHH8gExw2lS28BZaWeKefgsiJI7QYZeJfUEbMKw6CQtzGjlYQcGIWwB76hcCrkVA3YHSvsw=="
+  "resolved" "https://registry.npmjs.org/@types/cache-manager/-/cache-manager-3.4.3.tgz"
+  "version" "3.4.3"
+
 "@types/connect@*":
   "integrity" "sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ=="
   "resolved" "https://registry.npmjs.org/@types/connect/-/connect-3.4.35.tgz"
@@ -1525,6 +1530,11 @@
     "minimalistic-assert" "^1.0.0"
     "safer-buffer" "^2.1.0"
 
+"async@3.2.0":
+  "integrity" "sha512-TR2mEZFVOj2pLStYxLht7TyfuRzaydfpxr3k9RpHIzMgw7A64dzsdqCxH1WJyQdoe8T10nDXd9wnEigmiuHIZw=="
+  "resolved" "https://registry.npmjs.org/async/-/async-3.2.0.tgz"
+  "version" "3.2.0"
+
 "asynckit@^0.4.0":
   "integrity" "sha1-x57Zf380y48robyXkLzDZkdLS3k="
   "resolved" "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
@@ -1817,6 +1827,15 @@
   "integrity" "sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg=="
   "resolved" "https://registry.npmjs.org/bytes/-/bytes-3.1.2.tgz"
   "version" "3.1.2"
+
+"cache-manager@*", "cache-manager@^3.6.0":
+  "integrity" "sha512-D4GJZhyYgprYM30ZEPOn9kkdwdPUumX3ujbNbl7FYjcRViRvAgY53k6pO/82wNsm7c4aHVgXfR12/3huA47qnA=="
+  "resolved" "https://registry.npmjs.org/cache-manager/-/cache-manager-3.6.0.tgz"
+  "version" "3.6.0"
+  dependencies:
+    "async" "3.2.0"
+    "lodash" "^4.17.21"
+    "lru-cache" "6.0.0"
 
 "call-bind@^1.0.0":
   "integrity" "sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA=="
@@ -4119,7 +4138,7 @@
     "chalk" "^4.1.0"
     "is-unicode-supported" "^0.1.0"
 
-"lru-cache@^6.0.0":
+"lru-cache@^6.0.0", "lru-cache@6.0.0":
   "integrity" "sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA=="
   "resolved" "https://registry.npmjs.org/lru-cache/-/lru-cache-6.0.0.tgz"
   "version" "6.0.0"

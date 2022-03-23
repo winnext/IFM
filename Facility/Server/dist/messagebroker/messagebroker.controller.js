@@ -16,13 +16,15 @@ exports.MessagebrokerController = void 0;
 const common_1 = require("@nestjs/common");
 const microservices_1 = require("@nestjs/microservices");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
+const path_enum_1 = require("../common/const/path.enum");
 const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
 const classification_history_service_1 = require("../history/classification.history.service");
 const facility_history_service_1 = require("../history/facility.history.service");
 let MessagebrokerController = class MessagebrokerController {
-    constructor(facilityHistoryService, classificationHistoryService) {
+    constructor(facilityHistoryService, classificationHistoryService, cacheManager) {
         this.facilityHistoryService = facilityHistoryService;
         this.classificationHistoryService = classificationHistoryService;
+        this.cacheManager = cacheManager;
     }
     exceptionListener(message) {
         console.log('this is from message broker exception listener' + message.value);
@@ -31,13 +33,14 @@ let MessagebrokerController = class MessagebrokerController {
         console.log('this is from message broker logger listener' + message.value);
     }
     async operationListener(message) {
-        console.log(message.key);
         switch (message.key) {
-            case '/facility':
+            case path_enum_1.PathEnums.FACILITY:
+                await this.cacheManager.del(path_enum_1.PathEnums.FACILITY, () => console.log('clear facility cache is done'));
                 const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
                 await this.facilityHistoryService.create(facilityHistory);
                 break;
-            case '/classification':
+            case path_enum_1.PathEnums.CLASSIFICATION:
+                await this.cacheManager.del(path_enum_1.PathEnums.CLASSIFICATION, () => console.log('clear classification cache is done'));
                 const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
                 await this.classificationHistoryService.create(classificationHistory);
                 break;
@@ -71,8 +74,9 @@ __decorate([
 MessagebrokerController = __decorate([
     (0, common_1.Controller)('messagebroker'),
     (0, nest_keycloak_connect_1.Unprotected)(),
+    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [facility_history_service_1.FacilityHistoryService,
-        classification_history_service_1.ClassificationHistoryService])
+        classification_history_service_1.ClassificationHistoryService, Object])
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map

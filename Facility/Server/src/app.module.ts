@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,7 +7,7 @@ import { ClassificationModule } from './classification/classification.module';
 import { ConnectionEnums } from './common/const/connection.enum';
 import { I18nModule, I18nJsonParser } from 'nestjs-i18n';
 import * as path from 'path';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
@@ -17,6 +17,11 @@ import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 1800, // seconds
+      max: 150, // maximum number of items in cache
+    }),
     MulterModule.register({
       dest: './upload',
     }),
@@ -75,6 +80,10 @@ import { HistoryModule } from './history/history.module';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
   ],
 })

@@ -29,7 +29,7 @@ export class LoggingInterceptor implements NestInterceptor {
       //userToken: request.headers["authorization"] || null,
       user: request.user || null,
     };
-    const user:object=request.user
+    const user: object = request.user;
     const method = request.method;
     const now = Date.now();
     const url = request.url;
@@ -64,7 +64,7 @@ export class LoggingInterceptor implements NestInterceptor {
               JSON.stringify(finalResponse),
               parsedUrl[0],
             );
-            console.log('Operetaion topic sen successfully');
+            console.log('Operation topic send successfully');
           }
         } catch (error) {
           console.log(error);
