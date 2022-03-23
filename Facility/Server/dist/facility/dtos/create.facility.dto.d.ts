@@ -1,12 +1,11 @@
 import { Adress } from '../entities/facility.address';
-import { Classification } from 'src/classification/entities/classification.entity';
+import { ClassificationDetail } from '../entities/classification.detail';
 export declare class CreateFacilityDto {
     facility_name: string;
     locations: string;
     brand_name: string;
     type_of_facility: string;
-    classifications: Classification[];
-    pathToChosenNodeClassification: object;
+    classifications: ClassificationDetail;
     label: string[];
     address: Adress;
     updatedAt: Date;

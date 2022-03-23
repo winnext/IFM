@@ -6,6 +6,7 @@ import { PathEnums } from 'src/common/const/path.enum';
 import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
 import { ClassificationHistoryService } from 'src/history/classification.history.service';
 import { FacilityHistoryService } from 'src/history/facility.history.service';
+import { Cache } from 'cache-manager';
 
 @Controller('messagebroker')
 @Unprotected()
@@ -13,7 +14,7 @@ export class MessagebrokerController {
   constructor(
     private facilityHistoryService: FacilityHistoryService,
     private classificationHistoryService: ClassificationHistoryService,
-    @Inject(CACHE_MANAGER) private cacheManager,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)

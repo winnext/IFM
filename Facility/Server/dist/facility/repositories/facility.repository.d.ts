@@ -5,10 +5,12 @@ import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository
 import { CreateFacilityDto } from '../dtos/create.facility.dto';
 import { UpdateFacilityDto } from '../dtos/update.facility.dto';
 import { Facility } from '../entities/facility.entity';
+import { Cache } from 'cache-manager';
 export declare class FacilityRepository implements BaseInterfaceRepository<Facility> {
     private readonly facilityModel;
     private readonly classificationModel;
-    constructor(facilityModel: Model<Facility>, classificationModel: Model<Classification>);
+    private cacheManager;
+    constructor(facilityModel: Model<Facility>, classificationModel: Model<Classification>, cacheManager: Cache);
     findWithRelations(relations: any): Promise<Facility[]>;
     findOneById(id: string): Promise<Facility>;
     findAll(data: PaginationParams): Promise<any[]>;

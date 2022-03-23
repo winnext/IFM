@@ -21,9 +21,10 @@ const objectId_check_1 = require("../../common/func/objectId.check");
 const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
 const facility_entity_1 = require("../entities/facility.entity");
 let FacilityRepository = class FacilityRepository {
-    constructor(facilityModel, classificationModel) {
+    constructor(facilityModel, classificationModel, cacheManager) {
         this.facilityModel = facilityModel;
         this.classificationModel = classificationModel;
+        this.cacheManager = cacheManager;
     }
     findWithRelations(relations) {
         throw new Error(relations);
@@ -71,17 +72,13 @@ let FacilityRepository = class FacilityRepository {
     }
     async create(createFacilityDto) {
         const { classifications } = createFacilityDto;
-        classifications.map((classification) => {
-            (0, objectId_check_1.checkObjectIddİsValid)(classification);
-        });
+        (0, objectId_check_1.checkObjectIddİsValid)(classifications.classificationId);
         const facility = new this.facilityModel(createFacilityDto);
         return await facility.save();
     }
     async update(_id, updateFacilityDto) {
         const { classifications } = updateFacilityDto;
-        classifications.map((classification) => {
-            (0, objectId_check_1.checkObjectIddİsValid)(classification);
-        });
+        (0, objectId_check_1.checkObjectIddİsValid)(classifications.classificationId);
         const updatedFacility = await this.facilityModel
             .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
             .exec();
@@ -99,8 +96,9 @@ FacilityRepository = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(facility_entity_1.Facility.name)),
     __param(1, (0, mongoose_1.InjectModel)(classification_entity_1.Classification.name)),
+    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model, Object])
 ], FacilityRepository);
 exports.FacilityRepository = FacilityRepository;
 //# sourceMappingURL=facility.repository.js.map

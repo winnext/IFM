@@ -4,6 +4,7 @@ import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 import { Classification } from 'src/classification/entities/classification.entity';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
 import { v4 as uuidv4 } from 'uuid';
+import { ClassificationDetail } from './classification.detail';
 import { Adress } from './facility.address';
 
 export type FacilityDocument = Facility & Document;
@@ -28,13 +29,11 @@ export class Facility extends BasePersistantDocumentObject {
   brand_name: string;
   @Prop()
   type_of_facility: string;
-  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: Classification.name }])
-  classifications: Classification[];
+  @Prop()
+  classifications: ClassificationDetail[];
   @Prop([String])
   label: string[];
 
-  @Prop({ type: Object })
-  pathToChosenNodeClassification: object;
   @Prop({
     type: Date,
     default: function genDate() {

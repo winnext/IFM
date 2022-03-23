@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const facility_address_1 = require("../entities/facility.address");
+const classification_detail_1 = require("../entities/classification.detail");
 class CreateFacilityDto {
     constructor() {
         this.updatedAt = new Date();
@@ -50,14 +51,10 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Array)
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => classification_detail_1.ClassificationDetail),
+    __metadata("design:type", classification_detail_1.ClassificationDetail)
 ], CreateFacilityDto.prototype, "classifications", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
-], CreateFacilityDto.prototype, "pathToChosenNodeClassification", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),

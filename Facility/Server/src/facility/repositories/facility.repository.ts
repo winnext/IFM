@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Classification } from 'src/classification/entities/classification.entity';
@@ -9,12 +9,13 @@ import { FacilityNotFountException } from '../../common/notFoundExceptions/facil
 import { CreateFacilityDto } from '../dtos/create.facility.dto';
 import { UpdateFacilityDto } from '../dtos/update.facility.dto';
 import { Facility } from '../entities/facility.entity';
-
+import { Cache } from 'cache-manager';
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(
     @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
     @InjectModel(Classification.name) private readonly classificationModel: Model<Classification>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   findWithRelations(relations: any): Promise<Facility[]> {
     throw new Error(relations);
@@ -68,9 +69,8 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   async create(createFacilityDto: CreateFacilityDto) {
     const { classifications } = createFacilityDto;
 
-    classifications.map((classification) => {
-      checkObjectIddİsValid(classification);
-    });
+    checkObjectIddİsValid(classifications.classificationId);
+
     const facility = new this.facilityModel(createFacilityDto);
 
     return await facility.save();
@@ -78,9 +78,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   async update(_id: string, updateFacilityDto: UpdateFacilityDto) {
     const { classifications } = updateFacilityDto;
 
-    classifications.map((classification) => {
-      checkObjectIddİsValid(classification);
-    });
+    checkObjectIddİsValid(classifications.classificationId);
 
     const updatedFacility = await this.facilityModel
       .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })

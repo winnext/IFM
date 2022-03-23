@@ -2,8 +2,8 @@
 /// <reference types="mongoose/types/Error" />
 /// <reference types="mongoose/types/Connection" />
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { Classification } from 'src/classification/entities/classification.entity';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
+import { ClassificationDetail } from './classification.detail';
 import { Adress } from './facility.address';
 export declare type FacilityDocument = Facility & Document;
 export declare class Facility extends BasePersistantDocumentObject {
@@ -12,9 +12,8 @@ export declare class Facility extends BasePersistantDocumentObject {
     locations: string;
     brand_name: string;
     type_of_facility: string;
-    classifications: Classification[];
+    classifications: ClassificationDetail[];
     label: string[];
-    pathToChosenNodeClassification: object;
     createdAt: Date;
     updatedAt: Date;
     address: Adress[];

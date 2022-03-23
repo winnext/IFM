@@ -23,15 +23,19 @@ const Joi = require("joi");
 const platform_express_1 = require("@nestjs/platform-express");
 const facility_structures_module_1 = require("./facility-structures/facility-structures.module");
 const history_module_1 = require("./history/history.module");
+const redisStore = require("cache-manager-redis-store");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             common_1.CacheModule.register({
+                store: redisStore,
+                host: 'localhost',
+                port: 6379,
                 isGlobal: true,
-                ttl: 1800,
-                max: 150,
+                ttl: 50,
+                max: 1000,
             }),
             platform_express_1.MulterModule.register({
                 dest: './upload',

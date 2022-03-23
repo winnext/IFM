@@ -1,5 +1,4 @@
 import { NestInterceptor, ExecutionContext, CallHandler, UseInterceptors, Logger } from '@nestjs/common';
-import { object } from 'joi';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { FacilityTopics } from '../const/kafta.topic.enum';
@@ -26,7 +25,6 @@ export class LoggingInterceptor implements NestInterceptor {
       path: request.url,
       method: request.method,
       body: request.body,
-      //userToken: request.headers["authorization"] || null,
       user: request.user || null,
     };
     const user: object = request.user;

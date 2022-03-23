@@ -12,8 +12,6 @@ var Facility_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FaciliySchema = exports.Facility = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-const classification_entity_1 = require("../../classification/entities/classification.entity");
 const base_object_1 = require("../../common/baseObject/base.object");
 const uuid_1 = require("uuid");
 let Facility = Facility_1 = class Facility extends base_object_1.BasePersistantDocumentObject {
@@ -44,17 +42,13 @@ __decorate([
     __metadata("design:type", String)
 ], Facility.prototype, "type_of_facility", void 0);
 __decorate([
-    (0, mongoose_1.Prop)([{ type: mongoose_2.Schema.Types.ObjectId, ref: classification_entity_1.Classification.name }]),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Array)
 ], Facility.prototype, "classifications", void 0);
 __decorate([
     (0, mongoose_1.Prop)([String]),
     __metadata("design:type", Array)
 ], Facility.prototype, "label", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: Object }),
-    __metadata("design:type", Object)
-], Facility.prototype, "pathToChosenNodeClassification", void 0);
 __decorate([
     (0, mongoose_1.Prop)({
         type: Date,

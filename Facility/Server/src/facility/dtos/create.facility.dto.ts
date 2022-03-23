@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import { Adress } from '../entities/facility.address';
 
 import { Classification } from 'src/classification/entities/classification.entity';
+import { ClassificationDetail } from '../entities/classification.detail';
 export class CreateFacilityDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -31,12 +32,9 @@ export class CreateFacilityDto {
 
   @ApiProperty()
   @IsOptional()
-  classifications: Classification[];
-
-  @ApiProperty()
-  @IsOptional()
-  @IsObject()
-  pathToChosenNodeClassification: object;
+  @ValidateNested({ each: true })
+  @Type(() => ClassificationDetail)
+  classifications: ClassificationDetail;
 
   @ApiProperty()
   @IsNotEmpty()

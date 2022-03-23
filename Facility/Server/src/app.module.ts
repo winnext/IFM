@@ -14,13 +14,20 @@ import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
 import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
 import { HistoryModule } from './history/history.module';
+import type { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
     CacheModule.register({
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
       isGlobal: true,
-      ttl: 1800, // seconds
-      max: 150, // maximum number of items in cache
+      ttl: 50, // seconds
+      max: 1000, // maximum number of items in cache
+
+      // Store-specific configuration:
     }),
     MulterModule.register({
       dest: './upload',
