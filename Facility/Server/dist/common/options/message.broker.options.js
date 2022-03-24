@@ -15,6 +15,9 @@ exports.kafkaOptions = {
         producer: {
             allowAutoTopicCreation: false,
         },
+        subscribe: {
+            fromBeginning: false,
+        },
     },
 };
 //# sourceMappingURL=message.broker.options.js.map

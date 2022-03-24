@@ -13,8 +13,7 @@ import { Cache } from 'cache-manager';
 export class MessagebrokerController {
   constructor(
     private facilityHistoryService: FacilityHistoryService,
-    private classificationHistoryService: ClassificationHistoryService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private classificationHistoryService: ClassificationHistoryService, // @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)
@@ -31,12 +30,12 @@ export class MessagebrokerController {
   async operationListener(@Payload() message): Promise<any> {
     switch (message.key) {
       case PathEnums.FACILITY:
-        await this.cacheManager.del(PathEnums.FACILITY, () => console.log('clear facility cache is done'));
         const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
         await this.facilityHistoryService.create(facilityHistory);
+        //  await this.cacheManager.del(PathEnums.FACILITY, () => console.log('clear facility cache is done'));
         break;
       case PathEnums.CLASSIFICATION:
-        await this.cacheManager.del(PathEnums.CLASSIFICATION, () => console.log('clear classification cache is done'));
+        //  await this.cacheManager.del(PathEnums.CLASSIFICATION, () => console.log('clear classification cache is done'));
         const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
         await this.classificationHistoryService.create(classificationHistory);
         break;

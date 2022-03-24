@@ -13,5 +13,8 @@ export const kafkaOptions: KafkaOptions = {
     producer: {
       allowAutoTopicCreation: false,
     },
+    subscribe: {
+      fromBeginning: false,
+    },
   },
 };

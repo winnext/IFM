@@ -19,16 +19,16 @@ import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
-    CacheModule.register({
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      isGlobal: true,
-      ttl: 50, // seconds
-      max: 1000, // maximum number of items in cache
+    // CacheModule.register({
+    //   store: redisStore,
+    //   host: 'localhost',
+    //   port: 6379,
+    //   isGlobal: true,
+    //   ttl: 50, // seconds
+    //   max: 1000, // maximum number of items in cache
 
-      // Store-specific configuration:
-    }),
+    //   // Store-specific configuration:
+    // }),
     MulterModule.register({
       dest: './upload',
     }),
@@ -88,10 +88,10 @@ import * as redisStore from 'cache-manager-redis-store';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
   ],
 })
 export class AppModule {}

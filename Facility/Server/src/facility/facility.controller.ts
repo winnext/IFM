@@ -37,7 +37,7 @@ export class FacilityController {
   })
   //@LoggerInter()
   @Get('/')
-  @CacheKey(PathEnums.FACILITY)
+  //@CacheKey(PathEnums.FACILITY)
   @Roles({ roles: [FacilityUserRoles.ADMIN] })
   async getAllFacilities(@Query() params: PaginationParams): Promise<Facility[]> {
     return this.facilityService.findAll(params);

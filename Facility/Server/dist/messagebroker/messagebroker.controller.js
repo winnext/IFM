@@ -35,9 +35,9 @@ let MessagebrokerController = class MessagebrokerController {
     async operationListener(message) {
         switch (message.key) {
             case path_enum_1.PathEnums.FACILITY:
-                await this.cacheManager.del(path_enum_1.PathEnums.FACILITY, () => console.log('clear facility cache is done'));
                 const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
                 await this.facilityHistoryService.create(facilityHistory);
+                await this.cacheManager.del(path_enum_1.PathEnums.FACILITY, () => console.log('clear facility cache is done'));
                 break;
             case path_enum_1.PathEnums.CLASSIFICATION:
                 await this.cacheManager.del(path_enum_1.PathEnums.CLASSIFICATION, () => console.log('clear classification cache is done'));
