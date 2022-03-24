@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsObject, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Adress } from '../entities/facility.address';
 
-import { Classification } from 'src/classification/entities/classification.entity';
 import { ClassificationDetail } from '../entities/classification.detail';
 export class CreateFacilityDto {
   @ApiProperty()

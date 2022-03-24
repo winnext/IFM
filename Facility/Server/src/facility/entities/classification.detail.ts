@@ -1,19 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class ClassificationDetail {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   classificationId: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   rootKey: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   leafKey: string;
 }
