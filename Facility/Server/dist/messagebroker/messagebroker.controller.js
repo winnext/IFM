@@ -21,10 +21,9 @@ const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
 const classification_history_service_1 = require("../history/classification.history.service");
 const facility_history_service_1 = require("../history/facility.history.service");
 let MessagebrokerController = class MessagebrokerController {
-    constructor(facilityHistoryService, classificationHistoryService, cacheManager) {
+    constructor(facilityHistoryService, classificationHistoryService) {
         this.facilityHistoryService = facilityHistoryService;
         this.classificationHistoryService = classificationHistoryService;
-        this.cacheManager = cacheManager;
     }
     exceptionListener(message) {
         console.log('this is from message broker exception listener' + message.value);
@@ -37,10 +36,8 @@ let MessagebrokerController = class MessagebrokerController {
             case path_enum_1.PathEnums.FACILITY:
                 const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
                 await this.facilityHistoryService.create(facilityHistory);
-                await this.cacheManager.del(path_enum_1.PathEnums.FACILITY, () => console.log('clear facility cache is done'));
                 break;
             case path_enum_1.PathEnums.CLASSIFICATION:
-                await this.cacheManager.del(path_enum_1.PathEnums.CLASSIFICATION, () => console.log('clear classification cache is done'));
                 const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
                 await this.classificationHistoryService.create(classificationHistory);
                 break;
@@ -74,9 +71,8 @@ __decorate([
 MessagebrokerController = __decorate([
     (0, common_1.Controller)('messagebroker'),
     (0, nest_keycloak_connect_1.Unprotected)(),
-    __param(2, (0, common_1.Inject)(common_1.CACHE_MANAGER)),
     __metadata("design:paramtypes", [facility_history_service_1.FacilityHistoryService,
-        classification_history_service_1.ClassificationHistoryService, Object])
+        classification_history_service_1.ClassificationHistoryService])
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map

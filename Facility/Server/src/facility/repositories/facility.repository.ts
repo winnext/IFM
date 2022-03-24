@@ -15,7 +15,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(
     @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
     @InjectModel(Classification.name) private readonly classificationModel: Model<Classification>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  //  @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   findWithRelations(relations: any): Promise<Facility[]> {
     throw new Error(relations);
