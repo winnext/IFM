@@ -23,11 +23,25 @@ const Joi = require("joi");
 const platform_express_1 = require("@nestjs/platform-express");
 const facility_structures_module_1 = require("./facility-structures/facility-structures.module");
 const history_module_1 = require("./history/history.module");
+const redisStore = require("cache-manager-redis-store");
+const http_cache_interceptor_1 = require("./common/interceptors/http.cache.interceptor");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            common_1.CacheModule.registerAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: async (configService) => ({
+                    ttl: configService.get('CACHE_TTL'),
+                    store: redisStore,
+                    host: configService.get('CACHE_HOST'),
+                    port: +configService.get('CACHE_PORT'),
+                    isGlobal: true,
+                    max: +configService.get('CACHE_MAX'),
+                }),
+                inject: [config_1.ConfigService],
+            }),
             platform_express_1.MulterModule.register({
                 dest: './upload',
             }),
@@ -79,6 +93,10 @@ AppModule = __decorate([
             {
                 provide: core_1.APP_FILTER,
                 useClass: exception_filter_1.HttpExceptionFilter,
+            },
+            {
+                provide: core_1.APP_INTERCEPTOR,
+                useClass: http_cache_interceptor_1.HttpCacheInterceptor,
             },
         ],
     })

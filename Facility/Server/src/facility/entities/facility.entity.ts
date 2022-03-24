@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Document, Types, Schema as MongooseSchema } from 'mongoose';
-import { Classification } from 'src/classification/entities/classification.entity';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
 import { v4 as uuidv4 } from 'uuid';
 import { ClassificationDetail } from './classification.detail';

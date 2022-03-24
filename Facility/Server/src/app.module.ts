@@ -14,21 +14,23 @@ import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
 import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
 import { HistoryModule } from './history/history.module';
-import type { RedisClientOptions } from 'redis';
 import * as redisStore from 'cache-manager-redis-store';
+import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
 
 @Module({
   imports: [
-    // CacheModule.register({
-    //   store: redisStore,
-    //   host: 'localhost',
-    //   port: 6379,
-    //   isGlobal: true,
-    //   ttl: 50, // seconds
-    //   max: 1000, // maximum number of items in cache
-
-    //   // Store-specific configuration:
-    // }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ttl: configService.get('CACHE_TTL'), //time to keep in cache in seconds
+        store: redisStore,
+        host: configService.get('CACHE_HOST'),
+        port: +configService.get('CACHE_PORT'),
+        isGlobal: true,
+        max: +configService.get('CACHE_MAX'), // maximum number of items in cache
+      }),
+      inject: [ConfigService],
+    }),
     MulterModule.register({
       dest: './upload',
     }),
@@ -88,10 +90,10 @@ import * as redisStore from 'cache-manager-redis-store';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: CacheInterceptor,
-    // },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpCacheInterceptor,
+    },
   ],
 })
 export class AppModule {}
