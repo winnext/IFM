@@ -28,7 +28,17 @@ interface Params {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   toast: React.MutableRefObject<any>;
   loadLazyData: () => void;
-  facility: Facility;
+  facility: {
+    _id: string;
+    facility_name: string;
+    brand_name: string;
+    type_of_facility: string;
+    classifications: ClassificationDetail[];
+    address: Address[];
+    label: string[];
+    __v: number;
+  }
+  ;
 }
 
 interface Address {
@@ -37,16 +47,19 @@ interface Address {
   city: string;
   address: string;
 }
+
+interface ClassificationDetail {
+  classificationId: string;
+  rootKey: string;
+  leafKey: string;
+}
+
 interface Facility {
   _id: string;
   facility_name: string;
   brand_name: string;
   type_of_facility: string;
-  classifications: object;
-  pathToChosenNodeClassification: {
-    node: Node;
-    result: Array<any>;
-  };
+  classifications: ClassificationDetail;
   address: Address[];
   label: string[];
   __v: number;
@@ -67,9 +80,6 @@ const typesOfFacility = [
   { name: "University" },
 ];
 
-const facility_classfication =
-  process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
-
 const DefineFacility = ({
   submitted,
   setSubmitted,
@@ -87,6 +97,8 @@ const DefineFacility = ({
 
   const [classifications, setClassifications] = useState<Node[]>([]);
   const [addresses, setAddresses] = useState<Address[]>(facility.address);
+
+  const facility_classfication = facility.classifications[0].classificationId !== "" ? facility.classifications[0].classificationId : process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
 
   useEffect(() => {
     ClassificationsService.findOne(facility_classfication)
@@ -130,18 +142,16 @@ const DefineFacility = ({
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    var node = findNode(data.classifications, classifications);
-
     if (facility._id === "") {
       FacilityService.create({
         ...data,
         address: addresses,
         type_of_facility: data.type_of_facility.name,
-        classifications: [facility_classfication],
-        pathToChosenNodeClassification: node || {
-          node: {},
-          result: [],
-        },
+        classifications:{
+          classificationId: facility_classfication,
+          rootKey: classifications[0].key,
+          leafKey: data.classifications
+        }
       })
         .then((res) => {
           loadLazyData();
@@ -167,11 +177,11 @@ const DefineFacility = ({
         ...data,
         address: addresses,
         type_of_facility: data.type_of_facility.name,
-        classifications: [facility_classfication],
-        pathToChosenNodeClassification: node || {
-          node: {},
-          result: [],
-        },
+        classifications:{
+          classificationId: facility_classfication,
+          rootKey: classifications[0].key,
+          leafKey: data.classifications
+        }
       })
         .then((res) => {
           loadLazyData();
@@ -254,8 +264,8 @@ const DefineFacility = ({
             rules={{ required: "Classification of Facility is required." }}
             control={control}
             defaultValue={
-              facility.pathToChosenNodeClassification
-                ? facility.pathToChosenNodeClassification.node.key
+              facility.classifications[0].classificationId !== ""
+                ? facility.classifications[0].leafKey
                 : ""
             }
             render={({ field }) => (

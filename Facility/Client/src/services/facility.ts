@@ -15,17 +15,17 @@ interface Address{
   city: string;
   address: string;
 }
-
+interface ClassificationDetail {
+  classificationId: string;
+  rootKey: string;
+  leafKey: string;
+}
 interface Facility {
   _id?: string;
   facility_name: string;
   brand_name: string;
   type_of_facility: string;
-  classifications: object;
-  pathToChosenNodeClassification: {
-    node:object,
-    result: Array<any>
-  };
+  classifications: ClassificationDetail,
   address?: Address[];
   label: string[];
   uuid?: string;
