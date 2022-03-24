@@ -8,7 +8,6 @@ export class CreateClassificationDto {
   @Length(1, 50)
   code: string;
 
-  
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
