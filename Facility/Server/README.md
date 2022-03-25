@@ -45,6 +45,15 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Project Schema
+
+```bash
+# show project schema
+$ npm run documentation:serve
+
+
+```
+
 ## Test
 
 ```bash

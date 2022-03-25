@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Classification } from 'src/classification/entities/classification.entity';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
@@ -12,18 +11,12 @@ import { Facility } from '../entities/facility.entity';
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
-  constructor(
-    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
-    @InjectModel(Classification.name) private readonly classificationModel: Model<Classification>,
-  ) {}
+  constructor(@InjectModel(Facility.name) private readonly facilityModel: Model<Facility>) {}
   findWithRelations(relations: any): Promise<Facility[]> {
     throw new Error(relations);
   }
   async findOneById(id: string): Promise<Facility> {
-    const facility = await this.facilityModel
-      .findById({ _id: id })
-      // .populate('classifications', '', this.classificationModel)
-      .exec();
+    const facility = await this.facilityModel.findById({ _id: id }).exec();
     if (!facility) {
       throw new FacilityNotFountException(id);
     }
@@ -68,7 +61,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   async create(createFacilityDto: CreateFacilityDto) {
     const { classifications } = createFacilityDto;
 
-    checkObjectIddİsValid(classifications.classificationId);
+    //checkObjectIddİsValid(classifications.classificationId);
 
     const facility = new this.facilityModel(createFacilityDto);
 

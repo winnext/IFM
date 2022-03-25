@@ -18,6 +18,7 @@ const swagger_1 = require("@nestjs/swagger");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
 const pagination_dto_1 = require("../common/commonDto/pagination.dto");
 const keycloak_role_enum_1 = require("../common/const/keycloak.role.enum");
+const http_cache_interceptor_1 = require("../common/interceptors/http.cache.interceptor");
 const classification_service_1 = require("./classification.service");
 const create_classification_dto_1 = require("./dto/create-classification.dto");
 const update_classification_dto_1 = require("./dto/update-classification.dto");
@@ -51,6 +52,7 @@ __decorate([
 ], ClassificationController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, http_cache_interceptor_1.NoCache)(),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),

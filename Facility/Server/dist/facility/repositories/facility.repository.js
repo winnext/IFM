@@ -16,22 +16,18 @@ exports.FacilityRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const classification_entity_1 = require("../../classification/entities/classification.entity");
 const objectId_check_1 = require("../../common/func/objectId.check");
 const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
 const facility_entity_1 = require("../entities/facility.entity");
 let FacilityRepository = class FacilityRepository {
-    constructor(facilityModel, classificationModel) {
+    constructor(facilityModel) {
         this.facilityModel = facilityModel;
-        this.classificationModel = classificationModel;
     }
     findWithRelations(relations) {
         throw new Error(relations);
     }
     async findOneById(id) {
-        const facility = await this.facilityModel
-            .findById({ _id: id })
-            .exec();
+        const facility = await this.facilityModel.findById({ _id: id }).exec();
         if (!facility) {
             throw new facility_not_found_exception_1.FacilityNotFountException(id);
         }
@@ -71,7 +67,6 @@ let FacilityRepository = class FacilityRepository {
     }
     async create(createFacilityDto) {
         const { classifications } = createFacilityDto;
-        (0, objectId_check_1.checkObjectIddİsValid)(classifications.classificationId);
         const facility = new this.facilityModel(createFacilityDto);
         return await facility.save();
     }
@@ -94,9 +89,7 @@ let FacilityRepository = class FacilityRepository {
 FacilityRepository = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(facility_entity_1.Facility.name)),
-    __param(1, (0, mongoose_1.InjectModel)(classification_entity_1.Classification.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model])
 ], FacilityRepository);
 exports.FacilityRepository = FacilityRepository;
 //# sourceMappingURL=facility.repository.js.map

@@ -23,6 +23,7 @@ const pagination_dto_1 = require("../common/commonDto/pagination.dto");
 const multer_1 = require("multer");
 const platform_express_1 = require("@nestjs/platform-express");
 const keycloak_role_enum_1 = require("../common/const/keycloak.role.enum");
+const http_cache_interceptor_1 = require("../common/interceptors/http.cache.interceptor");
 let FacilityController = class FacilityController {
     constructor(facilityService) {
         this.facilityService = facilityService;
@@ -52,6 +53,7 @@ __decorate([
         description: 'If you want to get all facilities in your organization use this route. It takes no path or query params',
     }),
     (0, common_1.Get)('/'),
+    (0, http_cache_interceptor_1.NoCache)(),
     (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
