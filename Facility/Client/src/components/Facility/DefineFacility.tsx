@@ -37,8 +37,7 @@ interface Params {
     address: Address[];
     label: string[];
     __v: number;
-  }
-  ;
+  };
 }
 
 interface Address {
@@ -98,7 +97,10 @@ const DefineFacility = ({
   const [classifications, setClassifications] = useState<Node[]>([]);
   const [addresses, setAddresses] = useState<Address[]>(facility.address);
 
-  const facility_classfication = facility.classifications[0].classificationId !== "" ? facility.classifications[0].classificationId : process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
+  const facility_classfication =
+    facility.classifications[0].classificationId !== ""
+      ? facility.classifications[0].classificationId
+      : process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
 
   useEffect(() => {
     ClassificationsService.findOne(facility_classfication)
@@ -147,11 +149,11 @@ const DefineFacility = ({
         ...data,
         address: addresses,
         type_of_facility: data.type_of_facility.name,
-        classifications:{
+        classifications: {
           classificationId: facility_classfication,
           rootKey: classifications[0].key,
-          leafKey: data.classifications
-        }
+          leafKey: data.classifications,
+        },
       })
         .then((res) => {
           loadLazyData();
@@ -177,11 +179,11 @@ const DefineFacility = ({
         ...data,
         address: addresses,
         type_of_facility: data.type_of_facility.name,
-        classifications:{
+        classifications: {
           classificationId: facility_classfication,
           rootKey: classifications[0].key,
-          leafKey: data.classifications
-        }
+          leafKey: data.classifications,
+        },
       })
         .then((res) => {
           loadLazyData();
@@ -250,6 +252,7 @@ const DefineFacility = ({
                 className={errors.type_of_facility && "p-invalid"}
                 onChange={(e) => field.onChange(e.value)}
                 placeholder="Select a Type of Facility"
+                showClear
               />
             )}
           />
@@ -269,15 +272,31 @@ const DefineFacility = ({
                 : ""
             }
             render={({ field }) => (
-              <TreeSelect
-                value={field.value}
-                options={classifications}
-                className={errors.classifications && "p-invalid"}
-                onChange={(e) => field.onChange(e.value)}
-                filter
-                filterBy="name,code"
-                placeholder="Select Classification of Facility"
-              ></TreeSelect>
+              <div style={{ position: "relative" }}>
+                <TreeSelect
+                  value={field.value}
+                  options={classifications}
+                  className={errors.classifications && "p-invalid"}
+                  onChange={(e) => field.onChange(e.value)}
+                  filter
+                  filterBy="name,code"
+                  placeholder="Select Classification of Facility"
+                ></TreeSelect>
+                {field.value && (
+                  <i
+                    onClick={(e)=>{
+                      e.preventDefault()
+                      field.onChange(undefined)
+                    }}
+                    className="p-dropdown-clear-icon pi pi-times"
+                    style={{
+                      right: "2.357rem",
+                      opacity:0.8,
+                      cursor: "pointer",
+                    }}
+                  ></i>
+                )}
+              </div>
             )}
           />
           {errors.classifications && (

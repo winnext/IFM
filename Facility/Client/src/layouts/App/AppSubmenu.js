@@ -207,6 +207,7 @@ const AppSubmenu = (props) => {
   const items = getItems();
   return (
     <ul className="layout-menu" role="menu">
+      {props.children}
       {items}
     </ul>
   );
