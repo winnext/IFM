@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'nest-keycloak-connect';
+import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { FacilityUserRoles } from 'src/common/const/keycloak.role.enum';
 import { ClassificationService } from './classification.service';
@@ -18,7 +18,7 @@ export class ClassificationController {
   create(@Body() createClassificationDto: CreateClassificationDto) {
     return this.classificationService.create(createClassificationDto);
   }
-
+  @Unprotected()
   @Get()
   findAll(@Query() paramDto: PaginationParams) {
     return this.classificationService.findAll(paramDto);

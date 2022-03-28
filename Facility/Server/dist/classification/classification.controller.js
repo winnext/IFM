@@ -50,6 +50,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "create", null);
 __decorate([
+    (0, nest_keycloak_connect_1.Unprotected)(),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),

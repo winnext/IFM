@@ -71,7 +71,6 @@ let FacilityRepository = class FacilityRepository {
     }
     async create(createFacilityDto) {
         const { classifications } = createFacilityDto;
-        (0, objectId_check_1.checkObjectIddİsValid)(classifications.classificationId);
         const facility = new this.facilityModel(createFacilityDto);
         return await facility.save();
     }

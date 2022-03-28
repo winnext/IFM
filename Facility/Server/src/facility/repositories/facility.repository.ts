@@ -68,7 +68,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   async create(createFacilityDto: CreateFacilityDto) {
     const { classifications } = createFacilityDto;
 
-    checkObjectIddİsValid(classifications.classificationId);
+    //checkObjectIddİsValid(classifications.classificationId);
 
     const facility = new this.facilityModel(createFacilityDto);
 
