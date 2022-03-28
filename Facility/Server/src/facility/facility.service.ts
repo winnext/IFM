@@ -8,6 +8,7 @@ import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
+import { Span, OtelMethodCounter} from 'nestjs-otel';
 
 @Injectable()
 export class FacilityService {
@@ -16,27 +17,40 @@ export class FacilityService {
     private readonly facilityRepository: BaseInterfaceRepository<Facility>,
   ) {}
 
+  @Span('find all Facilities')
+  @OtelMethodCounter()
   findAll(query: PaginationParams): Promise<Facility[]> {
     return this.facilityRepository.findAll(query);
   }
 
+  @Span('find a facility by id')
+  @OtelMethodCounter()
   async findOne(id: string): Promise<Facility> {
     return this.facilityRepository.findOneById(id);
   }
 
+  @Span('create a facility')
+  @OtelMethodCounter()
   create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityRepository.create(createFacilityDto);
   }
 
+  @Span('update a facility')
+  @OtelMethodCounter()
   async update(id: string, updateFacilityDto: UpdateFacilityDto) {
     checkObjectIddİsValid(id);
     return this.facilityRepository.update(id, updateFacilityDto);
   }
 
+  @Span('remove a facility')
+  @OtelMethodCounter()
   async remove(id: string) {
     const facility = await this.findOne(id);
     return facility.remove();
   }
+
+  @Span('create many facilities with file')
+  @OtelMethodCounter()
   async createAll(file: any): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = require('fs');

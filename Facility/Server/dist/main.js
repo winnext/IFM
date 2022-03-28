@@ -6,9 +6,11 @@ const app_module_1 = require("./app.module");
 const swagger_1 = require("@nestjs/swagger");
 const logger_interceptor_1 = require("./common/interceptors/logger.interceptor");
 const mongo_exception_1 = require("./common/exceptionFilters/mongo.exception");
-const message_broker_options_1 = require("./common/options/message.broker.options");
+const message_broker_options_1 = require("./common/configs/message.broker.options");
+const tracing_1 = require("./tracing");
 async function bootstrap() {
     try {
+        await tracing_1.default.start();
         const app = await core_1.NestFactory.create(app_module_1.AppModule, { abortOnError: false });
         app.connectMicroservice(message_broker_options_1.kafkaOptions);
         const config = new swagger_1.DocumentBuilder()
