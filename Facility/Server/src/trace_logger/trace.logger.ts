@@ -22,4 +22,5 @@ export const loggerOptions: LoggerOptions = {
       : false,
 };
 
-export const logger: Logger = Pino(loggerOptions, destination(`/var/log/app.log`));
+export const logger: Logger = Pino(loggerOptions);
+//export const logger: Logger = Pino(loggerOptions, destination(`/var/log/app.log`));
