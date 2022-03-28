@@ -21,10 +21,12 @@ const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
 const classification_history_service_1 = require("../history/classification.history.service");
 const facility_history_service_1 = require("../history/facility.history.service");
 const nestjs_otel_1 = require("nestjs-otel");
+const facilitystructure_history_service_1 = require("../history/facilitystructure.history.service");
 let MessagebrokerController = class MessagebrokerController {
-    constructor(facilityHistoryService, classificationHistoryService, traceService) {
+    constructor(facilityHistoryService, classificationHistoryService, facilityStructureHistoryService, traceService) {
         this.facilityHistoryService = facilityHistoryService;
         this.classificationHistoryService = classificationHistoryService;
+        this.facilityStructureHistoryService = facilityStructureHistoryService;
         this.traceService = traceService;
     }
     exceptionListener(message) {
@@ -81,11 +83,8 @@ MessagebrokerController = __decorate([
     (0, nest_keycloak_connect_1.Unprotected)(),
     __metadata("design:paramtypes", [facility_history_service_1.FacilityHistoryService,
         classification_history_service_1.ClassificationHistoryService,
-<<<<<<< HEAD
-        facilitystructure_history_service_1.FacilityStructureHistoryService])
-=======
+        facilitystructure_history_service_1.FacilityStructureHistoryService,
         nestjs_otel_1.TraceService])
->>>>>>> ae97ed891fde03df964d2eaf56a562d6651c7ab5
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map
