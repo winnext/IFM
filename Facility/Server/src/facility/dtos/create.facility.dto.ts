@@ -43,7 +43,4 @@ export class CreateFacilityDto {
   @ValidateNested({ each: true })
   @Type(() => Adress)
   address: Adress;
-
-  @IsDate()
-  updatedAt = new Date();
 }

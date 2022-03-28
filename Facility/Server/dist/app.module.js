@@ -25,11 +25,15 @@ const facility_structures_module_1 = require("./facility-structures/facility-str
 const history_module_1 = require("./history/history.module");
 const redisStore = require("cache-manager-redis-store");
 const http_cache_interceptor_1 = require("./common/interceptors/http.cache.interceptor");
+const trace_logger_module_1 = require("./trace_logger/trace.logger.module");
+const opentelemetry_options_1 = require("./common/configs/opentelemetry.options");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            opentelemetry_options_1.OpenTelemetryModuleConfig,
+            trace_logger_module_1.LoggerModule,
             common_1.CacheModule.registerAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: async (configService) => ({

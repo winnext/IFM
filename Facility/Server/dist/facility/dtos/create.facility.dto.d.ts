@@ -8,5 +8,4 @@ export declare class CreateFacilityDto {
     classifications: ClassificationDetail;
     label: string[];
     address: Adress;
-    updatedAt: Date;
 }

@@ -39,7 +39,12 @@ export class Classification extends Document {
   })
   createdAt: Date;
 
-  @Prop()
+  @Prop({
+    type: Date,
+    default: function genDate() {
+      return new Date();
+    },
+  })
   updatedAt: Date;
 }
 

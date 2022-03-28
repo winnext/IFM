@@ -4,10 +4,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
 
-export type FacilityDocument = FacilityHistory & Document;
+export type FacilityStructureDocument = FacilityStructureHistory & Document;
 
 @Schema()
-export class FacilityHistory extends BasePersistantDocumentObject {
+export class FacilityStructureHistory extends BasePersistantDocumentObject {
   @Prop({ type: Object })
   facilityStructure: object;
 
@@ -15,4 +15,4 @@ export class FacilityHistory extends BasePersistantDocumentObject {
   user: object;
 }
 
-export const FaciliyHistorySchema = SchemaFactory.createForClass(FacilityHistory);
+export const FaciliyStructureHistorySchema = SchemaFactory.createForClass(FacilityStructureHistory);

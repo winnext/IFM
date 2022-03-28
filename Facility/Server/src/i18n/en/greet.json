@@ -1,6 +1,7 @@
 {
     "HELLO_MESSAGE": "Hello {username}",
     "FACILITY_NOT_FOUND": "Facility with this id #{id} not found ",
+    "FACILITY_STRUCTURE_NOT_FOUND":"Facility Structure with this id #{id} not found ",
     "CLASSIFICATION_NOT_FOUND": "Classification with this id #{id} not found ",
     "USER_NOT_HAVE_PERMISSION": "user '{username}' has no permission. Plese contact with admin ",
     "OBJECTID_NOT_VALID":"given ıd #{id} is not valid",

@@ -20,10 +20,12 @@ const path_enum_1 = require("../common/const/path.enum");
 const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
 const classification_history_service_1 = require("../history/classification.history.service");
 const facility_history_service_1 = require("../history/facility.history.service");
+const nestjs_otel_1 = require("nestjs-otel");
 let MessagebrokerController = class MessagebrokerController {
-    constructor(facilityHistoryService, classificationHistoryService) {
+    constructor(facilityHistoryService, classificationHistoryService, traceService) {
         this.facilityHistoryService = facilityHistoryService;
         this.classificationHistoryService = classificationHistoryService;
+        this.traceService = traceService;
     }
     exceptionListener(message) {
         console.log('this is from message broker exception listener' + message.value);
@@ -40,6 +42,11 @@ let MessagebrokerController = class MessagebrokerController {
             case path_enum_1.PathEnums.CLASSIFICATION:
                 const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
                 await this.classificationHistoryService.create(classificationHistory);
+                break;
+            case path_enum_1.PathEnums.STRUCTURE:
+                const facilityStructureHistory = { facilityStructure: message.value.responseBody, user: message.value.user };
+                await this.facilityStructureHistoryService.create(facilityStructureHistory);
+                console.log('structure topic added');
                 break;
             default:
                 console.log('undefined history call from facility microservice');
@@ -62,6 +69,7 @@ __decorate([
     __metadata("design:returntype", Object)
 ], MessagebrokerController.prototype, "loggerListener", null);
 __decorate([
+    (0, nestjs_otel_1.Span)('deneme'),
     (0, microservices_1.EventPattern)(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION),
     __param(0, (0, microservices_1.Payload)()),
     __metadata("design:type", Function),
@@ -72,7 +80,12 @@ MessagebrokerController = __decorate([
     (0, common_1.Controller)('messagebroker'),
     (0, nest_keycloak_connect_1.Unprotected)(),
     __metadata("design:paramtypes", [facility_history_service_1.FacilityHistoryService,
-        classification_history_service_1.ClassificationHistoryService])
+        classification_history_service_1.ClassificationHistoryService,
+<<<<<<< HEAD
+        facilitystructure_history_service_1.FacilityStructureHistoryService])
+=======
+        nestjs_otel_1.TraceService])
+>>>>>>> ae97ed891fde03df964d2eaf56a562d6651c7ab5
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map

@@ -112,7 +112,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
-                    console.log(error);
+                    this.logger.error(`${JSON.stringify(error)}   `);
                 }
                 break;
             default:

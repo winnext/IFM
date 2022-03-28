@@ -8,6 +8,7 @@ import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
+import { Span, OtelMethodCounter} from 'nestjs-otel';
 
 @Injectable()
 export class FacilityService {
@@ -16,27 +17,40 @@ export class FacilityService {
     private readonly facilityRepository: BaseInterfaceRepository<Facility>,
   ) {}
 
+  @Span('find all Facilities')
+  @OtelMethodCounter()
   findAll(query: PaginationParams): Promise<Facility[]> {
     return this.facilityRepository.findAll(query);
   }
 
+  @Span('find a facility by id')
+  @OtelMethodCounter()
   async findOne(id: string): Promise<Facility> {
     return this.facilityRepository.findOneById(id);
   }
 
+  @Span('create a facility')
+  @OtelMethodCounter()
   create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityRepository.create(createFacilityDto);
   }
 
+  @Span('update a facility')
+  @OtelMethodCounter()
   async update(id: string, updateFacilityDto: UpdateFacilityDto) {
     checkObjectIddİsValid(id);
     return this.facilityRepository.update(id, updateFacilityDto);
   }
 
+  @Span('remove a facility')
+  @OtelMethodCounter()
   async remove(id: string) {
     const facility = await this.findOne(id);
     return facility.remove();
   }
+
+  @Span('create many facilities with file')
+  @OtelMethodCounter()
   async createAll(file: any): Promise<string> {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = require('fs');
@@ -46,56 +60,50 @@ export class FacilityService {
       createReadStream(file.path)
         .pipe(csv())
         .on('data', (data) => {
-          let adrarray = [];
+          const adrarray = [];
           let addressarray = [];
-          addressarray  = data.adress.split(";");
-          
+          addressarray = data.adress.split(';');
+
           let j = 1;
           let o = {};
           let a = [];
-          for (let  i = 0; i < addressarray.length; i++) {
-              if (j < 5) {
-               a.push(addressarray[i]);
-               j=j+1;
-              }
-              else {
-                o = {"title": a[0],"country": a[1], "city": a[2], "adress": a[3]};
-                adrarray.push(o);
-                o={};
-                a=[];
-                a.push(addressarray[i]);
-                j = 2;
-              }
+          for (let i = 0; i < addressarray.length; i++) {
+            if (j < 5) {
+              a.push(addressarray[i]);
+              j = j + 1;
+            } else {
+              o = { title: a[0], country: a[1], city: a[2], adress: a[3] };
+              adrarray.push(o);
+              o = {};
+              a = [];
+              a.push(addressarray[i]);
+              j = 2;
+            }
           }
           if (a.length == 4) {
-            o = {"title": a[0],"country": a[1], "city": a[2], "adress": a[3]};
+            o = { title: a[0], country: a[1], city: a[2], adress: a[3] };
+            adrarray.push(o);
+          } else if (a.length == 3) {
+            o = { title: a[0], country: a[1], city: a[2] };
+            adrarray.push(o);
+          } else if (a.length == 2) {
+            o = { title: a[0], country: a[1] };
+            adrarray.push(o);
+          } else if (a.length == 1) {
+            o = { title: a[0] };
             adrarray.push(o);
           }
-          else if (a.length == 3) {
-            o = {"title": a[0],"country": a[1], "city": a[2]};
-            adrarray.push(o);
-          }
-          else if (a.length == 2) {
-            o = {"title": a[0],"country": a[1]};
-            adrarray.push(o);
-          }
-          else if (a.length == 1) {
-            o = {"title": a[0]};
-            adrarray.push(o);
-          }
-        
+
           const dto = {
             facility_name: data.facility_name,
             locations: data.locations,
             brand_name: data.brand_name,
-            type_of_facility: data.type_of_facility, 
-            //classifications: data.classifications.split(";"), //if an classificationid array comes  
-            classifications: {},            
-            label: data.label.split(";") ,
-            updatedAt : new Date(),
+            type_of_facility: data.type_of_facility,
+            //classifications: data.classifications.split(";"), //if an classificationid array comes
+            classifications: {},
+            label: data.label.split(';'),
+            updatedAt: new Date(),
             address: adrarray,
-            
-            
           };
           this.facilityRepository.create(dto);
         });

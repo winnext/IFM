@@ -13,9 +13,6 @@ exports.CreateClassificationDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateClassificationDto {
-    constructor() {
-        this.updatedAt = new Date();
-    }
 }
 __decorate([
     (0, swagger_1.ApiProperty)(),
@@ -36,9 +33,5 @@ __decorate([
     (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], CreateClassificationDto.prototype, "detail", void 0);
-__decorate([
-    (0, class_validator_1.IsDate)(),
-    __metadata("design:type", Object)
-], CreateClassificationDto.prototype, "updatedAt", void 0);
 exports.CreateClassificationDto = CreateClassificationDto;
 //# sourceMappingURL=create-classification.dto.js.map

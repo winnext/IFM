@@ -10,6 +10,10 @@ import { ClassificationHistoryService } from './classification.history.service';
 import { FacilityHistoryService } from './facility.history.service';
 import { ClassificationHistoryRepository } from './repositories/classification.history.repository';
 import { FacilityHistoryRepository } from './repositories/facility.history.repository';
+import { FacilityStructureHistoryService } from './facilitystructure.history.service';
+import { FacilityStructureHistoryRepository } from './repositories/facilitystructure.history.repository';
+import { FacilityStructureHistory, FaciliyStructureHistorySchema } from './entities/facilitystructure.history.entity';
+import { FacilityStructureHistoryController } from './facility.structure.history.controller';
 
 @Module({
   imports: [
@@ -23,14 +27,19 @@ import { FacilityHistoryRepository } from './repositories/facility.history.repos
           name: ClassificationHistory.name,
           schema: ClassificationHistorySchema,
         },
+        {
+          name: FacilityStructureHistory.name,
+          schema: FaciliyStructureHistorySchema,
+        },
       ],
       ConnectionEnums.FACILITY,
     ),
   ],
-  controllers: [FacilityHistoryController, ClassificationHistoryController],
+  controllers: [FacilityHistoryController, ClassificationHistoryController, FacilityStructureHistoryController],
   providers: [
     FacilityHistoryService,
     ClassificationHistoryService,
+    FacilityStructureHistoryService,
     {
       provide: RepositoryEnums.FACILITY_HISTORY,
       useClass: FacilityHistoryRepository,
@@ -39,7 +48,11 @@ import { FacilityHistoryRepository } from './repositories/facility.history.repos
       provide: RepositoryEnums.CLASSIFICATION_HISTORY,
       useClass: ClassificationHistoryRepository,
     },
+    {
+      provide: RepositoryEnums.FACILITY_STRUCTURE_HISTORY,
+      useClass: FacilityStructureHistoryRepository,
+    },
   ],
-  exports: [FacilityHistoryService, ClassificationHistoryService],
+  exports: [FacilityHistoryService, ClassificationHistoryService, FacilityStructureHistoryService],
 })
 export class HistoryModule {}

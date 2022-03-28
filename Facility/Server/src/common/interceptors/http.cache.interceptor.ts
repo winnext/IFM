@@ -23,7 +23,7 @@ export class HttpCacheInterceptor extends CacheInterceptor {
     if (!isHttpApp || cacheMetadata) {
       return cacheMetadata;
     }
-
+    //this function check the get method will be cached or not
     const ignoreCaching: boolean = this.reflector.get('ignoreCaching', context.getHandler());
     if (ignoreCaching) {
       return undefined;

@@ -16,9 +16,6 @@ const class_transformer_1 = require("class-transformer");
 const facility_address_1 = require("../entities/facility.address");
 const classification_detail_1 = require("../entities/classification.detail");
 class CreateFacilityDto {
-    constructor() {
-        this.updatedAt = new Date();
-    }
 }
 __decorate([
     (0, swagger_1.ApiProperty)(),
@@ -66,9 +63,5 @@ __decorate([
     (0, class_transformer_1.Type)(() => facility_address_1.Adress),
     __metadata("design:type", facility_address_1.Adress)
 ], CreateFacilityDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsDate)(),
-    __metadata("design:type", Object)
-], CreateFacilityDto.prototype, "updatedAt", void 0);
 exports.CreateFacilityDto = CreateFacilityDto;
 //# sourceMappingURL=create.facility.dto.js.map

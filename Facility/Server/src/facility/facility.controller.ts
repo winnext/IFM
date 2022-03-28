@@ -16,7 +16,7 @@ import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
 import { FacilityService } from './facility.service';
-import { Roles, Unprotected } from 'nest-keycloak-connect';
+import { Roles } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -94,21 +94,19 @@ export class FacilityController {
       },
     },
   })
-
-    @Roles({ roles: [FacilityUserRoles.ADMIN] })
-
-    @ApiConsumes('multipart/form-data')
-    @ApiBody({
-      schema: {
-        type: 'object',
-        properties: {
-          file: {
-            type: 'string',
-            format: 'binary',
-          },
+  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
         },
       },
-    })
+    },
+  })
   @Post('createfacilities')
   @UseInterceptors(
     FileInterceptor('file', {

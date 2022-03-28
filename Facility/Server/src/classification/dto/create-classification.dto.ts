@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsObject, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsObject, IsString, Length } from 'class-validator';
 
 export class CreateClassificationDto {
   @ApiProperty()
@@ -17,7 +17,4 @@ export class CreateClassificationDto {
   @ApiProperty()
   @IsObject()
   detail: object;
-
-  @IsDate()
-  updatedAt = new Date();
 }
