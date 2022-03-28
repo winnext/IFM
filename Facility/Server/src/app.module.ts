@@ -1,4 +1,4 @@
-import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -16,9 +16,15 @@ import { FacilityStructuresModule } from './facility-structures/facility-structu
 import { HistoryModule } from './history/history.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
+import { LoggerModule } from './trace_logger/trace.logger.module';
+import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
+
+
 
 @Module({
-  imports: [
+  imports: [ 
+    OpenTelemetryModuleConfig, 
+    LoggerModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

@@ -15,8 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacilityService = void 0;
 const common_1 = require("@nestjs/common");
 const fs_1 = require("fs");
+const pagination_dto_1 = require("../common/commonDto/pagination.dto");
 const repository_enum_1 = require("../common/const/repository.enum");
 const objectId_check_1 = require("../common/func/objectId.check");
+const create_facility_dto_1 = require("./dtos/create.facility.dto");
+const update_facility_dto_1 = require("./dtos/update.facility.dto");
+const nestjs_otel_1 = require("nestjs-otel");
 let FacilityService = class FacilityService {
     constructor(facilityRepository) {
         this.facilityRepository = facilityRepository;
@@ -66,6 +70,48 @@ let FacilityService = class FacilityService {
         }
     }
 };
+__decorate([
+    (0, nestjs_otel_1.Span)('find all Facilities'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
+    __metadata("design:returntype", Promise)
+], FacilityService.prototype, "findAll", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('find a facility by id'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FacilityService.prototype, "findOne", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('create a facility'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_facility_dto_1.CreateFacilityDto]),
+    __metadata("design:returntype", Promise)
+], FacilityService.prototype, "create", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('update a facility'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_facility_dto_1.UpdateFacilityDto]),
+    __metadata("design:returntype", Promise)
+], FacilityService.prototype, "update", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('remove a facility'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FacilityService.prototype, "remove", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('create many facilities with file'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], FacilityService.prototype, "createAll", null);
 FacilityService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(repository_enum_1.RepositoryEnums.FACILITY)),
