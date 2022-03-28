@@ -11,6 +11,9 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import FacilityService from "../services/facility";
 import DefineFacility from "../components/Facility/DefineFacility";
+import axios from "axios";
+import { SplitButton } from 'primereact/splitbutton';
+import { useAppSelector } from "../app/hook";
 
 const Facility = () => {
   let emptyFacility = {
@@ -28,6 +31,8 @@ const Facility = () => {
     __v: 0,
   };
 
+  const auth = useAppSelector((state) => state.auth);
+  const [token, setToken] = useState(auth.auth.token);
   const [facilities, setFacilities] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lazyParams, setLazyParams] = useState({
@@ -43,14 +48,16 @@ const Facility = () => {
   const [facility, setFacility] = useState(emptyFacility);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [isUpload, setIsUpload] = useState(false);
   const toast = useRef(null);
   const dt = useRef(null);
+  const refUpload = useRef(null);
 
   useEffect(() => {
     loadLazyData();
     // FacilityService.test();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lazyParams]);
+  }, [lazyParams,isUpload]);
 
   const onPage = (event) => {
     if (globalFilter === "") setLazyParams(event);
@@ -139,9 +146,6 @@ const Facility = () => {
       });
   };
 
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
 
   const leftToolbarTemplate = () => {
     return (
@@ -158,26 +162,66 @@ const Facility = () => {
     );
   };
 
+  const uploadCSV = (e) => {
+    const file = e.files[0];
+    const url = 'http://localhost:3001/facility/createfacilities';
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data', Authorization: "Bearer " + token,
+      },
+    };
+    axios.post(url, formData, config).then((response) => {
+      console.log(response.data);
+      toast.current.show({ severity: 'success', summary: 'File uploaded', life: 3000 });
+      setIsUpload(true);
+    })
+      .catch(error => {
+        toast.current.show({ severity: 'error', summary: 'File not uploaded', life: 3000 });
+      })
+
+    refUpload.current.clear();
+    setIsUpload(false);
+  }
+
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
         <FileUpload
           mode="basic"
-          accept="image/*"
+          accept="csv/*"
           maxFileSize={1000000}
           label="Import"
           chooseLabel="Import"
           className="mr-2 inline-block"
+          customUpload={true}
+          uploadHandler={uploadCSV}
+          ref={refUpload}
         />
-        <Button
-          label="Export"
-          icon="pi pi-upload"
-          className="p-button-help"
-          onClick={exportCSV}
-        />
+        <SplitButton label="Export" model={items} className="p-button-info mr-2"></SplitButton>
       </React.Fragment>
     );
   };
+
+  const items = [
+    {
+      label: 'Download Sample File',
+      icon: 'pi pi-download',
+      command: () => {
+        window.location.href = 'http://localhost:3000/documents/sample-data.csv'
+      }
+    },
+    {
+      label: 'Export File',
+      icon: 'pi pi-download',
+      command: () => {
+        dt.current.exportCSV();
+      }
+    }
+  ];
 
   const facilityNameBodyTemplate = (rowData) => {
     return (
@@ -303,6 +347,7 @@ const Facility = () => {
             onSort={onSort}
             sortField={lazyParams.sortField}
             sortOrder={lazyParams.sortOrder}
+            exportFilename={`Facility-` + new Date().toJSON().slice(0, 10)}
           >
             <Column
               field="facility_name"

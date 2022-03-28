@@ -100,11 +100,12 @@ const DefineAddress = ({
                 options={countries}
                 className={errors.country && "p-invalid"}
                 onChange={(e) => {
-                  setCities(e.value.cities);
                   field.onChange(e.value);
+                  setCities(e.value.cities);
                 }}
                 placeholder="Select Country"
                 filter
+                showClear
               />
             )}
           />
@@ -112,17 +113,6 @@ const DefineAddress = ({
             <small className="p-error block">This field is required.</small>
           )}
         </div>
-        {/* <div className="field">
-          <label>City</label>
-          <InputText
-            defaultValue={address.city}
-            className={errors.city && "p-invalid"}
-            {...register("city", { required: true })}
-          />
-          {errors.city && (
-            <small className="p-error block">This field is required.</small>
-          )}
-        </div> */}
         <div className="field">
           <label>City</label>
           <Controller
@@ -141,6 +131,7 @@ const DefineAddress = ({
                 }}
                 placeholder="Select City"
                 filter
+                showClear
               />
             )}
           />

@@ -82,6 +82,8 @@ AppModule = __decorate([
                 isGlobal: true,
                 validationSchema: Joi.object({
                     DATABASE_LINK: Joi.string().required(),
+                    CACHE_HOST: Joi.string().required(),
+                    CACHE_PORT: Joi.string().required(),
                 }),
             }),
             classification_module_1.ClassificationModule,

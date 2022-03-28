@@ -1,5 +1,10 @@
 import { Injectable, CacheInterceptor, ExecutionContext, CACHE_KEY_METADATA } from '@nestjs/common';
 
+import { SetMetadata } from '@nestjs/common';
+
+//this is used for @Get() decarotor for disable cache
+export const NoCache = () => SetMetadata('ignoreCaching', true);
+
 // coustom interceptor for cache
 @Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
@@ -17,6 +22,11 @@ export class HttpCacheInterceptor extends CacheInterceptor {
 
     if (!isHttpApp || cacheMetadata) {
       return cacheMetadata;
+    }
+
+    const ignoreCaching: boolean = this.reflector.get('ignoreCaching', context.getHandler());
+    if (ignoreCaching) {
+      return undefined;
     }
     const isGetRequest = httpAdapter.getRequestMethod(request) === 'GET';
     if (!isGetRequest) {

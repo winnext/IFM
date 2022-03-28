@@ -108,6 +108,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
 
       default:
+        this.logger.error(`${JSON.stringify(exception.message)}   `);
         response.status(status).json(exception.message);
         break;
     }

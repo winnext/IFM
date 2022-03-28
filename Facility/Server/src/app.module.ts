@@ -1,4 +1,4 @@
-import { CacheInterceptor, CacheModule, Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -31,6 +31,7 @@ import { HttpCacheInterceptor } from './common/interceptors/http.cache.intercept
       }),
       inject: [ConfigService],
     }),
+
     MulterModule.register({
       dest: './upload',
     }),
@@ -74,6 +75,8 @@ import { HttpCacheInterceptor } from './common/interceptors/http.cache.intercept
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_LINK: Joi.string().required(),
+        CACHE_HOST: Joi.string().required(),
+        CACHE_PORT: Joi.string().required(),
       }),
     }),
 
@@ -90,6 +93,8 @@ import { HttpCacheInterceptor } from './common/interceptors/http.cache.intercept
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
+    //to cache all get request
+
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpCacheInterceptor,

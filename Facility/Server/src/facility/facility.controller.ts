@@ -21,6 +21,7 @@ import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FacilityUserRoles } from 'src/common/const/keycloak.role.enum';
+import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
 
 @ApiTags('Facility')
 @Controller('facility')
@@ -35,6 +36,7 @@ export class FacilityController {
   })
   //@LoggerInter()
   @Get('/')
+  @NoCache()
   @Roles({ roles: [FacilityUserRoles.ADMIN] })
   async getAllFacilities(@Query() params: PaginationParams): Promise<Facility[]> {
     return this.facilityService.findAll(params);

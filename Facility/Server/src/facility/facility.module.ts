@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Classification, ClassificationSchema } from 'src/classification/entities/classification.entity';
 import { ConnectionEnums } from 'src/common/const/connection.enum';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { Facility, FaciliySchema } from './entities/facility.entity';
@@ -18,15 +17,6 @@ import { FacilityRepository } from './repositories/facility.repository';
         },
       ],
       ConnectionEnums.FACILITY,
-    ),
-    MongooseModule.forFeature(
-      [
-        {
-          name: Classification.name,
-          schema: ClassificationSchema,
-        },
-      ],
-      ConnectionEnums.CLASSIFICATION,
     ),
   ],
   controllers: [FacilityController],
