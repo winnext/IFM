@@ -9,6 +9,7 @@ import Facility from "./pages/Facility";
 import Classifications from "./pages/Classifications/Classifications";
 import { NotFound } from "./layouts/App/pages/NotFound";
 import SetClassification from "./pages/Classifications/SetClassification";
+import FileImport from "./pages/FileImport";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -26,6 +27,11 @@ export default function Router() {
       path: "/classifications",
       element: <AppLayout />,
       children: [{ path: ":id", element: <SetClassification /> }],
+    },
+    {
+      path: "/facility",
+      element: <AppLayout />,
+      children: [{ path: "fileimport", element: <FileImport /> }],
     },
     {
       path: "/404",

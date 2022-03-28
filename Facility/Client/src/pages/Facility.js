@@ -12,8 +12,8 @@ import { InputText } from "primereact/inputtext";
 import FacilityService from "../services/facility";
 import DefineFacility from "../components/Facility/DefineFacility";
 import axios from "axios";
-import { SplitButton } from 'primereact/splitbutton';
-import { useAppSelector } from "../app/hook";
+import { Menu } from 'primereact/menu';
+import { useNavigate } from "react-router-dom";
 
 const Facility = () => {
   let emptyFacility = {
@@ -31,8 +31,6 @@ const Facility = () => {
     __v: 0,
   };
 
-  const auth = useAppSelector((state) => state.auth);
-  const [token, setToken] = useState(auth.auth.token);
   const [facilities, setFacilities] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lazyParams, setLazyParams] = useState({
@@ -51,7 +49,8 @@ const Facility = () => {
   const [isUpload, setIsUpload] = useState(false);
   const toast = useRef(null);
   const dt = useRef(null);
-  const refUpload = useRef(null);
+  const navigate = useNavigate();
+  const menu = useRef(null);
 
   useEffect(() => {
     loadLazyData();
@@ -162,46 +161,21 @@ const Facility = () => {
     );
   };
 
-  const uploadCSV = (e) => {
-    const file = e.files[0];
-    const url = 'http://localhost:3001/facility/createfacilities';
-    const formData = new FormData();
-
-    formData.append('file', file);
-    formData.append('fileName', file.name);
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data', Authorization: "Bearer " + token,
-      },
-    };
-    axios.post(url, formData, config).then((response) => {
-      console.log(response.data);
-      toast.current.show({ severity: 'success', summary: 'File uploaded', life: 3000 });
-      setIsUpload(true);
-    })
-      .catch(error => {
-        toast.current.show({ severity: 'error', summary: 'File not uploaded', life: 3000 });
-      })
-
-    refUpload.current.clear();
-    setIsUpload(false);
-  }
+  const exportCSV = () => {
+    dt.current.exportCSV();
+  };
 
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
-          mode="basic"
-          accept="csv/*"
-          maxFileSize={1000000}
-          label="Import"
-          chooseLabel="Import"
-          className="mr-2 inline-block"
-          customUpload={true}
-          uploadHandler={uploadCSV}
-          ref={refUpload}
+        <Menu model={items} popup ref={menu} id="popup_menu" />
+        <Button className="mr-2" label="Import" icon="pi pi-upload" onClick={(event) => menu.current.toggle(event)} aria-controls="popup_menu" aria-haspopup />
+        <Button
+          label="Export"
+          icon="pi pi-download"
+          className="p-button"
+          onClick={exportCSV}
         />
-        <SplitButton label="Export" model={items} className="p-button-info mr-2"></SplitButton>
       </React.Fragment>
     );
   };
@@ -215,10 +189,10 @@ const Facility = () => {
       }
     },
     {
-      label: 'Export File',
-      icon: 'pi pi-download',
+      label: 'Upload File',
+      icon: 'pi pi-upload',
       command: () => {
-        dt.current.exportCSV();
+        navigate("/facility/fileimport");
       }
     }
   ];
