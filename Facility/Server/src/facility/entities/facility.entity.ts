@@ -41,7 +41,12 @@ export class Facility extends BasePersistantDocumentObject {
   })
   createdAt: Date;
 
-  @Prop()
+  @Prop({
+    type: Date,
+    default: function genDate() {
+      return new Date();
+    },
+  })
   updatedAt: Date;
 
   @Prop()

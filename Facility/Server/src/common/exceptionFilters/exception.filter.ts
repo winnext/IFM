@@ -103,7 +103,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(clientResponse);
         } catch (error) {
-          console.log(error);
+          this.logger.error(`${JSON.stringify(error)}   `);
         }
         break;
 

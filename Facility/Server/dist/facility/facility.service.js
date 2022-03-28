@@ -46,9 +46,9 @@ let FacilityService = class FacilityService {
             (0, fs_1.createReadStream)(file.path)
                 .pipe(csv())
                 .on('data', (data) => {
-                let adrarray = [];
+                const adrarray = [];
                 let addressarray = [];
-                addressarray = data.adress.split(";");
+                addressarray = data.adress.split(';');
                 let j = 1;
                 let o = {};
                 let a = [];
@@ -58,7 +58,7 @@ let FacilityService = class FacilityService {
                         j = j + 1;
                     }
                     else {
-                        o = { "title": a[0], "country": a[1], "city": a[2], "adress": a[3] };
+                        o = { title: a[0], country: a[1], city: a[2], adress: a[3] };
                         adrarray.push(o);
                         o = {};
                         a = [];
@@ -67,19 +67,19 @@ let FacilityService = class FacilityService {
                     }
                 }
                 if (a.length == 4) {
-                    o = { "title": a[0], "country": a[1], "city": a[2], "adress": a[3] };
+                    o = { title: a[0], country: a[1], city: a[2], adress: a[3] };
                     adrarray.push(o);
                 }
                 else if (a.length == 3) {
-                    o = { "title": a[0], "country": a[1], "city": a[2] };
+                    o = { title: a[0], country: a[1], city: a[2] };
                     adrarray.push(o);
                 }
                 else if (a.length == 2) {
-                    o = { "title": a[0], "country": a[1] };
+                    o = { title: a[0], country: a[1] };
                     adrarray.push(o);
                 }
                 else if (a.length == 1) {
-                    o = { "title": a[0] };
+                    o = { title: a[0] };
                     adrarray.push(o);
                 }
                 const dto = {
@@ -87,8 +87,8 @@ let FacilityService = class FacilityService {
                     locations: data.locations,
                     brand_name: data.brand_name,
                     type_of_facility: data.type_of_facility,
-                    classifications: data.classifications.split(";"),
-                    label: data.label.split(";"),
+                    classifications: {},
+                    label: data.label.split(';'),
                     updatedAt: new Date(),
                     address: adrarray,
                 };

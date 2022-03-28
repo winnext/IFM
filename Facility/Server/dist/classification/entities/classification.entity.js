@@ -56,7 +56,12 @@ __decorate([
     __metadata("design:type", Date)
 ], Classification.prototype, "createdAt", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
+    (0, mongoose_1.Prop)({
+        type: Date,
+        default: function genDate() {
+            return new Date();
+        },
+    }),
     __metadata("design:type", Date)
 ], Classification.prototype, "updatedAt", void 0);
 Classification = Classification_1 = __decorate([

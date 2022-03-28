@@ -59,8 +59,8 @@ export class FacilityHistoryRepository implements BaseHistoryRepositoryInterface
     return facility;
   }
 
-  async create(createClassificationDto: CreateFacilityHistoryDto) {
-    const facility = new this.facilityHistoryModel(createClassificationDto);
+  async create(createFacilityHistoryDto: CreateFacilityHistoryDto) {
+    const facility = new this.facilityHistoryModel(createFacilityHistoryDto);
 
     return await facility.save();
   }

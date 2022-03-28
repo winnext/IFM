@@ -8,7 +8,7 @@ import { FacilityStructure } from './entities/facility-structure.entity';
 @Injectable()
 export class FacilityStructuresService {
   constructor(
-    @Inject(RepositoryEnums.FACILITYSTRUCTURE)
+    @Inject(RepositoryEnums.FACILITY_STRUCTURE)
     private readonly facilityStructureRepository: BaseInterfaceRepository<FacilityStructure>,
   ) {}
   create(createFacilityStructureDto: CreateFacilityStructureDto) {
