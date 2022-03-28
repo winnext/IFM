@@ -89,7 +89,8 @@ export class FacilityService {
             locations: data.locations,
             brand_name: data.brand_name,
             type_of_facility: data.type_of_facility, 
-            classifications: data.classifications.split(";"),           
+            //classifications: data.classifications.split(";"), //if an classificationid array comes  
+            classifications: {},            
             label: data.label.split(";") ,
             updatedAt : new Date(),
             address: adrarray,
