@@ -92,7 +92,7 @@ let FacilityService = class FacilityService {
                     brand_name: data.brand_name,
                     type_of_facility: data.type_of_facility,
                     classifications: {},
-                    label: data.label.split(";"),
+                    label: data.label.split(';'),
                     updatedAt: new Date(),
                     address: adrarray,
                 };
