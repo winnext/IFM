@@ -4,10 +4,12 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { LoggingInterceptor } from './common/interceptors/logger.interceptor';
 import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception';
-import { kafkaOptions } from './common/options/message.broker.options';
+import { kafkaOptions } from './common/configs/message.broker.options';
+import trial from './tracing';
 
 async function bootstrap() {
   try {
+    await trial.start();
     const app = await NestFactory.create(AppModule, { abortOnError: false });
 
     app.connectMicroservice(kafkaOptions);

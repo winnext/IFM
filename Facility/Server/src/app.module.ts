@@ -16,9 +16,15 @@ import { FacilityStructuresModule } from './facility-structures/facility-structu
 import { HistoryModule } from './history/history.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
+import { LoggerModule } from './trace_logger/trace.logger.module';
+import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
+
+
 
 @Module({
-  imports: [
+  imports: [ 
+    OpenTelemetryModuleConfig, 
+    LoggerModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
