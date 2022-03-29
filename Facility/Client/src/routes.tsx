@@ -9,7 +9,8 @@ import Facility from "./pages/Facility";
 import Classifications from "./pages/Classifications/Classifications";
 import { NotFound } from "./layouts/App/pages/NotFound";
 import SetClassification from "./pages/Classifications/SetClassification";
-import FileImport from "./pages/FileImport";
+import FacilityFileImport from "./pages/FacilityFileImport";
+import ClassificationFileImport from "./pages/ClassificationFileImport";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -31,7 +32,12 @@ export default function Router() {
     {
       path: "/facility",
       element: <AppLayout />,
-      children: [{ path: "fileimport", element: <FileImport /> }],
+      children: [{ path: "fileimport", element: <FacilityFileImport /> }],
+    },
+    {
+      path: "/classifications",
+      element: <AppLayout />,
+      children: [{ path: "fileimport", element: <ClassificationFileImport /> }],
     },
     {
       path: "/404",

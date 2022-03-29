@@ -185,7 +185,7 @@ const Facility = () => {
       label: 'Download Sample File',
       icon: 'pi pi-download',
       command: () => {
-        window.location.href = 'http://localhost:3000/documents/sample-data.csv'
+        window.location.href = 'http://localhost:3000/documents/facility-sample-data.csv'
       }
     },
     {

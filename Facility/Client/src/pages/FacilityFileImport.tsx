@@ -6,7 +6,7 @@ import { useAppSelector } from "../app/hook";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const FileImport: React.FC = () => {
+const FacilityFileImport: React.FC = () => {
     const toast = useRef<any>();
     const refUpload = useRef<any>(null);
     const auth = useAppSelector((state) => state.auth);
@@ -62,11 +62,9 @@ const FileImport: React.FC = () => {
                     ref={refUpload}
                     emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>}
                 />
-
-
             </div>
         </>
     )
 };
 
-export default FileImport;
+export default FacilityFileImport;
