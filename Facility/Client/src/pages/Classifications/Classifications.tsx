@@ -11,6 +11,7 @@ import ClassificationsService from "../../services/classifications";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { useNavigate } from "react-router-dom";
+import { Menu } from 'primereact/menu';
 
 interface ClassificationInterface {
   _id?: string;
@@ -51,6 +52,7 @@ const Classifications = () => {
   });
   const dt = useRef<any>();
   const toast = useRef<any>();
+  const menu = useRef<any>(null);
 
   useEffect(() => {
     loadLazyData();
@@ -184,10 +186,52 @@ const Classifications = () => {
     );
   };
 
+  const rightToolbarTemplate = () => {
+    return (
+      <React.Fragment>
+        <Menu model={items} popup ref={menu} id="popup_menu" />
+        <Button className="mr-2" label="Import" icon="pi pi-upload" onClick={(event) => menu.current.toggle(event)} aria-controls="popup_menu" aria-haspopup />
+        <Button
+          label="Export"
+          icon="pi pi-download"
+          className="p-button"
+          onClick={exportCSV}
+        />
+      </React.Fragment>
+    );
+  };
+
+  const items = [
+    {
+      label: 'Download Sample File',
+      icon: 'pi pi-download',
+      command: () => {
+        window.location.href = 'http://localhost:3000/documents/classification-sample-data.csv'
+      }
+    },
+    {
+      label: 'Upload File',
+      icon: 'pi pi-upload',
+      command: () => {
+        navigate("/classifications/fileimport");
+      }
+    }
+  ];
+
+  const exportCSV = () => {
+    dt.current.exportCSV();
+  };
+
+
   return (
-    <div>
+    <div className="card">
       <Toast ref={toast} />
-      <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
+      <Toolbar className="mb-4" 
+      left={leftToolbarTemplate}
+      right={rightToolbarTemplate}
+      >
+      
+      </Toolbar>
       <DataTable
         ref={dt}
         value={data}

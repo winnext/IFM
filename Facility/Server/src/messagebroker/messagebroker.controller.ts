@@ -6,7 +6,6 @@ import { PathEnums } from 'src/common/const/path.enum';
 import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
 import { ClassificationHistoryService } from 'src/history/classification.history.service';
 import { FacilityHistoryService } from 'src/history/facility.history.service';
-import { Span, TraceService } from 'nestjs-otel';
 import { FacilityStructureHistoryService } from 'src/history/facilitystructure.history.service';
 
 @Controller('messagebroker')
@@ -15,8 +14,7 @@ export class MessagebrokerController {
   constructor(
     private facilityHistoryService: FacilityHistoryService,
     private classificationHistoryService: ClassificationHistoryService,
-    private facilityStructureHistoryService: FacilityStructureHistoryService,
-    private readonly traceService: TraceService,
+    private facilityStructureHistoryService: FacilityStructureHistoryService
   ) {}
 
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)
