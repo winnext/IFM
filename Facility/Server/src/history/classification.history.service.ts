@@ -4,7 +4,7 @@ import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
 import { CreateClassificationHistoryDto } from './dtos/create.classification.history.dto';
 import { ClassificationHistory } from './entities/classification.history.entity';
-import { Span, OtelMethodCounter} from 'nestjs-otel';
+import { Span, OtelMethodCounter } from 'nestjs-otel';
 
 @Injectable()
 export class ClassificationHistoryService {
@@ -13,8 +13,6 @@ export class ClassificationHistoryService {
     private readonly classificationHistoryRepository: BaseHistoryRepositoryInterface<ClassificationHistory>,
   ) {}
 
-  
- 
   async create(createFacilityHistoryDto: CreateClassificationHistoryDto) {
     return await this.classificationHistoryRepository.create(createFacilityHistoryDto);
   }

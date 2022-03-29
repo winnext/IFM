@@ -15,7 +15,9 @@ export class FacilityStructureHistoryRepository implements BaseHistoryRepository
   ) {}
 
   async findOneById(id: string): Promise<FacilityStructureHistory[]> {
-    const facilityStructureHistory = await this.facilityStructureHistoryModel.find({ 'facility._id': id }).exec();
+    const facilityStructureHistory = await this.facilityStructureHistoryModel
+      .find({ 'facilityStructure._id': id })
+      .exec();
     if (!facilityStructureHistory) {
       throw new FacilityStructureNotFountException(id);
     }

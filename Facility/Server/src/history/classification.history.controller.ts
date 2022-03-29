@@ -18,6 +18,7 @@ export class ClassificationHistoryController {
     return await this.classificationHistoryService.findAll(query);
   }
   @Get(':id')
+  @NoCache()
   async getClassificationHistory(@Param('id') _id: string): Promise<ClassificationHistory[]> {
     return await this.classificationHistoryService.findOne(_id);
   }

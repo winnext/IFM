@@ -38,14 +38,17 @@ let MessagebrokerController = class MessagebrokerController {
     async operationListener(message) {
         switch (message.key) {
             case path_enum_1.PathEnums.FACILITY:
+                console.log('facility history topic');
                 const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
                 await this.facilityHistoryService.create(facilityHistory);
                 break;
             case path_enum_1.PathEnums.CLASSIFICATION:
+                console.log('Classification history topic');
                 const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
                 await this.classificationHistoryService.create(classificationHistory);
                 break;
             case path_enum_1.PathEnums.STRUCTURE:
+                console.log('facility structure history topic');
                 const facilityStructureHistory = { facilityStructure: message.value.responseBody, user: message.value.user };
                 await this.facilityStructureHistoryService.create(facilityStructureHistory);
                 console.log('structure topic added');
@@ -71,7 +74,6 @@ __decorate([
     __metadata("design:returntype", Object)
 ], MessagebrokerController.prototype, "loggerListener", null);
 __decorate([
-    (0, nestjs_otel_1.Span)('deneme'),
     (0, microservices_1.EventPattern)(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION),
     __param(0, (0, microservices_1.Payload)()),
     __metadata("design:type", Function),

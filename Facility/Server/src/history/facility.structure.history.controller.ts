@@ -19,6 +19,7 @@ export class FacilityStructureHistoryController {
   }
 
   @Get(':id')
+  @NoCache()
   async getFacilityHistory(@Param('id') _id: string): Promise<FacilityStructureHistory[]> {
     return await this.facilityStructureHistoryService.findOne(_id);
   }

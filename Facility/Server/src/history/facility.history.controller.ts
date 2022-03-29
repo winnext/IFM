@@ -21,6 +21,7 @@ export class FacilityHistoryController {
   }
 
   @Get(':id')
+  @NoCache()
   async getFacilityHistory(@Param('id') _id: string): Promise<ClassificationHistory[]> {
     return await this.facilityHistoryService.findOne(_id);
   }
