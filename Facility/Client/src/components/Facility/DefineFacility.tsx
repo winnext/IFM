@@ -96,11 +96,11 @@ const DefineFacility = ({
 
   const [classifications, setClassifications] = useState<Node[]>([]);
   const [addresses, setAddresses] = useState<Address[]>(facility.address);
-
-  const facility_classfication =
+  const [facility_classfication, setFacility_classfication] = useState(
     facility.classifications[0].classificationId !== ""
       ? facility.classifications[0].classificationId
-      : process.env.REACT_APP_FACILITY_CLASSIFICATION || "";
+      : process.env.REACT_APP_FACILITY_CLASSIFICATION || ""
+  );
 
   useEffect(() => {
     ClassificationsService.findOne(facility_classfication)
@@ -108,15 +108,18 @@ const DefineFacility = ({
         setClassifications([res.data.detail.root]);
       })
       .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: "Facility Classification not found",
-          life: 4000,
-        });
+        // toast.current.show({
+        //   severity: "error",
+        //   summary: "Error",
+        //   detail: "Facility Classification not found",
+        //   life: 4000,
+        // });
+        setFacility_classfication(
+          process.env.REACT_APP_FACILITY_CLASSIFICATION || ""
+        );
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [facility_classfication]);
 
   useEffect(() => {
     if (submitted) {
@@ -284,14 +287,14 @@ const DefineFacility = ({
                 ></TreeSelect>
                 {field.value && (
                   <i
-                    onClick={(e)=>{
-                      e.preventDefault()
-                      field.onChange(undefined)
+                    onClick={(e) => {
+                      e.preventDefault();
+                      field.onChange(undefined);
                     }}
                     className="p-dropdown-clear-icon pi pi-times"
                     style={{
                       right: "2.357rem",
-                      opacity:0.8,
+                      opacity: 0.8,
                       cursor: "pointer",
                     }}
                   ></i>
