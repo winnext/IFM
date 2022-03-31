@@ -6,6 +6,8 @@ export class CreateFacilityStructureDto {
   @IsObject()
   @IsOptional()
   structure: object;
+
+  
   @ApiProperty()
   @IsNotEmpty()
   facility_id: string;
