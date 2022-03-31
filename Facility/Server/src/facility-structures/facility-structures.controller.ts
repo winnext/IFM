@@ -3,7 +3,7 @@ import { FacilityStructuresService } from './facility-structures.service';
 import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
 import { Roles, Unprotected } from 'nest-keycloak-connect';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { FacilityUserRoles } from 'src/common/const/keycloak.role.enum';
 @ApiTags('structure')
@@ -11,9 +11,15 @@ import { FacilityUserRoles } from 'src/common/const/keycloak.role.enum';
 @Controller('structure')
 export class FacilityStructuresController {
   constructor(private readonly facilityStructuresService: FacilityStructuresService) {}
+
   @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @ApiBody({
+    type: CreateFacilityStructureDto,
+    description: 'create  facility structure',
+  })
   @Post()
   create(@Body() createFacilityStructureDto: CreateFacilityStructureDto) {
+    console.log(createFacilityStructureDto.structure);
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }
 
