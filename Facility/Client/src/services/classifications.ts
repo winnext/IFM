@@ -25,6 +25,7 @@ interface Node {
   name: string;
   code: string;
   selectable: boolean;
+  parent?: string;
   children: Node[];
 }
 
