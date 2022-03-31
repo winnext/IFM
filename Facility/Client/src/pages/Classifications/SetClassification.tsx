@@ -15,7 +15,7 @@ interface ClassificationInterface {
   name: string;
   code: string;
   detail: {
-    root:Node
+    root: Node
   };
   __v?: number;
 }
@@ -26,12 +26,13 @@ interface Node {
   name: string;
   code: string;
   selectable: boolean;
+  parent?: string;
   children: Node[];
 }
 
 const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [classification, setClassification] = useState<ClassificationInterface>({
     _id: "",
     name: "",
@@ -43,6 +44,7 @@ const SetClassification = () => {
         name: "",
         code: "",
         selectable: true,
+        parent: "",
         children: [],
       },
     },
@@ -72,7 +74,7 @@ const SetClassification = () => {
       icon: "pi pi-pencil",
       command: () => {
         const node = findNode(selectedNodeKey, data);
-        if(node){
+        if (node) {
           setName(node.node.name);
           setCode(node.node.code);
         }
@@ -88,28 +90,28 @@ const SetClassification = () => {
     },
   ];
 
-  const getClassification = ()=>{
+  const getClassification = () => {
     const id = params.id || "";
     ClassificationsService.findOne(id).then((res) => {
       setClassification(res.data);
       setData([res.data.detail.root] || []);
       setLoading(false);
-    }).catch(err=>{
+    }).catch(err => {
       toast.current.show({
         severity: "error",
         summary: "Error",
         detail: err.response ? err.response.data.message : err.message,
         life: 2000,
       });
-      setTimeout(()=>{
+      setTimeout(() => {
         navigate("/classifications")
-      },2000)
+      }, 2000)
     })
   }
 
   useEffect(() => {
     getClassification();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const findNodeAndAddItem = (
@@ -122,6 +124,7 @@ const SetClassification = () => {
         const newNode = {
           key: uuidv4(),
           label: code + " : " + name,
+          parent: node.key,
           name: name,
           code: code,
           selectable: false,
@@ -202,7 +205,7 @@ const SetClassification = () => {
     setAddDia(false);
   };
 
-  const saveItem = (key:string) => {
+  const saveItem = (key: string) => {
     const temp = JSON.parse(JSON.stringify(data));
     findNodeAndChangeItem(key, temp);
     setData(temp);
@@ -231,7 +234,7 @@ const SetClassification = () => {
             life: 2000,
           });
         });
-        return
+      return
     }
     var temp: Node[] = JSON.parse(JSON.stringify(data));
     temp = temp.filter((node) => node.key !== key);
@@ -247,7 +250,7 @@ const SetClassification = () => {
       code: temp[0].code,
       name: temp[0].name,
       detail: {
-        root:{
+        root: {
           ...classification.detail.root,
           code: temp[0].code,
           name: temp[0].name,
@@ -327,11 +330,11 @@ const SetClassification = () => {
     );
   };
 
-  if(loading){
+  if (loading) {
     return <div>
       <Toast ref={toast} position="top-right" />
       Loading...
-      </div>
+    </div>
   }
 
   return (
@@ -410,7 +413,7 @@ const SetClassification = () => {
           }
           onContextMenu={(event) => cm.current.show(event.originalEvent)}
           onDragDrop={(event: any) => {
-            if(event.value.length > 1){
+            if (event.value.length > 1) {
               toast.current.show({
                 severity: "error",
                 summary: "Error",
@@ -419,6 +422,7 @@ const SetClassification = () => {
               });
               return
             }
+            event.dragNode.parent = event.dropNode.key
             setData(event.value);
           }}
           filter
@@ -427,7 +431,9 @@ const SetClassification = () => {
         />
       </div>
       <div className="field">
-        <Button className="p-button-success" onClick={saveTree}>
+        <Button className="p-button-success"
+          onClick={saveTree}
+        >
           Save
         </Button>
       </div>
