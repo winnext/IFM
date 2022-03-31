@@ -123,19 +123,6 @@ __decorate([
             },
         },
     }),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
-    (0, swagger_1.ApiConsumes)('multipart/form-data'),
-    (0, swagger_1.ApiBody)({
-        schema: {
-            type: 'object',
-            properties: {
-                file: {
-                    type: 'string',
-                    format: 'binary',
-                },
-            },
-        },
-    }),
     (0, common_1.Post)('createfacilities'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
         storage: (0, multer_1.diskStorage)({ destination: './upload' }),

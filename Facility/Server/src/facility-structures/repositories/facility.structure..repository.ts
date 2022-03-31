@@ -14,7 +14,6 @@ import { FacilityStructure } from '../entities/facility-structure.entity';
 export class FacilityStructureRepository implements BaseInterfaceRepository<FacilityStructure> {
   constructor(
     @InjectModel(FacilityStructure.name) private readonly facilityStructureModel: Model<FacilityStructure>,
-    @InjectModel(Facility.name) private readonly facilityModel: Model<Facility>,
   ) {}
   findWithRelations(relations: any): Promise<FacilityStructure[]> {
     throw new Error(relations);
@@ -22,7 +21,6 @@ export class FacilityStructureRepository implements BaseInterfaceRepository<Faci
   async findOneById(id: string): Promise<FacilityStructure> {
     const facilityStructure = await this.facilityStructureModel
       .findById({ _id: id })
-      .populate('facility_id', '', this.facilityModel)
       .exec();
     if (!facilityStructure) {
       throw new FacilityNotFountException(id);

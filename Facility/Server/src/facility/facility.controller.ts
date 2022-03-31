@@ -94,19 +94,6 @@ export class FacilityController {
       },
     },
   })
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
   @Post('createfacilities')
   @UseInterceptors(
     FileInterceptor('file', {

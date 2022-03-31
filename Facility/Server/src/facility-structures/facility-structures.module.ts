@@ -17,10 +17,6 @@ import { FacilityStructuresController } from './facility-structures.controller';
           name: FacilityStructure.name,
           schema: FaciliyStructureSchema,
         },
-        {
-          name: Facility.name,
-          schema: FaciliySchema,
-        },
       ],
       ConnectionEnums.FACILITY,
     ),
