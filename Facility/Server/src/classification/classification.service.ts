@@ -30,7 +30,7 @@ export class ClassificationService {
   @Span('find a classification by id')
   @OtelMethodCounter()
   async findOne(id: string) {
-    checkObjectIddİsValid(id);
+    //checkObjectIddİsValid(id);
     return await this.classificationRepository.findOneById(id);
   }
 

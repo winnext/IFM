@@ -31,7 +31,6 @@ let ClassificationService = class ClassificationService {
         return await this.classificationRepository.findAll(query);
     }
     async findOne(id) {
-        (0, objectId_check_1.checkObjectIddİsValid)(id);
         return await this.classificationRepository.findOneById(id);
     }
     async update(id, updateClassificationDto) {

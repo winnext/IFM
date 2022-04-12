@@ -27,6 +27,7 @@ const redisStore = require("cache-manager-redis-store");
 const http_cache_interceptor_1 = require("./common/interceptors/http.cache.interceptor");
 const trace_logger_module_1 = require("./trace_logger/trace.logger.module");
 const opentelemetry_options_1 = require("./common/configs/opentelemetry.options");
+const dist_1 = require("nest-neo4j/dist");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -81,6 +82,13 @@ AppModule = __decorate([
                     pass: config.get('DB_PASS'),
                 }),
                 inject: [config_1.ConfigService],
+            }),
+            dist_1.Neo4jModule.forRoot({
+                scheme: 'neo4j',
+                host: '172.19.99.120',
+                port: 7687,
+                username: 'neo4j',
+                password: 'password',
             }),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,

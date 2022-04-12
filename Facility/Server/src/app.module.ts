@@ -18,6 +18,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
+import { Neo4jModule } from 'nest-neo4j/dist';
 
 
 
@@ -76,7 +77,13 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
       }),
       inject: [ConfigService],
     }),
-
+    Neo4jModule.forRoot({
+      scheme: 'neo4j',
+      host: '172.19.99.120',
+      port: 7687,
+      username: 'neo4j',
+      password: 'password',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
