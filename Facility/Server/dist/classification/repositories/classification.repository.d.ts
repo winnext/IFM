@@ -10,7 +10,9 @@ export declare class ClassificationRepository implements BaseInterfaceRepository
     private readonly classificationModel;
     constructor(neo4jService: Neo4jService, classificationModel: Model<Classification>);
     findWithRelations(relations: any): Promise<Classification[]>;
-    findOneById(id: string): Promise<any>;
+    findOneById(id: string): Promise<{
+        root: any;
+    }>;
     getHello(): Promise<any>;
     findAll(data: PaginationParams): Promise<any[]>;
     create(createClassificationDto: CreateClassificationDto): Promise<Classification & {

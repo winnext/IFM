@@ -30,8 +30,8 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     if (!result) {
       throw new ClassificationNotFountException(id);
     } 
-    
-    return result["records"][0]["_fields"];
+    let o = {"root":result["records"][0]["_fields"]};
+    return o;
   }
 
   // Test Amaçlı //////

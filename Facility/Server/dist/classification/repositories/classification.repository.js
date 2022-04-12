@@ -35,7 +35,8 @@ let ClassificationRepository = class ClassificationRepository {
         if (!result) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(id);
         }
-        return result["records"][0]["_fields"];
+        let o = { "root": result["records"][0]["_fields"] };
+        return o;
     }
     async getHello() {
         const res = await this.neo4jService.read(`MATCH (c:Omni11)-[r:ChildOf]->(p:Omni11) RETURN p,r,c`);
