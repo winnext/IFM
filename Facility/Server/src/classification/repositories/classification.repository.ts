@@ -58,7 +58,8 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     const count = await this.neo4jService.read(
       `MATCH (c) where c.code in ['11-00-00-00','12-00-00-00'] RETURN count(c)`,
     );
-    let coun = parseInt(count.toString());
+    //console.log(count["records"][0]["length"]);
+    let coun = count["records"][0]["length"];
     const pagecount = Math.ceil(coun / limit);
     let pg = parseInt(page.toString());
     const lmt = parseInt(limit.toString());
