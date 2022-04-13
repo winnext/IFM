@@ -28,15 +28,23 @@ let ClassificationRepository = class ClassificationRepository {
         throw new Error(relations);
     }
     async findOneById(id) {
-        const result = await this.neo4jService.read("MATCH p=(n)-[:CHILDREN*]->(m) where id(n)=" + id + " \
+        let result = await this.neo4jService.read("MATCH p=(n)-[:CHILDREN*]->(m) where id(n)=" + id + " \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value;");
+        var x = result["records"][0]["_fields"][0];
         if (!result) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(id);
         }
-        let o = { "root": result["records"][0]["_fields"] };
-        return o;
+        else if (Object.keys(x).length === 0) {
+            result = await this.neo4jService.read("MATCH (n) where id(n) = " + id + " return n");
+            let o = { "root": result["records"][0]["_fields"] };
+            return o;
+        }
+        else {
+            let o = { "root": result["records"][0]["_fields"] };
+            return o;
+        }
     }
     async getHello() {
         const res = await this.neo4jService.read(`MATCH (c:Omni11)-[r:ChildOf]->(p:Omni11) RETURN p,r,c`);
@@ -55,7 +63,7 @@ let ClassificationRepository = class ClassificationRepository {
         limit = limit || 5;
         orderBy = orderBy || 'DESC';
         orderByColumn = orderByColumn || 'name';
-        const count = await this.neo4jService.read(`MATCH (c) where c.hasPArent = false RETURN count(c)`);
+        const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false RETURN count(c)`);
         let coun = count["records"][0]["length"];
         const pagecount = Math.ceil(coun / limit);
         let pg = parseInt(page.toString());
@@ -70,7 +78,7 @@ let ClassificationRepository = class ClassificationRepository {
                 skip = 0;
             }
         }
-        const result = await this.neo4jService.read("MATCH (x) where x.hasPArent = false return x ORDER BY x." + orderByColumn + " " + orderBy + " SKIP " + skip + " LIMIT " + limit + " ;");
+        const result = await this.neo4jService.read("MATCH (x) where x.hasParent = false return x ORDER BY x." + orderByColumn + " " + orderBy + " SKIP " + skip + " LIMIT " + limit + " ;");
         let arr = [];
         for (let i = 0; i < result["records"].length; i++) {
             arr.push(result["records"][i]["_fields"][0]);

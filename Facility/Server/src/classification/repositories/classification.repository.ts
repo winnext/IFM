@@ -21,17 +21,28 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     throw new Error(relations);
   }
   async findOneById(id: string) {
-    const result = await this.neo4jService.read(
+    let result = await this.neo4jService.read(
       "MATCH p=(n)-[:CHILDREN*]->(m) where id(n)="+id+" \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value;",
     );
+    var x = result["records"][0]["_fields"][0];
     if (!result) {
       throw new ClassificationNotFountException(id);
     } 
-    let o = {"root":result["records"][0]["_fields"]};
-    return o;
+    else if (Object.keys(x).length  === 0) {
+       result = await this.neo4jService.read(
+        "MATCH (n) where id(n) = "+id+" return n",
+      );
+      let o = {"root":result["records"][0]["_fields"]};
+      return o;
+    }
+    else {
+      let o = {"root":result["records"][0]["_fields"]};
+      return o;
+    }
+
   }
 
   // Test Amaçlı //////
