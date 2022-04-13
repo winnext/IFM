@@ -56,7 +56,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
 
     orderByColumn = orderByColumn || 'name';
     const count = await this.neo4jService.read(
-      `MATCH (c) where c.hasPArent = false RETURN count(c)`,
+      `MATCH (c) where c.hasParent = false RETURN count(c)`,
     );
     //console.log(count["records"][0]["length"]);
     let coun = count["records"][0]["length"];
@@ -75,7 +75,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     }
 
     const result = await this.neo4jService.read(
-      "MATCH (x) where x.hasPArent = false return x ORDER BY x."+orderByColumn+ " "+orderBy+" SKIP "+skip+" LIMIT "+limit+" ;",
+      "MATCH (x) where x.hasParent = false return x ORDER BY x."+orderByColumn+ " "+orderBy+" SKIP "+skip+" LIMIT "+limit+" ;",
     );
     let arr = [];
     for (let i=0; i<result["records"].length; i++) {
