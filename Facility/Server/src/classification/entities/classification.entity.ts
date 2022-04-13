@@ -1,51 +1,19 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-export type ClassificationDocument = Classification & Document;
 
-@Schema()
-export class Classification extends Document {
-  @Prop({
-    type: String,
-    default: function genUUID() {
-      return uuidv4();
-    },
-  })
-  uuid: string;
-
-  @Prop()
+export class Classification {
+  
+  key: string =  generateUuid();
   code: string;
-
-  @Prop()
   name: string;
-
-  @Prop({
-    type: String,
-    default: function getClassName() {
-      return Classification.name;
-    },
-  })
-  class_name: string;
-
-  @Prop({ type: Object })
-  detail: object;
-
-  @Prop({
-    type: Date,
-    default: function genDate() {
-      return new Date();
-    },
-  })
-  createdAt: Date;
-
-  @Prop({
-    type: Date,
-    default: function genDate() {
-      return new Date();
-    },
-  })
-  updatedAt: Date;
+  label: string[];
+  createdAt: Date = new Date();
+  updatedAt: Date = new Date();
 }
 
-export const ClassificationSchema = SchemaFactory.createForClass(Classification);
+function generateUuid() {
+    return uuidv4()
+}
+
+export const ClassificationSchema = SchemaFactory.createForClass(Classification);  //Silinecek

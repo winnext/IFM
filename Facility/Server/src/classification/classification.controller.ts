@@ -15,7 +15,8 @@ export class ClassificationController {
   constructor(private readonly classificationService: ClassificationService) {}
 
   @Post()
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  //@Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Unprotected()
   create(@Body() createClassificationDto: CreateClassificationDto) {
     return this.classificationService.create(createClassificationDto);
   }

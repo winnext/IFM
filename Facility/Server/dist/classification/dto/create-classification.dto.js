@@ -25,13 +25,33 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(1, 50),
+    (0, class_validator_1.Length)(1, 200),
     __metadata("design:type", String)
 ], CreateClassificationDto.prototype, "name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
-], CreateClassificationDto.prototype, "detail", void 0);
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Length)(1, 200),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateClassificationDto.prototype, "key", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Array)
+], CreateClassificationDto.prototype, "label", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateClassificationDto.prototype, "parent_id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Length)(1, 50),
+    __metadata("design:type", String)
+], CreateClassificationDto.prototype, "labelclass", void 0);
 exports.CreateClassificationDto = CreateClassificationDto;
 //# sourceMappingURL=create-classification.dto.js.map

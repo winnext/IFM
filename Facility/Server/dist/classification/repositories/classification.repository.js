@@ -82,8 +82,31 @@ let ClassificationRepository = class ClassificationRepository {
         return classification;
     }
     async create(createClassificationDto) {
-        const classification = new this.classificationModel(createClassificationDto);
-        return await classification.save();
+        const classification = new classification_entity_1.Classification();
+        classification.name = createClassificationDto.name;
+        classification.code = createClassificationDto.code;
+        if (createClassificationDto.key) {
+            classification.key = createClassificationDto.key;
+        }
+        if (createClassificationDto.parent_id) {
+            let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
+                "',code:'" + classification.code + "',key:'" + classification.key + "'})";
+            a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
+            let result = await this.neo4jService.write(a);
+            let b = "match (x:" + createClassificationDto.labelclass + " {code: '" + classification.code + "'})" +
+                " match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id +
+                " create (x)-[:CHILD_OF]->(y)";
+            console.log("*************************************************" + b);
+            result = await this.neo4jService.write(b);
+            return new classification_entity_1.Classification;
+        }
+        else {
+            let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
+                classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "'})";
+            ;
+            const result = await this.neo4jService.write(a);
+            return new classification_entity_1.Classification;
+        }
     }
     async update(_id, updateClassificationto) {
         const updatedFacility = await this.classificationModel

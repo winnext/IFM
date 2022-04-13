@@ -1,15 +1,13 @@
 /// <reference types="mongoose/types/PipelineStage" />
 /// <reference types="mongoose/types/Error" />
 /// <reference types="mongoose/types/Connection" />
-import { Document } from 'mongoose';
-export declare type ClassificationDocument = Classification & Document;
-export declare class Classification extends Document {
-    uuid: string;
+/// <reference types="mongoose" />
+export declare class Classification {
+    key: string;
     code: string;
     name: string;
-    class_name: string;
-    detail: object;
+    label: string[];
     createdAt: Date;
     updatedAt: Date;
 }
-export declare const ClassificationSchema: import("mongoose").Schema<Classification, import("mongoose").Model<Classification, any, any, any>, any, any>;
+export declare const ClassificationSchema: import("mongoose").Schema<import("mongoose").Document<Classification, any, any>, import("mongoose").Model<import("mongoose").Document<Classification, any, any>, any, any, any>, any, any>;

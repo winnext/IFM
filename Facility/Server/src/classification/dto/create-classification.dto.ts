@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateClassificationDto {
   @ApiProperty()
@@ -11,10 +11,27 @@ export class CreateClassificationDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @Length(1, 50)
+  @Length(1, 200)
   name: string;
 
   @ApiProperty()
-  @IsObject()
-  detail: object;
+  @IsString()
+  @Length(1, 200)
+  @IsOptional()
+  key: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  label: string[];
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  parent_id: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Length(1, 50)
+  labelclass: string;
 }
