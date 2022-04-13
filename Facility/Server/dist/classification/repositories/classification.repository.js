@@ -55,7 +55,7 @@ let ClassificationRepository = class ClassificationRepository {
         limit = limit || 5;
         orderBy = orderBy || 'DESC';
         orderByColumn = orderByColumn || 'name';
-        const count = await this.neo4jService.read(`MATCH (c) where c.code in ['11-00-00-00','12-00-00-00'] RETURN count(c)`);
+        const count = await this.neo4jService.read(`MATCH (c) where c.hasPArent = false RETURN count(c)`);
         let coun = count["records"][0]["length"];
         const pagecount = Math.ceil(coun / limit);
         let pg = parseInt(page.toString());
@@ -70,7 +70,7 @@ let ClassificationRepository = class ClassificationRepository {
                 skip = 0;
             }
         }
-        const result = await this.neo4jService.read("MATCH (x) where x.code in ['11-00-00-00','12-00-00-00'] return x ORDER BY x." + orderByColumn + " " + orderBy + " SKIP " + skip + " LIMIT " + limit + " ;");
+        const result = await this.neo4jService.read("MATCH (x) where x.hasPArent = false return x ORDER BY x." + orderByColumn + " " + orderBy + " SKIP " + skip + " LIMIT " + limit + " ;");
         let arr = [];
         for (let i = 0; i < result["records"].length; i++) {
             arr.push(result["records"][i]["_fields"][0]);
@@ -90,19 +90,19 @@ let ClassificationRepository = class ClassificationRepository {
         }
         if (createClassificationDto.parent_id) {
             let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
-                "',code:'" + classification.code + "',key:'" + classification.key + "'})";
+                "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent + "})";
             a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
             let result = await this.neo4jService.write(a);
             let b = "match (x:" + createClassificationDto.labelclass + " {code: '" + classification.code + "'})" +
                 " match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id +
                 " create (x)-[:CHILD_OF]->(y)";
-            console.log("*************************************************" + b);
             result = await this.neo4jService.write(b);
             return new classification_entity_1.Classification;
         }
         else {
+            classification.hasParent = false;
             let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
-                classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "'})";
+                classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent + "})";
             ;
             const result = await this.neo4jService.write(a);
             return new classification_entity_1.Classification;

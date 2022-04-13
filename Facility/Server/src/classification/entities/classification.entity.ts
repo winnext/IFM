@@ -10,6 +10,7 @@ export class Classification {
   label: string[];
   createdAt: Date = new Date();
   updatedAt: Date = new Date();
+  hasParent: Boolean = true;
 }
 
 function generateUuid() {

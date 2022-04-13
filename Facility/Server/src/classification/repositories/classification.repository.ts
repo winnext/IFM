@@ -56,7 +56,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
 
     orderByColumn = orderByColumn || 'name';
     const count = await this.neo4jService.read(
-      `MATCH (c) where c.code in ['11-00-00-00','12-00-00-00'] RETURN count(c)`,
+      `MATCH (c) where c.hasPArent = false RETURN count(c)`,
     );
     //console.log(count["records"][0]["length"]);
     let coun = count["records"][0]["length"];
@@ -75,7 +75,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     }
 
     const result = await this.neo4jService.read(
-      "MATCH (x) where x.code in ['11-00-00-00','12-00-00-00'] return x ORDER BY x."+orderByColumn+ " "+orderBy+" SKIP "+skip+" LIMIT "+limit+" ;",
+      "MATCH (x) where x.hasPArent = false return x ORDER BY x."+orderByColumn+ " "+orderBy+" SKIP "+skip+" LIMIT "+limit+" ;",
     );
     let arr = [];
     for (let i=0; i<result["records"].length; i++) {
@@ -98,7 +98,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     if (createClassificationDto.parent_id) {
 
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
-                                       "',code:'"+classification.code+"',key:'"+classification.key+"'})";
+                                       "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+"})";
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
         a
@@ -112,8 +112,9 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
       return new Classification;
     }
     else {
+       classification.hasParent = false;
        let a = "CREATE (x:"+createClassificationDto.labelclass+" {name:'"+
-                     classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"'})";;
+                     classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+"})";;
          const result = await this.neo4jService.write(
          a
       );

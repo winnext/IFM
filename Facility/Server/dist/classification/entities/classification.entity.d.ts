@@ -9,5 +9,6 @@ export declare class Classification {
     label: string[];
     createdAt: Date;
     updatedAt: Date;
+    hasParent: Boolean;
 }
 export declare const ClassificationSchema: import("mongoose").Schema<import("mongoose").Document<Classification, any, any>, import("mongoose").Model<import("mongoose").Document<Classification, any, any>, any, any, any>, any, any>;

@@ -8,6 +8,7 @@ class Classification {
         this.key = generateUuid();
         this.createdAt = new Date();
         this.updatedAt = new Date();
+        this.hasParent = true;
     }
 }
 exports.Classification = Classification;
