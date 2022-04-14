@@ -68,11 +68,6 @@ import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception'
     HistoryModule,
   ],
   providers: [
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
-
     //to cache all get request
     {
       provide: APP_INTERCEPTOR,

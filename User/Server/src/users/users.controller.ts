@@ -11,9 +11,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './users.service';
 import { UpdateUserInterceptor } from './interceptors/update.user.interceptor';
 import { MongoExceptionFilter } from 'src/common/exceptionFilters/mongo.exception';
+import { HttpExceptionFilter } from 'src/common/exceptionFilters/exception.filter';
 
 @ApiTags('User')
 @Controller('user')
+@UseFilters(MongoExceptionFilter, HttpExceptionFilter)
 //@ApiBearerAuth('JWT-auth')
 export class UserController {
   constructor(private readonly userService: UserService) {}
