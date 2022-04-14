@@ -8,8 +8,8 @@ export declare class Classification {
     name: string;
     tag: string[];
     label: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     hasParent: Boolean;
 }
 export declare const ClassificationSchema: import("mongoose").Schema<import("mongoose").Document<Classification, any, any>, import("mongoose").Model<import("mongoose").Document<Classification, any, any>, any, any, any>, any, any>;

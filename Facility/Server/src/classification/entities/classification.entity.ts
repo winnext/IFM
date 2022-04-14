@@ -1,6 +1,6 @@
 import { SchemaFactory } from '@nestjs/mongoose';
 import { v4 as uuidv4 } from 'uuid';
-
+import * as moment from 'moment'
 
 export class Classification {
   
@@ -9,8 +9,8 @@ export class Classification {
   name: string;
   tag: string[];
   label: string;
-  createdAt: Date = new Date();
-  updatedAt: Date = new Date();
+  createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss');
+  updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss');
   hasParent: Boolean = true;
 }
 

@@ -98,13 +98,11 @@ let ClassificationRepository = class ClassificationRepository {
             classification.key = createClassificationDto.key;
         }
         classification.tag = createClassificationDto.tag;
-        let createdDate = classification.createdAt.toString();
-        let updatedDate = classification.updatedAt.toString();
         if (createClassificationDto.parent_id) {
             let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
                 "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
                 ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
-                "', createdAt:" + createdDate + ", updatedAt:" + updatedDate + "})";
+                "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
             let result = await this.neo4jService.write(a);
             let b = "match (x:" + createClassificationDto.labelclass + " {code: '" + classification.code + "'})" +
@@ -118,7 +116,7 @@ let ClassificationRepository = class ClassificationRepository {
             let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
                 classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
                 ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
-                "', createdAt:" + createdDate + ", updatedAt:" + updatedDate + "})";
+                "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             const result = await this.neo4jService.write(a);
             return new classification_entity_1.Classification;
         }

@@ -52,6 +52,7 @@
     "joi": "^17.6.0",
     "kafkajs": "^1.16.0",
     "keycloak-connect": "^15.1.1",
+    "moment": "^2.29.2",
     "mongoose": "^6.2.1",
     "nest-keycloak-connect": "^1.8.1",
     "nest-neo4j": "^0.1.5",

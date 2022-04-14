@@ -111,14 +111,11 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      }  
      classification.tag = createClassificationDto.tag;
      
-     let createdDate = neo4j_types.Date.fromStandardDate(classification.createdAt);
-     let updatedDate = neo4j_types.Date.fromStandardDate(classification.updatedAt);
-
     if (createClassificationDto.parent_id) {
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
                                        "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+
                                        ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
-                                       "', createdAt:"+createdDate+", updatedAt:"+updatedDate+"})";
+                                       "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
         a
@@ -136,7 +133,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
        let a = "CREATE (x:"+createClassificationDto.labelclass+" {name:'"+
                      classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+
                      ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
-                     "', createdAt:"+createdDate+", updatedAt:"+updatedDate+"})";
+                     "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
                      
          const result = await this.neo4jService.write(
          a
