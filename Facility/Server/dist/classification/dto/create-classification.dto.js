@@ -37,9 +37,9 @@ __decorate([
 ], CreateClassificationDto.prototype, "key", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
-], CreateClassificationDto.prototype, "label", void 0);
+], CreateClassificationDto.prototype, "tag", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNumber)(),

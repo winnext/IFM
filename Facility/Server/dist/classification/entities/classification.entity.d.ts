@@ -6,7 +6,8 @@ export declare class Classification {
     key: string;
     code: string;
     name: string;
-    label: string[];
+    tag: string[];
+    label: string;
     createdAt: Date;
     updatedAt: Date;
     hasParent: Boolean;

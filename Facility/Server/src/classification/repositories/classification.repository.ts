@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { types } from 'joi';
 import { Model } from 'mongoose';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
@@ -7,6 +8,7 @@ import { ClassificationNotFountException } from 'src/common/notFoundExceptions/f
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
+import {types as neo4j_types, DateTime}  from 'neo4j-driver';
 
 import { Classification } from '../entities/classification.entity';
 
@@ -109,12 +111,14 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      }  
      classification.tag = createClassificationDto.tag;
      
+     let createdDate = neo4j_types.Date.fromStandardDate(classification.createdAt);
+     let updatedDate = neo4j_types.Date.fromStandardDate(classification.updatedAt);
 
     if (createClassificationDto.parent_id) {
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
                                        "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+
-                                       ", tag:"+classification.tag+",label:"+classification.label+
-                                       ". createdAt:"+classification.createdAt+", updatedAt:"+classification.updatedAt+"})";
+                                       ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
+                                       "', createdAt:"+createdDate+", updatedAt:"+updatedDate+"})";
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
         a
@@ -131,8 +135,8 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
        classification.hasParent = false;
        let a = "CREATE (x:"+createClassificationDto.labelclass+" {name:'"+
                      classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+
-                     ", tag:"+classification.tag+",label:"+classification.label+
-                     ". createdAt:"+classification.createdAt+", updatedAt:"+classification.updatedAt+"})";
+                     ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
+                     "', createdAt:"+createdDate+", updatedAt:"+updatedDate+"})";
                      
          const result = await this.neo4jService.write(
          a

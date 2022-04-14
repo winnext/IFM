@@ -93,12 +93,18 @@ let ClassificationRepository = class ClassificationRepository {
         const classification = new classification_entity_1.Classification();
         classification.name = createClassificationDto.name;
         classification.code = createClassificationDto.code;
+        classification.label = classification.code + ' . ' + classification.name;
         if (createClassificationDto.key) {
             classification.key = createClassificationDto.key;
         }
+        classification.tag = createClassificationDto.tag;
+        let createdDate = classification.createdAt.toString();
+        let updatedDate = classification.updatedAt.toString();
         if (createClassificationDto.parent_id) {
             let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
-                "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent + "})";
+                "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
+                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
+                "', createdAt:" + createdDate + ", updatedAt:" + updatedDate + "})";
             a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
             let result = await this.neo4jService.write(a);
             let b = "match (x:" + createClassificationDto.labelclass + " {code: '" + classification.code + "'})" +
@@ -110,8 +116,9 @@ let ClassificationRepository = class ClassificationRepository {
         else {
             classification.hasParent = false;
             let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
-                classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent + "})";
-            ;
+                classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
+                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
+                "', createdAt:" + createdDate + ", updatedAt:" + updatedDate + "})";
             const result = await this.neo4jService.write(a);
             return new classification_entity_1.Classification;
         }

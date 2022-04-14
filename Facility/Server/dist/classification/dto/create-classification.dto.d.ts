@@ -2,7 +2,7 @@ export declare class CreateClassificationDto {
     code: string;
     name: string;
     key: string;
-    label: string[];
+    tag: string[];
     parent_id: number;
     labelclass: string;
 }
