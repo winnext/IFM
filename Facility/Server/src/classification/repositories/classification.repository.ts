@@ -103,13 +103,18 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      const classification = new Classification();
      classification.name = createClassificationDto.name;
      classification.code = createClassificationDto.code;
+     classification.label = classification.code+' . '+classification.name;
      if (createClassificationDto.key) {
        classification.key = createClassificationDto.key
      }  
-    if (createClassificationDto.parent_id) {
+     classification.tag = createClassificationDto.tag;
+     
 
+    if (createClassificationDto.parent_id) {
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
-                                       "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+"})";
+                                       "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+
+                                       ", tag:"+classification.tag+",label:"+classification.label+
+                                       ". createdAt:"+classification.createdAt+", updatedAt:"+classification.updatedAt+"})";
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
         a
@@ -125,7 +130,10 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     else {
        classification.hasParent = false;
        let a = "CREATE (x:"+createClassificationDto.labelclass+" {name:'"+
-                     classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+"})";;
+                     classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+
+                     ", tag:"+classification.tag+",label:"+classification.label+
+                     ". createdAt:"+classification.createdAt+", updatedAt:"+classification.updatedAt+"})";
+                     
          const result = await this.neo4jService.write(
          a
       );

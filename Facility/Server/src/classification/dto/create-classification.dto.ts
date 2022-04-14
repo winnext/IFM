@@ -21,9 +21,9 @@ export class CreateClassificationDto {
   key: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  label: string[];
-
+  @IsOptional()
+  tag: string[];
+  
   @ApiProperty()
   @IsNumber()
   @IsOptional()
