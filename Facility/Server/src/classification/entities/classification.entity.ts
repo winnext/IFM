@@ -12,6 +12,7 @@ export class Classification {
   createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss');
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss');
   hasParent: Boolean = true;
+  labelclass: string;
 }
 
 function generateUuid() {

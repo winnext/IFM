@@ -113,9 +113,9 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      
     if (createClassificationDto.parent_id) {
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
-                                       "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+
-                                       ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
-                                       "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
+                              "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+
+                              ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+"',labelclass:'"+classification.labelclass+
+                              "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
         a
@@ -132,7 +132,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
        classification.hasParent = false;
        let a = "CREATE (x:"+createClassificationDto.labelclass+" {name:'"+
                      classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+
-                     ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
+                     ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+"',labelclass:'"+classification.labelclass+
                      "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
                      
          const result = await this.neo4jService.write(
