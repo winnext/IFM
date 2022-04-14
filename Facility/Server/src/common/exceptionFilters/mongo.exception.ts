@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { MongoError } from 'mongodb';
 
-@Catch(MongoError)
+@Catch()
 export class MongoExceptionFilter implements ExceptionFilter {
   catch(exception: MongoError) {
     switch (exception.code) {
