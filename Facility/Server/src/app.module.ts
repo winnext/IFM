@@ -5,10 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { KeycloakModule } from './facility/keyclock.module';
 import { ClassificationModule } from './classification/classification.module';
 import { ConnectionEnums } from './common/const/connection.enum';
-import { I18nModule, I18nJsonParser } from 'nestjs-i18n';
-import * as path from 'path';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
+import { I18nModule } from 'nestjs-i18n';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
@@ -18,12 +16,11 @@ import * as redisStore from 'cache-manager-redis-store';
 import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
-
-
+import { i18nOptions } from './common/configs/i18n.options';
 
 @Module({
-  imports: [ 
-    OpenTelemetryModuleConfig, 
+  imports: [
+    OpenTelemetryModuleConfig,
     LoggerModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
@@ -43,17 +40,7 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
     }),
     FacilityModule,
     KeycloakModule,
-    I18nModule.forRoot({
-      fallbackLanguage: 'tr',
-      fallbacks: {
-        en: 'en',
-        tr: 'tr',
-      },
-      parser: I18nJsonParser,
-      parserOptions: {
-        path: path.join(__dirname, '/i18n/'),
-      },
-    }),
+    I18nModule.forRoot(i18nOptions(__dirname)),
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.FACILITY,
       useFactory: (config: ConfigService) => ({
@@ -95,12 +82,7 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
     HistoryModule,
   ],
   providers: [
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
     //to cache all get request
-
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpCacheInterceptor,

@@ -8,7 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoExceptionFilter = void 0;
 const common_1 = require("@nestjs/common");
-const mongodb_1 = require("mongodb");
 let MongoExceptionFilter = class MongoExceptionFilter {
     catch(exception) {
         switch (exception.code) {
@@ -26,7 +25,7 @@ let MongoExceptionFilter = class MongoExceptionFilter {
     }
 };
 MongoExceptionFilter = __decorate([
-    (0, common_1.Catch)(mongodb_1.MongoError)
+    (0, common_1.Catch)()
 ], MongoExceptionFilter);
 exports.MongoExceptionFilter = MongoExceptionFilter;
 //# sourceMappingURL=mongo.exception.js.map

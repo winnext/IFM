@@ -17,7 +17,6 @@ const connection_enum_1 = require("./common/const/connection.enum");
 const nestjs_i18n_1 = require("nestjs-i18n");
 const path = require("path");
 const core_1 = require("@nestjs/core");
-const exception_filter_1 = require("./common/exceptionFilters/exception.filter");
 const messagebroker_module_1 = require("./messagebroker/messagebroker.module");
 const Joi = require("joi");
 const platform_express_1 = require("@nestjs/platform-express");
@@ -96,10 +95,6 @@ AppModule = __decorate([
             history_module_1.HistoryModule,
         ],
         providers: [
-            {
-                provide: core_1.APP_FILTER,
-                useClass: exception_filter_1.HttpExceptionFilter,
-            },
             {
                 provide: core_1.APP_INTERCEPTOR,
                 useClass: http_cache_interceptor_1.HttpCacheInterceptor,
