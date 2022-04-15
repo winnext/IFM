@@ -124,9 +124,9 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
        let result = await this.neo4jService.write(
         a
       );
-      //await this.neo4jService.write(
-      //  "match (x:"+createClassificationDto.labelclass+" {key:'"+classification.key+"'}) set x.self_id = id(x)"
-      //);
+      await this.neo4jService.write(
+        "match (x:"+createClassificationDto.labelclass+" {key:'"+classification.key+"'}) set x.self_id = id(x)"
+      );
       let b = "match (x:"+createClassificationDto.labelclass+" {code: '"+classification.code+"'})"+
              " match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id +
              " create (x)-[:CHILD_OF]->(y)";
