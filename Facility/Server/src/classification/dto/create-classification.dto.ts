@@ -25,9 +25,9 @@ export class CreateClassificationDto {
   tag: string[];
   
   @ApiProperty()
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  parent_id: string;
+  parent_id: number;
 
   @ApiProperty()
   @IsNotEmpty()

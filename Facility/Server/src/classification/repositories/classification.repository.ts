@@ -106,10 +106,14 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      classification.name = createClassificationDto.name;
      classification.code = createClassificationDto.code;
      classification.label = classification.code+' . '+classification.name;
+     classification.labelclass = createClassificationDto.labelclass;
      if (createClassificationDto.key) {
        classification.key = createClassificationDto.key
+     }
+     if (createClassificationDto.tag) {
+      classification.tag = createClassificationDto.tag;
      }  
-     classification.tag = createClassificationDto.tag;
+     
      
     if (createClassificationDto.parent_id) {
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
