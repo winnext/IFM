@@ -104,7 +104,7 @@ let ClassificationRepository = class ClassificationRepository {
         if (createClassificationDto.parent_id) {
             let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
                 "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
-                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + ", labelclass='" + classification.labelclass +
+                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + "', labelclass:'" + classification.labelclass +
                 "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
             let result = await this.neo4jService.write(a);
@@ -119,7 +119,7 @@ let ClassificationRepository = class ClassificationRepository {
             classification.hasParent = false;
             let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
                 classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
-                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + ", labelclass='" + classification.labelclass +
+                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + "', labelclass:'" + classification.labelclass +
                 "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             const result = await this.neo4jService.write(a);
             await this.neo4jService.write("match (x:" + createClassificationDto.labelclass + " {key:'" + classification.key + "'}) set x.self_id = id(x)");
