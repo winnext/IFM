@@ -26,14 +26,6 @@ export class UserRepository implements BaseInterfaceRepository<User> {
     return user;
   }
 
-  async findOne(id: string): Promise<User> {
-    const user = await this.userModel.findById({ _id: id }).exec();
-    if (!user) {
-      throw new UserNotFountException(id);
-    }
-
-    return user;
-  }
   async findAll(data: PaginationParams) {
     let { page, limit } = data;
     page = page || 0;
@@ -78,7 +70,7 @@ export class UserRepository implements BaseInterfaceRepository<User> {
   }
   async update(_id: string, updateFacilityDto: UpdateUserDto) {
     const updatedUser = await this.userModel
-      .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
+      .findOneAndUpdate({ userId: _id }, { $set: updateFacilityDto }, { new: true })
       .exec();
 
     if (!updatedUser) {
@@ -88,7 +80,7 @@ export class UserRepository implements BaseInterfaceRepository<User> {
     return updatedUser;
   }
   async delete(_id: string) {
-    const user = await this.findOne(_id);
+    const user = await this.findOneById(_id);
     const deletedUser = await this.userModel.findOneAndRemove({ user });
     return deletedUser;
   }

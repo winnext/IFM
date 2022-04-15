@@ -6,6 +6,8 @@ export class MongoExceptionFilter implements ExceptionFilter {
   catch(exception: MongoError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+    console.log('--------This error from MONGO EXCEPTİPON FİLTER-----------');
+    console.log(exception);
 
     switch (exception.code) {
       case 112: // write conflict (when a transaction is failed)

@@ -6,11 +6,16 @@ import { LoggingInterceptor } from './common/interceptors/logger.interceptor';
 import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception';
 import { kafkaOptions } from './common/configs/message.broker.options';
 import trial from './tracing';
+import { I18nService } from 'nestjs-i18n';
+import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
 
 async function bootstrap() {
   try {
     await trial.start();
     const app = await NestFactory.create(AppModule, { abortOnError: false });
+
+    //to get i18nService from app module
+    const i18NService = app.get<I18nService>(I18nService);
 
     app.connectMicroservice(kafkaOptions);
 
@@ -36,6 +41,7 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
     app.useGlobalInterceptors(new LoggingInterceptor());
+    app.useGlobalFilters(new MongoExceptionFilter(), new HttpExceptionFilter(i18NService));
     app.enableCors();
     await app.startAllMicroservices();
     await app.listen(3002);

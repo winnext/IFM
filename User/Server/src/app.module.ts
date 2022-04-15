@@ -2,10 +2,8 @@ import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConnectionEnums } from './common/const/connection.enum';
-import { I18nModule, I18nJsonParser } from 'nestjs-i18n';
-import * as path from 'path';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
+import { I18nModule } from 'nestjs-i18n';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import * as redisStore from 'cache-manager-redis-store';
@@ -14,7 +12,7 @@ import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { UsersModule } from './users/users.module';
 import { HistoryModule } from './history/history.module';
-import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception';
+import { i18nOptions } from './common/configs/i18n.options';
 
 @Module({
   imports: [
@@ -32,22 +30,11 @@ import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception'
       }),
       inject: [ConfigService],
     }),
-    I18nModule.forRoot({
-      fallbackLanguage: 'tr',
-      fallbacks: {
-        en: 'en',
-        tr: 'tr',
-      },
-      parser: I18nJsonParser,
-      parserOptions: {
-        path: path.join(__dirname, '/i18n/'),
-      },
-    }),
+    I18nModule.forRoot(i18nOptions(__dirname)),
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.USER,
       useFactory: (config: ConfigService) => ({
         uri: config.get('DATABASE_LINK'),
-
         dbName: config.get('USER_DB_NAME'),
         user: config.get('DB_USER'),
         pass: config.get('DB_PASS'),
@@ -68,11 +55,6 @@ import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception'
     HistoryModule,
   ],
   providers: [
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
-
     //to cache all get request
     {
       provide: APP_INTERCEPTOR,

@@ -37,7 +37,6 @@ export class UserService {
   @Span('update a user')
   @OtelMethodCounter()
   async update(id: string, updateFacilityDto: UpdateUserDto) {
-    checkObjectIddİsValid(id);
     return this.userRepository.update(id, updateFacilityDto);
   }
 

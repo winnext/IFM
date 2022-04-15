@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
@@ -10,12 +10,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './users.service';
 import { UpdateUserInterceptor } from './interceptors/update.user.interceptor';
-import { MongoExceptionFilter } from 'src/common/exceptionFilters/mongo.exception';
-import { HttpExceptionFilter } from 'src/common/exceptionFilters/exception.filter';
-
 @ApiTags('User')
 @Controller('user')
-@UseFilters(MongoExceptionFilter, HttpExceptionFilter)
+
 //@ApiBearerAuth('JWT-auth')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -58,18 +55,18 @@ export class UserController {
     type: UpdateUserDto,
     description: 'update  User structure',
   })
-  @Patch('/:_id')
+  @Patch('/:userId')
   //@Roles({ roles: [UserRoles.ADMIN] })
   @UseInterceptors(UpdateUserInterceptor)
   @Unprotected()
-  update(@Param('_id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('userId') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
-  @Delete('/:_id')
+  @Delete('/:userId')
   //@Roles({ roles: [UserRoles.ADMIN] })
   @Unprotected()
-  deleteFacility(@Param('_id') id: string) {
+  deleteFacility(@Param('userId') id: string) {
     return this.userService.remove(id);
   }
 }
