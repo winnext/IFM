@@ -11,5 +11,6 @@ export declare class Classification {
     createdAt: string;
     updatedAt: string;
     hasParent: Boolean;
+    self_id: number;
 }
 export declare const ClassificationSchema: import("mongoose").Schema<import("mongoose").Document<Classification, any, any>, import("mongoose").Model<import("mongoose").Document<Classification, any, any>, any, any, any>, any, any>;

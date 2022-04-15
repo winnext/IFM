@@ -97,7 +97,9 @@ let ClassificationRepository = class ClassificationRepository {
         if (createClassificationDto.key) {
             classification.key = createClassificationDto.key;
         }
-        classification.tag = createClassificationDto.tag;
+        if (createClassificationDto.tag) {
+            classification.tag = createClassificationDto.tag;
+        }
         if (createClassificationDto.parent_id) {
             let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
                 "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
@@ -118,6 +120,7 @@ let ClassificationRepository = class ClassificationRepository {
                 ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
                 "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             const result = await this.neo4jService.write(a);
+            await this.neo4jService.write("match (x:" + createClassificationDto.labelclass + " {key:'" + classification.key + "'}) set x.self_id = id(x)");
             return new classification_entity_1.Classification;
         }
     }

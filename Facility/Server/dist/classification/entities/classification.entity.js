@@ -7,6 +7,7 @@ const moment = require("moment");
 class Classification {
     constructor() {
         this.key = generateUuid();
+        this.tag = [];
         this.createdAt = moment().format('YYYY-MM-DD HH:mm:ss');
         this.updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
         this.hasParent = true;
