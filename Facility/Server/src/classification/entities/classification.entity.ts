@@ -13,6 +13,7 @@ export class Classification {
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss');
   hasParent: Boolean = true;
   labelclass: string;
+  self_id: number;
 }
 
 function generateUuid() {

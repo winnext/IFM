@@ -106,7 +106,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      classification.name = createClassificationDto.name;
      classification.code = createClassificationDto.code;
      classification.label = classification.code+' . '+classification.name;
-     classification.labelclass = createClassificationDto.labelclass;
+     classification.labelclass = createClassificationDto.l;
      if (createClassificationDto.key) {
        classification.key = createClassificationDto.key
      }
@@ -123,6 +123,9 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
         a
+      );
+      await this.neo4jService.write(
+        "match (x:"+createClassificationDto.labelclass+" {key:'"+classification.key+"'}) set x.self_id = id(x)"
       );
       let b = "match (x:"+createClassificationDto.labelclass+" {code: '"+classification.code+"'})"+
              " match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id +
@@ -141,6 +144,9 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
                      
          const result = await this.neo4jService.write(
          a
+      );
+      await this.neo4jService.write(
+        "match (x:"+createClassificationDto.labelclass+" {key:'"+classification.key+"'}) set x.self_id = id(x)"
       );
       return  new Classification;
     }
