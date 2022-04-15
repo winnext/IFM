@@ -37,7 +37,7 @@ export class ClassificationService {
   @Span('update a classification')
   @OtelMethodCounter()
   async update(id: string, updateClassificationDto: UpdateClassificationDto) {
-    checkObjectIddİsValid(id);
+    //checkObjectIddİsValid(id);
     return await this.classificationRepository.update(id, updateClassificationDto);
   }
 

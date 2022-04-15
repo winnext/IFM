@@ -127,23 +127,26 @@ let ClassificationRepository = class ClassificationRepository {
         }
     }
     async update(_id, updateClassificationto) {
-        const updatedFacility = await this.classificationModel
-            .findOneAndUpdate({ _id }, { $set: updateClassificationto }, { new: true })
-            .exec();
-        if (!updatedFacility) {
-            throw new facility_not_found_exception_1.ClassificationNotFountException(_id);
+        let res = await this.neo4jService.read("MATCH (p) where id(p)=" + _id + " return count(p)");
+        if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
+            res = await this.neo4jService.write("MATCH (c) where id(c)=" + _id + " set c.code='" + updateClassificationto.code + "', c.name='" + updateClassificationto.name +
+                "', c.tag=" + JSON.stringify(updateClassificationto.tag));
+            console.log("Node updated ................... ");
+            return new classification_entity_1.Classification;
         }
-        return updatedFacility;
+        else {
+            console.log("Can not find a node for update  ....................");
+            return new classification_entity_1.Classification;
+        }
     }
-    async delete(id) {
-        let res = await this.neo4jService.read("MATCH (c)  -[r:CHILDREN]->(p) where id(c)=" + id + " return count(p)");
-        console.log(JSON.stringify(res.records[0]["_fields"][0]["low"]));
+    async delete(_id) {
+        let res = await this.neo4jService.read("MATCH (c)  -[r:CHILDREN]->(p) where id(c)=" + _id + " return count(p)");
         if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
             console.log("Can not delete a node include children ....................");
             return new classification_entity_1.Classification;
         }
         else {
-            res = await this.neo4jService.write("MATCH (c) where id(c)=" + id + " detach delete c");
+            res = await this.neo4jService.write("MATCH (c) where id(c)=" + _id + " detach delete c");
             console.log("Node deleted ................... ");
             return new classification_entity_1.Classification;
         }

@@ -32,7 +32,7 @@ export class ClassificationController {
   findOne(@Param('id') id: string) {
     return this.classificationService.findOne(id);
   }
-
+  @Unprotected()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClassificationDto: UpdateClassificationDto) {
     return this.classificationService.update(id, updateClassificationDto);

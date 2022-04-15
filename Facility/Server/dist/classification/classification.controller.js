@@ -68,6 +68,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "findOne", null);
 __decorate([
+    (0, nest_keycloak_connect_1.Unprotected)(),
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),

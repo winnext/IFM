@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClassificationService = void 0;
 const common_1 = require("@nestjs/common");
 const repository_enum_1 = require("../common/const/repository.enum");
-const objectId_check_1 = require("../common/func/objectId.check");
 const create_classification_dto_1 = require("./dto/create-classification.dto");
 const update_classification_dto_1 = require("./dto/update-classification.dto");
 const nestjs_otel_1 = require("nestjs-otel");
@@ -33,7 +32,6 @@ let ClassificationService = class ClassificationService {
         return await this.classificationRepository.findOneById(id);
     }
     async update(id, updateClassificationDto) {
-        (0, objectId_check_1.checkObjectIddİsValid)(id);
         return await this.classificationRepository.update(id, updateClassificationDto);
     }
     async remove(id) {
