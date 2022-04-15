@@ -44,10 +44,6 @@ export class ClassificationService {
   @Span('remove a classification')
   @OtelMethodCounter()
   async remove(id: string) {
-    const classification = await this.findOne(id);
-    if (!classification) {
-      throw new ClassificationNotFountException(id);
-    }
-    return await classification.remove();
+    return await this.classificationRepository.delete(id);
   }
 }

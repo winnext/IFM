@@ -37,7 +37,7 @@ export class ClassificationController {
   update(@Param('id') id: string, @Body() updateClassificationDto: UpdateClassificationDto) {
     return this.classificationService.update(id, updateClassificationDto);
   }
-
+  @Unprotected()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.classificationService.remove(id);

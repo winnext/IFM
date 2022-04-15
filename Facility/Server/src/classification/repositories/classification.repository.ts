@@ -11,6 +11,7 @@ import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import {types as neo4j_types, DateTime}  from 'neo4j-driver';
 
 import { Classification } from '../entities/classification.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Injectable()
 export class ClassificationRepository implements BaseInterfaceRepository<Classification> {
@@ -106,7 +107,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
      classification.name = createClassificationDto.name;
      classification.code = createClassificationDto.code;
      classification.label = classification.code+' . '+classification.name;
-     //classification.labelclass = createClassificationDto.labelclass;
+     classification.labelclass = createClassificationDto.labelclass;
      if (createClassificationDto.key) {
        classification.key = createClassificationDto.key
      }
@@ -118,7 +119,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     if (createClassificationDto.parent_id) {
       let a = "(x:"+createClassificationDto.labelclass+" {name:'"+classification.name+
                               "',code:'"+classification.code+"',key:'"+classification.key+"', hasParent:"+classification.hasParent+
-                              ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
+                              ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+", labelclass='"+classification.labelclass+
                               "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
       a = "match (y:"+createClassificationDto.labelclass+") where id(y)="+createClassificationDto.parent_id + " create (y)-[:CHILDREN]->"+a;
        let result = await this.neo4jService.write(
@@ -139,7 +140,7 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
        classification.hasParent = false;
        let a = "CREATE (x:"+createClassificationDto.labelclass+" {name:'"+
                      classification.name+"',code:'"+classification.code+ "',key:'"+classification.key+"', hasParent:"+classification.hasParent+
-                     ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+
+                     ", tag:"+JSON.stringify(classification.tag)+",label:'"+classification.label+", labelclass='"+classification.labelclass+
                      "', createdAt:'"+classification.createdAt+"', updatedAt:'"+classification.updatedAt+"'})";
                      
          const result = await this.neo4jService.write(
@@ -162,8 +163,18 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
 
     return updatedFacility;
   }
-  async delete(_id: string) {
-    const classification = await this.findOneById(_id);
-    return this.classificationModel.remove(classification);
+  async delete(id: string) {
+    let res = await this.neo4jService.read("MATCH (c)  -[r:CHILDREN]->(p) where id(c)="+id+" return count(p)");
+    console.log(JSON.stringify(res.records[0]["_fields"][0]["low"]));
+    if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
+      console.log("Can not delete a node include children ....................");
+      return  new Classification;
+    }
+    else{
+      res = await this.neo4jService.write("MATCH (c) where id(c)="+id+" detach delete c");
+      console.log("Node deleted ................... ");
+      return  new Classification;
+    }
+    
   }
 }

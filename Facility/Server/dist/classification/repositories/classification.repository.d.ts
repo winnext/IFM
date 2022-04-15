@@ -22,5 +22,5 @@ export declare class ClassificationRepository implements BaseInterfaceRepository
     update(_id: string, updateClassificationto: UpdateClassificationDto): Promise<import("mongoose").Document<unknown, any, Classification> & Classification & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    delete(_id: string): Promise<any>;
+    delete(id: string): Promise<Classification>;
 }

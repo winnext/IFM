@@ -94,6 +94,7 @@ let ClassificationRepository = class ClassificationRepository {
         classification.name = createClassificationDto.name;
         classification.code = createClassificationDto.code;
         classification.label = classification.code + ' . ' + classification.name;
+        classification.labelclass = createClassificationDto.labelclass;
         if (createClassificationDto.key) {
             classification.key = createClassificationDto.key;
         }
@@ -103,10 +104,11 @@ let ClassificationRepository = class ClassificationRepository {
         if (createClassificationDto.parent_id) {
             let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
                 "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
-                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
+                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + ", labelclass='" + classification.labelclass +
                 "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
             let result = await this.neo4jService.write(a);
+            await this.neo4jService.write("match (x:" + createClassificationDto.labelclass + " {key:'" + classification.key + "'}) set x.self_id = id(x)");
             let b = "match (x:" + createClassificationDto.labelclass + " {code: '" + classification.code + "'})" +
                 " match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id +
                 " create (x)-[:CHILD_OF]->(y)";
@@ -117,7 +119,7 @@ let ClassificationRepository = class ClassificationRepository {
             classification.hasParent = false;
             let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
                 classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
-                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label +
+                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + ", labelclass='" + classification.labelclass +
                 "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
             const result = await this.neo4jService.write(a);
             await this.neo4jService.write("match (x:" + createClassificationDto.labelclass + " {key:'" + classification.key + "'}) set x.self_id = id(x)");
@@ -133,9 +135,18 @@ let ClassificationRepository = class ClassificationRepository {
         }
         return updatedFacility;
     }
-    async delete(_id) {
-        const classification = await this.findOneById(_id);
-        return this.classificationModel.remove(classification);
+    async delete(id) {
+        let res = await this.neo4jService.read("MATCH (c)  -[r:CHILDREN]->(p) where id(c)=" + id + " return count(p)");
+        console.log(JSON.stringify(res.records[0]["_fields"][0]["low"]));
+        if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
+            console.log("Can not delete a node include children ....................");
+            return new classification_entity_1.Classification;
+        }
+        else {
+            res = await this.neo4jService.write("MATCH (c) where id(c)=" + id + " detach delete c");
+            console.log("Node deleted ................... ");
+            return new classification_entity_1.Classification;
+        }
     }
 };
 ClassificationRepository = __decorate([

@@ -9,5 +9,5 @@ export declare class ClassificationService {
     findAll(query: any): Promise<Classification[]>;
     findOne(id: string): Promise<any>;
     update(id: string, updateClassificationDto: UpdateClassificationDto): Promise<any>;
-    remove(id: string): Promise<any>;
+    remove(id: string): Promise<Classification>;
 }
