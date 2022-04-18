@@ -28,10 +28,15 @@ let ClassificationRepository = class ClassificationRepository {
         throw new Error(relations);
     }
     async findOneById(id) {
-        let result = await this.neo4jService.read("MATCH p=(n)-[:CHILDREN*]->(m) where id(n)=" + id + " \
-        WITH COLLECT(p) AS ps \
+        let result = await this.neo4jService.read("MATCH (n)-[:CHILDREN*]->(m) \
+      WHERE  id(n)=" + id + " and  NOT (m)-[:CHILDREN]->() \
+      WITH n, m \
+      ORDER BY n.code, m.code \
+      MATCH p=(n)-[:CHILDREN*]->(m) \
+      WHERE NOT ()-[:CHILDREN]->(n) \
+      WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
-      RETURN value ORDER BY value.CODE;");
+      RETURN value");
         var x = result["records"][0]["_fields"][0];
         if (!result) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(id);

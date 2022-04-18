@@ -26,10 +26,20 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   }
   async findOneById(id: string) {
     let result = await this.neo4jService.read(
-      "MATCH p=(n)-[:CHILDREN*]->(m) where id(n)="+id+" \
-        WITH COLLECT(p) AS ps \
+      //"MATCH p=(n)-[:CHILDREN*]->(m) where id(n)="+id+" \
+      //  WITH COLLECT(p) AS ps \
+      //CALL apoc.convert.toTree(ps) yield value \
+      //RETURN value",
+
+      "MATCH (n)-[:CHILDREN*]->(m) \
+      WHERE  id(n)="+id+" and  NOT (m)-[:CHILDREN]->() \
+      WITH n, m \
+      ORDER BY n.code, m.code \
+      MATCH p=(n)-[:CHILDREN*]->(m) \
+      WHERE NOT ()-[:CHILDREN]->(n) \
+      WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
-      RETURN value ORDER BY value.CODE;",
+      RETURN value",
     );
     var x = result["records"][0]["_fields"][0];
     if (!result) {
