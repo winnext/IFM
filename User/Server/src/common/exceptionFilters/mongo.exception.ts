@@ -1,8 +1,14 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { MongoError } from 'mongodb';
 
+/**
+ * Catch MongoException and send this exception to messagebroker  to save the database
+ */
 @Catch()
 export class MongoExceptionFilter implements ExceptionFilter {
+  /**
+   * Catch Method For Mongo Error
+   */
   catch(exception: MongoError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();

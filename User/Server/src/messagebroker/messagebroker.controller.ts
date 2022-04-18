@@ -6,21 +6,33 @@ import { PathEnums } from 'src/common/const/path.enum';
 import { UserTopics } from 'src/common/const/kafta.topic.enum';
 import { UserHistoryService } from 'src/history/user.history.service';
 
+/**
+ * message broker controller
+ */
 @Controller('messagebroker')
 @Unprotected()
 export class MessagebrokerController {
   constructor(private userHistoryService: UserHistoryService) {} //  private facilityHistoryService: FacilityHistoryService,
 
+  /**
+   * consume message from kafka queue for USER_EXCEPTIONS
+   */
   @MessagePattern(UserTopics.USER_EXCEPTIONS)
   exceptionListener(@Payload() message): any {
     console.log('this is from user message broker exception listener' + message.value);
   }
 
+  /**
+   * consume message from kafka queue for USER_LOGGER
+   */
   @MessagePattern(UserTopics.USER_LOGGER)
   loggerListener(@Payload() message): any {
     console.log('this is from user message broker logger listener' + message.value);
   }
 
+  /**
+   * consume message from kafka queue for USER_OPERATION
+   */
   @EventPattern(UserTopics.USER_OPERATION)
   async operationListener(@Payload() message): Promise<any> {
     switch (message.key) {

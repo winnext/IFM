@@ -6,14 +6,28 @@ import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
 import { UserTopics } from '../const/kafta.topic.enum';
 
+/**
+ * Catch HttpExceptions and send this exception to messagebroker  to save the database
+ */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  postKafka;
-
+  /**
+   * create variable for postKafka Service
+   */
+  postKafka: PostKafka;
+  /**
+   * inject i18nService
+   */
   constructor(private readonly i18n: I18nService) {
     this.postKafka = new PostKafka(new KafkaService());
   }
+  /**
+   * Log from Logger
+   */
   private logger = new Logger('HTTP');
+  /**
+   * Catch method for  handle HttpExceptions
+   */
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -129,6 +143,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 }
 
+/**
+ * Get User not authorized message with i18n
+ */
 async function getI18nMessage(i18n: I18nService, request) {
   const username = request.user?.name || 'Guest';
   return await i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {

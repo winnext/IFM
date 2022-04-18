@@ -19,6 +19,9 @@ const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkaj
 const { trace } = require('@opentelemetry/api');
 const { BasicTracerProvider, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 
+/**
+ * trace provider
+ */
 const provider = new BasicTracerProvider({
   resource: new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: 'facility_service' }),
 });
@@ -26,13 +29,24 @@ provider.register();
 provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter()));
 trace.setGlobalTracerProvider(provider);
 
-const name = 'facility_service';
+/**
+ * name of traver
+ */
+const name = 'user_service';
+/**
+ * version of traver
+ */
 const version = '0.1.0';
+/**
+ * init tracer
+ */
 const tracer = trace.getTracer(name, version);
-
+/**
+ * trial for opentelemetery
+ */
 const trial = new NodeSDK({
   metricExporter: new PrometheusExporter({
-    port: 8089,
+    port: 8090,
   }),
   metricInterval: 6000,
   spanProcessor: tracer, //new BatchSpanProcessor(new JaegerExporter()),
@@ -51,6 +65,9 @@ const trial = new NodeSDK({
   instrumentations: [getNodeAutoInstrumentations(), new PinoInstrumentation(), new KafkaJsInstrumentation({})],
 });
 
+/**
+ * export trial
+ */
 export default trial;
 
 process.on('SIGTERM', () => {

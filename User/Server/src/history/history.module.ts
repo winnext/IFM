@@ -8,6 +8,9 @@ import { UserHistoryRepository } from './repositories/user.history.repository';
 import { UserHistoryController } from './user.history.controller';
 import { UserHistoryService } from './user.history.service';
 
+/**
+ *  User  History Module
+ */
 @Module({
   imports: [
     MongooseModule.forFeature(

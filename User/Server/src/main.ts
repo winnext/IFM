@@ -9,6 +9,9 @@ import trial from './tracing';
 import { I18nService } from 'nestjs-i18n';
 import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
 
+/**
+ * Bootstrap the application
+ */
 async function bootstrap() {
   try {
     await trial.start();

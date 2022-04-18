@@ -10,13 +10,19 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 
 import { User } from '../entities/user.entity';
 
+/**
+ * User Repository For Database Reactions
+ */
 @Injectable()
 export class UserRepository implements BaseInterfaceRepository<User> {
+  /**
+   * Inject Mongoose User Model
+   */
   constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
-  findWithRelations(relations: any): Promise<User[]> {
-    throw new Error(relations);
-  }
 
+  /**
+   * Find one by userId
+   */
   async findOneById(id: string): Promise<User> {
     const user = await this.userModel.findOne({ userId: id }).exec();
     if (!user) {
@@ -26,6 +32,9 @@ export class UserRepository implements BaseInterfaceRepository<User> {
     return user;
   }
 
+  /**
+   * Find All User with Pagination
+   */
   async findAll(data: PaginationParams) {
     let { page, limit } = data;
     page = page || 0;
@@ -61,13 +70,18 @@ export class UserRepository implements BaseInterfaceRepository<User> {
     return user;
   }
 
+  /**
+   * create User
+   */
   async create(createFacilityDto: CreateUserDto) {
-    //checkObjectIddİsValid(classifications.classificationId);
-
     const user = new this.userModel(createFacilityDto);
 
     return await user.save();
   }
+
+  /**
+   * Update a User with userId
+   */
   async update(_id: string, updateFacilityDto: UpdateUserDto) {
     const updatedUser = await this.userModel
       .findOneAndUpdate({ userId: _id }, { $set: updateFacilityDto }, { new: true })
@@ -79,6 +93,10 @@ export class UserRepository implements BaseInterfaceRepository<User> {
 
     return updatedUser;
   }
+
+  /**
+   * Delete a User with userId
+   */
   async delete(_id: string) {
     const user = await this.findOneById(_id);
     const deletedUser = await this.userModel.findOneAndRemove({ user });

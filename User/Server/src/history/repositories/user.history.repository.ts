@@ -8,6 +8,9 @@ import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.
 import { CreateUserHistoryDto } from '../dtos/create.user.history.dto';
 import { UserHistory } from '../entities/user.history.entity';
 
+/**
+ * UserHistoryRepository for History Database Reactions
+ */
 @Injectable()
 export class UserHistoryRepository implements BaseHistoryRepositoryInterface<UserHistory> {
   constructor(
@@ -15,6 +18,9 @@ export class UserHistoryRepository implements BaseHistoryRepositoryInterface<Use
     private readonly userHistoryModel: Model<UserHistory>,
   ) {}
 
+  /**
+   * Find one userHistory by mongo Id
+   */
   async findOneById(id: string): Promise<UserHistory[]> {
     const userHistory = await this.userHistoryModel.find({ 'user._id': id }).exec();
     if (!userHistory) {
@@ -24,6 +30,9 @@ export class UserHistoryRepository implements BaseHistoryRepositoryInterface<Use
     return userHistory;
   }
 
+  /**
+   * Find all user histories
+   */
   async findAll(data: PaginationParams) {
     let { page, limit } = data;
     page = page || 0;
@@ -53,7 +62,9 @@ export class UserHistoryRepository implements BaseHistoryRepositoryInterface<Use
 
     return user;
   }
-
+  /**
+   * Create user history
+   */
   async create(createFacilityHistoryDto: CreateUserHistoryDto) {
     const user = new this.userHistoryModel(createFacilityHistoryDto);
 

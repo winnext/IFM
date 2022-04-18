@@ -13,11 +13,13 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
 import { UsersModule } from './users/users.module';
 import { HistoryModule } from './history/history.module';
 import { i18nOptions } from './common/configs/i18n.options';
+import { KeycloakModule } from './common/keycloack/keycloak.module';
 
 @Module({
   imports: [
     OpenTelemetryModuleConfig,
     LoggerModule,
+    KeycloakModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -44,6 +46,7 @@ import { i18nOptions } from './common/configs/i18n.options';
 
     ConfigModule.forRoot({
       isGlobal: true,
+      cache: true,
       validationSchema: Joi.object({
         DATABASE_LINK: Joi.string().required(),
         CACHE_HOST: Joi.string().required(),
