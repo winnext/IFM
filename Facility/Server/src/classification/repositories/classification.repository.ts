@@ -182,19 +182,22 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   }
   async changeNodeBranch(_id: string, _target_parent_id: string)  {
 
-    this.deleteRelations(_id);
-    this.addRelations(_id, _target_parent_id);
+    await this.deleteRelations(_id);
+    await this.addRelations(_id, _target_parent_id);
     return  new Classification;
   }
   async deleteRelations(_id: string) {
     let res = await this.neo4jService.read("MATCH (c)-[r:CHILD_OF]->(p) where id(c)="+_id+" return count(p)");
     if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
-      let res1 = this.neo4jService.write("MATCH (c)<-[r:CHILDREN]-(p) where id(c)="+_id+" delete r");
-      let res2 = this.neo4jService.write("MATCH (c)-[r:CHILD_OF]->(p) where id(c)="+_id+" delete r");
+      let res1 = await this.neo4jService.write("MATCH (c)<-[r:CHILDREN]-(p) where id(c)="+_id+" delete r");
+      let res2 = await this.neo4jService.write("MATCH (c)-[r:CHILD_OF]->(p) where id(c)="+_id+" delete r");
     }
   }
   async addRelations(_id: string, _target_parent_id: string) {
-    let res = await this.neo4jService.read("MATCH (c) where id(c)="+_id+ " MATCH (p) where id(p)="+_target_parent_id+ 
-                     " create (c)-[:CHILD_OF]-> (p) create (p)-[:CHILDREN]-> (c)" );
+    let res2 = await this.neo4jService.write("MATCH (c) where id(c)="+_id+ " MATCH (p) where id(p)="+_target_parent_id+ 
+    " create (p)-[:CHILDREN]-> (c)" );
+    let res1 = await this.neo4jService.write("MATCH (c) where id(c)="+_id+ " MATCH (p) where id(p)="+_target_parent_id+ 
+                     " create (c)-[:CHILD_OF]-> (p)" );
+   
   }
 }

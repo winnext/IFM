@@ -43,7 +43,7 @@ export class ClassificationController {
     return this.classificationService.remove(id);
   }
   @Unprotected()
-  @Post('/relation/:id/:parent_id')
+  @Post('/relation/:id/:target_parent_id')
   changeNodeBranch(@Param('id') id: string, @Param('target_parent_id') target_parent_id: string) {
     return this.classificationService.changeNodeBranch(id,target_parent_id);
   }

@@ -89,7 +89,7 @@ __decorate([
 ], ClassificationController.prototype, "remove", null);
 __decorate([
     (0, nest_keycloak_connect_1.Unprotected)(),
-    (0, common_1.Post)('/relation/:id/:parent_id'),
+    (0, common_1.Post)('/relation/:id/:target_parent_id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Param)('target_parent_id')),
     __metadata("design:type", Function),
