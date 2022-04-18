@@ -12,26 +12,31 @@ import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { useNavigate } from "react-router-dom";
 import { Menu } from 'primereact/menu';
+import { Chips } from 'primereact/chips';
 
 interface ClassificationInterface {
-  _id?: string;
+  identity?: {
+    low: string;
+    high: string;
+  };
+  tag: string[];
+
   name: string;
   code: string;
-  detail: {
-    root: Node;
-  };
-  __v?: number;
+  key: string;
+  hasParent?: boolean,
+  labelclass: string;
 }
 
-interface Node {
-  key: string;
-  label: string;
-  name: string;
-  code: string;
-  selectable: boolean;
-  parent?: string;
-  children: Node[];
-}
+// interface Node {
+//   key: string;
+//   label: string;
+//   name: string;
+//   code: string;
+//   selectable: boolean;
+//   parent?: string;
+//   children: Node[];
+// }
 
 const Classifications = () => {
   // const tree = useAppSelector((state) => state.tree);
@@ -41,6 +46,8 @@ const Classifications = () => {
   const [addDia, setAddDia] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [labelClass, setLabelClass] = useState("");
+  const [tag, setTag] = useState<string[]>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [countClassifications, setCountClassifications] = useState(0);
@@ -69,6 +76,10 @@ const Classifications = () => {
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
     })
       .then((response) => {
+        console.log(response.data);
+        console.log("denme");
+        
+
         setData(response.data[0]);
         setCountClassifications(response.data[1].count);
         setLoading(false);
@@ -88,18 +99,13 @@ const Classifications = () => {
 
   const addItem = () => {
     const _classification: ClassificationInterface = {
-      name: name,
+
       code: code,
-      detail: {
-        root: {
-          key: uuidv4(),
-          name: name,
-          code: code,
-          label: code + " : " + name,
-          selectable: true,
-          children: [],
-        },
-      },
+      name: name,
+      key: uuidv4(),
+      tag: tag,
+      labelclass: labelClass,
+
     };
 
     ClassificationsService.create(_classification)
@@ -117,7 +123,7 @@ const Classifications = () => {
           severity: "error",
           summary: "Error",
           detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
+          life: 20000,
         });
       });
 
@@ -227,11 +233,11 @@ const Classifications = () => {
   return (
     <div className="card">
       <Toast ref={toast} />
-      <Toolbar className="mb-4" 
-      left={leftToolbarTemplate}
-      right={rightToolbarTemplate}
+      <Toolbar className="mb-4"
+        left={leftToolbarTemplate}
+        right={rightToolbarTemplate}
       >
-      
+
       </Toolbar>
       <DataTable
         ref={dt}
@@ -253,15 +259,15 @@ const Classifications = () => {
         header={header}
         selectionMode="single"
         onSelectionChange={(e) => {
-          navigate("/classifications/" + e.value._id);
+          navigate("/classifications/" + e.value.identity.low);
         }}
         responsiveLayout="scroll"
         onSort={onSort}
         sortField={lazyParams.sortField}
         sortOrder={lazyParams.sortOrder}
       >
-        <Column field="code" header="Code" sortable></Column>
-        <Column field="name" header="Name" sortable></Column>
+        <Column field="properties.code" header="Code" sortable></Column>
+        <Column field="properties.name" header="Name" sortable></Column>
       </DataTable>
       <Dialog
         header="Add New Classification"
@@ -286,6 +292,17 @@ const Classifications = () => {
             value={name}
             onChange={(event) => setName(event.target.value)}
           />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Label</h5>
+          <InputText
+            value={labelClass}
+            onChange={(event) => setLabelClass(event.target.value)}
+          />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
       </Dialog>
     </div>
