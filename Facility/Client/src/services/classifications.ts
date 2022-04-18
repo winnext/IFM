@@ -79,7 +79,7 @@ const remove = async (id: string) => {
 const relation = async (id1: string, id2: string) => {
   console.log(url + "/relation" + "/" + id1 + "/" + id2);
   
-  // return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
+   return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
 };
 
 
