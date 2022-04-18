@@ -194,7 +194,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     }
   }
   async addRelations(_id: string, _target_parent_id: string) {
-    let res = await this.neo4jService.read("MATCH (c) where id(c)="+_id+ "MATCH (p) where id(p)="+_target_parent_id+ 
+    let res = await this.neo4jService.read("MATCH (c) where id(c)="+_id+ " MATCH (p) where id(p)="+_target_parent_id+ 
                      " create (c)-[:CHILD_OF]-> (p) create (p)-[:CHILDREN]-> (c)" );
   }
 }
