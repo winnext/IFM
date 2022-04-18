@@ -156,7 +156,8 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
     let res = await this.neo4jService.read("MATCH (p) where id(p)="+_id+" return count(p)");
     if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
       res = await this.neo4jService.write("MATCH (c) where id(c)="+_id+" set c.code='"+updateClassificationto.code+"', c.name='"+updateClassificationto.name+
-                                          "', c.tag="+ JSON.stringify(updateClassificationto.tag));
+                                          "', c.tag="+ JSON.stringify(updateClassificationto.tag)+", c.label='"+
+                                          updateClassificationto.code+" . "+updateClassificationto.name+"'");
       console.log("Node updated ................... ");
       return  new Classification;
     }
