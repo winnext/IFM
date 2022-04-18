@@ -12,9 +12,10 @@ import {types as neo4j_types, DateTime}  from 'neo4j-driver';
 
 import { Classification } from '../entities/classification.entity';
 import { ConfigModule } from '@nestjs/config';
+import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
 
 @Injectable()
-export class ClassificationRepository implements BaseInterfaceRepository<Classification> {
+export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification>{
   constructor(
     private readonly neo4jService: Neo4jService,
     @InjectModel(Classification.name)
@@ -178,5 +179,22 @@ export class ClassificationRepository implements BaseInterfaceRepository<Classif
       return  new Classification;
     }
     
+  }
+  async changeNodeBranch(_id: string, _target_parent_id: string)  {
+
+    this.deleteRelations(_id);
+    this.addRelations(_id, _target_parent_id);
+    return  new Classification;
+  }
+  async deleteRelations(_id: string) {
+    let res = await this.neo4jService.read("MATCH (c)-[r:CHILD_OF]->(p) where id(c)="+_id+" return count(p)");
+    if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
+      let res1 = this.neo4jService.write("MATCH (c)<-[r:CHILDREN]-(p) where id(c)="+_id+" delete r");
+      let res2 = this.neo4jService.write("MATCH (c)-[r:CHILD_OF]->(p) where id(c)="+_id+" delete r");
+    }
+  }
+  async addRelations(_id: string, _target_parent_id: string) {
+    let res = await this.neo4jService.read("MATCH (c) where id(c)="+_id+ "MATCH (p) where id(p)="+_target_parent_id+ 
+                     " create (c)-[:CHILD_OF]-> (p) create (p)-[:CHILDREN]-> (c)" );
   }
 }

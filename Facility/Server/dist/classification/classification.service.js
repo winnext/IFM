@@ -37,6 +37,9 @@ let ClassificationService = class ClassificationService {
     async remove(id) {
         return await this.classificationRepository.delete(id);
     }
+    async changeNodeBranch(id, target_parent_id) {
+        return await this.classificationRepository.changeNodeBranch(id, target_parent_id);
+    }
 };
 __decorate([
     (0, nestjs_otel_1.Span)('create a classification'),
@@ -73,6 +76,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ClassificationService.prototype, "remove", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('change none branch'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], ClassificationService.prototype, "changeNodeBranch", null);
 ClassificationService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(repository_enum_1.RepositoryEnums.CLASSIFICATION)),

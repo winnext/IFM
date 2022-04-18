@@ -1,4 +1,5 @@
-export interface BaseInterfaceRepository<T> {
+
+export interface BaseGraphDatabaseInterfaceRepository<T> {
   update(id: string, data: T | any);
 
   create(data: T | any): Promise<T>;
@@ -13,6 +14,6 @@ export interface BaseInterfaceRepository<T> {
 
   findWithRelations(relations: any): Promise<T[]>;
 
-  //changeNodeBranch (id: string, target_parent_id: string): Promise<T>;
+  changeNodeBranch (id: string, target_parent_id: string): Promise<T>;
 
 }

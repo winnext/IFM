@@ -1,18 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
 import { Classification } from './entities/classification.entity';
 import { Span, OtelMethodCounter} from 'nestjs-otel';
+import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
 
 @Injectable()
 export class ClassificationService {
   constructor(
     @Inject(RepositoryEnums.CLASSIFICATION)
-    private readonly classificationRepository: BaseInterfaceRepository<Classification>,
+    private readonly classificationRepository: BaseGraphDatabaseInterfaceRepository<Classification>,
   ) {}
 
   @Span('create a classification')
@@ -45,5 +43,10 @@ export class ClassificationService {
   @OtelMethodCounter()
   async remove(id: string) {
     return await this.classificationRepository.delete(id);
+  }
+  @Span('change none branch')
+  @OtelMethodCounter()
+  async changeNodeBranch(id: string, target_parent_id: string) {
+    return await this.classificationRepository.changeNodeBranch(id, target_parent_id);
   }
 }

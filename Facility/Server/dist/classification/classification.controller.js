@@ -40,6 +40,9 @@ let ClassificationController = class ClassificationController {
     remove(id) {
         return this.classificationService.remove(id);
     }
+    changeNodeBranch(id, target_parent_id) {
+        return this.classificationService.changeNodeBranch(id, target_parent_id);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -84,6 +87,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "remove", null);
+__decorate([
+    (0, nest_keycloak_connect_1.Unprotected)(),
+    (0, common_1.Post)('/relation/:id/:parent_id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('target_parent_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ClassificationController.prototype, "changeNodeBranch", null);
 ClassificationController = __decorate([
     (0, swagger_1.ApiTags)('Classification'),
     (0, swagger_1.ApiBearerAuth)('JWT-auth'),
