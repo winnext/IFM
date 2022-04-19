@@ -62,7 +62,7 @@ const trial = new NodeSDK({
       }),
     ],
   }),
-  instrumentations: [getNodeAutoInstrumentations(), new PinoInstrumentation(), new KafkaJsInstrumentation({})],
+  instrumentations: [getNodeAutoInstrumentations(), new PinoInstrumentation()],
 });
 
 /**
