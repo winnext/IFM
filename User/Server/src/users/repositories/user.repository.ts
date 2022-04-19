@@ -40,7 +40,7 @@ export class UserRepository implements BaseInterfaceRepository<User> {
     page = page || 0;
     limit = limit || 5;
     const orderBy = data.orderBy || 'ascending';
-    const orderByColumn = data.orderByColumn || 'FacilityName';
+    const orderByColumn = data.orderByColumn || 'createdAt';
 
     const count = parseInt((await this.userModel.find().count()).toString());
     const pagecount = Math.ceil(count / limit);

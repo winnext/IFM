@@ -13,13 +13,23 @@ export class UpdateUserDto extends OmitType(CreateUserDto, ['userId']) {
   updatedAt: Date = new Date();
 
   /**
-   * updateDate when user updated
+   * updateDate when user successfully logged in
    */
   @IsOptional()
   loginAt: Date;
 
+  /**
+   * updateDate when user successfully logged out
+   */
   @IsOptional()
   logoutAt: Date;
+
+  /**
+   * when user logged in which page user will be landing
+   */
+  @ApiPropertyOptional({ type: Boolean })
+  @IsOptional()
+  landing_page: Date;
 
   /**
    * set user is active or not

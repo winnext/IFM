@@ -13,6 +13,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
  */
 @Injectable()
 export class UserService {
+  /**
+   * Get userRepository instance from BaseInterfaceRepository
+   */
   constructor(
     @Inject(RepositoryEnums.USER)
     private readonly userRepository: BaseInterfaceRepository<User>,
@@ -39,16 +42,16 @@ export class UserService {
    */
   @Span('create a user')
   @OtelMethodCounter()
-  create(createFacilityDto: CreateUserDto): Promise<User> {
-    return this.userRepository.create(createFacilityDto);
+  create(createUserDto: CreateUserDto): Promise<User> {
+    return this.userRepository.create(createUserDto);
   }
   /**
    * update user with userId
    */
   @Span('update a user')
   @OtelMethodCounter()
-  async update(id: string, updateFacilityDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateFacilityDto);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(id, updateUserDto);
   }
   /**
    * delete user with userId

@@ -60,6 +60,12 @@ export class User extends BasePersistantDocumentObject {
   class_name: string;
 
   /**
+   * when user logged in which page user will be landing
+   */
+  @Prop()
+  landing_page: string;
+
+  /**
    * is user deleted(true or false)
    */
   @Prop({ default: false })

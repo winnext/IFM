@@ -42,7 +42,7 @@ export class MessagebrokerController {
         break;
 
       default:
-        console.log('undefined history call from facility microservice');
+        console.log('undefined history call from user microservice');
         break;
     }
   }
