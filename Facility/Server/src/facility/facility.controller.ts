@@ -20,7 +20,7 @@ import { Roles } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FacilityUserRoles } from 'src/common/const/keycloak.role.enum';
+import { UserRoles } from 'src/common/const/keycloak.role.enum';
 import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
 
 @ApiTags('Facility')
@@ -37,7 +37,7 @@ export class FacilityController {
   //@LoggerInter()
   @Get('/')
   @NoCache()
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   async getAllFacilities(@Query() params: PaginationParams): Promise<Facility[]> {
     return this.facilityService.findAll(params);
   }
@@ -47,7 +47,7 @@ export class FacilityController {
       'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
   })
   @Get('/:_id')
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   getFacility(@Param('_id') id: string): Promise<Facility> {
     return this.facilityService.findOne(id);
   }
@@ -56,7 +56,7 @@ export class FacilityController {
     description: 'Store product structure',
   })
   @Post('')
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   createFacility(@Body() createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityService.create(createFacilityDto);
   }
@@ -66,13 +66,13 @@ export class FacilityController {
     description: 'update  facility structure',
   })
   @Patch('/:_id')
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   updateFacility(@Param('_id') id: string, @Body() updateFacilityDto: UpdateFacilityDto) {
     return this.facilityService.update(id, updateFacilityDto);
   }
 
   @Delete('/:_id')
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   deleteFacility(@Param('_id') id: string) {
     return this.facilityService.remove(id);
   }
@@ -81,7 +81,7 @@ export class FacilityController {
     summary: 'Load facility cs file ',
     description: '***',
   })
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

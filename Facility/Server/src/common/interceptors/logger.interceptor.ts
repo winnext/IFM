@@ -5,16 +5,36 @@ import { FacilityTopics } from '../const/kafta.topic.enum';
 import { checkObjectIddİsValid } from '../func/objectId.check';
 import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
+
+/**
+ * Decorator for interceptor to use fact in modules,controller
+ */
 export function LoggerInter() {
   return UseInterceptors(new LoggingInterceptor());
 }
 
+/**
+ * Custom interceptor for log all endpoints and send this log to messagebroler  to save the database
+ */
 export class LoggingInterceptor implements NestInterceptor {
-  postKafka;
+  /**
+   * create variable for postKafka Service
+   */
+  postKafka: PostKafka;
+  /**
+   * create kafka service
+   */
   constructor() {
     this.postKafka = new PostKafka(new KafkaService());
   }
+  /**
+   * Log from Logger
+   */
   private logger = new Logger('HTTP');
+
+  /**
+   * Intercept method implements from NestInterceptor
+   */
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();

@@ -16,10 +16,10 @@ exports.ClassificationService = void 0;
 const common_1 = require("@nestjs/common");
 const repository_enum_1 = require("../common/const/repository.enum");
 const objectId_check_1 = require("../common/func/objectId.check");
-const facility_not_found_exception_1 = require("../common/notFoundExceptions/facility.not.found.exception");
 const create_classification_dto_1 = require("./dto/create-classification.dto");
 const update_classification_dto_1 = require("./dto/update-classification.dto");
 const nestjs_otel_1 = require("nestjs-otel");
+const not_found_exception_1 = require("../common/notFoundExceptions/not.found.exception");
 let ClassificationService = class ClassificationService {
     constructor(classificationRepository) {
         this.classificationRepository = classificationRepository;
@@ -41,7 +41,7 @@ let ClassificationService = class ClassificationService {
     async remove(id) {
         const classification = await this.findOne(id);
         if (!classification) {
-            throw new facility_not_found_exception_1.ClassificationNotFountException(id);
+            throw new not_found_exception_1.ClassificationNotFountException(id);
         }
         return await classification.remove();
     }

@@ -12,3 +12,9 @@ export function FacilityStructureNotFountException(id) {
 export function ClassificationNotFountException(id) {
   throw new HttpException({ key: I18NEnums.CLASSIFICATION_NOT_FOUND, args: { id: id } }, HttpStatus.NOT_FOUND);
 }
+/**
+ * Throw Room Not Found Exception
+ */
+export function RoomNotFoundException(id) {
+  throw new HttpException({ key: I18NEnums.ROOM_NOT_FOUND, args: { id: id } }, HttpStatus.NOT_FOUND);
+}

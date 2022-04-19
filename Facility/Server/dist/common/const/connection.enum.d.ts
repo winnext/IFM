@@ -1,4 +1,5 @@
 export declare enum ConnectionEnums {
     FACILITY = "facility",
-    CLASSIFICATION = "classification"
+    CLASSIFICATION = "classification",
+    ROOM = "room"
 }

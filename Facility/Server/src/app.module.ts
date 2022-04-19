@@ -17,6 +17,7 @@ import { HttpCacheInterceptor } from './common/interceptors/http.cache.intercept
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { i18nOptions } from './common/configs/i18n.options';
+import { RoomModule } from './rooms/room.module';
 
 @Module({
   imports: [
@@ -64,6 +65,17 @@ import { i18nOptions } from './common/configs/i18n.options';
       inject: [ConfigService],
     }),
 
+    MongooseModule.forRootAsync({
+      connectionName: ConnectionEnums.ROOM,
+      useFactory: (config: ConfigService) => ({
+        uri: config.get('DATABASE_LINK'),
+        dbName: config.get('ROOM_DB_NAME'),
+        user: config.get('DB_USER'),
+        pass: config.get('DB_PASS'),
+      }),
+      inject: [ConfigService],
+    }),
+
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -80,6 +92,8 @@ import { i18nOptions } from './common/configs/i18n.options';
     FacilityStructuresModule,
 
     HistoryModule,
+
+    RoomModule,
   ],
   providers: [
     //to cache all get request

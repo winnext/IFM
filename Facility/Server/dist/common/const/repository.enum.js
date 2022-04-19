@@ -9,5 +9,7 @@ var RepositoryEnums;
     RepositoryEnums["FACILITY_HISTORY"] = "facility_history";
     RepositoryEnums["CLASSIFICATION_HISTORY"] = "classification_history";
     RepositoryEnums["FACILITY_STRUCTURE_HISTORY"] = "facility_structure_history";
+    RepositoryEnums["ROOM"] = "ROOM";
+    RepositoryEnums["ROOM_HISTORY"] = "ROOM_HISTORY";
 })(RepositoryEnums = exports.RepositoryEnums || (exports.RepositoryEnums = {}));
 //# sourceMappingURL=repository.enum.js.map

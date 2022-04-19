@@ -4,9 +4,10 @@ import { Unprotected } from 'nest-keycloak-connect';
 import { PathEnums } from 'src/common/const/path.enum';
 
 import { FacilityTopics } from 'src/common/const/kafta.topic.enum';
-import { ClassificationHistoryService } from 'src/history/classification.history.service';
-import { FacilityHistoryService } from 'src/history/facility.history.service';
-import { FacilityStructureHistoryService } from 'src/history/facilitystructure.history.service';
+import { ClassificationHistoryService } from 'src/history/services/classification.history.service';
+import { FacilityHistoryService } from 'src/history/services/facility.history.service';
+import { FacilityStructureHistoryService } from 'src/history/services/facilitystructure.history.service';
+import { RoomHistoryService } from 'src/history/services/room.history.service';
 
 @Controller('messagebroker')
 @Unprotected()
@@ -14,7 +15,8 @@ export class MessagebrokerController {
   constructor(
     private facilityHistoryService: FacilityHistoryService,
     private classificationHistoryService: ClassificationHistoryService,
-    private facilityStructureHistoryService: FacilityStructureHistoryService
+    private facilityStructureHistoryService: FacilityStructureHistoryService,
+    private roomHistoryService: RoomHistoryService,
   ) {}
 
   @MessagePattern(FacilityTopics.FACILITY_EXCEPTIONS)
@@ -50,6 +52,12 @@ export class MessagebrokerController {
         const facilityStructureHistory = { facilityStructure: message.value.responseBody, user: message.value.user };
         await this.facilityStructureHistoryService.create(facilityStructureHistory);
         console.log('structure topic added');
+        break;
+      case PathEnums.ROOM:
+        console.log('facility room history topic');
+        const roomHistory = { room: message.value.responseBody, user: message.value.user };
+        await this.roomHistoryService.create(roomHistory);
+        console.log('room topic added');
         break;
       default:
         console.log('undefined history call from facility microservice');

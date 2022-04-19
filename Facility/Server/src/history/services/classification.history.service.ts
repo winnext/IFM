@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
-import { CreateClassificationHistoryDto } from './dtos/create.classification.history.dto';
-import { ClassificationHistory } from './entities/classification.history.entity';
+
 import { Span, OtelMethodCounter } from 'nestjs-otel';
+import { CreateClassificationHistoryDto } from '../dtos/create.classification.history.dto';
+import { ClassificationHistory } from '../entities/classification.history.entity';
 
 @Injectable()
 export class ClassificationHistoryService {

@@ -4,5 +4,4 @@ export interface BaseInterfaceRepository<T> {
     findOneById(id: string): any;
     findAll(data: T | any): Promise<T[]>;
     delete(id: string): Promise<T>;
-    findWithRelations(relations: any): Promise<T[]>;
 }

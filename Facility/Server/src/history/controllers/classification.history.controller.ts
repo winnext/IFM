@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
-import { ClassificationHistoryService } from './classification.history.service';
-import { ClassificationHistory } from './entities/classification.history.entity';
+import { ClassificationHistory } from '../entities/classification.history.entity';
+import { ClassificationHistoryService } from '../services/classification.history.service';
 
 @ApiTags('Classification_History')
 @Controller('classification_history')

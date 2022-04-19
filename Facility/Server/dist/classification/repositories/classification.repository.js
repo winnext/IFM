@@ -16,7 +16,7 @@ exports.ClassificationRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
+const not_found_exception_1 = require("../../common/notFoundExceptions/not.found.exception");
 const classification_entity_1 = require("../entities/classification.entity");
 let ClassificationRepository = class ClassificationRepository {
     constructor(classificationModel) {
@@ -28,7 +28,7 @@ let ClassificationRepository = class ClassificationRepository {
     async findOneById(id) {
         const classification = await this.classificationModel.findById({ _id: id }).exec();
         if (!classification) {
-            throw new facility_not_found_exception_1.ClassificationNotFountException(id);
+            throw new not_found_exception_1.ClassificationNotFountException(id);
         }
         return classification;
     }
@@ -73,7 +73,7 @@ let ClassificationRepository = class ClassificationRepository {
             .findOneAndUpdate({ _id }, { $set: updateClassificationto }, { new: true })
             .exec();
         if (!updatedFacility) {
-            throw new facility_not_found_exception_1.ClassificationNotFountException(_id);
+            throw new not_found_exception_1.ClassificationNotFountException(_id);
         }
         return updatedFacility;
     }

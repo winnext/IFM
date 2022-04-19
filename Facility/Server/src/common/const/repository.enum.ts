@@ -5,4 +5,6 @@ export enum RepositoryEnums {
   FACILITY_HISTORY = 'facility_history',
   CLASSIFICATION_HISTORY = 'classification_history',
   FACILITY_STRUCTURE_HISTORY = 'facility_structure_history',
+  ROOM = 'ROOM',
+  ROOM_HISTORY = 'ROOM_HISTORY',
 }

@@ -1,5 +1,8 @@
 import { KafkaOptions, Transport } from '@nestjs/microservices';
 
+/**
+ * Kafka Options
+ */
 export const kafkaOptions: KafkaOptions = {
   transport: Transport.KAFKA,
   options: {

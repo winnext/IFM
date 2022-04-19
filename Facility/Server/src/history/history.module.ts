@@ -3,17 +3,21 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConnectionEnums } from 'src/common/const/connection.enum';
 import { ClassificationHistory, ClassificationHistorySchema } from './entities/classification.history.entity';
 import { FacilityHistory, FaciliyHistorySchema } from './entities/facility.history.entity';
-import { ClassificationHistoryController } from './classification.history.controller';
-import { FacilityHistoryController } from './facility.history.controller';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { ClassificationHistoryService } from './classification.history.service';
-import { FacilityHistoryService } from './facility.history.service';
 import { ClassificationHistoryRepository } from './repositories/classification.history.repository';
 import { FacilityHistoryRepository } from './repositories/facility.history.repository';
-import { FacilityStructureHistoryService } from './facilitystructure.history.service';
 import { FacilityStructureHistoryRepository } from './repositories/facilitystructure.history.repository';
 import { FacilityStructureHistory, FaciliyStructureHistorySchema } from './entities/facilitystructure.history.entity';
-import { FacilityStructureHistoryController } from './facility.structure.history.controller';
+import { FacilityHistoryController } from './controllers/facility.history.controller';
+import { ClassificationHistoryController } from './controllers/classification.history.controller';
+import { FacilityStructureHistoryController } from './controllers/facility.structure.history.controller';
+import { ClassificationHistoryService } from './services/classification.history.service';
+import { FacilityHistoryService } from './services/facility.history.service';
+import { FacilityStructureHistoryService } from './services/facilitystructure.history.service';
+import { RoomHistory, RoomHistorySchema } from './entities/room.history.entity';
+import { RoomHistoryService } from './services/room.history.service';
+import { RoomHistoryRepository } from './repositories/room.history.repository';
+import { RoomHistoryController } from './controllers/room.history.controller';
 
 @Module({
   imports: [
@@ -31,15 +35,25 @@ import { FacilityStructureHistoryController } from './facility.structure.history
           name: FacilityStructureHistory.name,
           schema: FaciliyStructureHistorySchema,
         },
+        {
+          name: RoomHistory.name,
+          schema: RoomHistorySchema,
+        },
       ],
       ConnectionEnums.FACILITY,
     ),
   ],
-  controllers: [FacilityHistoryController, ClassificationHistoryController, FacilityStructureHistoryController],
+  controllers: [
+    FacilityHistoryController,
+    ClassificationHistoryController,
+    FacilityStructureHistoryController,
+    RoomHistoryController,
+  ],
   providers: [
     FacilityHistoryService,
     ClassificationHistoryService,
     FacilityStructureHistoryService,
+    RoomHistoryService,
     {
       provide: RepositoryEnums.FACILITY_HISTORY,
       useClass: FacilityHistoryRepository,
@@ -52,7 +66,11 @@ import { FacilityStructureHistoryController } from './facility.structure.history
       provide: RepositoryEnums.FACILITY_STRUCTURE_HISTORY,
       useClass: FacilityStructureHistoryRepository,
     },
+    {
+      provide: RepositoryEnums.ROOM_HISTORY,
+      useClass: RoomHistoryRepository,
+    },
   ],
-  exports: [FacilityHistoryService, ClassificationHistoryService, FacilityStructureHistoryService],
+  exports: [FacilityHistoryService, ClassificationHistoryService, FacilityStructureHistoryService, RoomHistoryService],
 })
 export class HistoryModule {}

@@ -2,14 +2,27 @@ import { Injectable, CacheInterceptor, ExecutionContext, CACHE_KEY_METADATA } fr
 
 import { SetMetadata } from '@nestjs/common';
 
-//this is used for @Get() decarotor for disable cache
+/**
+ * this is used for @Get() decarotor for disable cache
+ */
 export const NoCache = () => SetMetadata('ignoreCaching', true);
 
-// coustom interceptor for cache
+/**
+ * Custom interceptor for cache all get methods
+ */
 @Injectable()
 export class HttpCacheInterceptor extends CacheInterceptor {
+  /**
+   *keep track of all cached routes
+   */
   protected cachedRoutes = new Map();
+  /**
+   * trackBy method wic from CacheInterceptor
+   */
   trackBy(context: ExecutionContext): string | undefined {
+    /**
+     * get incoming request object from execution context
+     */
     const request = context.switchToHttp().getRequest();
     // if there is no request, the incoming request is graphql, therefore bypass response caching.
     // later we can get the type of request (query/mutation) and if query get its field name, and attributes and cache accordingly. Otherwise, clear the cache in case of the request type is mutation.

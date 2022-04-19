@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
-import { FacilityStructureHistory } from './entities/facilitystructure.history.entity';
-import { FacilityStructureHistoryService } from './facilitystructure.history.service';
+import { FacilityStructureHistory } from '../entities/facilitystructure.history.entity';
+import { FacilityStructureHistoryService } from '../services/facilitystructure.history.service';
 
 @ApiTags('Facility_Structure_History')
 @Controller('facilityStructureHistory')

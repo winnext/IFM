@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
 import { Classification } from './entities/classification.entity';
-import { Span, OtelMethodCounter} from 'nestjs-otel';
+import { Span, OtelMethodCounter } from 'nestjs-otel';
+import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
 @Injectable()
 export class ClassificationService {

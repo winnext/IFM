@@ -54,7 +54,7 @@ __decorate([
     }),
     (0, common_1.Get)('/'),
     (0, http_cache_interceptor_1.NoCache)(),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [pagination_dto_1.PaginationParams]),
@@ -66,7 +66,7 @@ __decorate([
         description: 'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
     }),
     (0, common_1.Get)('/:_id'),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -78,7 +78,7 @@ __decorate([
         description: 'Store product structure',
     }),
     (0, common_1.Post)(''),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_facility_dto_1.CreateFacilityDto]),
@@ -90,7 +90,7 @@ __decorate([
         description: 'update  facility structure',
     }),
     (0, common_1.Patch)('/:_id'),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     __param(0, (0, common_1.Param)('_id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -99,7 +99,7 @@ __decorate([
 ], FacilityController.prototype, "updateFacility", null);
 __decorate([
     (0, common_1.Delete)('/:_id'),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     __param(0, (0, common_1.Param)('_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -110,7 +110,7 @@ __decorate([
         summary: 'Load facility cs file ',
         description: '***',
     }),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
     (0, swagger_1.ApiBody)({
         schema: {

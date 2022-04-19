@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
+import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';

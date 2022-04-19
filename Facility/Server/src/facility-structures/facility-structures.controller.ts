@@ -5,14 +5,14 @@ import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto'
 import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { FacilityUserRoles } from 'src/common/const/keycloak.role.enum';
+import { UserRoles } from 'src/common/const/keycloak.role.enum';
 @ApiTags('structure')
 @ApiBearerAuth('JWT-auth')
 @Controller('structure')
 export class FacilityStructuresController {
   constructor(private readonly facilityStructuresService: FacilityStructuresService) {}
 
-  @Roles({ roles: [FacilityUserRoles.ADMIN] })
+  @Roles({ roles: [UserRoles.ADMIN] })
   @ApiBody({
     type: CreateFacilityStructureDto,
     description: 'create  facility structure',

@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const objectId_check_1 = require("../../common/func/objectId.check");
-const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
+const not_found_exception_1 = require("../../common/notFoundExceptions/not.found.exception");
 const facility_entity_1 = require("../entities/facility.entity");
 let FacilityRepository = class FacilityRepository {
     constructor(facilityModel) {
@@ -29,7 +29,7 @@ let FacilityRepository = class FacilityRepository {
     async findOneById(id) {
         const facility = await this.facilityModel.findById({ _id: id }).exec();
         if (!facility) {
-            throw new facility_not_found_exception_1.FacilityNotFountException(id);
+            throw new not_found_exception_1.FacilityNotFountException(id);
         }
         return facility;
     }
@@ -77,7 +77,7 @@ let FacilityRepository = class FacilityRepository {
             .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
             .exec();
         if (!updatedFacility) {
-            throw new facility_not_found_exception_1.FacilityNotFountException(_id);
+            throw new not_found_exception_1.FacilityNotFountException(_id);
         }
         return updatedFacility;
     }

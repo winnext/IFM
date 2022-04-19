@@ -44,7 +44,7 @@ let ClassificationController = class ClassificationController {
 };
 __decorate([
     (0, common_1.Post)(),
-    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.FacilityUserRoles.ADMIN] }),
+    (0, nest_keycloak_connect_1.Roles)({ roles: [keycloak_role_enum_1.UserRoles.ADMIN] }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_classification_dto_1.CreateClassificationDto]),

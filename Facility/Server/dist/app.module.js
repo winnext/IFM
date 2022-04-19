@@ -15,7 +15,6 @@ const keyclock_module_1 = require("./facility/keyclock.module");
 const classification_module_1 = require("./classification/classification.module");
 const connection_enum_1 = require("./common/const/connection.enum");
 const nestjs_i18n_1 = require("nestjs-i18n");
-const path = require("path");
 const core_1 = require("@nestjs/core");
 const messagebroker_module_1 = require("./messagebroker/messagebroker.module");
 const Joi = require("joi");
@@ -26,6 +25,8 @@ const redisStore = require("cache-manager-redis-store");
 const http_cache_interceptor_1 = require("./common/interceptors/http.cache.interceptor");
 const trace_logger_module_1 = require("./trace_logger/trace.logger.module");
 const opentelemetry_options_1 = require("./common/configs/opentelemetry.options");
+const i18n_options_1 = require("./common/configs/i18n.options");
+const room_module_1 = require("./rooms/room.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -50,17 +51,7 @@ AppModule = __decorate([
             }),
             facility_module_1.FacilityModule,
             keyclock_module_1.KeycloakModule,
-            nestjs_i18n_1.I18nModule.forRoot({
-                fallbackLanguage: 'tr',
-                fallbacks: {
-                    en: 'en',
-                    tr: 'tr',
-                },
-                parser: nestjs_i18n_1.I18nJsonParser,
-                parserOptions: {
-                    path: path.join(__dirname, '/i18n/'),
-                },
-            }),
+            nestjs_i18n_1.I18nModule.forRoot((0, i18n_options_1.i18nOptions)(__dirname)),
             mongoose_1.MongooseModule.forRootAsync({
                 connectionName: connection_enum_1.ConnectionEnums.FACILITY,
                 useFactory: (config) => ({
@@ -81,6 +72,16 @@ AppModule = __decorate([
                 }),
                 inject: [config_1.ConfigService],
             }),
+            mongoose_1.MongooseModule.forRootAsync({
+                connectionName: connection_enum_1.ConnectionEnums.ROOM,
+                useFactory: (config) => ({
+                    uri: config.get('DATABASE_LINK'),
+                    dbName: config.get('ROOM_DB_NAME'),
+                    user: config.get('DB_USER'),
+                    pass: config.get('DB_PASS'),
+                }),
+                inject: [config_1.ConfigService],
+            }),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 validationSchema: Joi.object({
@@ -93,6 +94,7 @@ AppModule = __decorate([
             messagebroker_module_1.MessagebrokerModule,
             facility_structures_module_1.FacilityStructuresModule,
             history_module_1.HistoryModule,
+            room_module_1.RoomModule,
         ],
         providers: [
             {

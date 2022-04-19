@@ -53,7 +53,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     response.status(status).json(exception.getResponse());
                 }
                 catch (error) {
-                    console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+                    console.log('`FACİLİTY_EXCEPTION topic cannot connected due to ' + error);
                 }
                 break;
             case 401:
@@ -66,12 +66,12 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                         requestInformation,
                     };
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-                    console.log(`FACILITY_EXCEPTION sending to topic from code 401`);
+                    console.log(`FACİLİTY_EXCEPTION sending to topic from code 401`);
                     this.logger.warn(`${JSON.stringify(finalExcep)}   `);
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
-                    console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+                    console.log('`FACİLİTY_EXCEPTION topic cannot connected due to ' + error);
                 }
                 break;
             case 403:
@@ -88,7 +88,7 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                     response.status(status).json(clientResponse);
                 }
                 catch (error) {
-                    console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+                    console.log('FACİLİTY_EXCEPTION topic cannot connected due to ' + error);
                 }
                 break;
             case 404:
@@ -116,6 +116,20 @@ let HttpExceptionFilter = class HttpExceptionFilter {
                 }
                 break;
             default:
+                let message = '';
+                if (result.key) {
+                    message = await this.i18n.translate(result.key, {
+                        lang: ctx.getRequest().i18nLang,
+                        args: result.args,
+                    });
+                }
+                const clientResponse = { status, message };
+                const finalExcep = {
+                    errorResponseLog,
+                    clientResponse,
+                    requestInformation,
+                };
+                await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
                 this.logger.error(`${JSON.stringify(exception.message)}   `);
                 response.status(status).json(exception.message);
                 break;

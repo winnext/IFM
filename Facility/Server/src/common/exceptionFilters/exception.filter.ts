@@ -6,14 +6,28 @@ import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
 import { FacilityTopics } from '../const/kafta.topic.enum';
 
+/**
+ * Catch HttpExceptions and send this exception to messagebroker  to save the database
+ */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  postKafka;
-
+  /**
+   * create variable for postKafka Service
+   */
+  postKafka: PostKafka;
+  /**
+   * inject i18nService
+   */
   constructor(private readonly i18n: I18nService) {
     this.postKafka = new PostKafka(new KafkaService());
   }
+  /**
+   * Log from Logger
+   */
   private logger = new Logger('HTTP');
+  /**
+   * Catch method for  handle HttpExceptions
+   */
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -47,7 +61,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(exception.getResponse());
         } catch (error) {
-          console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+          console.log('`FACİLİTY_EXCEPTION topic cannot connected due to ' + error);
         }
         break;
       case 401:
@@ -60,11 +74,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
             requestInformation,
           };
           await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-          console.log(`FACILITY_EXCEPTION sending to topic from code 401`);
+          console.log(`FACİLİTY_EXCEPTION sending to topic from code 401`);
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(clientResponse);
         } catch (error) {
-          console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+          console.log('`FACİLİTY_EXCEPTION topic cannot connected due to ' + error);
         }
         break;
       case 403:
@@ -80,7 +94,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
           response.status(status).json(clientResponse);
         } catch (error) {
-          console.log('FACILITY_EXCEPTION topic cannot connected due to ' + error);
+          console.log('FACİLİTY_EXCEPTION topic cannot connected due to ' + error);
         }
         break;
       case 404:
@@ -108,6 +122,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
 
       default:
+        let message = '';
+        if (result.key) {
+          message = await this.i18n.translate(result.key, {
+            lang: ctx.getRequest().i18nLang,
+            args: result.args,
+          });
+        }
+        const clientResponse = { status, message };
+        const finalExcep = {
+          errorResponseLog,
+          clientResponse,
+          requestInformation,
+        };
+        await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
         this.logger.error(`${JSON.stringify(exception.message)}   `);
         response.status(status).json(exception.message);
         break;
@@ -115,6 +143,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 }
 
+/**
+ * Get User not authorized message with i18n
+ */
 async function getI18nMessage(i18n: I18nService, request) {
   const username = request.user?.name || 'Guest';
   return await i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {

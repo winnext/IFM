@@ -18,14 +18,16 @@ const microservices_1 = require("@nestjs/microservices");
 const nest_keycloak_connect_1 = require("nest-keycloak-connect");
 const path_enum_1 = require("../common/const/path.enum");
 const kafta_topic_enum_1 = require("../common/const/kafta.topic.enum");
-const classification_history_service_1 = require("../history/classification.history.service");
-const facility_history_service_1 = require("../history/facility.history.service");
-const facilitystructure_history_service_1 = require("../history/facilitystructure.history.service");
+const classification_history_service_1 = require("../history/services/classification.history.service");
+const facility_history_service_1 = require("../history/services/facility.history.service");
+const facilitystructure_history_service_1 = require("../history/services/facilitystructure.history.service");
+const room_history_service_1 = require("../history/services/room.history.service");
 let MessagebrokerController = class MessagebrokerController {
-    constructor(facilityHistoryService, classificationHistoryService, facilityStructureHistoryService) {
+    constructor(facilityHistoryService, classificationHistoryService, facilityStructureHistoryService, roomHistoryService) {
         this.facilityHistoryService = facilityHistoryService;
         this.classificationHistoryService = classificationHistoryService;
         this.facilityStructureHistoryService = facilityStructureHistoryService;
+        this.roomHistoryService = roomHistoryService;
     }
     exceptionListener(message) {
         console.log('this is from message broker exception listener' + message.value);
@@ -50,6 +52,12 @@ let MessagebrokerController = class MessagebrokerController {
                 const facilityStructureHistory = { facilityStructure: message.value.responseBody, user: message.value.user };
                 await this.facilityStructureHistoryService.create(facilityStructureHistory);
                 console.log('structure topic added');
+                break;
+            case path_enum_1.PathEnums.ROOM:
+                console.log('facility room history topic');
+                const roomHistory = { room: message.value.responseBody, user: message.value.user };
+                await this.roomHistoryService.create(roomHistory);
+                console.log('room topic added');
                 break;
             default:
                 console.log('undefined history call from facility microservice');
@@ -83,7 +91,8 @@ MessagebrokerController = __decorate([
     (0, nest_keycloak_connect_1.Unprotected)(),
     __metadata("design:paramtypes", [facility_history_service_1.FacilityHistoryService,
         classification_history_service_1.ClassificationHistoryService,
-        facilitystructure_history_service_1.FacilityStructureHistoryService])
+        facilitystructure_history_service_1.FacilityStructureHistoryService,
+        room_history_service_1.RoomHistoryService])
 ], MessagebrokerController);
 exports.MessagebrokerController = MessagebrokerController;
 //# sourceMappingURL=messagebroker.controller.js.map
