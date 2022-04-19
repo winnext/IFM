@@ -52,7 +52,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
         }),
       ],
     }),
-    instrumentations: [getNodeAutoInstrumentations(),new PinoInstrumentation(),new KafkaJsInstrumentation({})],
+    instrumentations: [getNodeAutoInstrumentations(),new PinoInstrumentation()],
   });
   
   export default trial;

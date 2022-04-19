@@ -23,7 +23,7 @@ const { BasicTracerProvider, SimpleSpanProcessor } = require('@opentelemetry/sdk
  * trace provider
  */
 const provider = new BasicTracerProvider({
-  resource: new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: 'facility_service' }),
+  resource: new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: 'user_service' }),
 });
 provider.register();
 provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter()));
@@ -62,7 +62,7 @@ const trial = new NodeSDK({
       }),
     ],
   }),
-  instrumentations: [getNodeAutoInstrumentations(), new PinoInstrumentation(), new KafkaJsInstrumentation({})],
+  instrumentations: [getNodeAutoInstrumentations(), new PinoInstrumentation()],
 });
 
 /**

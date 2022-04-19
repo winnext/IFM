@@ -5,7 +5,6 @@ import { trace, context } from '@opentelemetry/api';
  * Logger options for open telemetry
  */
 export const loggerOptions: LoggerOptions = {
-  customLevels: { ['success']: 200, ['error']: 400 },
   formatters: {
     log(object) {
       const span = trace.getSpan(context.active());
