@@ -1,9 +1,0 @@
-/**
- * Kafka Topic Enum
- */
-export enum RoomTopics {
-  ROOM_LOGGER = 'ROOM_LOGGER',
-  ROOM_EXCEPTIONS = 'ROOM_EXCEPTIONS',
-  ROOM_ERROR = 'ROOM_ERROR',
-  ROOM_OPERATION = 'ROOM_OPERATION',
-}
