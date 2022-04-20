@@ -47,4 +47,11 @@ export class ClassificationController {
   changeNodeBranch(@Param('id') id: string, @Param('target_parent_id') target_parent_id: string) {
     return this.classificationService.changeNodeBranch(id,target_parent_id);
   }
+
+  @Unprotected()
+  @Get('/nodeinfo/:key')
+  @NoCache()
+  findOneNode(@Param('key') key: string) {
+    return this.classificationService.findOneNode(key);
+  }
 }

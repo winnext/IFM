@@ -18,7 +18,9 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const dist_1 = require("nest-neo4j/dist");
 const facility_not_found_exception_1 = require("../../common/notFoundExceptions/facility.not.found.exception");
+const neo4j_driver_1 = require("neo4j-driver");
 const classification_entity_1 = require("../entities/classification.entity");
+``;
 let ClassificationRepository = class ClassificationRepository {
     constructor(neo4jService, classificationModel) {
         this.neo4jService = neo4jService;
@@ -28,67 +30,56 @@ let ClassificationRepository = class ClassificationRepository {
         throw new Error(relations);
     }
     async findOneById(id) {
-        let result = await this.neo4jService.read("MATCH (n)-[:CHILDREN*]->(m) \
-      WHERE  id(n)=" + id + " and  NOT (m)-[:CHILDREN]->() \
+        let idNum = parseInt(id);
+        let result = await this.neo4jService.read('MATCH (n)-[:CHILDREN*]->(m) \
+      WHERE  id(n) = $idNum  and  NOT (m)-[:CHILDREN]->() \
       WITH n, m \
       ORDER BY n.code, m.code \
       MATCH p=(n)-[:CHILDREN*]->(m) \
       WHERE NOT ()-[:CHILDREN]->(n) \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
-      RETURN value");
-        var x = result["records"][0]["_fields"][0];
+      RETURN value', { idNum });
+        console.log(result);
+        var x = result['records'][0]['_fields'][0];
         if (!result) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(id);
         }
         else if (Object.keys(x).length === 0) {
-            result = await this.neo4jService.read("MATCH (n) where id(n) = " + id + " return n");
-            let o = { "root": result["records"][0]["_fields"] };
+            result = await this.neo4jService.read('MATCH (n) where id(n) = $idNum return n', { idNum });
+            let o = { root: result['records'][0]['_fields'] };
             return o;
         }
         else {
-            let o = { "root": result["records"][0]["_fields"] };
+            let o = { root: result['records'][0]['_fields'] };
             return o;
         }
-    }
-    async getHello() {
-        const res = await this.neo4jService.read(`MATCH (c:Omni11)-[r:ChildOf]->(p:Omni11) RETURN p,r,c`);
-        const arr = res.records.map((fields) => {
-            const parent = fields.get('p');
-            const relation = fields.get('r');
-            const child = fields.get('c');
-            const z = { parent, relation, child };
-            return z;
-        });
-        return arr;
     }
     async findAll(data) {
         let { page, limit, orderBy, orderByColumn } = data;
         page = page || 0;
-        limit = limit || 5;
+        limit = limit || 3;
         orderBy = orderBy || 'DESC';
         orderByColumn = orderByColumn || 'name';
         const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false RETURN count(c)`);
-        let coun = count["records"][0]["length"];
+        let coun = count['records'][0]['length'];
         const pagecount = Math.ceil(coun / limit);
-        let pg = parseInt(page.toString());
-        const lmt = parseInt(limit.toString());
-        if (pg > pagecount) {
-            pg = pagecount;
+        if (page > pagecount) {
+            page = pagecount;
         }
-        let skip = pg * lmt;
+        let skip = page * limit;
         if (skip >= coun) {
-            skip = coun - lmt;
+            skip = coun - limit;
             if (skip < 0) {
                 skip = 0;
             }
         }
-        const result = await this.neo4jService.read("MATCH (x) where x.hasParent = false return x ORDER BY x." + orderByColumn + " " + orderBy + " SKIP " + skip + " LIMIT " + limit + " ;");
+        const result = await this.neo4jService.read('MATCH (x) where x.hasParent = false return x ORDER BY x.' + orderByColumn + '$orderBy SKIP $skip LIMIT $limit', { limit: (0, neo4j_driver_1.int)(limit), skip: (0, neo4j_driver_1.int)(skip), orderBy: orderBy, orderByColumn: orderByColumn });
         let arr = [];
-        for (let i = 0; i < result["records"].length; i++) {
-            arr.push(result["records"][i]["_fields"][0]);
+        for (let i = 0; i < result['records'].length; i++) {
+            arr.push(result['records'][i]['_fields'][0]);
         }
-        const pagination = { count: coun, page: pg, limit: lmt };
+        const pagination = { count: coun, page: page, limit: limit };
         const classification = [];
         classification.push(arr);
         classification.push(pagination);
@@ -107,73 +98,129 @@ let ClassificationRepository = class ClassificationRepository {
             classification.tag = createClassificationDto.tag;
         }
         if (createClassificationDto.parent_id) {
-            let a = "(x:" + createClassificationDto.labelclass + " {name:'" + classification.name +
-                "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
-                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + "', labelclass:'" + classification.labelclass +
-                "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
-            a = "match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id + " create (y)-[:CHILDREN]->" + a;
-            let result = await this.neo4jService.write(a);
-            await this.neo4jService.write("match (x:" + createClassificationDto.labelclass + " {key:'" + classification.key + "'}) set x.self_id = id(x)");
-            let b = "match (x:" + createClassificationDto.labelclass + " {code: '" + classification.code + "'})" +
-                " match (y:" + createClassificationDto.labelclass + ") where id(y)=" + createClassificationDto.parent_id +
-                " create (x)-[:CHILD_OF]->(y)";
-            result = await this.neo4jService.write(b);
-            return new classification_entity_1.Classification;
+            let a = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
+         labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt})`;
+            a = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + a;
+            let result = await this.neo4jService.write(a, {
+                labelclass: createClassificationDto.labelclass,
+                name: classification.name,
+                code: classification.code,
+                key: classification.key,
+                hasParent: classification.hasParent,
+                tag: JSON.stringify(classification.tag),
+                label: classification.label,
+                createdAt: classification.createdAt,
+                updatedAt: classification.updatedAt,
+                parent_id: (0, neo4j_driver_1.int)(createClassificationDto.parent_id),
+            });
+            await this.neo4jService.write(`match (x: ${createClassificationDto.labelclass} {key: $key}) set x.self_id = id(x)`, {
+                key: classification.key
+            });
+            let b = `match (x: ${createClassificationDto.labelclass} {code: $code}) \
+         match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id \
+         create (x)-[:CHILD_OF]->(y)`;
+            result = await this.neo4jService.write(b, {
+                code: classification.code,
+                parent_id: (0, neo4j_driver_1.int)(createClassificationDto.parent_id)
+            });
+            return new classification_entity_1.Classification();
         }
         else {
             classification.hasParent = false;
-            let a = "CREATE (x:" + createClassificationDto.labelclass + " {name:'" +
-                classification.name + "',code:'" + classification.code + "',key:'" + classification.key + "', hasParent:" + classification.hasParent +
-                ", tag:" + JSON.stringify(classification.tag) + ",label:'" + classification.label + "', labelclass:'" + classification.labelclass +
-                "', createdAt:'" + classification.createdAt + "', updatedAt:'" + classification.updatedAt + "'})";
-            const result = await this.neo4jService.write(a);
-            await this.neo4jService.write("match (x:" + createClassificationDto.labelclass + " {key:'" + classification.key + "'}) set x.self_id = id(x)");
-            return new classification_entity_1.Classification;
+            let name = classification.name;
+            let code = classification.code;
+            let key = classification.key;
+            let hasParent = classification.hasParent;
+            let tag = JSON.stringify(classification.tag);
+            let label = classification.label;
+            let createdAt = classification.createdAt;
+            let updatedAt = classification.updatedAt;
+            let labelclass = createClassificationDto.labelclass;
+            let a = `CREATE (x:${createClassificationDto.labelclass} {name: \
+        $name, code:$code,key:$key, hasParent: $hasParent \
+        ,tag: $tag , label: $label, labelclass:$labelclass \
+        , createdAt: $createdAt, updatedAt: $updatedAt })`;
+            const result = await this.neo4jService.write(a, {
+                name,
+                code,
+                key,
+                hasParent,
+                tag,
+                label,
+                createdAt,
+                updatedAt,
+                labelclass
+            });
+            await this.neo4jService.write(`match (x:${createClassificationDto.labelclass}  {key: $key}) set x.self_id = id(x)`, {
+                key: classification.key
+            });
+            return new classification_entity_1.Classification();
         }
     }
     async update(_id, updateClassificationto) {
-        let res = await this.neo4jService.read("MATCH (p) where id(p)=" + _id + " return count(p)");
-        if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
-            res = await this.neo4jService.write("MATCH (c) where id(c)=" + _id + " set c.code='" + updateClassificationto.code + "', c.name='" + updateClassificationto.name +
-                "', c.tag=" + JSON.stringify(updateClassificationto.tag) + ", c.label='" +
-                updateClassificationto.code + " . " + updateClassificationto.name + "'");
-            console.log("Node updated ................... ");
-            return new classification_entity_1.Classification;
+        let res = await this.neo4jService.read('MATCH (p) where id(p)=$id return count(p)', { id: parseInt(_id) });
+        if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
+            res = await this.neo4jService.write('MATCH (c) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label', {
+                name: updateClassificationto.name,
+                code: updateClassificationto.code,
+                tag: JSON.stringify(updateClassificationto.tag),
+                label: updateClassificationto.code + ' . ' + updateClassificationto.name,
+                id: (0, neo4j_driver_1.int)(_id),
+            });
+            console.log('Node updated ................... ');
+            return new classification_entity_1.Classification();
         }
         else {
-            console.log("Can not find a node for update  ....................");
-            return new classification_entity_1.Classification;
+            console.log('Can not find a node for update  ....................');
+            return new classification_entity_1.Classification();
         }
     }
     async delete(_id) {
-        let res = await this.neo4jService.read("MATCH (c)  -[r:CHILDREN]->(p) where id(c)=" + _id + " return count(p)");
-        if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
-            console.log("Can not delete a node include children ....................");
-            return new classification_entity_1.Classification;
+        let res = await this.neo4jService.read('MATCH (c)  -[r:CHILDREN]->(p) where id(c)= $id return count(p)', {
+            id: parseInt(_id),
+        });
+        if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
+            console.log('Can not delete a node include children ....................');
+            return new classification_entity_1.Classification();
         }
         else {
-            res = await this.neo4jService.write("MATCH (c) where id(c)=" + _id + " detach delete c");
-            console.log("Node deleted ................... ");
-            return new classification_entity_1.Classification;
+            res = await this.neo4jService.write('MATCH (c) where id(c)= $id detach delete c', { id: parseInt(_id) });
+            console.log('Node deleted ................... ');
+            return new classification_entity_1.Classification();
         }
     }
     async changeNodeBranch(_id, _target_parent_id) {
         await this.deleteRelations(_id);
         await this.addRelations(_id, _target_parent_id);
-        return new classification_entity_1.Classification;
+        return new classification_entity_1.Classification();
     }
     async deleteRelations(_id) {
-        let res = await this.neo4jService.read("MATCH (c)-[r:CHILD_OF]->(p) where id(c)=" + _id + " return count(p)");
-        if (parseInt(JSON.stringify(res.records[0]["_fields"][0]["low"])) > 0) {
-            let res1 = await this.neo4jService.write("MATCH (c)<-[r:CHILDREN]-(p) where id(c)=" + _id + " delete r");
-            let res2 = await this.neo4jService.write("MATCH (c)-[r:CHILD_OF]->(p) where id(c)=" + _id + " delete r");
+        let res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return count(p)', {
+            id: parseInt(_id),
+        });
+        if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
+            let res1 = await this.neo4jService.write('MATCH (c)<-[r:CHILDREN]-(p) where id(c)= $id delete r', {
+                id: parseInt(_id),
+            });
+            let res2 = await this.neo4jService.write('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id delete r', {
+                id: parseInt(_id),
+            });
         }
     }
     async addRelations(_id, _target_parent_id) {
-        let res2 = await this.neo4jService.write("MATCH (c) where id(c)=" + _id + " MATCH (p) where id(p)=" + _target_parent_id +
-            " create (p)-[:CHILDREN]-> (c)");
-        let res1 = await this.neo4jService.write("MATCH (c) where id(c)=" + _id + " MATCH (p) where id(p)=" + _target_parent_id +
-            " create (c)-[:CHILD_OF]-> (p)");
+        let res2 = await this.neo4jService.write('MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id ' + ' create (p)-[:CHILDREN]-> (c)', { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) });
+        let res1 = await this.neo4jService.write('MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id ' + ' create (c)-[:CHILD_OF]-> (p)', { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) });
+    }
+    async findOneNodeByKey(key) {
+        let result = await this.neo4jService.read("match (n {key:$key})  return n", { key: key });
+        console.log(result);
+        var x = result['records'][0]['_fields'][0];
+        if (!result) {
+            throw new facility_not_found_exception_1.ClassificationNotFountException(key);
+        }
+        else {
+            return x;
+        }
     }
 };
 ClassificationRepository = __decorate([

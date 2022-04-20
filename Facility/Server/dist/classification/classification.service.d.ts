@@ -11,4 +11,5 @@ export declare class ClassificationService {
     update(id: string, updateClassificationDto: UpdateClassificationDto): Promise<any>;
     remove(id: string): Promise<Classification>;
     changeNodeBranch(id: string, target_parent_id: string): Promise<Classification>;
+    findOneNode(key: string): Promise<any>;
 }

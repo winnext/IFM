@@ -16,4 +16,5 @@ export interface BaseGraphDatabaseInterfaceRepository<T> {
 
   changeNodeBranch (id: string, target_parent_id: string): Promise<T>;
 
+  findOneNodeByKey(key: string);
 }

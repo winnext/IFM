@@ -11,4 +11,5 @@ export declare class ClassificationController {
     update(id: string, updateClassificationDto: UpdateClassificationDto): Promise<any>;
     remove(id: string): Promise<import("./entities/classification.entity").Classification>;
     changeNodeBranch(id: string, target_parent_id: string): Promise<import("./entities/classification.entity").Classification>;
+    findOneNode(key: string): Promise<any>;
 }

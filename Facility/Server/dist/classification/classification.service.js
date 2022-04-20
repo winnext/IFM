@@ -40,6 +40,9 @@ let ClassificationService = class ClassificationService {
     async changeNodeBranch(id, target_parent_id) {
         return await this.classificationRepository.changeNodeBranch(id, target_parent_id);
     }
+    async findOneNode(key) {
+        return await this.classificationRepository.findOneNodeByKey(key);
+    }
 };
 __decorate([
     (0, nestjs_otel_1.Span)('create a classification'),
@@ -83,6 +86,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], ClassificationService.prototype, "changeNodeBranch", null);
+__decorate([
+    (0, nestjs_otel_1.Span)('find a classification node by key'),
+    (0, nestjs_otel_1.OtelMethodCounter)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClassificationService.prototype, "findOneNode", null);
 ClassificationService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(repository_enum_1.RepositoryEnums.CLASSIFICATION)),

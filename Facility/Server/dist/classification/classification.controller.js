@@ -43,6 +43,9 @@ let ClassificationController = class ClassificationController {
     changeNodeBranch(id, target_parent_id) {
         return this.classificationService.changeNodeBranch(id, target_parent_id);
     }
+    findOneNode(key) {
+        return this.classificationService.findOneNode(key);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -96,6 +99,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ClassificationController.prototype, "changeNodeBranch", null);
+__decorate([
+    (0, nest_keycloak_connect_1.Unprotected)(),
+    (0, common_1.Get)('/nodeinfo/:key'),
+    (0, http_cache_interceptor_1.NoCache)(),
+    __param(0, (0, common_1.Param)('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ClassificationController.prototype, "findOneNode", null);
 ClassificationController = __decorate([
     (0, swagger_1.ApiTags)('Classification'),
     (0, swagger_1.ApiBearerAuth)('JWT-auth'),

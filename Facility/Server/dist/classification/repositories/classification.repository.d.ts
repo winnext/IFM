@@ -13,7 +13,6 @@ export declare class ClassificationRepository implements BaseGraphDatabaseInterf
     findOneById(id: string): Promise<{
         root: any;
     }>;
-    getHello(): Promise<any>;
     findAll(data: PaginationParams): Promise<any[]>;
     create(createClassificationDto: CreateClassificationDto): Promise<Classification>;
     update(_id: string, updateClassificationto: UpdateClassificationDto): Promise<Classification>;
@@ -21,4 +20,5 @@ export declare class ClassificationRepository implements BaseGraphDatabaseInterf
     changeNodeBranch(_id: string, _target_parent_id: string): Promise<Classification>;
     deleteRelations(_id: string): Promise<void>;
     addRelations(_id: string, _target_parent_id: string): Promise<void>;
+    findOneNodeByKey(key: string): Promise<any>;
 }

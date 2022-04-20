@@ -49,4 +49,11 @@ export class ClassificationService {
   async changeNodeBranch(id: string, target_parent_id: string) {
     return await this.classificationRepository.changeNodeBranch(id, target_parent_id);
   }
+
+  @Span('find a classification node by key')
+  @OtelMethodCounter()
+  async findOneNode(key: string) {
+    //checkObjectIddİsValid(id);
+    return await this.classificationRepository.findOneNodeByKey(key);
+  }
 }
