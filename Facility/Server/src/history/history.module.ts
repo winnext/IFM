@@ -27,20 +27,31 @@ import { RoomHistoryController } from './controllers/room.history.controller';
           name: FacilityHistory.name,
           schema: FaciliyHistorySchema,
         },
-        {
-          name: ClassificationHistory.name,
-          schema: ClassificationHistorySchema,
-        },
+
         {
           name: FacilityStructureHistory.name,
           schema: FaciliyStructureHistorySchema,
         },
+      ],
+      ConnectionEnums.FACILITY,
+    ),
+    MongooseModule.forFeature(
+      [
+        {
+          name: ClassificationHistory.name,
+          schema: ClassificationHistorySchema,
+        },
+      ],
+      ConnectionEnums.CLASSIFICATION,
+    ),
+    MongooseModule.forFeature(
+      [
         {
           name: RoomHistory.name,
           schema: RoomHistorySchema,
         },
       ],
-      ConnectionEnums.FACILITY,
+      ConnectionEnums.ROOM,
     ),
   ],
   controllers: [

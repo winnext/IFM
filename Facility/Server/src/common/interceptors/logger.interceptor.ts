@@ -53,7 +53,7 @@ export class LoggingInterceptor implements NestInterceptor {
     const url = request.url;
     const parsedUrl = url.match(/^\/[^\?\/]*/);
 
-    //this event cache the request and response
+    //this event catch the request and response
     response.on('close', async () => {
       const { statusCode, statusMessage } = response;
 
@@ -74,6 +74,7 @@ export class LoggingInterceptor implements NestInterceptor {
     if (query._id) {
       checkObjectIddİsValid(query._id);
     }
+    //this event catch the response data
     return next.handle().pipe(
       tap(async (responseBody) => {
         try {
