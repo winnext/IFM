@@ -1,8 +1,0 @@
-version: '3.9'
-
-services:
-  redis:
-    image: redis:6.2-alpine
-    ports:
-      - 6379:6379
-    command: redis-server --save 60 1 --requirepass MDNcVb924a --loglevel warning
