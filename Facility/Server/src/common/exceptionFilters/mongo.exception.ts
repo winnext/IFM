@@ -29,7 +29,7 @@ export class MongoExceptionFilter implements ExceptionFilter {
         response.status(500).json({ code: 500, message: 'Server connection lost' });
         break;
       default:
-        response.status(500).json({ code: 500, message: 'Internal server error' });
+        response.status(500).json({ code: 500, message: 'Internal server error', error: exception.message });
         break;
     }
   }

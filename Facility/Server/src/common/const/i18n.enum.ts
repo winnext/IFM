@@ -1,3 +1,6 @@
+/**
+ * i18n Enum
+ */
 export enum I18NEnums {
   USER_NOT_HAVE_PERMISSION = 'greet.USER_NOT_HAVE_PERMISSION',
   FACILITY_NOT_FOUND = 'greet.FACILITY_NOT_FOUND',

@@ -71,6 +71,7 @@ export class LoggingInterceptor implements NestInterceptor {
       }
       this.logger.log(`${JSON.stringify(log)}   `);
     });
+    //check if request query id is valid
     if (query._id) {
       checkObjectIddİsValid(query._id);
     }
