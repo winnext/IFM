@@ -2,7 +2,6 @@ import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { KeycloakModule } from './facility/keyclock.module';
 import { ClassificationModule } from './classification/classification.module';
 import { ConnectionEnums } from './common/const/connection.enum';
 import { I18nModule } from 'nestjs-i18n';
@@ -18,6 +17,7 @@ import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { i18nOptions } from './common/configs/i18n.options';
 import { RoomModule } from './rooms/room.module';
+import { KeycloakModule } from './common/keycloak/keycloak.module';
 
 @Module({
   imports: [
