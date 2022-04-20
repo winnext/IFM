@@ -18,7 +18,7 @@ export class Room extends BasePersistantDocumentObject {
   @Prop()
   code: string;
   /**
-   * createDate of roon
+   * createDate of room
    */
   @Prop({
     type: Date,
@@ -36,7 +36,7 @@ export class Room extends BasePersistantDocumentObject {
   updatedAt: Date;
 
   /**
-   * Return class name(User)
+   * Return class name(Room)
    */
   @Prop({
     type: String,

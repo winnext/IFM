@@ -9,18 +9,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoExceptionFilter = void 0;
 const common_1 = require("@nestjs/common");
 let MongoExceptionFilter = class MongoExceptionFilter {
-    catch(exception) {
+    catch(exception, host) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse();
+        console.log('--------This error from MONGO EXCEPTİPON FİLTER-----------');
+        console.log(exception);
         switch (exception.code) {
             case 112:
-                throw new common_1.BadGatewayException();
+                response.status(409).json({ code: 409, message: 'conflict' });
+                break;
             case 211:
-                throw new common_1.InternalServerErrorException();
-            case 11600:
-                throw new common_1.InternalServerErrorException();
+                response.status(500).json({ code: 500, message: 'Server down' });
+                break;
             case 11000:
-                throw new common_1.ConflictException();
+                response.status(400).json({ code: 409, message: 'Duplicate entry' });
+                break;
+            case 11600:
+                response.status(500).json({ code: 500, message: 'Server connection lost' });
+                break;
             default:
-                throw new common_1.InternalServerErrorException(`error ${exception.code}`);
+                response.status(500).json({ code: 500, message: 'Internal server error' });
+                break;
         }
     }
 };

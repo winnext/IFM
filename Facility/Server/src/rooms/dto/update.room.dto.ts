@@ -3,24 +3,24 @@ import { IsOptional } from 'class-validator';
 import { CreateRoomDto } from './create.room.dto';
 
 /**
- * Update User Dto
+ * Update Room Dto
  */
 export class UpdateRoomDto extends PartialType(CreateRoomDto) {
   /**
-   * updateDate when user updated
+   * updateDate when room updated
    */
   @IsOptional()
   updatedAt: Date = new Date();
 
   /**
-   * set user is active or not
+   * set room is active or not
    */
   @ApiPropertyOptional({ type: Boolean })
   @IsOptional()
   isActive: boolean;
 
   /**
-   * set user is deleted or not
+   * set room is deleted or not
    */
   @ApiPropertyOptional({ type: Boolean })
   @IsOptional()

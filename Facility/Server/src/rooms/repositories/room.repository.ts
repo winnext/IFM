@@ -32,7 +32,7 @@ export class RoomRepository implements BaseInterfaceRepository<Room> {
   }
 
   /**
-   * Find All User with Pagination
+   * Find All Rooms with Pagination
    */
   async findAll(data: PaginationParams) {
     let { page, limit } = data;

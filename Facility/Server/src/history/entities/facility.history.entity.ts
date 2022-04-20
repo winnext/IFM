@@ -13,6 +13,9 @@ export class FacilityHistory extends BasePersistantDocumentObject {
 
   @Prop({ type: Object })
   user: object;
+
+  @Prop({ type: Object })
+  requestInformation: object;
 }
 
 export const FaciliyHistorySchema = SchemaFactory.createForClass(FacilityHistory);

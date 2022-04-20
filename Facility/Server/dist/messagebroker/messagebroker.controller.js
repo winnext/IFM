@@ -36,26 +36,35 @@ let MessagebrokerController = class MessagebrokerController {
         console.log('this is from message broker logger listener' + message.value);
     }
     async operationListener(message) {
+        const { responseBody, user, requestInformation } = message.value;
         switch (message.key) {
             case path_enum_1.PathEnums.FACILITY:
                 console.log('facility history topic');
-                const facilityHistory = { facility: message.value.responseBody, user: message.value.user };
+                const facilityHistory = {
+                    facility: responseBody,
+                    user,
+                    requestInformation,
+                };
                 await this.facilityHistoryService.create(facilityHistory);
                 break;
             case path_enum_1.PathEnums.CLASSIFICATION:
                 console.log('Classification history topic');
-                const classificationHistory = { classification: message.value.responseBody, user: message.value.user };
+                const classificationHistory = { classification: responseBody, user, requestInformation };
                 await this.classificationHistoryService.create(classificationHistory);
                 break;
             case path_enum_1.PathEnums.STRUCTURE:
                 console.log('facility structure history topic');
-                const facilityStructureHistory = { facilityStructure: message.value.responseBody, user: message.value.user };
+                const facilityStructureHistory = {
+                    facilityStructure: responseBody,
+                    user,
+                    requestInformation,
+                };
                 await this.facilityStructureHistoryService.create(facilityStructureHistory);
                 console.log('structure topic added');
                 break;
             case path_enum_1.PathEnums.ROOM:
                 console.log('facility room history topic');
-                const roomHistory = { room: message.value.responseBody, user: message.value.user };
+                const roomHistory = { room: responseBody, user, requestInformation };
                 await this.roomHistoryService.create(roomHistory);
                 console.log('room topic added');
                 break;

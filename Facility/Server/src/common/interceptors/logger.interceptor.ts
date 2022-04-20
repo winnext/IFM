@@ -45,13 +45,15 @@ export class LoggingInterceptor implements NestInterceptor {
       path: request.url,
       method: request.method,
       body: request.body,
-      user: request.user || null,
+      user: request.user || {},
     };
     const user: object = request.user;
     const method = request.method;
     const now = Date.now();
     const url = request.url;
     const parsedUrl = url.match(/^\/[^\?\/]*/);
+
+    //this event cache the request and response
     response.on('close', async () => {
       const { statusCode, statusMessage } = response;
 
@@ -75,7 +77,7 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(async (responseBody) => {
         try {
-          const finalResponse = { responseBody, user };
+          const finalResponse = { responseBody, user, requestInformation };
           if (method !== 'GET') {
             await this.postKafka.producerSendMessage(
               FacilityTopics.FACILITY_OPERATION,

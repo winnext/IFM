@@ -30,7 +30,7 @@ export class RoomService {
     return this.roomRepository.findAll(query);
   }
   /**
-   * find One by id
+   * find One room by id
    */
   @Span('find a room by id')
   @OtelMethodCounter()

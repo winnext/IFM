@@ -22,6 +22,12 @@ export class RoomHistory extends BasePersistantDocumentObject {
    */
   @Prop({ type: Object })
   room: object;
+
+  /**
+   * room request object from incoming request
+   */
+  @Prop({ type: Object })
+  requestInformation: object;
 }
 
 /**

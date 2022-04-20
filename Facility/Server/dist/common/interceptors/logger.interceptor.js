@@ -26,7 +26,7 @@ class LoggingInterceptor {
             path: request.url,
             method: request.method,
             body: request.body,
-            user: request.user || null,
+            user: request.user || {},
         };
         const user = request.user;
         const method = request.method;
@@ -55,7 +55,7 @@ class LoggingInterceptor {
         }
         return next.handle().pipe((0, operators_1.tap)(async (responseBody) => {
             try {
-                const finalResponse = { responseBody, user };
+                const finalResponse = { responseBody, user, requestInformation };
                 if (method !== 'GET') {
                     await this.postKafka.producerSendMessage(kafta_topic_enum_1.FacilityTopics.FACILITY_OPERATION, JSON.stringify(finalResponse), parsedUrl[0]);
                     console.log('Operation topic send successfully');
