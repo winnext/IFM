@@ -45,13 +45,15 @@ export class LoggingInterceptor implements NestInterceptor {
       path: request.url,
       method: request.method,
       body: request.body,
-      user: request.user || null,
+      user: request.user || {},
     };
     const user: object = request.user;
     const method = request.method;
     const now = Date.now();
     const url = request.url;
-    const parsedUrl = url.match(/^\/[^\?\/]*/);
+    //this parsedUrl for the get which endpoints hit by user
+    const parsedUrl = url.match(/^\/[^\?\/]*/)[0];
+    // this event triggered when request is and response is done
     response.on('close', async () => {
       const { statusCode, statusMessage } = response;
 
@@ -63,9 +65,9 @@ export class LoggingInterceptor implements NestInterceptor {
       const log = { requestInformation, responseInformation };
       try {
         await this.postKafka.producerSendMessage(UserTopics.USER_LOGGER, JSON.stringify(log));
-        console.log('FACILITY_LOGGER topic send succesful');
+        console.log('USER_LOGGER topic send succesful');
       } catch (error) {
-        console.log('FACILITY_LOGGER topic cannot connected due to ' + error);
+        console.log('USER_LOGGER topic cannot connected due to ' + error);
       }
       this.logger.log(`${JSON.stringify(log)}   `);
     });
@@ -75,14 +77,14 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(async (responseBody) => {
         try {
-          const finalResponse = { responseBody, user };
+          const finalResponse = { responseBody, user, requestInformation };
           if (method !== 'GET') {
             await this.postKafka.producerSendMessage(
               UserTopics.USER_OPERATION,
               JSON.stringify(finalResponse),
-              parsedUrl[0],
+              parsedUrl,
             );
-            console.log('Operation topic send successfully');
+            console.log('USER_OPERATION topic send successfully');
           }
         } catch (error) {
           console.log(error);

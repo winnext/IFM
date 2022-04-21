@@ -30,11 +30,11 @@ provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter()));
 trace.setGlobalTracerProvider(provider);
 
 /**
- * name of traver
+ * name of tracer
  */
 const name = 'user_service';
 /**
- * version of traver
+ * version of tracer
  */
 const version = '0.1.0';
 /**

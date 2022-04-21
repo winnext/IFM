@@ -22,6 +22,12 @@ export class UserHistory extends BasePersistantDocumentObject {
    */
   @Prop({ type: Object })
   keycloack_user: object;
+
+  /**
+   * request info from incoming request
+   */
+  @Prop({ type: Object })
+  requestInformation: object;
 }
 
 /**

@@ -35,9 +35,10 @@ export class MessagebrokerController {
    */
   @EventPattern(UserTopics.USER_OPERATION)
   async operationListener(@Payload() message): Promise<any> {
+    const { responseBody, user, requestInformation } = message.value;
     switch (message.key) {
       case PathEnums.USER:
-        const userHistory = { user: message.value.responseBody, keycloack_user: message.value.user };
+        const userHistory = { user: responseBody, keycloack_user: user, requestInformation };
         await this.userHistoryService.create(userHistory);
         break;
 

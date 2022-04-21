@@ -12,8 +12,26 @@ export class CreateUserDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  @Length(5, 12)
+  @Length(7, 13)
   phone_number: string;
+
+  /**
+   * User Business Code
+   */
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  business_code: string;
+
+  /**
+   * User Business Name
+   */
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  business_name: string;
 
   /**
    * UserId from keycloack

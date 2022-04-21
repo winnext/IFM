@@ -13,6 +13,9 @@ import { UserHistory } from '../entities/user.history.entity';
  */
 @Injectable()
 export class UserHistoryRepository implements BaseHistoryRepositoryInterface<UserHistory> {
+  /**
+   * User Model for Database Reactions
+   */
   constructor(
     @InjectModel(UserHistory.name)
     private readonly userHistoryModel: Model<UserHistory>,

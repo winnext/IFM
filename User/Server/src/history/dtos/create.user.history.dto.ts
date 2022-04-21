@@ -7,7 +7,7 @@ import { IsNotEmpty, IsObject } from 'class-validator';
  */
 export class CreateUserHistoryDto {
   /**
-   * User f
+   * User object info
    */
   @ApiProperty()
   @IsNotEmpty()
@@ -23,4 +23,13 @@ export class CreateUserHistoryDto {
   @IsObject()
   @Type(() => Object)
   keycloack_user: object;
+
+  /**
+   * request info from incoming request
+   */
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObject()
+  @Type(() => Object)
+  requestInformation: object;
 }

@@ -15,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   /**
    * Get userRepository instance from BaseInterfaceRepository
+   * @param {BaseInterfaceRepository<User>} BaseInterfaceRepository<User>
    */
   constructor(
     @Inject(RepositoryEnums.USER)

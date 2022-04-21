@@ -6,7 +6,7 @@ import * as path from 'path';
  */
 export function i18nOptions(directory): I18nOptions {
   return {
-    fallbackLanguage: 'tr',
+    fallbackLanguage: 'en',
     fallbacks: {
       en: 'en',
       tr: 'tr',

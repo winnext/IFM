@@ -27,9 +27,9 @@ export class UpdateUserDto extends OmitType(CreateUserDto, ['userId']) {
   /**
    * when user logged in which page user will be landing
    */
-  @ApiPropertyOptional({ type: Boolean })
+  @ApiPropertyOptional()
   @IsOptional()
-  landing_page: Date;
+  landing_page: string;
 
   /**
    * set user is active or not

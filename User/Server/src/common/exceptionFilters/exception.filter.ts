@@ -5,6 +5,7 @@ import { I18NEnums } from '../const/i18n.enum';
 import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
 import { UserTopics } from '../const/kafta.topic.enum';
+import { ExceptionType } from '../const/exception.type';
 
 /**
  * Catch HttpExceptions and send this exception to messagebroker  to save the database
@@ -34,6 +35,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    const errorType = ExceptionType.HTTP_EXCEPTİON;
+
     const requestInformation = {
       timestamp: new Date(),
       user: request.user || null,
@@ -49,13 +52,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status,
       message: exception.message,
     };
-
+    const reqResObject = { requestInformation, errorResponseLog, errorType };
     switch (exception.getStatus()) {
       case 400:
         try {
           const finalExcep = {
-            errorResponseLog,
-            requestInformation,
+            reqResObject,
+            clientResponse: exception.getResponse(),
           };
           await this.postKafka.producerSendMessage(UserTopics.USER_EXCEPTIONS, JSON.stringify(finalExcep));
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
@@ -66,12 +69,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
       case 401:
         try {
-          const message = await getI18nMessage(this.i18n, request);
+          const message = await getI18nNotAuthorizedMessage(this.i18n, request);
           const clientResponse = { status, message };
           const finalExcep = {
-            errorResponseLog,
+            reqResObject,
             clientResponse,
-            requestInformation,
           };
           await this.postKafka.producerSendMessage(UserTopics.USER_EXCEPTIONS, JSON.stringify(finalExcep));
           console.log(`USER_EXCEPTION sending to topic from code 401`);
@@ -83,12 +85,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
       case 403:
         try {
-          const message = await getI18nMessage(this.i18n, request);
+          const message = await getI18nNotAuthorizedMessage(this.i18n, request);
           const clientResponse = { status, message };
           const finalExcep = {
-            errorResponseLog,
+            reqResObject,
             clientResponse,
-            requestInformation,
           };
           await this.postKafka.producerSendMessage(UserTopics.USER_EXCEPTIONS, JSON.stringify(finalExcep));
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
@@ -109,9 +110,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
           }
           const clientResponse = { status, message };
           const finalExcep = {
-            errorResponseLog,
+            reqResObject,
             clientResponse,
-            requestInformation,
           };
           await this.postKafka.producerSendMessage(UserTopics.USER_EXCEPTIONS, JSON.stringify(finalExcep));
           this.logger.warn(`${JSON.stringify(finalExcep)}   `);
@@ -131,9 +131,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         }
         const clientResponse = { status, message };
         const finalExcep = {
-          errorResponseLog,
+          reqResObject,
           clientResponse,
-          requestInformation,
         };
         await this.postKafka.producerSendMessage(UserTopics.USER_EXCEPTIONS, JSON.stringify(finalExcep));
         this.logger.error(`${JSON.stringify(exception.message)}   `);
@@ -146,7 +145,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 /**
  * Get User not authorized message with i18n
  */
-async function getI18nMessage(i18n: I18nService, request) {
+async function getI18nNotAuthorizedMessage(i18n: I18nService, request) {
   const username = request.user?.name || 'Guest';
   return await i18n.translate(I18NEnums.USER_NOT_HAVE_PERMISSION, {
     lang: request.i18nLang,

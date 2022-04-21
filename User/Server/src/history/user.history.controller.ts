@@ -27,9 +27,9 @@ export class UserHistoryController {
   /**
    *  get specific User  History with ıd
    */
-  @Get(':id')
+  @Get(':_id')
   @NoCache()
-  async getFacilityHistory(@Param('id') _id: string): Promise<UserHistory[]> {
+  async getFacilityHistory(@Param('_id') _id: string): Promise<UserHistory[]> {
     return await this.useristoryService.findOne(_id);
   }
 }

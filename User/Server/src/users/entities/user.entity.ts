@@ -5,6 +5,9 @@ import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object'
 import { Languages } from 'src/common/const/language.enum';
 import { genCurrentDate } from 'src/common/func/generate.new.date';
 
+/**
+ * User Document type for Mongoose
+ */
 export type UserDocument = User & Document;
 
 @Schema()
@@ -23,6 +26,18 @@ export class User extends BasePersistantDocumentObject {
    */
   @Prop()
   phone_number: string;
+
+  /**
+   * User Business Code
+   */
+  @Prop()
+  business_code: string;
+
+  /**
+   * User Business Name
+   */
+  @Prop()
+  business_name: string;
 
   /**
    * User Language

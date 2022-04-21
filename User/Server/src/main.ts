@@ -44,7 +44,7 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
     app.useGlobalInterceptors(new LoggingInterceptor());
-    app.useGlobalFilters(new MongoExceptionFilter(), new HttpExceptionFilter(i18NService));
+    app.useGlobalFilters(new MongoExceptionFilter(i18NService), new HttpExceptionFilter(i18NService));
     app.enableCors();
     await app.startAllMicroservices();
     await app.listen(3002);
