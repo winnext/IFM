@@ -258,7 +258,27 @@ const SetClassification = () => {
       //   ? node.children.filter((child) => child.key !== search)
       //   : [];
 
-      if (node.key === search) {
+      if (node.hasParent === false) {
+        ClassificationsService.remove(node.self_id.low)
+          .then(() => {
+            toast.current.show({
+              severity: "success",
+              summary: "Success",
+              detail: "Classification Deleted",
+              life: 2000,
+            });
+            navigate("/classifications")
+          })
+          .catch((err) => {
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: err.response ? err.response.data.message : err.message,
+              life: 2000,
+            });
+          });
+      }
+      else if (node.key === search) {
         ClassificationsService.remove(node.self_id.low)
           .then(() => {
             toast.current.show({
