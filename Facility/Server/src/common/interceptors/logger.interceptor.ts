@@ -51,7 +51,8 @@ export class LoggingInterceptor implements NestInterceptor {
     const method = request.method;
     const now = Date.now();
     const url = request.url;
-    const parsedUrl = url.match(/^\/[^\?\/]*/);
+    //this parsedUrl for the get which endpoints hit by user
+    const parsedUrl = url.match(/^\/[^\?\/]*/)[0];
 
     //this event catch the request and response
     response.on('close', async () => {
@@ -84,7 +85,7 @@ export class LoggingInterceptor implements NestInterceptor {
             await this.postKafka.producerSendMessage(
               FacilityTopics.FACILITY_OPERATION,
               JSON.stringify(finalResponse),
-              parsedUrl[0],
+              parsedUrl,
             );
             console.log('Operation topic send successfully');
           }
