@@ -96,7 +96,7 @@ let ClassificationRepository = class ClassificationRepository {
         if (createClassificationDto.tag) {
             classification.tag = createClassificationDto.tag;
         }
-        if (createClassificationDto.parent_id) {
+        if (createClassificationDto.parent_id || createClassificationDto.parent_id == 0) {
             let a = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
          labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt})`;
             a = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + a;
