@@ -56,7 +56,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   async findAll(data: PaginationParams) {
     let { page, limit, orderBy, orderByColumn } = data;
     page = page || 0;
-    limit = limit || 3;
+    limit = limit || 10;
     orderBy = orderBy || 'DESC';
 
     orderByColumn = orderByColumn || 'name';
@@ -115,7 +115,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         code: classification.code,
         key: classification.key,
         hasParent: classification.hasParent,
-        tag: JSON.stringify(classification.tag),
+        tag: classification.tag,
         label: classification.label,
         createdAt: classification.createdAt,
         updatedAt: classification.updatedAt,
@@ -139,7 +139,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       let code = classification.code;
       let key = classification.key;
       let hasParent = classification.hasParent;
-      let tag = JSON.stringify(classification.tag);
+      let tag = classification.tag;
       let label = classification.label;
       let createdAt = classification.createdAt;
       let updatedAt = classification.updatedAt;
