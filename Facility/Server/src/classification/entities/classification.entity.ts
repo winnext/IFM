@@ -14,6 +14,7 @@ export class Classification {
   hasParent: Boolean = true;
   labelclass: string;
   self_id: number;
+  selectable: boolean;
 }
 
 function generateUuid() {

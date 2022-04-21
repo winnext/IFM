@@ -13,5 +13,6 @@ export declare class Classification {
     hasParent: Boolean;
     labelclass: string;
     self_id: number;
+    selectable: boolean;
 }
 export declare const ClassificationSchema: import("mongoose").Schema<import("mongoose").Document<Classification, any, any>, import("mongoose").Model<import("mongoose").Document<Classification, any, any>, any, any, any>, any, any>;
