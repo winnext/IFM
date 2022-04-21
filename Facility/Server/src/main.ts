@@ -38,7 +38,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-    app.useGlobalFilters(new MongoExceptionFilter(), new HttpExceptionFilter(i18NService));
+    app.useGlobalFilters(new MongoExceptionFilter(i18NService), new HttpExceptionFilter(i18NService));
     app.useGlobalInterceptors(new LoggingInterceptor());
     app.enableCors();
     await app.startAllMicroservices();
