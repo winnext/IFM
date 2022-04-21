@@ -258,47 +258,49 @@ const SetClassification = () => {
       //   ? node.children.filter((child) => child.key !== search)
       //   : [];
 
-      if (node.hasParent === false) {
-        ClassificationsService.remove(node.self_id.low)
-          .then(() => {
-            toast.current.show({
-              severity: "success",
-              summary: "Success",
-              detail: "Classification Deleted",
-              life: 2000,
+      if (node.key === search) {
+        if (node.hasParent === false) {
+          ClassificationsService.remove(node.self_id.low)
+            .then(() => {
+              toast.current.show({
+                severity: "success",
+                summary: "Success",
+                detail: "Classification Deleted",
+                life: 2000,
+              });
+              navigate("/classifications")
+            })
+            .catch((err) => {
+              toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: err.response ? err.response.data.message : err.message,
+                life: 2000,
+              });
             });
-            navigate("/classifications")
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
-            });
-          });
-      }
-      else if (node.key === search) {
-        ClassificationsService.remove(node.self_id.low)
-          .then(() => {
-            toast.current.show({
-              severity: "success",
-              summary: "Success",
-              detail: "Classification Deleted",
-              life: 2000,
-            });
-            getClassification();
+        }
+        else {
+          ClassificationsService.remove(node.self_id.low)
+            .then(() => {
+              toast.current.show({
+                severity: "success",
+                summary: "Success",
+                detail: "Classification Deleted",
+                life: 2000,
+              });
+              getClassification();
 
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
+            })
+            .catch((err) => {
+              toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: err.response ? err.response.data.message : err.message,
+                life: 2000,
+              });
             });
-          });
-        return node;
+          return node;
+        }
       }
       findNodeAndDelete(search, node.children ? node.children : []);
 
@@ -315,43 +317,6 @@ const SetClassification = () => {
       }
       return node;
     });
-  };
-
-  // const findNode = (
-  //   search: string,
-  //   data: Node[],
-  //   result: Node[] = []
-  // ): { node: Node; result: Node[] } | undefined => {
-  //   console.log(data);
-
-  //   for (let node of data) {
-  //     var _result = [...result, node];
-  //     if (node.key === search) {
-  //       return { node: node, result: _result };
-  //     }
-  //     const found = findNode(search, node.children, _result);
-  //     if (found) {
-  //       return { node: found.node, result: found.result };
-  //     }
-  //   }
-  // };
-
-  const findNode = (search: string) => {
-
-    ClassificationsService.nodeInfo(search)
-      .then((res) => {
-        console.log(res.data.properties);
-        setNodeData(res.data.properties);
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
-        });
-      });
-
   };
 
   const addItem = (key: string) => {
