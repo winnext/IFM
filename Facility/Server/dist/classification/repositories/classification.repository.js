@@ -40,7 +40,6 @@ let ClassificationRepository = class ClassificationRepository {
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value', { idNum });
-        console.log(result);
         var x = result['records'][0]['_fields'][0];
         if (!result) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(id);
@@ -163,7 +162,7 @@ let ClassificationRepository = class ClassificationRepository {
             res = await this.neo4jService.write('MATCH (c) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label', {
                 name: updateClassificationto.name,
                 code: updateClassificationto.code,
-                tag: JSON.stringify(updateClassificationto.tag),
+                tag: updateClassificationto.tag,
                 label: updateClassificationto.code + ' . ' + updateClassificationto.name,
                 id: (0, neo4j_driver_1.int)(_id),
             });
@@ -213,7 +212,6 @@ let ClassificationRepository = class ClassificationRepository {
     }
     async findOneNodeByKey(key) {
         let result = await this.neo4jService.read("match (n {key:$key})  return n", { key: key });
-        console.log(result);
         var x = result['records'][0]['_fields'][0];
         if (!result) {
             throw new facility_not_found_exception_1.ClassificationNotFountException(key);

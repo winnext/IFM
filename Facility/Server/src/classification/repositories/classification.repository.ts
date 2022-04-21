@@ -39,7 +39,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       RETURN value',
       { idNum },
     );
-    console.log(result);
+  
     var x = result['records'][0]['_fields'][0];
     if (!result) {
       throw new ClassificationNotFountException(id);
@@ -177,7 +177,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         {
           name: updateClassificationto.name,
           code: updateClassificationto.code,
-          tag: JSON.stringify(updateClassificationto.tag),
+          tag: updateClassificationto.tag,
           label: updateClassificationto.code + ' . ' + updateClassificationto.name,
           id: int(_id),
         },
@@ -237,7 +237,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         "match (n {key:$key})  return n", {key: key}
     );
 
-    console.log(result);
+
     var x = result['records'][0]['_fields'][0];
     if (!result) {
       throw new ClassificationNotFountException(key);
