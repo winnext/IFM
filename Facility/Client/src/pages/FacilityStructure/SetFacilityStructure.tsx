@@ -9,6 +9,7 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Dropdown } from 'primereact/dropdown';
 
 import ClassificationsService from "../../services/classifications";
 
@@ -47,23 +48,7 @@ interface Node {
   labelclass: string;
 }
 
-interface NodeData {
-  code: string;
-  createdAt: string;
-  hasParent: true
-  key: string;
-  label: string;
-  labelclass: string;
-  name: string;
-  self_id: {
-    low: string;
-    high: string;
-  },
-  tag: string[];
-  updatedAt: string;
-}
-
-const SetClassification = () => {
+const SetFacilityStructure = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [classification, setClassification] = useState<ClassificationInterface>({
@@ -92,9 +77,17 @@ const SetClassification = () => {
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
-  const params = useParams()
-  const navigate = useNavigate()
-  const [nodeData, setNodeData] = useState<NodeData>({} as NodeData);
+  const params = useParams();
+  const navigate = useNavigate();
+  const [city, setCity] = useState("");
+
+  const cities = [
+    { name: 'Bina' },
+    { name: 'Kat' },
+    { name: 'Kanat' },
+    { name: 'Blok' },
+    { name: 'Açık Alan' }
+  ];
 
 
   const menu = [
@@ -109,23 +102,12 @@ const SetClassification = () => {
       label: "Edit Item",
       icon: "pi pi-pencil",
       command: () => {
-        // findNode(selectedNodeKey);
-        ClassificationsService.nodeInfo(selectedNodeKey)
-          .then((res) => {
-            console.log(res.data.properties);
-
-            setName(res.data.properties.name || "");
-            setCode(res.data.properties.code || "");
-            setTag(res.data.properties.tag || []);
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
-            });
-          });
+        const node = findNode(selectedNodeKey, data);
+        if (node) {
+          setName(node.node.name);
+          setCode(node.node.code);
+          setTag(node.node.tag);
+        }
         setEditDia(true);
       },
     },
@@ -297,41 +279,23 @@ const SetClassification = () => {
     });
   };
 
-  // const findNode = (
-  //   search: string,
-  //   data: Node[],
-  //   result: Node[] = []
-  // ): { node: Node; result: Node[] } | undefined => {
-  //   console.log(data);
+  const findNode = (
+    search: string,
+    data: Node[],
+    result: Node[] = []
+  ): { node: Node; result: Node[] } | undefined => {
+    console.log(data);
 
-  //   for (let node of data) {
-  //     var _result = [...result, node];
-  //     if (node.key === search) {
-  //       return { node: node, result: _result };
-  //     }
-  //     const found = findNode(search, node.children, _result);
-  //     if (found) {
-  //       return { node: found.node, result: found.result };
-  //     }
-  //   }
-  // };
-
-  const findNode = (search: string) => {
-
-    ClassificationsService.nodeInfo(search)
-      .then((res) => {
-        console.log(res.data.properties);
-        setNodeData(res.data.properties);
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
-        });
-      });
-
+    for (let node of data) {
+      var _result = [...result, node];
+      if (node.key === search) {
+        return { node: node, result: _result };
+      }
+      const found = findNode(search, node.children, _result);
+      if (found) {
+        return { node: found.node, result: found.result };
+      }
+    }
   };
 
   const addItem = (key: string) => {
@@ -350,7 +314,6 @@ const SetClassification = () => {
     setData(temp);
     setName("");
     setCode("");
-    setTag([]);
     setEditDia(false);
   }
 
@@ -408,8 +371,6 @@ const SetClassification = () => {
           onClick={() => {
             setAddDia(false);
             setName("");
-            setCode("");
-            setTag([]);
           }}
           className="p-button-text"
         />
@@ -432,8 +393,7 @@ const SetClassification = () => {
           onClick={() => {
             setEditDia(false);
             setName("");
-            setCode("");
-            setTag([]);
+            setCode("")
           }}
           className="p-button-text"
         />
@@ -474,7 +434,6 @@ const SetClassification = () => {
         onHide={() => {
           setName("");
           setCode("");
-          setTag([]);
           setAddDia(false);
         }}
       >
@@ -496,6 +455,10 @@ const SetClassification = () => {
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
           <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <Dropdown optionLabel="name" value={city} options={cities} onChange={(e) => setCity(e.value)} placeholder="Select a Type" />
+        </div>
       </Dialog>
       <Dialog
         header="Edit Item"
@@ -505,7 +468,6 @@ const SetClassification = () => {
         onHide={() => {
           setName("");
           setCode("");
-          setTag([]);
           setEditDia(false);
         }}
       >
@@ -527,6 +489,7 @@ const SetClassification = () => {
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
           <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
+
       </Dialog>
       <h1>Edit Classification</h1>
       <h3>Code : {classification.root[0].code} </h3>
@@ -557,6 +520,7 @@ const SetClassification = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
+          nodeTemplate={(data, options) => <span>{data.label} {data.children && <button onClick={() => alert("deneme")} className="ml-3">Edit</button>} </span>}
         />
       </div>
       <div className="field">
@@ -566,4 +530,4 @@ const SetClassification = () => {
   );
 };
 
-export default SetClassification;
+export default SetFacilityStructure;

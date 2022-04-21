@@ -82,7 +82,10 @@ const relation = async (id1: string, id2: string) => {
    return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
 };
 
+const nodeInfo = async (key: string) => {
+  return axios.get(url + "/nodeinfo" + "/"  + key);
+};
 
-const service = { findAll, findOne, create, update, remove, relation };
+const service = { findAll, findOne, create, update, remove, relation ,nodeInfo };
 
 export default service;

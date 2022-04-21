@@ -11,6 +11,8 @@ import { NotFound } from "./layouts/App/pages/NotFound";
 import SetClassification from "./pages/Classifications/SetClassification";
 import FacilityFileImport from "./pages/FacilityFileImport";
 import ClassificationFileImport from "./pages/ClassificationFileImport";
+import FacilityStructure from "./pages/FacilityStructure/FacilityStructure";
+import SetFacilityStructure from "./pages/FacilityStructure/SetFacilityStructure";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -22,12 +24,18 @@ export default function Router() {
         { path: "", element: <Dashboard /> },
         { path: "facility", element: <Facility /> },
         { path: "classifications", element: <Classifications /> },
+        { path: "facilitystructure", element: <FacilityStructure/> },
       ],
     },
     {
       path: "/classifications",
       element: <AppLayout />,
       children: [{ path: ":id", element: <SetClassification /> }],
+    },
+    {
+      path: "/facilitystructure",
+      element: <AppLayout />,
+      children: [{ path: ":id", element: <SetFacilityStructure/> }],
     },
     {
       path: "/facility",
