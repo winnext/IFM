@@ -7,7 +7,8 @@ export default [
       { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', to: '/' },
       { label: 'Facility', icon: 'pi pi-fw pi-pencil', to: '/facility' },
       { label: 'Classifications', icon: 'pi pi-fw pi-align-left', to: '/classifications' },
-      { label: 'Facility Structure', icon: 'pi pi-fw pi-align-left', to: '/facilitystructure' },
+      { label: 'Facility Structure', icon: 'pi pi-fw pi-building', to: '/facilitystructure' },
+      { label: 'Form Builder', icon: 'pi pi-fw pi-book', to: '/formbuilder' },
     ],
   },
   // {
