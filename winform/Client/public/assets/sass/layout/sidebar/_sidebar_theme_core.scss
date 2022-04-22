@@ -1,0 +1,195 @@
+.layout-sidebar {
+    background: $sidebarBgColor;
+    border-right: $sidebarBorder;
+    background-image: linear-gradient(180deg,$sidebarBgColor 10%,$sidebarBgColorAlt 100%);
+
+    .logo {
+        border-bottom: $menuSeparatorBorder;
+
+        &:focus {
+            box-shadow: $menuitemFocusShadow;
+        }
+    }
+
+    .app-name {
+        color: $appNameColor;
+    }
+
+    .layout-menu {
+        .menu-separator {
+            border-top: $menuSeparatorBorder;
+        }
+
+        li {
+            &.active-menuitem {
+                > a,
+                > .p-link {
+                    color: $menuitemTextActiveColor;
+                }
+            }
+
+            a,
+            .p-link {
+                color: $menuitemTextColor;
+
+                &:hover {
+                    background: $menuitemHoverBg;
+                }
+
+                &:focus {
+                    box-shadow: $menuitemFocusShadow;
+                }
+            }
+        }
+
+        .layout-root-menuitem {
+            .layout-menuitem-root-text {
+                color: $menuitemRootTextColor;
+            }
+
+            &.active-menuitem {
+                background: $menuitemActiveBg;
+            }
+
+            > ul {
+                > li.active-menuitem {
+                    background: $menuitemActiveBg;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: $tabletBreakpoint + 1) {
+    &.layout-slim {
+        .layout-sidebar {
+            .layout-menu {
+                .layout-root-menuitem {
+                    > ul {
+                        background: $sidebarBgColor;
+                        background-image: linear-gradient(180deg,$sidebarBgColor 10%,$sidebarBgColorAlt 100%);
+                    }
+
+                    ul {
+                        a {
+                            &.active-route {
+                                background: $menuitemActiveBg;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: $tabletBreakpoint + 1) {
+    &.layout-horizontal {
+        .layout-topbar {
+            background: $sidebarBgColor;
+            color: $menuitemTextColor;
+
+            .topbar-separator {
+                border-left: $menuSeparatorBorder;
+            }
+
+            .topbar-menu {
+
+                > li {
+                    &.profile-item {
+                        border-left: $menuSeparatorBorder;
+                        border-right: $menuSeparatorBorder;
+                    }
+
+                    &.right-sidebar-item {
+                        > button {
+                            background: transparent;
+                            color: $menuitemTextColor;
+
+                            &:hover {
+                                background: $menuitemHoverBg;
+                            }
+
+                            &:focus {
+                                box-shadow: $menuitemFocusShadow;
+                            }
+                        }
+                    }
+
+                    > button {
+                        color: $menuitemTextColor;
+
+                        &:hover {
+                            background: $menuitemHoverBg;
+                        }
+
+                        &:focus {
+                            box-shadow: $menuitemFocusShadow;
+                        }
+
+                        .topbar-badge {
+                            background: $accentColor;
+                            color: $accentTextColor;
+                        }
+                    }
+
+                    > ul {
+                        background: $sidebarBgColor;
+                        border: $overlayBorder;
+                        box-shadow: $overlayShadow;
+
+                        li {
+                            button {
+                                color: $menuitemTextColor;
+
+                                &:hover {
+                                    background: $menuitemHoverBg;
+                                }
+                            }
+                        }
+
+                        &.notifications-menu {
+                            .notification-detail {
+                                color: $menuitemRootTextColor;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .layout-sidebar {
+            background: none;
+
+            .layout-menu {
+                .layout-root-menuitem {
+                    > ul {
+                        background: $sidebarBgColor;
+                        background-image: linear-gradient(180deg,$sidebarBgColor 10%,$sidebarBgColorAlt 100%);
+                    }
+                }
+
+                ul {
+                    a {
+                        &.active-route {
+                            background: $menuitemActiveBg;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: $tabletBreakpoint + 1) {
+    .layout-sidebar {
+        .layout-menu {
+
+            .layout-root-menuitem {
+                &.active-menuitem {
+                    background: transparent;
+                }
+            }
+        }
+    }
+}

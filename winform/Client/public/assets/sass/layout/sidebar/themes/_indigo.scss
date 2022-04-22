@@ -1,0 +1,15 @@
+.layout-sidebar-indigo {
+    $sidebarBgColor:#303F9F;
+    $sidebarBgColorAlt:#283593;
+    $sidebarBorder:0 none;
+    $appNameColor:#ffffff;
+    $menuSeparatorBorder: 1px solid rgba(255,255,255,0.2);
+    $menuitemRootTextColor: rgba(255,255,255,0.4);
+    $menuitemTextColor: rgba(255,255,255,0.8);
+    $menuitemHoverBg: rgba(255,255,255,0.1);
+    $menuitemActiveBg: rgba(255,255,255,0.1);
+    $menuitemTextActiveColor: #ffffff;
+    $menuitemFocusShadow: 0 0 0 0.2rem rgba(255,255,255,0.1);
+
+    @import '../_sidebar_theme_core';
+}

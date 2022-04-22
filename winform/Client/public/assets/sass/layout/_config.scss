@@ -1,0 +1,96 @@
+.layout-config {
+    width: $rightSidebarWidth;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    padding: 1rem;
+    overflow: auto;
+    background: $rightSidebarBg;
+    z-index: 999;
+    border-left: $overlayBorder;
+    transform: translateX(100%);
+    transition: transform $animationDuration $animationTimingFunction;
+
+    &.layout-config-active {
+        transform: translateX(0);
+        box-shadow: $overlayShadow;
+
+        .layout-config-content {
+            .layout-config-button {
+                i {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
+
+    p {
+        line-height: 1.5rem;
+        color: $textSecondaryColor;
+    }
+
+    .layout-themes {
+        @include flex();
+        @include flex-wrap(wrap);
+
+        > div {
+            padding: .25rem;
+        }
+
+
+        a,
+        .p-link {
+            width: 2rem;
+            height: 2rem;
+            border-radius: $borderRadius;
+            display: block;
+            position: relative;
+            @include flex-align-center();
+            @include flex-justify-center();
+            transition: transform $transitionDuration;
+            box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+
+            i {
+                font-size: 1rem;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-left: -.5rem;
+                margin-top: -.5rem;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+.layout-config-button.p-button {
+    position: fixed;
+    top: 40%;
+    right: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    text-align: center;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: -.25rem 0 1rem rgba(0,0,0,.15);
+    transition: background-color $transitionDuration;
+    background: $accentColor;
+    color: $accentTextColor;
+    border-right: none;
+
+    .p-button-icon {
+        font-size: 2.5rem;
+        line-height: inherit;
+        transform: rotate(0deg);
+        transition: transform 1s;
+    }
+
+
+}

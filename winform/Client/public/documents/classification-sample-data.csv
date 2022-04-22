@@ -1,0 +1,46 @@
+code,name
+11-00-00-00,Omni class
+11-11-00-00,Assembly Facility
+11-11-11-00,Convention and Exhibition Facility
+11-11-11-11,Convention Center
+11-11-11-17,Conference Facility
+11-11-14-00,Meeting Facility
+11-11-14-11,Club or Organization Building
+11-11-14-14,Ceremonial Hall
+11-11-21-00,Entertainment Assembly Facility
+11-11-21-11,Cinema
+11-11-21-17,Performing Arts Facility
+11-11-21-17-11,Auditorium and Theater Facility
+11-11-21-17-14,Outdoor Theater
+11-11-21-21,Casino
+11-11-21-22,Theme Park
+11-11-21-23,Fair or Circus Ground
+11-11-21-24,Race Track
+11-11-21-24-11,Horse Racing Track
+11-11-21-24-14,Dog Racing Track
+11-11-21-24-17,Automobile Racing Track
+11-11-21-27,Arena
+11-12-00-00,Education Facility
+11-12-11-00,Daycare or Preschool Facility
+11-12-11-11,Daycare Facility
+11-12-11-14,Preschool Facility
+11-12-21-00,K through 12 Learning Facility
+11-12-21-11,Kindergarten
+11-12-21-14,Elementary School
+11-12-21-21,Middle School
+11-12-21-31,High School
+11-12-24-00,Higher Education Facility
+11-12-24-11,University
+11-12-24-13,Business School
+11-12-24-14,Science College
+11-12-24-17,Agricultural School
+11-12-24-21,Art School
+11-12-24-24,Vocational College
+11-12-24-27,Liberal Arts College
+11-12-24-31,Military Academy
+11-12-24-34,Professional College
+11-12-29-00,Library
+11-12-29-11,General Purpose Library
+11-12-29-14,Children’s Library
+11-12-29-17,Special Library
+11-12-29-21,Academic Library
