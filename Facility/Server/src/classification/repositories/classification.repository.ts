@@ -11,6 +11,7 @@ import { int } from 'neo4j-driver';
 
 import { Classification } from '../entities/classification.entity';
 import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
+import { nodeHasChild } from 'src/common/func/nodeHasChild';
 
 @Injectable()
 export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification> {
@@ -201,8 +202,12 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       id: parseInt(_id),
     });
     if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
-      console.log('Can not delete a node include children ....................');
-      return new Classification();
+      res = await this.neo4jService.read('MATCH (c) where id(c)= $id return c', {
+        id: parseInt(_id),
+      });
+      nodeHasChild(res['records'][0]['_fields'][0]['properties'].name)
+      //console.log('Can not delete a node include children ....................');
+      //return new Classification();
     } else {
       let parent = await this.neo4jService.read(
         'MATCH (c) where id(c)= $id match(k) match (c)-[:CHILD_OF]-(k) return k',

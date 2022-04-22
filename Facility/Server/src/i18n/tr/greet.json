@@ -11,5 +11,6 @@
       "WELCOME": "Welcome {0.username}",
       "GOODBYE": "Goodbye {0.username}"
     },
-    "ARRAY": ["ONE", "TWO", "THREE"]
+    "ARRAY": ["ONE", "TWO", "THREE"],
+    "NODE_HAS_CHILD": "{name} isimli düğüm, alt düğümlere sahip olduğundan siliinemedi."
   }
