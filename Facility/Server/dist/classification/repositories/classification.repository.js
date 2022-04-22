@@ -227,12 +227,7 @@ let ClassificationRepository = class ClassificationRepository {
     async addRelations(_id, _target_parent_id) {
         let res2 = await this.neo4jService.write('MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (p)-[:CHILDREN]-> (c)', { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) });
         let res1 = await this.neo4jService.write('MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (c)-[:CHILD_OF]-> (p)', { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) });
-        let res3 = await this.neo4jService.read('MATCH (c) where id(c) = $id match(d) match (c)-[:CHILDREN]-(d) return count(d)', { id: parseInt(_id) });
-        let slctbl = true;
-        if (res3.records[0]['_fields'][0]['low'] > 0) {
-            slctbl = false;
-        }
-        let res31 = await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent = true, c.selectable = $slctbl', { id: parseInt(_id), slctbl: slctbl });
+        let res31 = await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent = true', { id: parseInt(_id) });
         let res32 = await this.neo4jService.write('MATCH (c) where id(c)= $target_parent_id set c.selectable = false', { target_parent_id: parseInt(_target_parent_id) });
     }
     async findOneNodeByKey(key) {
