@@ -2,7 +2,6 @@ import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClassificationModule } from './classification/classification.module';
 import { ConnectionEnums } from './common/const/connection.enum';
 import { I18nModule } from 'nestjs-i18n';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -85,7 +84,7 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
       }),
     }),
 
-    ClassificationModule,
+    
 
     MessagebrokerModule,
 
