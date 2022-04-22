@@ -20,11 +20,9 @@ import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { Neo4jModule } from 'nest-neo4j/dist';
 
-
-
 @Module({
-  imports: [ 
-    OpenTelemetryModuleConfig, 
+  imports: [
+    OpenTelemetryModuleConfig,
     LoggerModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
