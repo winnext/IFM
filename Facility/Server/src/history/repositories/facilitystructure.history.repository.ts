@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { FacilityStructureNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
+import { FacilityStructureNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
 import { CreateFacilityStructureHistoryDto } from '../dtos/create.facilitystructure.history.dto';
 import { FacilityStructureHistory } from '../entities/facilitystructure.history.entity';
@@ -15,7 +15,9 @@ export class FacilityStructureHistoryRepository implements BaseHistoryRepository
   ) {}
 
   async findOneById(id: string): Promise<FacilityStructureHistory[]> {
-    const facilityStructureHistory = await this.facilityStructureHistoryModel.find({ 'facility._id': id }).exec();
+    const facilityStructureHistory = await this.facilityStructureHistoryModel
+      .find({ 'facilityStructure._id': id })
+      .exec();
     if (!facilityStructureHistory) {
       throw new FacilityStructureNotFountException(id);
     }

@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
-import { FacilityNotFountException } from '../../common/notFoundExceptions/facility.not.found.exception';
+import { FacilityNotFountException } from '../../common/notFoundExceptions/not.found.exception';
 import { CreateFacilityDto } from '../dtos/create.facility.dto';
 import { UpdateFacilityDto } from '../dtos/update.facility.dto';
 import { Facility } from '../entities/facility.entity';

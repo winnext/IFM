@@ -1,3 +1,6 @@
+/**
+ * Kafka Topic Enum
+ */
 export enum FacilityTopics {
   FACILITY_LOGGER = 'FACILITY_LOGGER',
   FACILITY_EXCEPTIONS = 'FACILITY_EXCEPTIONS',

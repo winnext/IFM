@@ -4,24 +4,19 @@ import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
-import { Facility } from 'src/facility/entities/facility.entity';
-import { FacilityNotFountException } from '../../common/notFoundExceptions/facility.not.found.exception';
+import { FacilityNotFountException } from '../../common/notFoundExceptions/not.found.exception';
 import { CreateFacilityStructureDto } from '../dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto';
 import { FacilityStructure } from '../entities/facility-structure.entity';
 
 @Injectable()
 export class FacilityStructureRepository implements BaseInterfaceRepository<FacilityStructure> {
-  constructor(
-    @InjectModel(FacilityStructure.name) private readonly facilityStructureModel: Model<FacilityStructure>,
-  ) {}
+  constructor(@InjectModel(FacilityStructure.name) private readonly facilityStructureModel: Model<FacilityStructure>) {}
   findWithRelations(relations: any): Promise<FacilityStructure[]> {
     throw new Error(relations);
   }
   async findOneById(id: string): Promise<FacilityStructure> {
-    const facilityStructure = await this.facilityStructureModel
-      .findById({ _id: id })
-      .exec();
+    const facilityStructure = await this.facilityStructureModel.findById({ _id: id }).exec();
     if (!facilityStructure) {
       throw new FacilityNotFountException(id);
     }

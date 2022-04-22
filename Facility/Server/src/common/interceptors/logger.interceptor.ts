@@ -5,16 +5,36 @@ import { FacilityTopics } from '../const/kafta.topic.enum';
 import { checkObjectIddİsValid } from '../func/objectId.check';
 import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
+
+/**
+ * Decorator for interceptor to use fact in modules,controller
+ */
 export function LoggerInter() {
   return UseInterceptors(new LoggingInterceptor());
 }
 
+/**
+ * Custom interceptor for log all endpoints and send this log to messagebroler  to save the database
+ */
 export class LoggingInterceptor implements NestInterceptor {
-  postKafka;
+  /**
+   * create variable for postKafka Service
+   */
+  postKafka: PostKafka;
+  /**
+   * create kafka service
+   */
   constructor() {
     this.postKafka = new PostKafka(new KafkaService());
   }
+  /**
+   * Log from Logger
+   */
   private logger = new Logger('HTTP');
+
+  /**
+   * Intercept method implements from NestInterceptor
+   */
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
@@ -25,13 +45,16 @@ export class LoggingInterceptor implements NestInterceptor {
       path: request.url,
       method: request.method,
       body: request.body,
-      user: request.user || null,
+      user: request.user || {},
     };
     const user: object = request.user;
     const method = request.method;
     const now = Date.now();
     const url = request.url;
-    const parsedUrl = url.match(/^\/[^\?\/]*/);
+    //this parsedUrl for the get which endpoints hit by user
+    const parsedUrl = url.match(/^\/[^\?\/]*/)[0];
+
+    //this event catch the request and response
     response.on('close', async () => {
       const { statusCode, statusMessage } = response;
 
@@ -49,18 +72,20 @@ export class LoggingInterceptor implements NestInterceptor {
       }
       this.logger.log(`${JSON.stringify(log)}   `);
     });
+    //check if request query id is valid
     if (query._id) {
       checkObjectIddİsValid(query._id);
     }
+    //this event catch the response data
     return next.handle().pipe(
       tap(async (responseBody) => {
         try {
-          const finalResponse = { responseBody, user };
+          const finalResponse = { responseBody, user, requestInformation };
           if (method !== 'GET') {
             await this.postKafka.producerSendMessage(
               FacilityTopics.FACILITY_OPERATION,
               JSON.stringify(finalResponse),
-              parsedUrl[0],
+              parsedUrl,
             );
             console.log('Operation topic send successfully');
           }

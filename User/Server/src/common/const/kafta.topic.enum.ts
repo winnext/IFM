@@ -1,0 +1,9 @@
+/**
+ * Kafka Topic Enum
+ */
+export enum UserTopics {
+  USER_LOGGER = 'USER_LOGGER',
+  USER_EXCEPTIONS = 'USER_EXCEPTIONS',
+  USER_ERROR = 'USER_ERROR',
+  USER_OPERATION = 'USER_OPERATION',
+}

@@ -13,6 +13,9 @@ export class ClassificationHistory extends BasePersistantDocumentObject {
 
   @Prop({ type: Object })
   user: object;
+
+  @Prop({ type: Object })
+  requestInformation: object;
 }
 
 export const ClassificationHistorySchema = SchemaFactory.createForClass(ClassificationHistory);

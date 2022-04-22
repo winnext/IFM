@@ -2,13 +2,9 @@ import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { KeycloakModule } from './facility/keyclock.module';
-import { ClassificationModule } from './classification/classification.module';
 import { ConnectionEnums } from './common/const/connection.enum';
-import { I18nModule, I18nJsonParser } from 'nestjs-i18n';
-import * as path from 'path';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
+import { I18nModule } from 'nestjs-i18n';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
@@ -21,10 +17,13 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
 import { Neo4jModule } from 'nest-neo4j/dist';
 
 
+import { i18nOptions } from './common/configs/i18n.options';
+import { RoomModule } from './rooms/room.module';
+import { KeycloakModule } from './common/keycloak/keycloak.module';
 
 @Module({
-  imports: [ 
-    OpenTelemetryModuleConfig, 
+  imports: [
+    OpenTelemetryModuleConfig,
     LoggerModule,
     CacheModule.registerAsync({
       imports: [ConfigModule],
@@ -43,18 +42,10 @@ import { Neo4jModule } from 'nest-neo4j/dist';
       dest: './upload',
     }),
     FacilityModule,
+
     KeycloakModule,
-    I18nModule.forRoot({
-      fallbackLanguage: 'tr',
-      fallbacks: {
-        en: 'en',
-        tr: 'tr',
-      },
-      parser: I18nJsonParser,
-      parserOptions: {
-        path: path.join(__dirname, '/i18n/'),
-      },
-    }),
+
+    I18nModule.forRoot(i18nOptions(__dirname)),
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.FACILITY,
       useFactory: (config: ConfigService) => ({
@@ -84,6 +75,18 @@ import { Neo4jModule } from 'nest-neo4j/dist';
       username: 'neo4j',
       password: 'password',
     }),
+
+    MongooseModule.forRootAsync({
+      connectionName: ConnectionEnums.ROOM,
+      useFactory: (config: ConfigService) => ({
+        uri: config.get('DATABASE_LINK'),
+        dbName: config.get('ROOM_DB_NAME'),
+        user: config.get('DB_USER'),
+        pass: config.get('DB_PASS'),
+      }),
+      inject: [ConfigService],
+    }),
+
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -93,21 +96,16 @@ import { Neo4jModule } from 'nest-neo4j/dist';
       }),
     }),
 
-    ClassificationModule,
-
     MessagebrokerModule,
 
     FacilityStructuresModule,
 
     HistoryModule,
+
+    RoomModule,
   ],
   providers: [
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
     //to cache all get request
-
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpCacheInterceptor,
