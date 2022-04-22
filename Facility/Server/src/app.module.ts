@@ -16,10 +16,10 @@ import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { Neo4jModule } from 'nest-neo4j/dist';
 
-
 import { i18nOptions } from './common/configs/i18n.options';
 import { RoomModule } from './rooms/room.module';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
+import { ClassificationModule } from './classification/classification.module';
 
 @Module({
   imports: [
@@ -103,6 +103,8 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
     HistoryModule,
 
     RoomModule,
+
+    ClassificationModule,
   ],
   providers: [
     //to cache all get request

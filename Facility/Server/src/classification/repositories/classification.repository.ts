@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { ClassificationNotFountException } from 'src/common/notFoundExceptions/facility.not.found.exception';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import { int } from 'neo4j-driver';
@@ -12,6 +11,7 @@ import { int } from 'neo4j-driver';
 import { Classification } from '../entities/classification.entity';
 import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
 import { nodeHasChild } from 'src/common/func/nodeHasChild';
+import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
 @Injectable()
 export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification> {

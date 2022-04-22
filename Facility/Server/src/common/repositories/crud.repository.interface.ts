@@ -28,12 +28,4 @@ export interface BaseInterfaceRepository<T> {
    * Delete method for Repository
    */
   delete(id: string): Promise<T>;
-<<<<<<< HEAD
-
-  findWithRelations(relations: any): Promise<T[]>;
-
-  //changeNodeBranch (id: string, target_parent_id: string): Promise<T>;
-
-=======
->>>>>>> develop
 }
