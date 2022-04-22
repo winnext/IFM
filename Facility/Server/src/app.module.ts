@@ -2,7 +2,6 @@ import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FacilityModule } from './facility/facility.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClassificationModule } from './classification/classification.module';
 import { ConnectionEnums } from './common/const/connection.enum';
 import { I18nModule } from 'nestjs-i18n';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -40,7 +39,9 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
       dest: './upload',
     }),
     FacilityModule,
+
     KeycloakModule,
+
     I18nModule.forRoot(i18nOptions(__dirname)),
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.FACILITY,
@@ -84,8 +85,6 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
         CACHE_PORT: Joi.string().required(),
       }),
     }),
-
-    ClassificationModule,
 
     MessagebrokerModule,
 
