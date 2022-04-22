@@ -62,6 +62,9 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     orderBy = orderBy || 'DESC';
 
     orderByColumn = orderByColumn || 'name';
+    if (orderByColumn == 'undefined') {
+      orderByColumn = 'name';
+    }
     const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false RETURN count(c)`);
     let coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
@@ -76,10 +79,11 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         skip = 0;
       }
     }
-
+    let a = 'MATCH (x) where x.hasParent = false return x ORDER BY x.' + orderByColumn + ' '+orderBy+' SKIP $skip LIMIT $limit';
     const result = await this.neo4jService.read(
-      'MATCH (x) where x.hasParent = false return x ORDER BY x.' + orderByColumn + '$orderBy SKIP $skip LIMIT $limit',
-      { limit: int(limit), skip: int(skip), orderBy: orderBy, orderByColumn: orderByColumn },
+      a
+      ,
+      {skip: int(skip), limit: int(limit)},
     );
     let arr = [];
     for (let i = 0; i < result['records'].length; i++) {
