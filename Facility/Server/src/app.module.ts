@@ -15,6 +15,7 @@ import { HttpCacheInterceptor } from './common/interceptors/http.cache.intercept
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { Neo4jModule } from 'nest-neo4j/dist';
+import { KeycloakModule } from './facility/keyclock.module';
 
 <<<<<<< HEAD
 
@@ -116,3 +117,7 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
   ],
 })
 export class AppModule {}
+function i18nOptions(__dirname: string): import("nestjs-i18n").I18nOptions {
+  throw new Error('Function not implemented.');
+}
+
