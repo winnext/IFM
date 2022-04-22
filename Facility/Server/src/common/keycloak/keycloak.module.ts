@@ -2,19 +2,22 @@ import { Module } from '@nestjs/common';
 
 import { KeycloakConnectModule, ResourceGuard, RoleGuard, AuthGuard } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 /**
  * Keycloak Module
  */
 @Module({
   imports: [
-    KeycloakConnectModule.register({
-      authServerUrl: process.env.KEYCLOAK_URL,
-      realm: process.env.KEYCLOAK_REALM,
-      clientId: process.env.KEYCLOAK_CLIENT_ID,
-      secret: process.env.KEYCLOAK_CLIENT_SECRET,
-
-      // Secret key of the client taken from keycloak server
+    KeycloakConnectModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        authServerUrl: configService.get('KEYCLOAK_URL'),
+        realm: configService.get('KEYCLOAK_REALM'),
+        clientId: configService.get('KEYCLOAK_CLIENT_ID'),
+        secret: configService.get('KEYCLOAK_CLIENT_SECRET'),
+      }),
+      inject: [ConfigService],
     }),
   ],
 

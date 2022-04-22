@@ -39,7 +39,9 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
       dest: './upload',
     }),
     FacilityModule,
+
     KeycloakModule,
+
     I18nModule.forRoot(i18nOptions(__dirname)),
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.FACILITY,
@@ -83,8 +85,6 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
         CACHE_PORT: Joi.string().required(),
       }),
     }),
-
-    
 
     MessagebrokerModule,
 
