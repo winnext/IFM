@@ -22,7 +22,7 @@ const ItemComponent = ({ type, icon }) => (
       <InputTextarea
         placeholder={type.toUpperCase()}
         disabled
-        style={{ width: "100%", borderColor: "black" }}
+        style={{ width: "100%", borderColor: "black",resize:"none" }}
       />
     )}
     {type === "dropdown" && (
