@@ -12,5 +12,6 @@
       "WELCOME": "Welcome {0.username}",
       "GOODBYE": "Goodbye {0.username}"
     },
-    "ARRAY": ["ONE", "TWO", "THREE"]
+    "ARRAY": ["ONE", "TWO", "THREE"],
+    "NODE_HAS_CHILD": "{name} node has children thats why not deleted."
   }

@@ -14,9 +14,12 @@ import * as redisStore from 'cache-manager-redis-store';
 import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
+import { Neo4jModule } from 'nest-neo4j/dist';
+
 import { i18nOptions } from './common/configs/i18n.options';
 import { RoomModule } from './rooms/room.module';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
+import { ClassificationModule } from './classification/classification.module';
 
 @Module({
   imports: [
@@ -39,7 +42,9 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
       dest: './upload',
     }),
     FacilityModule,
+
     KeycloakModule,
+
     I18nModule.forRoot(i18nOptions(__dirname)),
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.FACILITY,
@@ -63,6 +68,13 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
       }),
       inject: [ConfigService],
     }),
+    Neo4jModule.forRoot({
+      scheme: 'neo4j',
+      host: '172.19.99.120',
+      port: 7687,
+      username: 'neo4j',
+      password: 'password',
+    }),
 
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.ROOM,
@@ -84,8 +96,6 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
       }),
     }),
 
-    
-
     MessagebrokerModule,
 
     FacilityStructuresModule,
@@ -93,6 +103,8 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
     HistoryModule,
 
     RoomModule,
+
+    ClassificationModule,
   ],
   providers: [
     //to cache all get request

@@ -103,9 +103,11 @@ const DefineFacility = ({
   );
 
   useEffect(() => {
-    ClassificationsService.findOne(facility_classfication)
+    ClassificationsService.findOne("0")
       .then((res) => {
-        setClassifications([res.data.detail.root]);
+        console.log(res.data.root[0]);
+        
+        setClassifications([res.data.root[0]]);
       })
       .catch((err) => {
         // toast.current.show({

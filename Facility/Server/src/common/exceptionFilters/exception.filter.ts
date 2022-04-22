@@ -34,7 +34,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-    const errorType = ExceptionType.MONGO_EXCEPTİON;
+    const errorType = ExceptionType.HTTP_EXCEPTİON;
+    console.log(exception);
     const requestInformation = {
       timestamp: new Date(),
       user: request.user || null,

@@ -44,4 +44,5 @@ export abstract class BaseAbstractRepository<T> implements BaseInterfaceReposito
   public async remove(id: string): Promise<T> {
     return await this.entity.findByIdAndDelete(id);
   }
+
 }
