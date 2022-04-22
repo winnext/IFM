@@ -11,7 +11,7 @@ export class Winform  {
  
  
   @Prop()
-  form_name: string;
+  name: string;
 
   @Prop()
   items: any[];

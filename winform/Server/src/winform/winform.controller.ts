@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { CreateWinformDto } from './dtos/create.winform.dto';
+import { UpdateWinformDto } from './dtos/update.winform.dto';
 import { Winform } from './entities/winform.entity';
 import { WinformService } from './winform.service';
 
@@ -28,12 +29,9 @@ export class WinformController {
     //   })
       @Get('/:_id')
       //@Roles({ roles: [UserRoles.ADMIN] })
-      getWinform(@Param('_id') id: string): Promise<Winform> {
+      getWinformById(@Param('_id') id: string): Promise<Winform> {
         return this.winformService.findOne(id);
       }
-
-
-
 
     //   @ApiBody({
     //     type: CreateWinformDto,
@@ -43,5 +41,17 @@ export class WinformController {
       //@Roles({ roles: [UserRoles.ADMIN] })
       createWinform(@Body() createWinformDto: CreateWinformDto): Promise<Winform> {
         return this.winformService.create(createWinformDto);
+      }
+
+      @Delete('/:_id')
+      //@Roles({ roles: [UserRoles.ADMIN] })
+      deleteWinform(@Param('_id') id: string): Promise<Winform> {
+        return this.winformService.remove(id);
+      }
+
+      @Patch('/:_id')
+      //@Roles({ roles: [UserRoles.ADMIN] })
+      updateWinform(@Param('_id') id: string, @Body() updateWinformDto:UpdateWinformDto): Promise<Winform> {
+        return this.winformService.update(id, updateWinformDto);
       }
 }

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseInterfaceRepository } from '../common/repositories/crud.repository.interface';
 import { CreateWinformDto } from './dtos/create.winform.dto';
+import { UpdateWinformDto } from './dtos/update.winform.dto';
 import { Winform } from './entities/winform.entity';
 
 @Injectable()
@@ -27,16 +28,16 @@ export class WinformService {
       }
     
      
-    //   async update(id: string, updateWinformDto: UpdateWinformDto) {
-    //     //checkObjectIddİsValid(id);
-    //     return this.winformRepository.update(id, updateWinformDto);
-    //   }
+      async update(id: string, updateWinformDto: UpdateWinformDto) {
+        //checkObjectIddİsValid(id);
+        return this.winformRepository.update(id, updateWinformDto);
+      }
     
       
-    //   async remove(id: string) {
-    //     const winform = await this.findOne(id);
-    //     return winform.remove();
-    //   }
+      async remove(id: string) {
+        const winform = await this.winformRepository.findOneById(id);
+        return winform.delete();
+      }
 
 
 }

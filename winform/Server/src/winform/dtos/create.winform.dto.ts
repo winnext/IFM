@@ -8,7 +8,7 @@ export class CreateWinformDto {
     @IsNotEmpty()
     @IsString()
     @Length(1, 50)
-    form_name: string;
+    name: string;
   
     @ApiProperty()
     @ArrayNotEmpty()
