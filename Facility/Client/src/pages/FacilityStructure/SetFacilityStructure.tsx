@@ -1,92 +1,109 @@
 import React, { useEffect, useState } from "react";
 import { Tree } from "primereact/tree";
 import { v4 as uuidv4 } from "uuid";
+import { Button } from "primereact/button";
 import { ContextMenu } from "primereact/contextmenu";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
+import { InputText } from "primereact/inputtext";
+import ClassificationsService from "../../services/classifications";
+import FacilityService from "../../services/facility";
+import FacilityStructureService from "../../services/facilitystructure";
 import { useNavigate, useParams } from "react-router-dom";
 import { Chips } from 'primereact/chips';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
 import { Dropdown } from 'primereact/dropdown';
+import FormType from "../../components/Form/FormType";
 
-import ClassificationsService from "../../services/classifications";
+
+// type TreeTogglerTemplateType = React.ReactNode | ((node: any, options: TreeTogglerTemplateOptions) => React.ReactNode);
+
+// interface TreeFilterInputOptions {
+//     className: string;
+//     onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void;
+//     onChange(event: React.KeyboardEvent<HTMLInputElement>): void;
+// }
+
+// interface TreeTogglerTemplateOptions {
+//     onClick(e: React.SyntheticEvent): void;
+//     containerClassName: string;
+//     iconClassName: string;
+//     element: JSX.Element;
+//     props: any;
+//     expanded: boolean;
+// }
+
+
 
 interface ClassificationInterface {
-  root:
-  {
-    code: string;
-    children: [],
-    _type: string;
-    name: string;
-    _id: {
-      low: string;
-      high: string;
-    },
-    key: string;
-    hasParent: boolean;
-    parent_id?: string;
-    selectable?: boolean;
-  }[];
+  _id?: string;
+  facility_id: string;
+  structure: {
+    root: Node;
+  };
+  __v?: number;
 }
 
 interface Node {
-  code: string;
-  name: string;
-  tag: string[];
+  type: string;
+  description: string;
   key: string;
-  hasParent?: boolean;
+  label: string;
+  name: string;
+  code: string;
+  selectable: boolean;
   children: Node[];
-  type?: string;
-  parent_id?: string;
-  selectable?: boolean;
-  self_id: {
-    low: string;
-    high: string;
-  },
-  labelclass: string;
+  tags: string[];
 }
 
 const SetFacilityStructure = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [classification, setClassification] = useState<ClassificationInterface>({
-    root: [
-      {
-        code: "",
-        children: [],
-        _type: "",
-        name: "",
-        _id: {
-          low: "",
-          high: ""
-        },
+    _id: "",
+    facility_id: "",
+    structure: {
+      root: {
         key: "",
-        hasParent: false
-      }
-    ]
-  });
+        type: "",
+        description: "",
+        label: "",
+        name: "",
+        code: "",
+        tags: [],
+        selectable: true,
+        children: [],
+      },
+    },
 
-  const [data, setData] = useState<Node[]>([]);
+  });
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
-  const [tag, setTag] = useState<string[]>([]);
+  const [type, setType] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState<any>([]);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
-  const params = useParams();
-  const navigate = useNavigate();
-  const [city, setCity] = useState("");
+  const [data, setData] = useState<Node[]>([]);
 
-  const cities = [
+  const params = useParams()
+  const navigate = useNavigate()
+
+  const types = [
     { name: 'Bina' },
+    { name: 'Blok' },
     { name: 'Kat' },
     { name: 'Kanat' },
-    { name: 'Blok' },
-    { name: 'Açık Alan' }
+    { name: 'Açık Alan' },
+    { name: 'Otopark' },
+    { name: 'Bahçe' },
+    { name: 'Park' },
+    { name: 'Oda' },
+    { name: 'Mahal' },
+    { name: 'Birleştirilmiş Mahal' },
   ];
 
 
@@ -106,7 +123,9 @@ const SetFacilityStructure = () => {
         if (node) {
           setName(node.node.name);
           setCode(node.node.code);
-          setTag(node.node.tag);
+          setType(node.node.type);
+          setDescription(node.node.description);
+          setTags(node.node.tags);
         }
         setEditDia(true);
       },
@@ -121,17 +140,15 @@ const SetFacilityStructure = () => {
   ];
 
   const getClassification = () => {
+
+
     const id = params.id || "";
-    ClassificationsService.findOne(id).then((res) => {
+    // console.log(id);
+    FacilityStructureService.findOne(id).then((res) => {
+      console.log(res.data);
 
       setClassification(res.data);
-
-      if (!res.data.root[0].children) {
-        setData([res.data.root[0].properties] || []);
-      }
-      else if (res.data.root[0].children) {
-        setData([res.data.root[0]] || []);
-      }
+      setData([res.data.structure.root] || []);
       setLoading(false);
     }).catch(err => {
       toast.current.show({
@@ -141,7 +158,7 @@ const SetFacilityStructure = () => {
         life: 2000,
       });
       setTimeout(() => {
-        navigate("/classifications")
+        navigate("/facilitystructure")
       }, 2000)
     })
   }
@@ -149,6 +166,7 @@ const SetFacilityStructure = () => {
   useEffect(() => {
     getClassification();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   const findNodeAndAddItem = (
@@ -160,32 +178,19 @@ const SetFacilityStructure = () => {
       if (node.key === search) {
         const newNode = {
           key: uuidv4(),
-          parent_id: node.self_id.low,
+          type: type,
+          description: description,
+          label: code + " : " + name,
           name: name,
           code: code,
-          tag: tag,
-          labelclass: node.labelclass,
+          selectable: false,
+          children: [],
+          tags: tags,
         };
-        // node.children = node.children ? [...node.children, newNode] : [newNode];
+        console.log(newNode);
 
-        ClassificationsService.create(newNode)
-          .then((res) => {
-            toast.current.show({
-              severity: "success",
-              summary: "Successful",
-              detail: "Classification Created",
-              life: 3000,
-            });
-            getClassification();
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 20000,
-            });
-          });
+        node.children = node.children ? [...node.children, newNode] : [newNode];
+        console.log(node);
 
         return node;
       }
@@ -197,33 +202,15 @@ const SetFacilityStructure = () => {
     search: string,
     nodes: Node[]
   ): Node | undefined => {
-
     if (nodes.length === 0) return undefined;
     return nodes.map((node) => {
       if (node.key === search) {
-
-        const updateNode = {
-          key: node.key,
-          name: name,
-          code: code,
-          tag: tag,
-          labelclass: node.labelclass,
-        };
-
-        ClassificationsService.update(node.self_id.low, updateNode)
-          .then((res) => {
-            showSuccess("Saved!");
-            getClassification();
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
-            });
-          });
-
+        node.code = code;
+        node.name = name;
+        node.label = code + " : " + name;
+        node.type = type;
+        node.description = description;
+        node.tags = tags;
         return node;
       }
       return findNodeAndChangeItem(search, node.children ? node.children : []);
@@ -236,34 +223,11 @@ const SetFacilityStructure = () => {
   ): Node | undefined => {
     if (nodes.length === 0) return undefined;
     return nodes.map((node) => {
-      // node.children = node.children
-      //   ? node.children.filter((child) => child.key !== search)
-      //   : [];
-
-      if (node.key === search) {
-        ClassificationsService.remove(node.self_id.low)
-          .then(() => {
-            toast.current.show({
-              severity: "success",
-              summary: "Success",
-              detail: "Classification Deleted",
-              life: 2000,
-            });
-            getClassification();
-
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
-            });
-          });
-        return node;
-      }
+      node.children = node.children
+        ? node.children.filter((child) => child.key !== search)
+        : [];
       findNodeAndDelete(search, node.children ? node.children : []);
-
+      return node;
     })[0];
   };
 
@@ -284,8 +248,6 @@ const SetFacilityStructure = () => {
     data: Node[],
     result: Node[] = []
   ): { node: Node; result: Node[] } | undefined => {
-    console.log(data);
-
     for (let node of data) {
       var _result = [...result, node];
       if (node.key === search) {
@@ -300,11 +262,15 @@ const SetFacilityStructure = () => {
 
   const addItem = (key: string) => {
     const temp = JSON.parse(JSON.stringify(data));
+    console.log(temp);
+
     findNodeAndAddItem(key, temp);
     setData(temp);
     setName("");
     setCode("");
-    setTag([]);
+    setType("");
+    setDescription("");
+    setTags([]);
     setAddDia(false);
   };
 
@@ -314,44 +280,75 @@ const SetFacilityStructure = () => {
     setData(temp);
     setName("");
     setCode("");
+    setType("");
+    setDescription("");
+    setTags([]);
     setEditDia(false);
   }
 
   const deleteItem = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    console.log(key);
-    console.log(data);
-    findNodeAndDelete(key, temp);
-  };
-
-  const dragDropUpdate = (dragId: string, dropId: string) => {
-    console.log(dragId);
-    console.log(dropId);
-
-    ClassificationsService.relation(dragId, dropId)
-      .then((res) => {
-        showSuccess("Updated");
-        getClassification();
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
+    if (classification.structure.root.key === key) {
+      FacilityStructureService.remove(classification._id || "")
+        .then(() => {
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Classification Deleted",
+            life: 2000,
+          });
+          navigate("/classifications");
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
         });
-      });
+      return
+    }
+    var temp: Node[] = JSON.parse(JSON.stringify(data));
+    temp = temp.filter((node) => node.key !== key);
+    findNodeAndDelete(key, temp);
+    setData(temp);
   };
 
-  const dragConfirm = (dragId: string, dropId: string) => {
-    confirmDialog({
-      message: 'Are you sure you want to move?',
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => { dragDropUpdate(dragId, dropId) },
-      reject: () => { getClassification() }
-    });
-  }
+  const saveTree = () => {
+    const temp = JSON.parse(JSON.stringify(data));
+    fixNodes(temp);
+    const _id = classification._id;
+    const _classification = {
+      facility_id: temp[0].facility_id,
+      structure: {
+        root: {
+          ...classification.structure.root,
+          type: temp[0].type,
+          description: temp[0].description,
+          code: temp[0].code,
+          name: temp[0].name,
+          label: temp[0].label,
+          children: temp[0].children,
+          tags: temp[0].tags,
+          selectable: temp[0].children.length === 0 ? true : false,
+        }
+      },
+    };
+    if (_id) {
+      FacilityStructureService.update(_id, _classification)
+        .then((res) => {
+          showSuccess("Saved!");
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
+        });
+    }
+  };
 
   const showSuccess = (detail: string) => {
     toast.current.show({
@@ -414,6 +411,23 @@ const SetFacilityStructure = () => {
     </div>
   }
 
+  // const actionBodyTemplate = (rowData) => {
+  //   return (
+  //     <div className="actions">
+  //       <Button
+  //         icon="pi pi-pencil"
+  //         className="p-button-rounded p-button-success mr-2"
+  //         onClick={() => editFacility(rowData)}
+  //       />
+  //       <Button
+  //         icon="pi pi-trash"
+  //         className="p-button-rounded p-button-warning mt-2"
+  //         onClick={() => confirmDeleteFacility(rowData)}
+  //       />
+  //     </div>
+  //   );
+  // };
+
   return (
     <div className="container">
       <Toast ref={toast} position="top-right" />
@@ -442,6 +456,7 @@ const SetFacilityStructure = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -449,15 +464,12 @@ const SetFacilityStructure = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} />
-        </div>
-        <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <Dropdown optionLabel="name" value={city} options={cities} onChange={(e) => setCity(e.value)} placeholder="Select a Type" />
+          <FormType />
         </div>
       </Dialog>
       <Dialog
@@ -476,6 +488,7 @@ const SetFacilityStructure = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -483,16 +496,16 @@ const SetFacilityStructure = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} />
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <FormType />
         </div>
-
       </Dialog>
-      <h1>Edit Classification</h1>
-      <h3>Code : {classification.root[0].code} </h3>
+      <h1>Facility Structure</h1>
+      <h3>{classification.structure.root.name}</h3>
       <div className="field">
         <Tree
           value={data}
@@ -512,19 +525,20 @@ const SetFacilityStructure = () => {
               });
               return
             }
-            event.dragNode.parent = event.dropNode.key
             setData(event.value);
-            dragConfirm(event.dragNode.self_id.low, event.dropNode.self_id.low)
-
           }}
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data, options) => <span>{data.label} {data.children && <button onClick={() => alert("deneme")} className="ml-3">Edit</button>} </span>}
+          nodeTemplate={(data, options) => <span>{data.label} {data.children && <button onClick={(e) => alert("deneme")} className="ml-3">Edit Form</button>} </span>}
+
         />
       </div>
       <div className="field">
 
+        <Button className="p-button-success" onClick={saveTree} >
+          Save
+        </Button>
       </div>
     </div>
   );

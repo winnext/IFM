@@ -16,11 +16,14 @@ import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { Neo4jModule } from 'nest-neo4j/dist';
 
+<<<<<<< HEAD
 
 import { i18nOptions } from './common/configs/i18n.options';
 import { RoomModule } from './rooms/room.module';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 
+=======
+>>>>>>> atameratalay
 @Module({
   imports: [
     OpenTelemetryModuleConfig,

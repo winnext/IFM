@@ -13,6 +13,8 @@ import FacilityFileImport from "./pages/FacilityFileImport";
 import ClassificationFileImport from "./pages/ClassificationFileImport";
 import FacilityStructure from "./pages/FacilityStructure/FacilityStructure";
 import SetFacilityStructure from "./pages/FacilityStructure/SetFacilityStructure";
+import FormBuilder from "./pages/FormBuilder/FormBuilder";
+import FormBuilderCreate from "./pages/FormBuilder/FormBuilderCreate";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -24,7 +26,8 @@ export default function Router() {
         { path: "", element: <Dashboard /> },
         { path: "facility", element: <Facility /> },
         { path: "classifications", element: <Classifications /> },
-        { path: "facilitystructure", element: <FacilityStructure/> },
+        { path: "facilitystructure", element: <FacilityStructure /> },
+        { path: "formbuilder", element: <FormBuilder /> },
       ],
     },
     {
@@ -35,7 +38,7 @@ export default function Router() {
     {
       path: "/facilitystructure",
       element: <AppLayout />,
-      children: [{ path: ":id", element: <SetFacilityStructure/> }],
+      children: [{ path: ":id", element: <SetFacilityStructure /> }],
     },
     {
       path: "/facility",
@@ -46,6 +49,11 @@ export default function Router() {
       path: "/classifications",
       element: <AppLayout />,
       children: [{ path: "fileimport", element: <ClassificationFileImport /> }],
+    },
+    {
+      path: "/formbuilder",
+      element: <AppLayout />,
+      children: [{ path: "create", element: <FormBuilderCreate/> }],
     },
     {
       path: "/404",

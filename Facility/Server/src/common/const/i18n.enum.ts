@@ -9,5 +9,9 @@ export enum I18NEnums {
   CLASSIFICATION_NOT_FOUND = 'greet.CLASSIFICATION_NOT_FOUND',
   OBJECTID_NOT_VALID = 'greet.OBJECTID_NOT_VALID',
   CLASSIFICATION = 'classification',
+<<<<<<< HEAD
   DUBLICATE_ERROR = 'greet.DUBLICATE_ERROR',
+=======
+  NODE_HAS_CHILD = 'greet.NODE_HAS_CHILD'
+>>>>>>> atameratalay
 }
