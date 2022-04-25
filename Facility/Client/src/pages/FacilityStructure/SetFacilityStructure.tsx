@@ -530,8 +530,15 @@ const SetFacilityStructure = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data, options) => <span>{data.label} {data.children && <button onClick={(e) => alert("deneme")} className="ml-3">Edit Form</button>} </span>}
-
+          nodeTemplate={(data, options) => <span>{data.label} {data.children && <button onClick={(e) => navigate("/form", {
+            state: {
+              page: 5,
+              title: "mustafa",
+            }
+          })} className="ml-3">Edit Form</button>} </span>}
+        // (e) => {
+        //   navigate("/classifications/" + e.value.identity.low);
+        // }
         />
       </div>
       <div className="field">
