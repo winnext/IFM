@@ -1,4 +1,3 @@
-
 export interface BaseGraphDatabaseInterfaceRepository<T> {
   update(id: string, data: T | any);
 
@@ -10,11 +9,9 @@ export interface BaseGraphDatabaseInterfaceRepository<T> {
 
   findAll(data: T | any): Promise<T[]>;
 
-  delete(id: string): Promise<T>;
+  delete(id: string);
 
-  findWithRelations(relations: any): Promise<T[]>;
-
-  changeNodeBranch (id: string, target_parent_id: string): Promise<T>;
+  changeNodeBranch(id: string, target_parent_id: string);
 
   findOneNodeByKey(key: string);
 }

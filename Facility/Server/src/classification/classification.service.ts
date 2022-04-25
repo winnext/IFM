@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
-import { Classification } from './entities/classification.entity';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
 import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
 
@@ -10,7 +9,7 @@ import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/gr
 export class ClassificationService {
   constructor(
     @Inject(RepositoryEnums.CLASSIFICATION)
-    private readonly classificationRepository: BaseGraphDatabaseInterfaceRepository<Classification>,
+    private readonly classificationRepository: BaseGraphDatabaseInterfaceRepository<any>,
   ) {}
 
   @Span('create a classification')

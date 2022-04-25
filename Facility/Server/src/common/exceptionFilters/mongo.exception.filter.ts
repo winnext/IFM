@@ -36,6 +36,7 @@ export class MongoExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
 
     console.log('--------This error from MONGO EXCEPTİON FİLTER-----------');
+    console.log(exception);
     const exceptionMessage = exception.errmsg;
     const errorProperties = exceptionMessage.match(/\{.*\}/)[0];
 

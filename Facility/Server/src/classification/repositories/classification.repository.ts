@@ -1,28 +1,19 @@
 /* eslint-disable no-var */
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import { int } from 'neo4j-driver';
-
 import { Classification } from '../entities/classification.entity';
 import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
-import { nodeHasChild } from 'src/common/func/nodeHasChild';
+import { nodeHasChildException } from 'src/common/func/nodeHasChild';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
 @Injectable()
 export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification> {
-  constructor(
-    private readonly neo4jService: Neo4jService,
-    @InjectModel(Classification.name)
-    private readonly classificationModel: Model<Classification>,
-  ) {}
-  findWithRelations(relations: any): Promise<Classification[]> {
-    throw new Error(relations);
-  }
+  constructor(private readonly neo4jService: Neo4jService) {}
+
   async findOneById(id: string) {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
@@ -79,12 +70,13 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         skip = 0;
       }
     }
-    let a = 'MATCH (x) where x.hasParent = false return x ORDER BY x.' + orderByColumn + ' '+orderBy+' SKIP $skip LIMIT $limit';
-    const result = await this.neo4jService.read(
-      a
-      ,
-      {skip: int(skip), limit: int(limit)},
-    );
+    let a =
+      'MATCH (x) where x.hasParent = false return x ORDER BY x.' +
+      orderByColumn +
+      ' ' +
+      orderBy +
+      ' SKIP $skip LIMIT $limit';
+    const result = await this.neo4jService.read(a, { skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);
@@ -181,63 +173,68 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     }
   }
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {
-    let res = await this.neo4jService.read('MATCH (p) where id(p)=$id return count(p)', { id: parseInt(_id) });
+    const checkNodeisExist = await this.findOneById(_id);
+    const { name, code, tag } = updateClassificationto;
 
-    if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
-      res = await this.neo4jService.write(
+    if (checkNodeisExist.hasOwnProperty('root')) {
+      const updatedNode = await this.neo4jService.write(
         'MATCH (c) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label',
         {
-          name: updateClassificationto.name,
-          code: updateClassificationto.code,
-          tag: updateClassificationto.tag,
-          label: updateClassificationto.code + ' . ' + updateClassificationto.name,
+          name: name,
+          code: code,
+          tag: tag,
+          label: code + ' . ' + name,
           id: int(_id),
         },
       );
       console.log('Node updated ................... ');
-      return new Classification();
+      return updatedNode;
     } else {
       console.log('Can not find a node for update  ....................');
-      return new Classification();
+      throw new ClassificationNotFountException('Can not find a node for update  ');
     }
   }
   async delete(_id: string) {
-    let res = await this.neo4jService.read('MATCH (c)  -[r:CHILDREN]->(p) where id(c)= $id return count(p)', {
-      id: parseInt(_id),
-    });
-    if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
-      res = await this.neo4jService.read('MATCH (c) where id(c)= $id return c', {
+    try {
+      let res = await this.neo4jService.read('MATCH (c)  -[r:CHILDREN]->(p) where id(c)= $id return count(p)', {
         id: parseInt(_id),
       });
-      nodeHasChild(res['records'][0]['_fields'][0]['properties'].name);
-      //console.log('Can not delete a node include children ....................');
-      //return new Classification();
-    } else {
-      const parent = await this.neo4jService.read(
-        'MATCH (c) where id(c)= $id match(k) match (c)-[:CHILD_OF]-(k) return k',
-        { id: parseInt(_id) },
-      );
+      if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
+        res = await this.neo4jService.read('MATCH (c) where id(c)= $id return c', {
+          id: parseInt(_id),
+        });
 
-      res = await this.neo4jService.write('MATCH (c) where id(c)= $id detach delete c', { id: parseInt(_id) });
-      if (parent['records'][0]) {
-        res = await this.neo4jService.read(
-          'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
-          { id: parent['records'][0]['_fields'][0]['properties'].self_id },
+        nodeHasChildException(res['records'][0]['_fields'][0]['properties'].name);
+        //console.log('Can not delete a node include children ....................');
+        //return new Classification();
+      } else {
+        const parent = await this.neo4jService.read(
+          'MATCH (c) where id(c)= $id match(k) match (c)-[:CHILD_OF]-(k) return k',
+          { id: parseInt(_id) },
         );
-        if (res['records'][0]['_fields'][0].low == 0) {
-          this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
-            id: parent['records'][0]['_fields'][0]['properties'].self_id,
-          });
+
+        res = await this.neo4jService.write('MATCH (c) where id(c)= $id detach delete c', { id: parseInt(_id) });
+        if (parent['records'][0]) {
+          res = await this.neo4jService.read(
+            'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
+            { id: parent['records'][0]['_fields'][0]['properties'].self_id },
+          );
+          if (res['records'][0]['_fields'][0].low == 0) {
+            this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+              id: parent['records'][0]['_fields'][0]['properties'].self_id,
+            });
+          }
         }
+        console.log('Node deleted ................... ');
+        return 'successfully deleted';
       }
-      console.log('Node deleted ................... ');
-      return new Classification();
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   async changeNodeBranch(_id: string, _target_parent_id: string) {
     await this.deleteRelations(_id);
     await this.addRelations(_id, _target_parent_id);
-    return new Classification();
   }
   async deleteRelations(_id: string) {
     const res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return p', {
@@ -287,13 +284,17 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   }
 
   async findOneNodeByKey(key: string) {
-    const result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
+    try {
+      const result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
 
-    var x = result['records'][0]['_fields'][0];
-    if (!result) {
-      throw new ClassificationNotFountException(key);
-    } else {
-      return x;
+      if (!result) {
+        throw new ClassificationNotFountException(key);
+      }
+      var node = result['records'][0]['_fields'][0];
+
+      return node;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

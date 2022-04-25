@@ -14,4 +14,10 @@ export class CreateFacilityStructureHistoryDto {
   @IsObject()
   @Type(() => Object)
   user: object;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObject()
+  @Type(() => Object)
+  requestInformation: object;
 }

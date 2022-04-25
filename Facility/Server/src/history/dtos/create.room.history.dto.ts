@@ -23,4 +23,10 @@ export class CreateRoomHistoryDto {
   @IsObject()
   @Type(() => Object)
   room: object;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsObject()
+  @Type(() => Object)
+  requestInformation: object;
 }
