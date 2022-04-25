@@ -24,7 +24,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     throw new Error(relations);
   }
   async findOneById(id: string) {
-    let idNum = parseInt(id);
+    const idNum = parseInt(id);
     let result = await this.neo4jService.read(
       //"MATCH p=(n)-[:CHILDREN*]->(m) where id(n)="+id+" \
       //  WITH COLLECT(p) AS ps \
@@ -47,10 +47,10 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       throw new ClassificationNotFountException(id);
     } else if (Object.keys(x).length === 0) {
       result = await this.neo4jService.read('MATCH (n) where id(n) = $idNum return n', { idNum });
-      let o = { root: result['records'][0]['_fields'] };
+      const o = { root: result['records'][0]['_fields'] };
       return o;
     } else {
-      let o = { root: result['records'][0]['_fields'] };
+      const o = { root: result['records'][0]['_fields'] };
       return o;
     }
   }
@@ -63,7 +63,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
 
     orderByColumn = orderByColumn || 'name';
     const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false RETURN count(c)`);
-    let coun = count['records'][0]['_fields'][0].low;
+    const coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
 
     if (page > pagecount) {
@@ -81,7 +81,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       'MATCH (x) where x.hasParent = false return x ORDER BY x.' + orderByColumn + '$orderBy SKIP $skip LIMIT $limit',
       { limit: int(limit), skip: int(skip), orderBy: orderBy, orderByColumn: orderByColumn },
     );
-    let arr = [];
+    const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);
     }
@@ -110,7 +110,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       let a = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
          labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt, selectable: $selectable})`;
       a = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + a;
-      let result = await this.neo4jService.write(a, {
+      await this.neo4jService.write(a, {
         labelclass: createClassificationDto.labelclass,
         name: classification.name,
         code: classification.code,
@@ -129,34 +129,34 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
           key: classification.key,
         },
       );
-      let b = `match (x: ${createClassificationDto.labelclass} {code: $code}) \
+      const b = `match (x: ${createClassificationDto.labelclass} {code: $code}) \
          match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id \
          create (x)-[:CHILD_OF]->(y)`;
-      result = await this.neo4jService.write(b, {
+      await this.neo4jService.write(b, {
         code: classification.code,
         parent_id: int(createClassificationDto.parent_id),
       });
-      let c = `match (x: ${createClassificationDto.labelclass}) where id(x) = $parent_id set x.selectable = false`;
-      result = await this.neo4jService.write(c, { parent_id: int(createClassificationDto.parent_id) });
+      const c = `match (x: ${createClassificationDto.labelclass}) where id(x) = $parent_id set x.selectable = false`;
+      await this.neo4jService.write(c, { parent_id: int(createClassificationDto.parent_id) });
       return new Classification();
     } else {
       classification.hasParent = false;
-      let name = classification.name;
-      let code = classification.code;
-      let key = classification.key;
-      let hasParent = classification.hasParent;
-      let tag = classification.tag;
-      let label = classification.label;
-      let createdAt = classification.createdAt;
-      let updatedAt = classification.updatedAt;
-      let labelclass = createClassificationDto.labelclass;
+      const name = classification.name;
+      const code = classification.code;
+      const key = classification.key;
+      const hasParent = classification.hasParent;
+      const tag = classification.tag;
+      const label = classification.label;
+      const createdAt = classification.createdAt;
+      const updatedAt = classification.updatedAt;
+      const labelclass = createClassificationDto.labelclass;
 
-      let a = `CREATE (x:${createClassificationDto.labelclass} {name: \
+      const a = `CREATE (x:${createClassificationDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
         , createdAt: $createdAt, updatedAt: $updatedAt })`;
 
-      const result = await this.neo4jService.write(a, {
+      await this.neo4jService.write(a, {
         name,
         code,
         key,
@@ -205,11 +205,11 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       res = await this.neo4jService.read('MATCH (c) where id(c)= $id return c', {
         id: parseInt(_id),
       });
-      nodeHasChild(res['records'][0]['_fields'][0]['properties'].name)
+      nodeHasChild(res['records'][0]['_fields'][0]['properties'].name);
       //console.log('Can not delete a node include children ....................');
       //return new Classification();
     } else {
-      let parent = await this.neo4jService.read(
+      const parent = await this.neo4jService.read(
         'MATCH (c) where id(c)= $id match(k) match (c)-[:CHILD_OF]-(k) return k',
         { id: parseInt(_id) },
       );
@@ -221,7 +221,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
           { id: parent['records'][0]['_fields'][0]['properties'].self_id },
         );
         if (res['records'][0]['_fields'][0].low == 0) {
-          let result = this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+          this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
             id: parent['records'][0]['_fields'][0]['properties'].self_id,
           });
         }
@@ -236,54 +236,54 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     return new Classification();
   }
   async deleteRelations(_id: string) {
-    let res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return p', {
+    const res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return p', {
       id: parseInt(_id),
     });
 
     if (res.records[0]) {
-      let res1 = await this.neo4jService.write('MATCH (c)<-[r:CHILDREN]-(p) where id(c)= $id delete r', {
+      await this.neo4jService.write('MATCH (c)<-[r:CHILDREN]-(p) where id(c)= $id delete r', {
         id: parseInt(_id),
       });
 
-      let res2 = await this.neo4jService.write('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id delete r', {
+      await this.neo4jService.write('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id delete r', {
         id: parseInt(_id),
       });
 
-      let res3 = await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent=false', {
+      await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent=false', {
         id: parseInt(_id),
       });
 
-      let parentChildCount = await this.neo4jService.read(
+      const parentChildCount = await this.neo4jService.read(
         'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
         { id: res['records'][0]['_fields'][0]['properties'].self_id.low },
       );
       if (parentChildCount['records'][0]['_fields'][0].low == 0) {
-        let result = this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+        this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
           id: res['records'][0]['_fields'][0]['properties'].self_id.low,
         });
       }
     }
   }
   async addRelations(_id: string, _target_parent_id: string) {
-    let res2 = await this.neo4jService.write(
+    await this.neo4jService.write(
       'MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (p)-[:CHILDREN]-> (c)',
       { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) },
     );
-    let res1 = await this.neo4jService.write(
+    await this.neo4jService.write(
       'MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (c)-[:CHILD_OF]-> (p)',
       { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) },
     );
-    
-    let res31 = await this.neo4jService.write(
-      'MATCH (c) where id(c)= $id set c.hasParent = true', { id: parseInt(_id) },
-    );
-    let res32 = await this.neo4jService.write('MATCH (c) where id(c)= $target_parent_id set c.selectable = false', {
+
+    await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent = true', {
+      id: parseInt(_id),
+    });
+    await this.neo4jService.write('MATCH (c) where id(c)= $target_parent_id set c.selectable = false', {
       target_parent_id: parseInt(_target_parent_id),
     });
   }
 
   async findOneNodeByKey(key: string) {
-    let result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
+    const result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
 
     var x = result['records'][0]['_fields'][0];
     if (!result) {

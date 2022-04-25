@@ -3,11 +3,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { LoggingInterceptor } from './common/interceptors/logger.interceptor';
-import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception';
+import { MongoExceptionFilter } from './common/exceptionFilters/mongo.exception.filter';
 import { kafkaOptions } from './common/configs/message.broker.options';
 import trial from './tracing';
 import { I18nService } from 'nestjs-i18n';
-import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
+import { HttpExceptionFilter } from './common/exceptionFilters/http.exception.filter';
+import { Neo4jErrorFilter } from './common/exceptionFilters/ne04j.exception.filter';
 
 async function bootstrap() {
   try {
@@ -38,7 +39,11 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-    app.useGlobalFilters(new MongoExceptionFilter(i18NService), new HttpExceptionFilter(i18NService));
+    app.useGlobalFilters(
+      new MongoExceptionFilter(i18NService),
+      new HttpExceptionFilter(i18NService),
+      new Neo4jErrorFilter(),
+    );
     app.useGlobalInterceptors(new LoggingInterceptor());
     app.enableCors();
     await app.startAllMicroservices();
