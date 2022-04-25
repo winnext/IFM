@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 function withRouter(Component) {
   function ComponentWithRouterProp(props) {
@@ -16,7 +16,10 @@ const AppBreadcrumb = (props) => {
   const location = useLocation();
   const pathname = location.pathname;
 
+  
   const temp = pathname.split('/')
+  var paths = pathname.split('/')
+  paths = paths.filter(item=>item!=="")
   let name = temp[1]
   if (props.routers) {
     let currentRouter = props.routers.find(
@@ -25,7 +28,7 @@ const AppBreadcrumb = (props) => {
     name = currentRouter ? currentRouter.meta.breadcrumb[0].label : name;
   }
 
-  return <span>{name}</span>;
+  return <span><span><Link to={"/"}>Home</Link></span>{paths.map((item,index)=><span> / <Link to={"/"+(paths.slice(0,index+1)).join('/')}>{item}</Link></span>)}</span>;
 };
 
 export default withRouter(AppBreadcrumb);

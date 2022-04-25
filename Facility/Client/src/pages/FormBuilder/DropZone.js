@@ -243,7 +243,7 @@ const InputTextareaComponent = (props) => {
         </div>
       </Dialog>
 
-      <InputTextarea disabled placeholder="Text Area" style={{ width: 250 }} />
+      <InputTextarea disabled placeholder="Text Area" rows={3} style={{ width: 250,resize: "none" }} />
 
       <Button
         className="ml-2 mb-2 p-button-sm p-button-raised p-button-info"

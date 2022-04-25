@@ -371,8 +371,8 @@ const SetClassification = () => {
       message: 'Are you sure you want to move?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => { dragDropUpdate(dragId, dropId) },
-      reject: () => { getClassification() }
+      accept: () => { setLoading(true); dragDropUpdate(dragId, dropId) },
+      reject: () => { setLoading(true); getClassification() }
     });
   }
 
@@ -432,13 +432,6 @@ const SetClassification = () => {
       </div>
     );
   };
-
-  if (loading) {
-    return <div>
-      <Toast ref={toast} position="top-right" />
-      Loading...
-    </div>
-  }
 
   return (
     <div className="container">
@@ -518,6 +511,7 @@ const SetClassification = () => {
       <h3>Code : {classification.root[0].code} </h3>
       <div className="field">
         <Tree
+          loading={loading}
           value={data}
           dragdropScope="-"
           contextMenuSelectionKey={selectedNodeKey ? selectedNodeKey : ""}
@@ -535,10 +529,7 @@ const SetClassification = () => {
               });
               return
             }
-            event.dragNode.parent = event.dropNode.key
-            setData(event.value);
             dragConfirm(event.dragNode.self_id.low, event.dropNode.self_id.low)
-
           }}
           filter
           filterBy="name,code"

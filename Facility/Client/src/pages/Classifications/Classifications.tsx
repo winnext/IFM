@@ -55,7 +55,7 @@ const Classifications = () => {
     first: 0,
     rows: 5,
     page: 0,
-    sortField: undefined,
+    sortField: undefined||"",
     sortOrder: undefined,
   });
   const dt = useRef<any>();
@@ -68,18 +68,17 @@ const Classifications = () => {
   }, [lazyParams]);
 
   const loadLazyData = () => {
+    let soertField2=lazyParams.sortField.split('.')[1];
     setLoading(true);
     ClassificationsService.findAll({
       page: lazyParams.page,
       limit: lazyParams.rows,
-      sortField: lazyParams.sortField,
+      sortField: soertField2,
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
     })
       .then((response) => {
         console.log(response.data);
-        console.log("denme");
         
-
         setData(response.data[0]);
         setCountClassifications(response.data[1].count);
         setLoading(false);
