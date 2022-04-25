@@ -18,27 +18,31 @@ export class FacilityStructuresController {
     description: 'create  facility structure',
   })
   @Post()
+  @Unprotected()
   create(@Body() createFacilityStructureDto: CreateFacilityStructureDto) {
-    console.log(createFacilityStructureDto.structure);
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }
 
   @Get()
+  @Unprotected()
   findAll(@Query() queryParams: PaginationParams) {
     return this.facilityStructuresService.findAll(queryParams);
   }
 
   @Get(':id')
+  @Unprotected()
   findOne(@Param('id') id: string) {
     return this.facilityStructuresService.findOne(id);
   }
 
   @Patch(':id')
+  @Unprotected()
   update(@Param('id') id: string, @Body() updateFacilityStructureDto: UpdateFacilityStructureDto) {
     return this.facilityStructuresService.update(id, updateFacilityStructureDto);
   }
 
   @Delete(':id')
+  @Unprotected()
   remove(@Param('id') id: string) {
     return this.facilityStructuresService.remove(id);
   }
