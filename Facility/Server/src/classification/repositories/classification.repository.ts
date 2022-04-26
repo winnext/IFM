@@ -59,7 +59,6 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
     {class_name: class_name});
     const coun = count['records'][0]['_fields'][0].low;
-    labelclass: createClassificationDto.labelclass,
     const pagecount = Math.ceil(coun / limit);
 
     if (page > pagecount) {
