@@ -59,6 +59,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
     {class_name: class_name});
     const coun = count['records'][0]['_fields'][0].low;
+    labelclass: createClassificationDto.labelclass,
     const pagecount = Math.ceil(coun / limit);
 
     if (page > pagecount) {
@@ -105,7 +106,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
 
     if (createClassificationDto.parent_id || createClassificationDto.parent_id == 0) { //if there is a parent of created node
       let makeNodeConnectParent = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
-         labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt, selectable: $selectable})`;
+         labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt, selectable: $selectable, class_name: $className})`;
       makeNodeConnectParent = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + 
       makeNodeConnectParent;
       await this.neo4jService.write(makeNodeConnectParent, {
@@ -120,6 +121,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         updatedAt: classification.updatedAt,
         parent_id: int(createClassificationDto.parent_id),
         selectable: classification.selectable,
+        className: classification.class_name,
       });
       await this.neo4jService.write(
         `match (x: ${createClassificationDto.labelclass} {key: $key}) set x.self_id = id(x)`,
@@ -148,11 +150,12 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       const createdAt = classification.createdAt;
       const updatedAt = classification.updatedAt;
       const labelclass = createClassificationDto.labelclass;
+      const className = classification.class_name;
 
       const createNode = `CREATE (x:${createClassificationDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
-        , createdAt: $createdAt, updatedAt: $updatedAt })`;
+        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className, })`;
 
       await this.neo4jService.write(createNode, {
         name,
@@ -164,6 +167,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         createdAt,
         updatedAt,
         labelclass,
+        className
       });
       await this.neo4jService.write(
         `match (x:${createClassificationDto.labelclass}  {key: $key}) set x.self_id = id(x)`,

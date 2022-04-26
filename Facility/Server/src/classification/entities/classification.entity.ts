@@ -14,6 +14,7 @@ export class Classification {
   labelclass: string;
   self_id: number;
   selectable: boolean;
+  class_name: string = Classification.name; // not in dtos
 }
 
 function generateUuid() {
