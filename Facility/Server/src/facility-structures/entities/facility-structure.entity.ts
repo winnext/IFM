@@ -6,7 +6,7 @@ import { string } from 'joi';
 
 export class FacilityStructure {
 
-  key:string = generateUuid(); // not in dtos
+  key:string = generateUuid();
   type:string;
   code:string;
   name:string;
@@ -15,7 +15,6 @@ export class FacilityStructure {
   label: string;  // not in dtos
   createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
-  facility_id: string;
   isActive: boolean = true;  // not in create dto
   isDeleted: boolean = false; // not in create dto
   class_name: string = FacilityStructure.name; // not in dtos
