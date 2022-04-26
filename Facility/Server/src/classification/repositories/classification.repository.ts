@@ -46,7 +46,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     }
   }
 
-  async findAll(data: PaginationParams) {
+  async findAll(data: PaginationParams, class_name: string) {
     let { page, limit, orderBy, orderByColumn } = data;
     page = page || 0;
     limit = limit || 10;
@@ -56,7 +56,8 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     if (orderByColumn == 'undefined') {
       orderByColumn = 'name';
     }
-    const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false RETURN count(c)`);
+    const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
+    {class_name: class_name});
     const coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
 
@@ -71,12 +72,12 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       }
     }
     let getNodeWithoutParent =
-      'MATCH (x) where x.hasParent = false return x ORDER BY x.' +
+      'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x.' +
       orderByColumn +
       ' ' +
       orderBy +
       ' SKIP $skip LIMIT $limit';
-    const result = await this.neo4jService.read(getNodeWithoutParent, { skip: int(skip), limit: int(limit) });
+    const result = await this.neo4jService.read(getNodeWithoutParent, {class_name: class_name, skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);

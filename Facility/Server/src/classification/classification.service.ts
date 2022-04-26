@@ -20,8 +20,8 @@ export class ClassificationService {
 
   @Span('find all classifications')
   @OtelMethodCounter()
-  async findAll(query) {
-    return await this.classificationRepository.findAll(query);
+  async findAll(query,class_name) {
+    return await this.classificationRepository.findAll(query,class_name);
   }
 
   @Span('find a classification by id')

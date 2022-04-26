@@ -25,8 +25,8 @@ export class FacilityStructuresController {
 
   @Get()
   @Unprotected()
-  findAll(@Query() queryParams: PaginationParams) {
-    return this.facilityStructuresService.findAll(queryParams);
+  findAll(@Query() queryParams: PaginationParams,@Param('class_name') class_name: string ) {
+    return this.facilityStructuresService.findAll(queryParams,class_name);
   }
 
   @Get(':id')

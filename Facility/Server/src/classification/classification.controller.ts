@@ -22,8 +22,8 @@ export class ClassificationController {
   @Unprotected()
   @Get()
   @NoCache()
-  findAll(@Query() paramDto: PaginationParams) {
-    return this.classificationService.findAll(paramDto);
+  findAll(@Query() paramDto: PaginationParams, @Param('class_name') class_name: string) {
+    return this.classificationService.findAll(paramDto,class_name);
   }
   @Unprotected()
   @Get(':id')
