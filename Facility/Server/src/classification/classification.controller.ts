@@ -20,7 +20,7 @@ export class ClassificationController {
     return this.classificationService.create(createClassificationDto);
   }
   @Unprotected()
-  @Get()
+  @Get(':class_name')
   @NoCache()
   findAll(@Query() paramDto: PaginationParams, @Param('class_name') class_name: string) {
     return this.classificationService.findAll(paramDto,class_name);

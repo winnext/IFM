@@ -16,8 +16,8 @@ export class FacilityStructuresService {
     return this.facilityStructureRepository.create(createFacilityStructureDto);
   }
 
-  findAll(queryParams,class_name) {
-    return this.facilityStructureRepository.findAll(queryParams,class_name);
+  async findAll(queryParams,class_name) {
+    return await this.facilityStructureRepository.findAll(queryParams,class_name);
   }
 
   findOne(id: string) {

@@ -6,6 +6,7 @@ import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { UserRoles } from 'src/common/const/keycloak.role.enum';
+import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
 @ApiTags('structure')
 @ApiBearerAuth('JWT-auth')
 @Controller('structure')
@@ -23,14 +24,16 @@ export class FacilityStructuresController {
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }
 
-  @Get()
+  @Get(':class_name')
   @Unprotected()
+  @NoCache()
   findAll(@Query() queryParams: PaginationParams,@Param('class_name') class_name: string ) {
     return this.facilityStructuresService.findAll(queryParams,class_name);
   }
 
   @Get(':id')
   @Unprotected()
+  @NoCache()
   findOne(@Param('id') id: string) {
     return this.facilityStructuresService.findOne(id);
   }
@@ -45,5 +48,17 @@ export class FacilityStructuresController {
   @Unprotected()
   remove(@Param('id') id: string) {
     return this.facilityStructuresService.remove(id);
+  }
+  @Unprotected()
+  @Post('/relation/:id/:target_parent_id')
+  changeNodeBranch(@Param('id') id: string, @Param('target_parent_id') target_parent_id: string) {
+    return this.facilityStructuresService.changeNodeBranch(id, target_parent_id);
+  }
+
+  @Unprotected()
+  @Get('/nodeinfo/:key')
+  @NoCache()
+  findOneNode(@Param('key') key: string) {
+    return this.facilityStructuresService.findOneNode(key);
   }
 }

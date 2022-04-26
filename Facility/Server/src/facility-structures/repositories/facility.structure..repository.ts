@@ -50,6 +50,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     }
   }
   async findAll(data: PaginationParams, class_name: string) {
+
     let { page, limit, orderBy, orderByColumn } = data;
     page = page || 0;
     limit = limit || 10;
@@ -75,11 +76,8 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       }
     }
     let getNodeWithoutParent =
-      'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x.' +
-      orderByColumn +
-      ' ' +
-      orderBy +
-      ' SKIP $skip LIMIT $limit';
+      'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ';
+  
     const result = await this.neo4jService.read(getNodeWithoutParent, {class_name:class_name, skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
