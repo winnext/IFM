@@ -145,11 +145,13 @@ const SetFacilityStructure = () => {
     const id = params.id || "";
     // console.log(id);
     FacilityStructureService.findOne(id).then((res) => {
-      console.log(res.data);
+      console.log(res.data.root[0]);
+      if (res.data) {
+        setClassification(res.data);
+        // setData([res.data.root[0]] || []);
+        setLoading(false);
+      }
 
-      setClassification(res.data);
-      setData([res.data.structure.root] || []);
-      setLoading(false);
     }).catch(err => {
       toast.current.show({
         severity: "error",
@@ -505,7 +507,7 @@ const SetFacilityStructure = () => {
         </div>
       </Dialog>
       <h1>Facility Structure</h1>
-      <h3>{classification.structure.root.name}</h3>
+      {/* <h3>{classification.structure.root.name}</h3> */}
       <div className="field">
         <Tree
           value={data}
@@ -530,7 +532,7 @@ const SetFacilityStructure = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data, options) => <span>{data.label} {data.children && <button onClick={(e) => navigate("/form", {
+          nodeTemplate={(data, options) => <span>{data.label} {<button onClick={(e) => navigate("/form", {
             state: {
               page: 5,
               title: "mustafa",
