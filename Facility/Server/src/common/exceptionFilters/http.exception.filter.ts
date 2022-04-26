@@ -6,6 +6,7 @@ import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
 import { FacilityTopics } from '../const/kafta.topic.enum';
 import { ExceptionType } from '../const/exception.type';
+import { createExceptionReqResLogObj } from '../func/generate.exception.logobject';
 
 /**
  * Catch HttpExceptions and send this exception to messagebroker  to save the database
@@ -34,24 +35,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-    const errorType = ExceptionType.HTTP_EXCEPTİON;
-    console.log(exception);
-    const requestInformation = {
-      timestamp: new Date(),
-      user: request.user || null,
-      path: request.url,
-      method: request.method,
-      body: request.body,
-    };
 
-    const errorResponseLog = {
-      timestamp: new Date().toLocaleDateString(),
-      path: request.url,
-      method: request.method,
-      status,
-      message: exception.message,
-    };
-    const reqResObject = { requestInformation, errorResponseLog, errorType };
+    const reqResObject = createExceptionReqResLogObj(request, exception, ExceptionType.HTTP_EXCEPTİON);
     switch (exception.getStatus()) {
       case 400:
         try {
@@ -121,22 +106,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
 
       default:
-        let message = '';
-        if (result.key) {
-          message = await this.i18n.translate(result.key, {
-            lang: ctx.getRequest().i18nLang,
-            args: result.args,
-          });
+        try {
+          const message = 'something goes wrong';
+
+          const clientResponse = { status, message };
+          const finalExcep = {
+            reqResObject,
+            clientResponse,
+          };
+          await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
+          this.logger.error(`${JSON.stringify(exception.message)}   `);
+          response.status(status).json(exception.message);
+        } catch (error) {
+        } finally {
+          break;
         }
-        const clientResponse = { status, message };
-        const finalExcep = {
-          reqResObject,
-          clientResponse,
-        };
-        await this.postKafka.producerSendMessage(FacilityTopics.FACILITY_EXCEPTIONS, JSON.stringify(finalExcep));
-        this.logger.error(`${JSON.stringify(exception.message)}   `);
-        response.status(status).json(exception.message);
-        break;
     }
   }
 }

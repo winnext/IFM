@@ -6,6 +6,7 @@ import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
 import { UserTopics } from '../const/kafta.topic.enum';
 import { ExceptionType } from '../const/exception.type';
+import { createExceptionReqResLogObj } from '../func/generate.exception.logobject';
 
 /**
  * Catch HttpExceptions and send this exception to messagebroker  to save the database
@@ -35,24 +36,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const errorType = ExceptionType.HTTP_EXCEPTİON;
+    const reqResObject = createExceptionReqResLogObj(request, exception, ExceptionType.HTTP_EXCEPTİON);
 
-    const requestInformation = {
-      timestamp: new Date(),
-      user: request.user || null,
-      path: request.url,
-      method: request.method,
-      body: request.body,
-    };
-
-    const errorResponseLog = {
-      timestamp: new Date().toLocaleDateString(),
-      path: request.url,
-      method: request.method,
-      status,
-      message: exception.message,
-    };
-    const reqResObject = { requestInformation, errorResponseLog, errorType };
     switch (exception.getStatus()) {
       case 400:
         try {

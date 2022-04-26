@@ -1,6 +1,8 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Neo4jError } from 'neo4j-driver';
+import { ExceptionType } from '../const/exception.type';
+import { createExceptionReqResLogObj } from '../func/generate.exception.logobject';
 
 @Catch(Neo4jError)
 export class Neo4jErrorFilter implements ExceptionFilter {
@@ -9,11 +11,12 @@ export class Neo4jErrorFilter implements ExceptionFilter {
     console.log(exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest();
 
     let statusCode = 500;
     let error = 'Internal Server Error';
     let message: string[] = [];
-
+    const reqResObject = createExceptionReqResLogObj(request, exception, ExceptionType.NEO4J_EXCEPTİON);
     // Neo.ClientError.Schema.ConstraintValidationFailed
     // Node(54776) already exists with label `User` and property `email` = 'duplicate@email.com'
     if (exception.message.includes('already exists with')) {

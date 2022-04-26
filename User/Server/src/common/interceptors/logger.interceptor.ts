@@ -2,6 +2,7 @@ import { NestInterceptor, ExecutionContext, CallHandler, UseInterceptors, Logger
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UserTopics } from '../const/kafta.topic.enum';
+import { createReqLogObj } from '../func/generate.log.object';
 import { checkObjectIddİsValid } from '../func/objectId.check';
 import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
@@ -40,13 +41,6 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
     const query = request.params;
-    const requestInformation = {
-      timestamp: new Date(),
-      path: request.url,
-      method: request.method,
-      body: request.body,
-      user: request.user || {},
-    };
     const user: object = request.user;
     const method = request.method;
     const now = Date.now();
@@ -54,6 +48,7 @@ export class LoggingInterceptor implements NestInterceptor {
     //this parsedUrl for the get which endpoints hit by user
     const parsedUrl = url.match(/^\/[^\?\/]*/)[0];
     // this event triggered when request is and response is done
+    const requestInformation = createReqLogObj(request);
     response.on('close', async () => {
       const { statusCode, statusMessage } = response;
 
@@ -62,6 +57,7 @@ export class LoggingInterceptor implements NestInterceptor {
         statusMessage,
         responseTime: `${Date.now() - now} ms`,
       };
+
       const log = { requestInformation, responseInformation };
       try {
         await this.postKafka.producerSendMessage(UserTopics.USER_LOGGER, JSON.stringify(log));

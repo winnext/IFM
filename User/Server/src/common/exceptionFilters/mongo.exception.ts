@@ -4,6 +4,7 @@ import { I18nService } from 'nestjs-i18n';
 import { ExceptionType } from '../const/exception.type';
 import { I18NEnums } from '../const/i18n.enum';
 import { UserTopics } from '../const/kafta.topic.enum';
+import { createExceptionReqResLogObj } from '../func/generate.exception.logobject';
 import { KafkaService } from '../queueService/kafkaService';
 import { PostKafka } from '../queueService/post-kafka';
 
@@ -39,23 +40,8 @@ export class MongoExceptionFilter implements ExceptionFilter {
     const exceptionMessage = exception.errmsg;
     const errorProperties = exceptionMessage.match(/\{.*\}/)[0];
 
-    const errorType = ExceptionType.MONGO_EXCEPTİON;
-    const requestInformation = {
-      timestamp: new Date(),
-      user: request.user || {},
-      path: request.url,
-      method: request.method,
-      body: request.body,
-    };
+    const reqResObject = createExceptionReqResLogObj(request, exception, ExceptionType.MONGO_EXCEPTİON);
 
-    const errorResponseLog = {
-      timestamp: new Date().toLocaleDateString(),
-      path: request.url,
-      method: request.method,
-      message: exception.message,
-    };
-    const reqResObject = { requestInformation, errorResponseLog, errorType };
-    console.log(exceptionMessage);
     //give response due to mongo exception code
     switch (exception.code) {
       case 112: // write conflict (when a transaction is failed)

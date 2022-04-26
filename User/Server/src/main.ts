@@ -8,6 +8,7 @@ import { kafkaOptions } from './common/configs/message.broker.options';
 import trial from './tracing';
 import { I18nService } from 'nestjs-i18n';
 import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 
 /**
  * Bootstrap the application
@@ -43,7 +44,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-    app.useGlobalInterceptors(new LoggingInterceptor());
+    app.useGlobalInterceptors(new LoggingInterceptor(), new TimeoutInterceptor());
     app.useGlobalFilters(new MongoExceptionFilter(i18NService), new HttpExceptionFilter(i18NService));
     app.enableCors();
     await app.startAllMicroservices();
