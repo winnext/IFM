@@ -70,13 +70,13 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         skip = 0;
       }
     }
-    let a =
+    let getNodeWithoutParent =
       'MATCH (x) where x.hasParent = false return x ORDER BY x.' +
       orderByColumn +
       ' ' +
       orderBy +
       ' SKIP $skip LIMIT $limit';
-    const result = await this.neo4jService.read(a, { skip: int(skip), limit: int(limit) });
+    const result = await this.neo4jService.read(getNodeWithoutParent, { skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);
@@ -102,11 +102,12 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       classification.tag = createClassificationDto.tag;
     }
 
-    if (createClassificationDto.parent_id || createClassificationDto.parent_id == 0) {
-      let a = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
+    if (createClassificationDto.parent_id || createClassificationDto.parent_id == 0) { //if there is a parent of created node
+      let makeNodeConnectParent = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
          labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt, selectable: $selectable})`;
-      a = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + a;
-      await this.neo4jService.write(a, {
+      makeNodeConnectParent = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + 
+      makeNodeConnectParent;
+      await this.neo4jService.write(makeNodeConnectParent, {
         labelclass: createClassificationDto.labelclass,
         name: classification.name,
         code: classification.code,
@@ -125,15 +126,15 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
           key: classification.key,
         },
       );
-      const b = `match (x: ${createClassificationDto.labelclass} {code: $code}) \
+      const createChildOfRelation = `match (x: ${createClassificationDto.labelclass} {code: $code}) \
          match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id \
          create (x)-[:CHILD_OF]->(y)`;
-      await this.neo4jService.write(b, {
+      await this.neo4jService.write(createChildOfRelation, {
         code: classification.code,
         parent_id: int(createClassificationDto.parent_id),
       });
-      const c = `match (x: ${createClassificationDto.labelclass}) where id(x) = $parent_id set x.selectable = false`;
-      await this.neo4jService.write(c, { parent_id: int(createClassificationDto.parent_id) });
+      const makeUnSelectableToParent = `match (x: ${createClassificationDto.labelclass}) where id(x) = $parent_id set x.selectable = false`;
+      await this.neo4jService.write(makeUnSelectableToParent, { parent_id: int(createClassificationDto.parent_id) });
       return new Classification();
     } else {
       classification.hasParent = false;
@@ -147,12 +148,12 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       const updatedAt = classification.updatedAt;
       const labelclass = createClassificationDto.labelclass;
 
-      const a = `CREATE (x:${createClassificationDto.labelclass} {name: \
+      const createNode = `CREATE (x:${createClassificationDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
         , createdAt: $createdAt, updatedAt: $updatedAt })`;
 
-      await this.neo4jService.write(a, {
+      await this.neo4jService.write(createNode, {
         name,
         code,
         key,

@@ -12,13 +12,13 @@ import { UserRoles } from 'src/common/const/keycloak.role.enum';
 export class FacilityStructuresController {
   constructor(private readonly facilityStructuresService: FacilityStructuresService) {}
 
-  @Roles({ roles: [UserRoles.ADMIN] })
+  @Unprotected()
+  //@Roles({ roles: [UserRoles.ADMIN] })
   @ApiBody({
     type: CreateFacilityStructureDto,
     description: 'create  facility structure',
   })
   @Post()
-  @Unprotected()
   create(@Body() createFacilityStructureDto: CreateFacilityStructureDto) {
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }

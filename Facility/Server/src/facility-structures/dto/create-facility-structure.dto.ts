@@ -23,21 +23,11 @@ name: string;
 @IsString()
 description: string;
 
-
 @ApiProperty()
-@IsNotEmpty()
 @IsString()
-facility_id: string;
-
-@ApiProperty()
-@IsNotEmpty()
-@IsBoolean()
-isActive: boolean;
-
-@ApiProperty()
-@IsNotEmpty()
-@IsBoolean()
-isDeleted: boolean;
+@Length(1, 200)
+@IsOptional()
+key: string;
 
 @ApiProperty()
 @IsOptional()
@@ -46,7 +36,7 @@ tag: string[];
 @ApiProperty()
 @IsNumber()
 @IsOptional()
-parent_id: number;
+parent_id: number;  //not in entity 
 
 @ApiProperty()
 @IsNotEmpty()
