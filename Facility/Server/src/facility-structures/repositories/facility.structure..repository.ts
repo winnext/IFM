@@ -49,7 +49,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       return o;
     }
   }
-  async findAll(data: PaginationParams) {
+  async findAll(data: PaginationParams, class_name: string) {
     let { page, limit, orderBy, orderByColumn } = data;
     page = page || 0;
     limit = limit || 10;
@@ -59,7 +59,8 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     if (orderByColumn == 'undefined') {
       orderByColumn = 'name';
     }
-    const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false RETURN count(c)`);
+    const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
+    {class_name:class_name});
     const coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
 
@@ -74,12 +75,12 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       }
     }
     let getNodeWithoutParent =
-      'MATCH (x) where x.hasParent = false return x ORDER BY x.' +
+      'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x.' +
       orderByColumn +
       ' ' +
       orderBy +
       ' SKIP $skip LIMIT $limit';
-    const result = await this.neo4jService.read(getNodeWithoutParent, { skip: int(skip), limit: int(limit) });
+    const result = await this.neo4jService.read(getNodeWithoutParent, {class_name:class_name, skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);
@@ -110,7 +111,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       let makeNodeConnectParent = `(x: ${createFacilityStructureDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
                                                              labelclass:$labelclass,createdAt: $createdAt , updatedAt: $updatedAt, \
                                                              selectable: $selectable, type: $type,description: $description,isActive :$isActive,\ 
-                                                             isDeleted: $isDeleted, className: $className })`;
+                                                             isDeleted: $isDeleted, class_name: $className })`;
       makeNodeConnectParent = ` match (y: ${createFacilityStructureDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
       makeNodeConnectParent;
       await this.neo4jService.write(makeNodeConnectParent, {
@@ -171,7 +172,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
         , createdAt: $createdAt, updatedAt: $updatedAt, type: $type,description: $description,isActive :$isActive\ 
-        , isDeleted: $isDeleted, className: $className, selectable: $selectable })`;
+        , isDeleted: $isDeleted, class_name: $className, selectable: $selectable })`;
 
       await this.neo4jService.write(createNode, {
         name,
