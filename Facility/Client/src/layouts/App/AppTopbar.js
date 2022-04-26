@@ -40,7 +40,7 @@ const AppTopbar = (props) => {
           <img
             id="logo-horizontal"
             className="horizontal-logo"
-            src="assets/layout/images/logo-white.svg"
+            src={process.env.PUBLIC_URL+"/assets/layout/images/logo-white.svg"}
             alt="diamond-layout"
           />
         </Link>
@@ -57,7 +57,7 @@ const AppTopbar = (props) => {
         <img
           id="logo-mobile"
           className="mobile-logo"
-          src="assets/layout/images/logo-dark.svg"
+          src={process.env.PUBLIC_URL+"/assets/layout/images/logo-dark.svg"}
           alt="diamond-layout"
         />
       </div>
@@ -168,7 +168,7 @@ const AppTopbar = (props) => {
                   onClick={props.onTopbarUserMenu}
                 >
                   <img
-                    src="assets/demo/images/avatar/profile.jpg"
+                    src={process.env.PUBLIC_URL+"/assets/demo/images/avatar/profile.jpg"}
                     alt="diamond-layout"
                     className="profile-image"
                   />

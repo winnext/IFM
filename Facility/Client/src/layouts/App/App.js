@@ -34,7 +34,7 @@ const App = () => {
   const [inputStyle, setInputStyle] = useState("outlined");
   const [ripple, setRipple] = useState(false);
   const [logoColor, setLogoColor] = useState("white");
-  const [logoUrl, setLogoUrl] = useState("assets/layout/images/logo-dark.svg");
+  const [logoUrl, setLogoUrl] = useState(process.env.PUBLIC_URL+"/assets/layout/images/logo-dark.svg");
   const [menuMode, setMenuMode] = useState(localStorage.getItem('menumode'));
   const [colorScheme, setColorScheme] = useState(localStorage.getItem('colorscheme'));
   const [menuTheme, setMenuTheme] = useState(localStorage.getItem("menutheme"));
@@ -233,10 +233,10 @@ const App = () => {
 
 
     const appLogoLink = document.getElementById("app-logo");
-    const appLogoUrl = `assets/layout/images/logo-${logoColor === "dark" ? "dark" : "white"
+    const appLogoUrl = process.env.PUBLIC_URL+`/assets/layout/images/logo-${logoColor === "dark" ? "dark" : "white"
       }.svg`;
     const horizontalLogoLink = document.getElementById("logo-horizontal");
-    const horizontalLogoUrl = `assets/layout/images/logo-${logoColor === "dark" ? "dark" : "white"
+    const horizontalLogoUrl = process.env.PUBLIC_URL+`/assets/layout/images/logo-${logoColor === "dark" ? "dark" : "white"
       }.svg`;
 
     if (appLogoLink) {
@@ -294,16 +294,18 @@ const App = () => {
     const footerLogoLink = document.getElementById("footer-logo");
     const horizontalLogoLink = document.getElementById("logo-horizontal");
     setLogoUrl(
-      `assets/layout/images/logo-${scheme === "light" ? "dark" : "white"}.svg`
+      process.env.PUBLIC_URL+`assets/layout/images/logo-${scheme === "light" ? "dark" : "white"}.svg`
     );
 
+    console.log(process.env.PUBLIC_URL)
+
     if (appLogoLink) {
-      appLogoLink.src = `assets/layout/images/logo-${scheme === "light" ? logoColor : "white"
+      appLogoLink.src = process.env.PUBLIC_URL+`assets/layout/images/logo-${scheme === "light" ? logoColor : "white"
         }.svg`;
     }
 
     if (horizontalLogoLink) {
-      horizontalLogoLink.src = `assets/layout/images/logo-${scheme === "light" ? logoColor : "white"
+      horizontalLogoLink.src = process.env.PUBLIC_URL+`assets/layout/images/logo-${scheme === "light" ? logoColor : "white"
         }.svg`;
     }
 
