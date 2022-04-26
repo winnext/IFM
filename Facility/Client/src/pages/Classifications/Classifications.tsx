@@ -57,6 +57,7 @@ const Classifications = () => {
     page: 0,
     sortField: undefined||"",
     sortOrder: undefined,
+    class_name:"Classification",
   });
   const dt = useRef<any>();
   const toast = useRef<any>();
@@ -75,6 +76,7 @@ const Classifications = () => {
       limit: lazyParams.rows,
       sortField: soertField2,
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
+      class_name:lazyParams.class_name,
     })
       .then((response) => {
         console.log(response.data);

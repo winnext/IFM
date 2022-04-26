@@ -7,33 +7,39 @@ interface PaginationParams {
     limit?: number;
     sortField?: string;
     sortKind?: string;
+    class_name?: string;
 }
 
 interface ClassificationInterface {
-    _id?: string;
-    facility_id: string;
-    structure: {
-        root: Node
+    identity?: {
+        low: string;
+        high: string;
     };
-    __v?: number;
+    tag?: string[];
+
+    name: string;
+    code: string;
+    key: string;
+    hasParent?: boolean,
+    labelclass?: string;
+    selectable?: boolean;
+    parent_id?: string;
 }
 
 interface Node {
-    type: string;
-    description: string;
     key: string;
     label: string;
     name: string;
     code: string;
     selectable: boolean;
+    parent?: string;
     children: Node[];
-    tags: string[];
 }
 
 const findAll = async (query: PaginationParams) => {
     return axios.get(
         url +
-        `?page=${query.page}&limit=${query.limit}&orderBy=${query.sortKind}&orderByColumn=${query.sortField}`
+        `?page=${query.page}&limit=${query.limit}&orderBy=${query.sortKind}&orderByColumn=${query.sortField}&class_name=${query.class_name}`
     );
 };
 
@@ -53,6 +59,16 @@ const remove = async (id: string) => {
     return axios.delete(url + '/' + id);
 };
 
-const service = { findAll, findOne, create, update, remove };
+const relation = async (id1: string, id2: string) => {
+    console.log(url + "/relation" + "/" + id1 + "/" + id2);
+
+    return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
+};
+
+const nodeInfo = async (key: string) => {
+    return axios.get(url + "/nodeinfo" + "/" + key);
+};
+
+const service = { findAll, findOne, create, update, remove, relation, nodeInfo };
 
 export default service;

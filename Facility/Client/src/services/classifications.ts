@@ -7,6 +7,7 @@ interface PaginationParams {
   limit?: number;
   sortField?: string;
   sortKind?: string;
+  class_name?: string;
 }
 
 interface ClassificationInterface {
@@ -48,13 +49,10 @@ interface ClassificationInterfaceUpdate {
 }
 
 
-
-
-
 const findAll = async (query: PaginationParams) => {
   return axios.get(
     url +
-    `?page=${query.page}&limit=${query.limit}&orderBy=${query.sortKind}&orderByColumn=${query.sortField}`
+    `?page=${query.page}&limit=${query.limit}&orderBy=${query.sortKind}&orderByColumn=${query.sortField}&class_name=${query.class_name}`
   );
 };
 
