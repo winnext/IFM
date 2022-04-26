@@ -107,7 +107,7 @@ const AppRightMenu = (props) => {
       <p>Track your ongoing shipments to customers.</p>
       <img
         className="logo-image"
-        src="assets/demo/images/sidebar-right/staticmap.png"
+        src={process.env.PUBLIC_URL+"/assets/demo/images/sidebar-right/staticmap.png"}
         alt="logo-shipment"
         style={{ width: '100%' }}
       />

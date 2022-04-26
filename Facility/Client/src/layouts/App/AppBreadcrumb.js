@@ -28,7 +28,7 @@ const AppBreadcrumb = (props) => {
     name = currentRouter ? currentRouter.meta.breadcrumb[0].label : name;
   }
 
-  return <span><span><Link to={"/"}>Home</Link></span>{paths.map((item,index)=><span> / <Link to={"/"+(paths.slice(0,index+1)).join('/')}>{item}</Link></span>)}</span>;
+  return <span><span><Link to={"/"}>Home</Link></span>{paths.map((item,index)=><span key={index}> / <Link to={"/"+(paths.slice(0,index+1)).join('/')}>{item}</Link></span>)}</span>;
 };
 
 export default withRouter(AppBreadcrumb);
