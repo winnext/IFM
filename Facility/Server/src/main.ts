@@ -9,6 +9,7 @@ import trial from './tracing';
 import { I18nService } from 'nestjs-i18n';
 import { HttpExceptionFilter } from './common/exceptionFilters/http.exception.filter';
 import { Neo4jErrorFilter } from './common/exceptionFilters/ne04j.exception.filter';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 
 async function bootstrap() {
   try {
@@ -44,7 +45,7 @@ async function bootstrap() {
       new HttpExceptionFilter(i18NService),
       new Neo4jErrorFilter(),
     );
-    app.useGlobalInterceptors(new LoggingInterceptor());
+    app.useGlobalInterceptors(new LoggingInterceptor(), new TimeoutInterceptor());
     app.enableCors();
     await app.startAllMicroservices();
     await app.listen(3001);
