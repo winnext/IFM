@@ -9,6 +9,8 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Dropdown } from 'primereact/dropdown';
+import FormType from "../../components/Form/FormType";
 
 import FacilityStructureService from "../../services/facilitystructure";
 
@@ -87,6 +89,7 @@ const SetClassification = () => {
   const [data, setData] = useState<Node[]>([]);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [type, setType] = useState("");
   const [tag, setTag] = useState<string[]>([]);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
@@ -144,6 +147,8 @@ const SetClassification = () => {
     FacilityStructureService.findOne(id).then((res) => {
 
       setClassification(res.data);
+      console.log(res.data);
+      
 
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
@@ -159,9 +164,9 @@ const SetClassification = () => {
         detail: err.response ? err.response.data.message : err.message,
         life: 2000,
       });
-      setTimeout(() => {
-        navigate("/classifications")
-      }, 2000)
+      // setTimeout(() => {
+      //   navigate("/facilitystructure")
+      // }, 2000)
     })
   }
 
@@ -472,6 +477,10 @@ const SetClassification = () => {
           />
         </div>
         <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <FormType />
+        </div>
+        <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
           <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
@@ -503,12 +512,16 @@ const SetClassification = () => {
           />
         </div>
         <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <FormType />
+        </div>
+        <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
           <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
       </Dialog>
       <h1>Edit Classification</h1>
-      <h3>Code : {classification.root[0].code} </h3>
+      {/* <h3>Code : {classification.root[0].code} </h3> */}
       <div className="field">
         <Tree
           loading={loading}
