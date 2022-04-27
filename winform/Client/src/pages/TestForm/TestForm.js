@@ -15,6 +15,7 @@ const TestForm = () => {
   let emptyTest = {
     _id: "",
     name:"",
+    type:"",
     items:[],
     __v: 0,
   };
@@ -314,10 +315,10 @@ const TestForm = () => {
 
           <Dialog
             visible={facilityDialog}
-            style={{ width: "500px" }}
+            style={{ width: "450px" }}
             header="Test Form"
             modal
-            className=""
+            className="p-fluid"
             footer={facilityDialogFooter}
             onHide={hideDialog}
           >

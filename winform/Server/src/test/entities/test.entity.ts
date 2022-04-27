@@ -9,6 +9,9 @@ export class Test {
   name: string;
 
   @Prop()
+  type: string;
+
+  @Prop()
   items: any[];
 }
 

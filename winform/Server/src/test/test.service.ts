@@ -20,6 +20,12 @@ export class TestService {
   }
 
   create(createTestDto: CreateTestDto): Promise<Test> {
+    createTestDto.items = createTestDto.items.map((item) => {
+      item.value = item.defaultValue;
+      delete item.defaultValue;
+
+      return item;
+    });
     return this.testRepository.create(createTestDto);
   }
 

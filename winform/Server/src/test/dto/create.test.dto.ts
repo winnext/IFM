@@ -9,6 +9,12 @@ export class CreateTestDto {
   name: string;
 
   @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Length(1, 50)
+  type: string;
+
+  @ApiProperty()
   @IsOptional()
   items: any[];
 }
