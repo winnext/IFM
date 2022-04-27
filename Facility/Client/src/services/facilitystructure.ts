@@ -24,6 +24,8 @@ interface ClassificationInterface {
     labelclass?: string;
     selectable?: boolean;
     parent_id?: string;
+    type?: string;
+    description?: string;
 }
 
 interface Node {

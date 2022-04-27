@@ -26,6 +26,8 @@ interface ClassificationInterface {
   key: string;
   hasParent?: boolean,
   labelclass: string;
+  type: string;
+  description: string;
 }
 
 // interface Node {
@@ -106,6 +108,8 @@ const FacilityStructure = () => {
       key: uuidv4(),
       tag: tag,
       labelclass: labelClass,
+      type:"standart",
+      description:""
 
     };
 
@@ -260,7 +264,7 @@ const FacilityStructure = () => {
         header={header}
         selectionMode="single"
         onSelectionChange={(e) => {
-          navigate("/classifications/" + e.value.identity.low);
+          navigate("/facilitystructure/" + e.value.identity.low);
         }}
         responsiveLayout="scroll"
         onSort={onSort}
