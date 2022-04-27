@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
+import { checkObjectIddİsValid } from 'ifmcommon';
+import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateFacilityStructureHistoryDto } from '../dtos/create.facilitystructure.history.dto';
 import { FacilityStructureHistory } from '../entities/facilitystructure.history.entity';
 

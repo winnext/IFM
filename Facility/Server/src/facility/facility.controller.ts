@@ -21,7 +21,7 @@ import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserRoles } from 'src/common/const/keycloak.role.enum';
-import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
+import { NoCache } from 'ifmcommon';
 
 @ApiTags('Facility')
 @Controller('facility')

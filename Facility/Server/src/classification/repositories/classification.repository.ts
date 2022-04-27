@@ -6,8 +6,8 @@ import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import { int } from 'neo4j-driver';
 import { Classification } from '../entities/classification.entity';
-import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
-import { nodeHasChildException } from 'src/common/func/nodeHasChild';
+import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
+import { nodeHasChildException } from 'ifmcommon';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
 @Injectable()
@@ -70,7 +70,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         skip = 0;
       }
     }
-    let a =
+    const a =
       'MATCH (x) where x.hasParent = false return x ORDER BY x.' +
       orderByColumn +
       ' ' +

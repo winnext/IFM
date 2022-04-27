@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { RoomNotFoundException } from 'src/common/notFoundExceptions/not.found.exception';
-import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateRoomHistoryDto } from '../dtos/create.room.history.dto';
 import { RoomHistory } from '../entities/room.history.entity';
 

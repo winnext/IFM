@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { RoomNotFoundException } from 'src/common/notFoundExceptions/not.found.exception';
 
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseInterfaceRepository } from 'ifmcommon';
 import { CreateRoomDto } from '../dto/create.room.dto';
 import { UpdateRoomDto } from '../dto/update.room.dto';
 import { Room } from '../entities/room.entity';

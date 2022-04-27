@@ -49,6 +49,7 @@
     "class-validator": "^0.13.2",
     "commenintertest": "^1.0.0",
     "csv-parser": "^3.0.0",
+    "ifmcommon": "^0.0.9",
     "joi": "^17.6.0",
     "kafkajs": "^1.16.0",
     "keycloak-connect": "^15.1.1",

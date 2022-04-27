@@ -2,28 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { FacilityNotFountException, FacilityStructureNotFountException } from '../../common/notFoundExceptions/not.found.exception';
+import { checkObjectIddİsValid } from 'ifmcommon';
+import {
+  FacilityNotFountException,
+  FacilityStructureNotFountException,
+} from '../../common/notFoundExceptions/not.found.exception';
 import { CreateFacilityStructureDto } from '../dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto';
 import { FacilityStructure } from '../entities/facility-structure.entity';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { int } from 'neo4j-driver';
-import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
+import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 
 @Injectable()
-export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure>{
+export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure> {
   constructor(
-             private readonly neo4jService: Neo4jService, 
-             @InjectModel(FacilityStructure.name) 
-             private readonly facilityStructureModel: Model<FacilityStructure>) {}
+    private readonly neo4jService: Neo4jService,
+    @InjectModel(FacilityStructure.name)
+    private readonly facilityStructureModel: Model<FacilityStructure>,
+  ) {}
   findWithRelations(relations: any): Promise<FacilityStructure[]> {
     throw new Error(relations);
   }
   async findOneById(id: string) {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
-
       'MATCH (n)-[:CHILDREN*]->(m) \
       WHERE  id(n) = $idNum  and  NOT (m)-[:CHILDREN]->() \
       WITH n, m \
@@ -36,9 +39,9 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       { idNum },
     );
 
-    var x = result['records'][0]['_fields'][0];
+    const x = result['records'][0]['_fields'][0];
     if (!result) {
-      throw new  FacilityStructureNotFountException(id);
+      throw new FacilityStructureNotFountException(id);
     } else if (Object.keys(x).length === 0) {
       result = await this.neo4jService.read('MATCH (n) where id(n) = $idNum return n', { idNum });
       const o = { root: result['records'][0]['_fields'] };
@@ -112,7 +115,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     // await this.deleteRelations(_id);
     // await this.addRelations(_id, _target_parent_id);
     // return new Classification();
-    return null
+    return null;
   }
   async deleteRelations(_id: string) {
     const res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return p', {
@@ -164,9 +167,9 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   async findOneNodeByKey(key: string) {
     const result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
 
-    var x = result['records'][0]['_fields'][0];
+    const x = result['records'][0]['_fields'][0];
     if (!result) {
-      throw  null; //new ClassificationNotFountException(key);
+      throw null; //new ClassificationNotFountException(key);
     } else {
       return x;
     }
