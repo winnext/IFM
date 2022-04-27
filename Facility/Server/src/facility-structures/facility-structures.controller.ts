@@ -6,7 +6,7 @@ import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { UserRoles } from 'src/common/const/keycloak.role.enum';
-import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
+import { NoCache } from 'ifmcommon';
 import { ClassNames } from 'src/common/const/classname.enum';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 @ApiTags('structure')
@@ -29,8 +29,7 @@ export class FacilityStructuresController {
   @Get()
   @Unprotected()
   @NoCache()
-  
-  findAll(@Query() queryParams: PaginationNeo4jParams ) {
+  findAll(@Query() queryParams: PaginationNeo4jParams) {
     return this.facilityStructuresService.findAll(queryParams);
   }
 
