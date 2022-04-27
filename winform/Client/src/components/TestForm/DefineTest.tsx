@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line import/named
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import TestFormService from '../../services/testForm';
+import FormBuilderService from '../../services/formBuilder';
+import { Dropdown } from 'primereact/dropdown';
 
 interface Params {
   submitted: boolean;
@@ -23,12 +25,14 @@ interface Params {
 interface Test {
   _id: string;
   name: string;
+  type: string;
   items?: any[];
   __v: number;
 }
 
 type Inputs = {
   name: string;
+  type: { name: string; _id: string; items: any[] };
 };
 
 const DefineFacility = ({
@@ -42,9 +46,14 @@ const DefineFacility = ({
   const {
     register,
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+
+  const [types, setTypes] = useState<
+    { name: string; _id: string; items: any[] }[]
+  >([]);
 
   useEffect(() => {
     if (submitted) {
@@ -54,9 +63,26 @@ const DefineFacility = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
 
+  useEffect(() => {
+    FormBuilderService.findAll()
+      .then((res) => {
+        setTypes(res.data[0]);
+        setValue("type",res.data[0].find((t: any) => t._id === test.type))
+        console.log(test)
+        console.log(res.data[0])
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (test._id === '') {
-      TestFormService.create(data)
+      TestFormService.create({
+        ...data,
+        type: data.type._id,
+        items: data.type.items,
+      })
         .then((res) => {
           loadLazyData();
           toast.current.show({
@@ -77,7 +103,22 @@ const DefineFacility = ({
           hideDialog();
         });
     } else {
-      TestFormService.update(test._id, { name:data.name,items:test.items,"__v":0 })
+      var items = []
+      if(test.type !== data.type._id){
+        items = data.type.items.map(item=>{
+          item.value = item.defaultValue;
+          delete item.defaultValue
+
+          return item
+        })
+        console.log(items)
+      }
+      TestFormService.update(test._id, {
+        name: data.name,
+        type: data.type._id,
+        items: test.type === data.type._id ? test.items : items,
+        __v: 0,
+      })
         .then((res) => {
           loadLazyData();
           toast.current.show({
@@ -110,6 +151,29 @@ const DefineFacility = ({
             {...register('name', { required: true })}
           />
           {errors.name && (
+            <small className="p-error block">This field is required.</small>
+          )}
+        </div>
+        <div className="field">
+          <label>Type</label>
+          <Controller
+            name="type"
+            rules={{ required: 'Type is required.' }}
+            control={control}
+            render={({ field }) => (
+              <Dropdown
+                filter
+                optionLabel="name"
+                value={field.value}
+                options={types}
+                className={errors.type && 'p-invalid'}
+                onChange={(e) => field.onChange(e.value)}
+                placeholder="Select a Type"
+                showClear
+              />
+            )}
+          />
+          {errors.type && (
             <small className="p-error block">This field is required.</small>
           )}
         </div>
