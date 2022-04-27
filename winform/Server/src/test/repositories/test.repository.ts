@@ -28,7 +28,7 @@ export class TestRepository implements BaseInterfaceRepository<Test> {
   }
 
   async create(createTestDto: CreateTestDto) {
-    const test = new this.testModel(createTestDto);
+    const test = new this.testModel({ ...createTestDto, items: [] });
     console.log(createTestDto);
     console.log(test);
 

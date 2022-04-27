@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Length, ArrayNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTestDto {
@@ -9,6 +9,6 @@ export class CreateTestDto {
   name: string;
 
   @ApiProperty()
-  @ArrayNotEmpty()
+  @IsOptional()
   items: any[];
 }

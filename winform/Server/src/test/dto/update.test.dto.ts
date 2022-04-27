@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Length, ArrayNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, Length, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateTestDto {
@@ -12,6 +12,6 @@ export class UpdateTestDto {
   name: string;
 
   @ApiProperty()
-  @ArrayNotEmpty()
+  @IsOptional()
   items: any[];
 }
