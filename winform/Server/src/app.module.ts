@@ -15,6 +15,7 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
 import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloack/keycloak.module';
 import { WinformModule } from './winform/winform.module';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -49,12 +50,13 @@ import { WinformModule } from './winform/winform.module';
       isGlobal: true,
       cache: true,
       validationSchema: Joi.object({
-        DATABASE_LINK: Joi.string().required()
+        DATABASE_LINK: Joi.string().required(),
       }),
     }),
     //MessagebrokerModule,
     //HistoryModule,
     WinformModule,
+    TestModule,
   ],
   providers: [
     //to cache all get request
