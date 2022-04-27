@@ -6,6 +6,7 @@ import { kafkaOptions } from './common/configs/message.broker.options';
 import { HttpExceptionFilter, Topics, MongoExceptionFilter, LoggingInterceptor, TimeoutInterceptor } from 'ifmcommon';
 import trial from './tracing';
 import { I18nService } from 'nestjs-i18n';
+import { kafkaConf } from './common/const/kafka.conf';
 
 async function bootstrap() {
   try {
@@ -37,32 +38,11 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
     app.useGlobalFilters(
-      new MongoExceptionFilter(
-        i18NService,
-        {
-          brokers: ['172.19.100.120:9092'],
-          clientId: 'ifm_kafka_facility',
-        },
-        Topics.FACILITY_EXCEPTIONS,
-      ),
-      new HttpExceptionFilter(
-        i18NService,
-        {
-          brokers: ['172.19.100.120:9092'],
-          clientId: 'ifm_kafka_facility',
-        },
-        Topics.FACILITY_EXCEPTIONS,
-      ),
+      new MongoExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new HttpExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
     );
     app.useGlobalInterceptors(
-      new LoggingInterceptor(
-        {
-          brokers: ['172.19.100.120:9092'],
-          clientId: 'ifm_kafka_facility',
-        },
-        Topics.FACILITY_LOGGER,
-        Topics.FACILITY_OPERATION,
-      ),
+      new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),
       new TimeoutInterceptor(),
     );
     app.enableCors();
