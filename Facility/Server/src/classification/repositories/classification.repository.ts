@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j/dist';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import { int } from 'neo4j-driver';
@@ -46,7 +46,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     }
   }
 
-  async findAll(data: PaginationParams, class_name: string) {
+  async findAll(data: PaginationNeo4jParams) {
     let { page, limit, orderBy, orderByColumn } = data;
     page = page || 0;
     limit = limit || 10;
@@ -57,7 +57,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       orderByColumn = 'name';
     }
     const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
-    {class_name: class_name});
+    {class_name: data.class_name});
     const coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
 
@@ -77,7 +77,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       ' ' +
       orderBy +
       ' SKIP $skip LIMIT $limit';
-    const result = await this.neo4jService.read(getNodeWithoutParent, {class_name: class_name, skip: int(skip), limit: int(limit) });
+    const result = await this.neo4jService.read(getNodeWithoutParent, {class_name: data.class_name, skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);

@@ -3,10 +3,12 @@ import { FacilityStructuresService } from './facility-structures.service';
 import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
 import { Roles, Unprotected } from 'nest-keycloak-connect';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { UserRoles } from 'src/common/const/keycloak.role.enum';
 import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
+import { ClassNames } from 'src/common/const/classname.enum';
+import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 @ApiTags('structure')
 @ApiBearerAuth('JWT-auth')
 @Controller('structure')
@@ -24,11 +26,12 @@ export class FacilityStructuresController {
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }
 
-  @Get(':class_name')
+  @Get()
   @Unprotected()
   @NoCache()
-  findAll(@Query() queryParams: PaginationParams,@Param('class_name') class_name: string ) {
-    return this.facilityStructuresService.findAll(queryParams,class_name);
+  
+  findAll(@Query() queryParams: PaginationNeo4jParams ) {
+    return this.facilityStructuresService.findAll(queryParams);
   }
 
   @Get(':id')

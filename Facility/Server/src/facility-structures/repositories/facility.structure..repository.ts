@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
 import { FacilityNotFountException, FacilityStructureNotFountException } from '../../common/notFoundExceptions/not.found.exception';
 import { CreateFacilityStructureDto } from '../dto/create-facility-structure.dto';
@@ -11,6 +10,7 @@ import { Neo4jService } from 'nest-neo4j/dist';
 import { int } from 'neo4j-driver';
 import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
 import { nodeHasChildException } from 'src/common/func/nodeHasChild';
+import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 
 @Injectable()
 export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure>{
@@ -49,7 +49,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       return o;
     }
   }
-  async findAll(data: PaginationParams, class_name: string) {
+  async findAll(data: PaginationNeo4jParams) {
 
     let { page, limit, orderBy, orderByColumn } = data;
     page = page || 0;
@@ -61,7 +61,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       orderByColumn = 'name';
     }
     const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
-    {class_name:class_name});
+    {class_name:data.class_name});
     const coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
 
@@ -78,7 +78,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     let getNodeWithoutParent =
       'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ';
   
-    const result = await this.neo4jService.read(getNodeWithoutParent, {class_name:class_name, skip: int(skip), limit: int(limit) });
+    const result = await this.neo4jService.read(getNodeWithoutParent, {class_name:data.class_name, skip: int(skip), limit: int(limit) });
     const arr = [];
     for (let i = 0; i < result['records'].length; i++) {
       arr.push(result['records'][i]['_fields'][0]);

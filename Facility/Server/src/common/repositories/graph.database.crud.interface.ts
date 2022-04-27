@@ -7,7 +7,7 @@ export interface BaseGraphDatabaseInterfaceRepository<T> {
 
   //findByCondition(filterCondition: any): Promise<T>;
 
-  findAll(data: T | any, class_name: string): Promise<T[]>;
+  findAll(data: T | any): Promise<T[]>;
 
   delete(id: string);
 

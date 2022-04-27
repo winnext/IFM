@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
 import { ClassificationService } from './classification.service';
 import { CreateClassificationDto } from './dto/create-classification.dto';
@@ -20,10 +21,10 @@ export class ClassificationController {
     return this.classificationService.create(createClassificationDto);
   }
   @Unprotected()
-  @Get(':class_name')
+  @Get()
   @NoCache()
-  findAll(@Query() paramDto: PaginationParams, @Param('class_name') class_name: string) {
-    return this.classificationService.findAll(paramDto,class_name);
+  findAll(@Query() paramDto: PaginationNeo4jParams) {
+    return this.classificationService.findAll(paramDto);
   }
   @Unprotected()
   @Get(':id')
