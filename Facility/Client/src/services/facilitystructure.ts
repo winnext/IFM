@@ -10,7 +10,7 @@ interface PaginationParams {
     class_name?: string;
 }
 
-interface ClassificationInterface {
+interface StructureInterface {
     identity?: {
         low: string;
         high: string;
@@ -26,17 +26,10 @@ interface ClassificationInterface {
     parent_id?: string;
     type?: string;
     description?: string;
+    isActive?: boolean;
+    isDeleted?: boolean;
 }
 
-interface Node {
-    key: string;
-    label: string;
-    name: string;
-    code: string;
-    selectable: boolean;
-    parent?: string;
-    children: Node[];
-}
 
 const findAll = async (query: PaginationParams) => {
     return axios.get(
@@ -49,11 +42,11 @@ const findOne = async (id: string) => {
     return axios.get(url + "/" + id);
 };
 
-const create = async (classification: ClassificationInterface) => {
+const create = async (classification: StructureInterface) => {
     return axios.post(url, classification);
 };
 
-const update = async (id: string, classification: ClassificationInterface) => {
+const update = async (id: string, classification: StructureInterface) => {
     return axios.patch(url + "/" + id, classification);
 };
 

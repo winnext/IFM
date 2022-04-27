@@ -48,21 +48,7 @@ interface Node {
   labelclass: string;
 }
 
-interface NodeData {
-  code: string;
-  createdAt: string;
-  hasParent: true
-  key: string;
-  label: string;
-  labelclass: string;
-  name: string;
-  self_id: {
-    low: string;
-    high: string;
-  },
-  tag: string[];
-  updatedAt: string;
-}
+
 
 const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
@@ -95,8 +81,6 @@ const SetClassification = () => {
   const cm: any = React.useRef(null);
   const params = useParams()
   const navigate = useNavigate()
-  const [nodeData, setNodeData] = useState<NodeData>({} as NodeData);
-
 
   const menu = [
     {
@@ -110,11 +94,8 @@ const SetClassification = () => {
       label: "Edit Item",
       icon: "pi pi-pencil",
       command: () => {
-        // findNode(selectedNodeKey);
         ClassificationsService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            console.log(res.data.properties);
-
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
@@ -342,15 +323,10 @@ const SetClassification = () => {
 
   const deleteItem = (key: string) => {
     const temp = JSON.parse(JSON.stringify(data));
-    console.log(key);
-    console.log(data);
     findNodeAndDelete(key, temp);
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {
-    console.log(dragId);
-    console.log(dropId);
-
     ClassificationsService.relation(dragId, dropId)
       .then((res) => {
         showSuccess("Updated");

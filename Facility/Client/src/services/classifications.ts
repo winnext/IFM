@@ -26,28 +26,6 @@ interface ClassificationInterface {
   parent_id?: string;
 }
 
-interface Node {
-  key: string;
-  label: string;
-  name: string;
-  code: string;
-  selectable: boolean;
-  parent?: string;
-  children: Node[];
-}
-
-interface ClassificationInterfaceUpdate {
-  root:
-  {
-    code: string;
-    children: [],
-    _type: string;
-    name: string;
-    parent_id?: string;
-    selectable?: boolean;
-  };
-}
-
 
 const findAll = async (query: PaginationParams) => {
   return axios.get(
