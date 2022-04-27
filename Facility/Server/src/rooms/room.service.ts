@@ -2,7 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseInterfaceRepository } from 'ifmcommon';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
 import { Room } from './entities/room.entity';
 import { CreateRoomDto } from './dto/create.room.dto';

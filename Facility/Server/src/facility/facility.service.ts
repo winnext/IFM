@@ -3,12 +3,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { checkObjectIddİsValid } from 'ifmcommon';
+import { BaseInterfaceRepository } from 'ifmcommon';
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
-import { Span, OtelMethodCounter} from 'nestjs-otel';
+import { Span, OtelMethodCounter } from 'nestjs-otel';
 
 @Injectable()
 export class FacilityService {

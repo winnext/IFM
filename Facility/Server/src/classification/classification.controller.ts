@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
-import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
+import { NoCache } from 'ifmcommon';
 import { ClassificationService } from './classification.service';
 import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';

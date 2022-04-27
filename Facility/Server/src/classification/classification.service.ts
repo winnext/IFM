@@ -3,7 +3,7 @@ import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
-import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
+import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 
 @Injectable()
 export class ClassificationService {

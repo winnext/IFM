@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
-import { BaseGraphDatabaseInterfaceRepository } from 'src/common/repositories/graph.database.crud.interface';
+import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
-import { FacilityStructure } from './entities/facility-structure.entity';
 
 @Injectable()
 export class FacilityStructuresService {

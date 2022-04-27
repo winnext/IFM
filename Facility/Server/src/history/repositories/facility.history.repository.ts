@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
-import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateFacilityHistoryDto } from '../dtos/create.facility.history.dto';
 
 import { FacilityHistory } from '../entities/facility.history.entity';
