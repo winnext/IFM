@@ -44,6 +44,7 @@ interface Node {
   hasParent?: boolean;
   children: Node[];
   type?: string;
+  typeId?: string;
   parent_id?: string;
   selectable?: boolean;
   self_id: {
@@ -84,6 +85,7 @@ const SetClassification = () => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [type, setType] = useState("");
+  const [typeId, setTypeId]=useState("");
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
@@ -201,7 +203,9 @@ const SetClassification = () => {
           tag: tag,
           labelclass: node.labelclass,
           type: type,
+          typeId:typeId,
           description: "description"
+          
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
@@ -508,6 +512,7 @@ const SetClassification = () => {
               reset();
               setSelectedForm(e.value);
               setType(e.value.name);
+              setTypeId(e.value._id);
             }}
             placeholder="Select Type"
             style={{ width: '50%' }}
@@ -604,8 +609,7 @@ const SetClassification = () => {
           filterPlaceholder="Search"
           nodeTemplate={(data, options) => <span>{data.label} {<button onClick={(e) => navigate("/form", {
             state: {
-              page: 5,
-              title: "mustafa",
+              data: data,
             }
           })} className="ml-3">Edit Form</button>} </span>}
         />
