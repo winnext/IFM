@@ -4,9 +4,9 @@ import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Length 
 export class CreateFacilityStructureDto {
  
 @ApiProperty()
-@IsNotEmpty()
+@IsOptional()
 @IsString()
-type: string;
+type?: string;
 
 @ApiProperty()
 @IsNotEmpty()
@@ -43,4 +43,9 @@ parent_id: number;  //not in entity
 @IsString()
 @Length(1, 50)
 labelclass: string;
+
+@ApiProperty()
+@IsOptional()
+@IsString()
+typeId?: string;
 }

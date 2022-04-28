@@ -10,8 +10,4 @@ export class UpdateFacilityStructureDto extends PartialType(CreateFacilityStruct
 @IsBoolean()
 isActive: boolean;
 
-@ApiProperty()
-@IsNotEmpty()
-@IsBoolean()
-isDeleted: boolean;
 }

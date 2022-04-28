@@ -31,12 +31,12 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   async findOneById(id: string) {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
-      'MATCH (n)-[:CHILDREN*]->(m) \
-      WHERE  id(n) = $idNum  and  NOT (m)-[:CHILDREN]->() \
+      'MATCH (n {isDeleted: false})-[:CHILDREN*]->(m {isDeleted: false}) \
+      WHERE  id(n) = $idNum  and  NOT (m {isDeleted: false})-[:CHILDREN]->() \
       WITH n, m \
       ORDER BY n.code, m.code \
-      MATCH p=(n)-[:CHILDREN*]->(m) \
-      WHERE NOT ()-[:CHILDREN]->(n) \
+      MATCH p=(n {isDeleted: false})-[:CHILDREN*]->(m {isDeleted: false}) \
+      WHERE NOT ()-[:CHILDREN]->(n {isDeleted: false}) \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
@@ -47,7 +47,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     if (!result) {
       throw new FacilityStructureNotFountException(id);
     } else if (Object.keys(resultRow).length === 0) {
-      result = await this.neo4jService.read('MATCH (n) where id(n) = $idNum return n', { idNum });
+      result = await this.neo4jService.read('MATCH (n {isDeleted: false}) where id(n) = $idNum return n', { idNum });
       const o = { root: result['records'][0]['_fields'] };
       return o;
     } else {
@@ -66,7 +66,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       orderByColumn = 'name';
     }
     const count = await this.neo4jService.read(
-      `MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
+      `MATCH (c {isDeleted: false}) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
       { class_name: data.class_name },
     );
     const coun = count['records'][0]['_fields'][0].low;
@@ -82,7 +82,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
         skip = 0;
       }
     }
-    let getNodeWithoutParent = 'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ';
+    let getNodeWithoutParent = 'MATCH (x {isDeleted: false}) where x.hasParent = false and x.class_name=$class_name return x ';
 
     const result = await this.neo4jService.read(getNodeWithoutParent, {
       class_name: data.class_name,
@@ -102,6 +102,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     const facilityStructure = new FacilityStructure();
     facilityStructure.type = createFacilityStructureDto.type;
+    facilityStructure.typeId = createFacilityStructureDto.typeId;
     facilityStructure.name = createFacilityStructureDto.name;
     facilityStructure.code = createFacilityStructureDto.code;
     facilityStructure.description = createFacilityStructureDto.description;
@@ -119,10 +120,10 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       //if there is a parent of created node
       let makeNodeConnectParent = `(x: ${createFacilityStructureDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
                                                              labelclass:$labelclass,createdAt: $createdAt , updatedAt: $updatedAt, \
-                                                             selectable: $selectable, type: $type,description: $description,isActive :$isActive,\ 
+                                                             selectable: $selectable, type: $type,typeId: $typeId,description: $description,isActive :$isActive,\ 
                                                              isDeleted: $isDeleted, class_name: $className })`;
       makeNodeConnectParent =
-        ` match (y: ${createFacilityStructureDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
+        ` match (y: ${createFacilityStructureDto.labelclass} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
         makeNodeConnectParent;
       await this.neo4jService.write(makeNodeConnectParent, {
         labelclass: facilityStructure.labelclass,
@@ -136,23 +137,24 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
         updatedAt: facilityStructure.updatedAt,
         selectable: facilityStructure.selectable,
         type: facilityStructure.type,
+        typeId: facilityStructure.typeId,
         description: facilityStructure.description,
         isActive: facilityStructure.isActive,
         isDeleted: facilityStructure.isDeleted,
         className: facilityStructure.class_name,
         parent_id: createFacilityStructureDto.parent_id,
       });
-      await this.neo4jService.write(`match (x: ${facilityStructure.labelclass} {key: $key}) set x.self_id = id(x)`, {
+      await this.neo4jService.write(`match (x: ${facilityStructure.labelclass}  {isDeleted: false,key: $key}) set x.self_id = id(x)`, {
         key: facilityStructure.key,
       });
-      const createChildOfRelation = `match (x: ${facilityStructure.labelclass} {code: $code}) \
-         match (y: ${facilityStructure.labelclass}) where id(y)= $parent_id \
+      const createChildOfRelation = `match (x: ${facilityStructure.labelclass} {isDeleted: false,code: $code}) \
+         match (y: ${facilityStructure.labelclass} {isDeleted: false}) where id(y)= $parent_id \
          create (x)-[:CHILD_OF]->(y)`;
       await this.neo4jService.write(createChildOfRelation, {
         code: facilityStructure.code,
         parent_id: int(createFacilityStructureDto.parent_id),
       });
-      const makeUnSelectableToParent = `match (x: ${facilityStructure.labelclass}) where id(x) = $parent_id set x.selectable = false`;
+      const makeUnSelectableToParent = `match (x: ${facilityStructure.labelclass} {isDeleted: false}) where id(x) = $parent_id set x.selectable = false`;
       await this.neo4jService.write(makeUnSelectableToParent, { parent_id: int(createFacilityStructureDto.parent_id) });
       return new FacilityStructure();
     } else {
@@ -168,6 +170,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       const labelclass = facilityStructure.labelclass;
       const selectable = facilityStructure.selectable;
       const type = facilityStructure.type;
+      const typeId = facilityStructure.typeId;
       const description = facilityStructure.description;
       const isActive = facilityStructure.isActive;
       const isDeleted = facilityStructure.isDeleted;
@@ -176,7 +179,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       const createNode = `CREATE (x:${createFacilityStructureDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
-        , createdAt: $createdAt, updatedAt: $updatedAt, type: $type,description: $description,isActive :$isActive\ 
+        , createdAt: $createdAt, updatedAt: $updatedAt, type: $type, typeId: $typeId,description: $description,isActive :$isActive\ 
         , isDeleted: $isDeleted, class_name: $className, selectable: $selectable })`;
 
       await this.neo4jService.write(createNode, {
@@ -190,13 +193,14 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
         updatedAt,
         labelclass,
         type,
+        typeId,
         description,
         isActive,
         isDeleted,
         className,
         selectable,
       });
-      await this.neo4jService.write(`match (x:${facilityStructure.labelclass}  {key: $key}) set x.self_id = id(x)`, {
+      await this.neo4jService.write(`match (x:${facilityStructure.labelclass} {isDeleted: false,key: $key}) set x.self_id = id(x)`, {
         key: facilityStructure.key,
       });
       return new FacilityStructure();
@@ -204,12 +208,12 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   }
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
     const checkNodeisExist = await this.findOneById(_id);
-    const { name, code, tag, description, isActive, isDeleted } = updateFacilityStructureDto;
+    const { name, code, tag, description, isActive } = updateFacilityStructureDto;
 
     if (checkNodeisExist.hasOwnProperty('root')) {
       const updatedNode = await this.neo4jService.write(
-        'MATCH (c) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label, c.description = $description, ' +
-          'c.isActive = $isActive, c.isDeleted = $isDeleted',
+        'MATCH (c {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label, c.description = $description, ' +
+          'c.isActive = $isActive',
         {
           name: name,
           code: code,
@@ -217,7 +221,6 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
           label: code + ' . ' + name,
           description: description,
           isActive: isActive,
-          isDeleted: isDeleted,
           id: int(_id),
         },
       );
@@ -231,33 +234,33 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   async delete(_id: string) {
     try {
       let nodeChildCount = await this.neo4jService.read(
-        'MATCH (c)  -[r:CHILDREN]->(p) where id(c)= $id return count(p)',
+        'MATCH (c {isDeleted: false})  -[r:CHILDREN]->(p {isDeleted: false}) where id(c)= $id return count(p)',
         {
           id: parseInt(_id),
         },
       );
       if (parseInt(JSON.stringify(nodeChildCount.records[0]['_fields'][0]['low'])) > 0) {
-        let node = await this.neo4jService.read('MATCH (c) where id(c)= $id return c', {
+        let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
           id: parseInt(_id),
         });
         nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
       } else {
         const parent = await this.neo4jService.read(
-          'MATCH (c) where id(c)= $id match(k) match (c)-[:CHILD_OF]-(k) return k',
+          'MATCH (c {isDeleted: false}) where id(c)= $id match(k {isDeleted: false}) match (c)-[:CHILD_OF]-(k) return k',
           { id: parseInt(_id) },
         );
 
-        let deleteNode = await this.neo4jService.write('MATCH (c) where id(c)= $id detach delete c', {
+        let deleteNode = await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $id set c.isDeleted = true', {
           id: parseInt(_id),
         });
         if (parent['records'][0]) {
           let hasParentChild = await this.neo4jService.read(
-            'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
+            'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (d {isDeleted: false}) MATCH (c)-[:CHILDREN]->(d) return count(d)',
             { id: parent['records'][0]['_fields'][0]['properties'].self_id },
           );
           if (hasParentChild['records'][0]['_fields'][0].low == 0) {
             //if parent has no child
-            this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+            this.neo4jService.write(`match (n {isDeleted: false}) where id(n) = $id set n.selectable = true`, {
               // make parent node to selectable
               id: parent['records'][0]['_fields'][0]['properties'].self_id,
             });
@@ -277,30 +280,30 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     await this.addRelations(_id, _target_parent_id);
   }
   async deleteRelations(_id: string) {
-    const res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return p', {
+    const res = await this.neo4jService.read('MATCH (c {isDeleted: false})-[r:CHILD_OF]->(p {isDeleted: false}) where id(c)= $id return p', {
       id: parseInt(_id),
     });
 
     if (res.records[0]) {
-      await this.neo4jService.write('MATCH (c)<-[r:CHILDREN]-(p) where id(c)= $id delete r', {
+      await this.neo4jService.write('MATCH (c {isDeleted: false})<-[r:CHILDREN]-(p {isDeleted: false}) where id(c)= $id delete r', {
         id: parseInt(_id),
       });
 
-      await this.neo4jService.write('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id delete r', {
+      await this.neo4jService.write('MATCH (c {isDeleted: false})-[r:CHILD_OF]->(p {isDeleted: false}) where id(c)= $id delete r', {
         id: parseInt(_id),
       });
 
-      await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent=false', {
+      await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $id set c.hasParent=false', {
         id: parseInt(_id),
       });
 
       const parentChildCount = await this.neo4jService.read(
-        'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
+        'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (d {isDeleted: false}) MATCH (c)-[:CHILDREN]->(d) return count(d)',
         { id: res['records'][0]['_fields'][0]['properties'].self_id.low },
       );
       if (parentChildCount['records'][0]['_fields'][0].low == 0) {
         //if parent has no child
-        this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+        this.neo4jService.write(`match (n  {isDeleted: false}) where id(n) = $id set n.selectable = true`, {
           // make parent node to selectable
           id: res['records'][0]['_fields'][0]['properties'].self_id.low,
         });
@@ -309,24 +312,24 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   }
   async addRelations(_id: string, _target_parent_id: string) {
     await this.neo4jService.write(
-      'MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (p)-[:CHILDREN]-> (c)',
+      'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  create (p)-[:CHILDREN]-> (c)',
       { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) },
     );
     await this.neo4jService.write(
-      'MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (c)-[:CHILD_OF]-> (p)',
+      'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  create (c)-[:CHILD_OF]-> (p)',
       { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) },
     );
 
-    await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent = true', {
+    await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $id set c.hasParent = true', {
       id: parseInt(_id),
     });
-    await this.neo4jService.write('MATCH (c) where id(c)= $target_parent_id set c.selectable = false', {
+    await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $target_parent_id set c.selectable = false', {
       target_parent_id: parseInt(_target_parent_id),
     });
   }
 
   async findOneNodeByKey(key: string) {
-    const result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
+    const result = await this.neo4jService.read('match (n {isDeleted: false, key:$key})  return n', { key: key });
 
     const x = result['records'][0]['_fields'][0];
     if (!result) {
