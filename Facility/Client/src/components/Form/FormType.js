@@ -9,7 +9,6 @@ const FormType = () => {
 
   const getForms = async() => {
     await  FormBuilderService.findAll().then((res) => {
-      console.log(res.data[0]);
       setFormData(res.data[0]);
     });
   };

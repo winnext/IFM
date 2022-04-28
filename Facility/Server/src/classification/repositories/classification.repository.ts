@@ -154,7 +154,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       const createNode = `CREATE (x:${createClassificationDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
-        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className, })`;
+        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className })`;
 
       await this.neo4jService.write(createNode, {
         name,

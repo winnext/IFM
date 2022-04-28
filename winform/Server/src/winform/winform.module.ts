@@ -6,22 +6,24 @@ import { WinformRepository } from './repositories/winform.repository';
 import { Winform, WinformSchema } from './entities/winform.entity';
 
 @Module({
-  imports:[
+  imports: [
     MongooseModule.forFeature(
-        [
-          {
-            name: Winform.name,
-            schema: WinformSchema,
-          },
-        ],
-        'winform'
-      ), 
-],
-  providers: [  WinformService,
+      [
+        {
+          name: Winform.name,
+          schema: WinformSchema,
+        },
+      ],
+      'winform',
+    ),
+  ],
+  providers: [
+    WinformService,
     {
-      provide:'Winform',
+      provide: 'Winform',
       useClass: WinformRepository,
-    },],
-  controllers: [WinformController]
+    },
+  ],
+  controllers: [WinformController],
 })
 export class WinformModule {}

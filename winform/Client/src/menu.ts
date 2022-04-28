@@ -6,6 +6,7 @@ export default [
     items: [
       { label: 'Dashboard', icon: 'pi pi-fw pi-chart-bar', to: '/' },
       { label: 'Form Builder', icon: 'pi pi-fw pi-book', to: '/formbuilder' },
+      { label: 'Test Form', icon: 'pi pi-fw pi-exclamation-triangle', to: '/test-form' },
     ],
   },
   // {

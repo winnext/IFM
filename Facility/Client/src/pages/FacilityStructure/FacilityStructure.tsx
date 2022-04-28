@@ -30,18 +30,8 @@ interface ClassificationInterface {
   description: string;
 }
 
-// interface Node {
-//   key: string;
-//   label: string;
-//   name: string;
-//   code: string;
-//   selectable: boolean;
-//   parent?: string;
-//   children: Node[];
-// }
 
 const FacilityStructure = () => {
-  // const tree = useAppSelector((state) => state.tree);
 
   const navigate = useNavigate();
   const [data, setData] = useState<ClassificationInterface[]>([]);
@@ -81,8 +71,6 @@ const FacilityStructure = () => {
       class_name:lazyParams.class_name,
     })
       .then((response) => {
-        console.log(response.data);
-        
         setData(response.data[0]);
         setCountClassifications(response.data[1].count);
         setLoading(false);
@@ -147,7 +135,7 @@ const FacilityStructure = () => {
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-      <h5 className="m-0">Manage Classifications</h5>
+      <h5 className="m-0">Manage Facility Structure</h5>
       <span className="block mt-2 md:mt-0">
         <InputText
           type="search"

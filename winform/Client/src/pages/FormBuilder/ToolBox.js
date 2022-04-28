@@ -1,59 +1,62 @@
-import React from "react";
-import { Card } from "primereact/card";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import ITEMS from "./Items";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { Dropdown } from "primereact/dropdown";
-import { RadioButton } from "primereact/radiobutton";
-import { Checkbox } from "primereact/checkbox";
-import { Calendar } from "primereact/calendar";
+import React from 'react';
+import { Card } from 'primereact/card';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
+import ITEMS from './Items';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Dropdown } from 'primereact/dropdown';
+import { RadioButton } from 'primereact/radiobutton';
+import { Checkbox } from 'primereact/checkbox';
+import { Calendar } from 'primereact/calendar';
 
 const ItemComponent = ({ type, icon }) => (
   <Card className="mt-2">
-    {type === "text" && (
+    {type === 'text' && (
       <InputText
         placeholder={type.toUpperCase()}
         disabled
-        style={{ width: "100%", borderColor: "black" }}
+        style={{ width: '100%', borderColor: 'black' }}
       />
     )}
-    {type === "textarea" && (
+    {type === 'textarea' && (
       <InputTextarea
         placeholder={type.toUpperCase()}
         disabled
-        style={{ width: "100%", borderColor: "black" }}
+        style={{ width: '100%', borderColor: 'black', resize: 'none' }}
       />
     )}
-    {type === "dropdown" && (
+    {type === 'dropdown' && (
       <Dropdown
         placeholder={type.toUpperCase()}
         disabled
-        style={{ width: "100%", borderColor: "black" }}
+        style={{ width: '100%', borderColor: 'black' }}
       />
     )}
-    {type === "radio" && (
+    {type === 'radio' && (
       <>
-        <RadioButton disabled style={{border: "1px solid",borderRadius: "50%"}}  />
-        <span className="ml-2" style={{ color: "#abb1b6" }}>
+        <RadioButton
+          disabled
+          style={{ border: '1px solid', borderRadius: '50%' }}
+        />
+        <span className="ml-2" style={{ color: '#abb1b6' }}>
           {type.toUpperCase()}
         </span>
       </>
     )}
-    {type === "checkbox" && (
+    {type === 'checkbox' && (
       <>
-        <Checkbox value={type} disabled style={{border: "1px solid"}}/>
-        <span className="ml-2" style={{ color: "#abb1b6" }}>
+        <Checkbox value={type} disabled style={{ border: '1px solid' }} />
+        <span className="ml-2" style={{ color: '#abb1b6' }}>
           {type.toUpperCase()}
         </span>
       </>
     )}
-    {type === "date" && (
+    {type === 'date' && (
       <Calendar
         disabled
         placeholder={type.toUpperCase()}
         showIcon
-        style={{ width: "100%",border: "1px solid"}}
+        style={{ width: '100%', border: '1px solid' }}
       />
     )}
   </Card>

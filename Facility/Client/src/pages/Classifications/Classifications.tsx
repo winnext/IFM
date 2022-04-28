@@ -28,16 +28,6 @@ interface ClassificationInterface {
   labelclass: string;
 }
 
-// interface Node {
-//   key: string;
-//   label: string;
-//   name: string;
-//   code: string;
-//   selectable: boolean;
-//   parent?: string;
-//   children: Node[];
-// }
-
 const Classifications = () => {
   // const tree = useAppSelector((state) => state.tree);
 
@@ -79,8 +69,6 @@ const Classifications = () => {
       class_name:lazyParams.class_name,
     })
       .then((response) => {
-        console.log(response.data);
-        
         setData(response.data[0]);
         setCountClassifications(response.data[1].count);
         setLoading(false);
