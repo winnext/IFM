@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document, Types, Schema as MongooseSchema } from 'mongoose';
-import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
+import { BasePersistantDocumentObject } from 'ifmcommon';
 import { Languages } from 'src/common/const/language.enum';
 import { genCurrentDate } from 'ifmcommon';
 
@@ -46,24 +46,6 @@ export class User extends BasePersistantDocumentObject {
   language: Languages;
 
   /**
-   * createDate of user
-   */
-  @Prop({
-    type: Date,
-    default: genCurrentDate(),
-  })
-  createdAt: Date;
-
-  /**
-   * updateDate of user when created
-   */
-  @Prop({
-    type: Date,
-    default: genCurrentDate(),
-  })
-  updatedAt: Date;
-
-  /**
    * Return class name(User)
    */
   @Prop({
@@ -79,18 +61,6 @@ export class User extends BasePersistantDocumentObject {
    */
   @Prop()
   landing_page: string;
-
-  /**
-   * is user deleted(true or false)
-   */
-  @Prop({ default: false })
-  isDeleted: boolean;
-
-  /**
-   * is user active(true or false)
-   */
-  @Prop({ default: true })
-  isActive: boolean;
 
   /**
    * LoginDate of user
