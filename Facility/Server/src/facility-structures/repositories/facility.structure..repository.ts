@@ -30,18 +30,27 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   }
   async findOneById(id: string) {
     const idNum = parseInt(id);
+    // let result = await this.neo4jService.read(
+    //   'MATCH (n {isDeleted: false})-[:CHILDREN*]->(m {isDeleted: false}) \
+    //   WHERE  id(n) = $idNum  and  NOT (m {isDeleted: false})-[:CHILDREN]->() \
+    //   WITH n, m \
+    //   ORDER BY n.code, m.code \
+    //   MATCH p=(n {isDeleted: false})-[:CHILDREN*]->(m {isDeleted: false}) \
+    //   WHERE NOT ()-[:CHILDREN]->(n {isDeleted: false}) \
+    //   WITH COLLECT(p) AS ps \
+    //   CALL apoc.convert.toTree(ps) yield value \
+    //   RETURN value',
+    //   { idNum },
+    // );
+    
     let result = await this.neo4jService.read(
-      'MATCH (n {isDeleted: false})-[:CHILDREN*]->(m {isDeleted: false}) \
-      WHERE  id(n) = $idNum  and  NOT (m {isDeleted: false})-[:CHILDREN]->() \
-      WITH n, m \
-      ORDER BY n.code, m.code \
-      MATCH p=(n {isDeleted: false})-[:CHILDREN*]->(m {isDeleted: false}) \
-      WHERE NOT ()-[:CHILDREN]->(n {isDeleted: false}) \
+      'MATCH p=(n)-[:CHILDREN*]->(m) \
+      WHERE  id(n) = $idNum and n.isDeleted=false and m.isDeleted=false \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
       { idNum },
-    );
+    ); 
 
     var resultRow = result['records'][0]['_fields'][0];
     if (!result) {
@@ -100,6 +109,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     return classification;
   }
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
+
     const facilityStructure = new FacilityStructure();
     facilityStructure.type = createFacilityStructureDto.type;
     facilityStructure.typeId = createFacilityStructureDto.typeId;
