@@ -88,7 +88,6 @@ const SetClassification = () => {
   const [typeId, setTypeId]=useState("");
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
-  const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
@@ -250,7 +249,6 @@ const SetClassification = () => {
           tag: tag,
           labelclass: node.labelclass,
           isActive: isActive,
-          isDeleted: isDeleted,
           description: "description"
         };
 

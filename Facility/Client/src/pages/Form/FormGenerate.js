@@ -149,7 +149,7 @@ const Dynamic = () => {
     console.log(nodeId);
     let lastData = { ...data, ...nodeId };
     console.log(lastData);
-    // history("/facilitystructure");
+    history("/facilitystructure");
   };
 
   return (

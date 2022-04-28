@@ -27,6 +27,7 @@ interface ClassificationInterface {
   hasParent?: boolean,
   labelclass: string;
   type: string;
+  typeId: string;
   description: string;
 }
 
@@ -96,7 +97,8 @@ const FacilityStructure = () => {
       key: uuidv4(),
       tag: tag,
       labelclass: labelClass,
-      type:"standart",
+      type:"",
+      typeId:"",
       description:""
 
     };
@@ -123,6 +125,8 @@ const FacilityStructure = () => {
     setAddDia(false);
     setName("");
     setCode("");
+    setLabelClass("");
+    setTag([]);
   };
 
   const onPage = (event: any) => {
