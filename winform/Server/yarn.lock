@@ -1449,10 +1449,10 @@
   "resolved" "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-1.0.1.tgz"
   "version" "1.0.1"
 
-"@nestjs/microservices@^8.0.0", "@nestjs/microservices@^8.4.0":
-  "integrity" "sha512-vQFrMvT0AO7IWt6ZU7Te0dKbcWTjznhkQEvLNMegYUniPDl2bBdA3aYSwbQET63Db14+tq8iZasa4cDlnKPXWQ=="
-  "resolved" "https://registry.npmjs.org/@nestjs/microservices/-/microservices-8.4.0.tgz"
-  "version" "8.4.0"
+"@nestjs/microservices@^8.0.0", "@nestjs/microservices@^8.4.0", "@nestjs/microservices@^8.4.4":
+  "integrity" "sha512-V1xBs5mBFaWGF7RuLSQBG9ydcvX+j8RxHnk9pYF2I5kBdWt7AyTuG2qMt7es06HXEbgUmavw/zn+P6Q2WQIS5A=="
+  "resolved" "https://registry.npmjs.org/@nestjs/microservices/-/microservices-8.4.4.tgz"
+  "version" "8.4.4"
   dependencies:
     "iterare" "1.2.1"
     "json-socket" "0.3.0"
@@ -3153,7 +3153,7 @@
   dependencies:
     "node-int64" "^0.4.0"
 
-"bson@*", "bson@^4.2.2", "bson@^4.6.1":
+"bson@*", "bson@^4.6.2":
   "integrity" "sha512-VeJKHShcu1b/ugl0QiujlVuBepab714X9nNyBdA1kfekuDGecxgpTA2Z6nYbagrWFeiIyzSWIOzju3lhj+RNyQ=="
   "resolved" "https://registry.npmjs.org/bson/-/bson-4.6.2.tgz"
   "version" "4.6.2"
@@ -3385,7 +3385,7 @@
   "resolved" "https://registry.npmjs.org/class-transformer/-/class-transformer-0.5.1.tgz"
   "version" "0.5.1"
 
-"class-validator@*", "class-validator@^0.11.1 || ^0.12.0 || ^0.13.0", "class-validator@^0.13.2":
+"class-validator@*", "class-validator@^0.11.1 || ^0.12.0 || ^0.13.0", "class-validator@^0.13.2", "class-validator@~0.13":
   "integrity" "sha512-yBUcQy07FPlGzUjoLuUfIOXzgynnQPPruyK1Ge2B74k9ROwnle1E+NxLWnUv5OLU8hA/qL5leAE9XnXq3byaBw=="
   "resolved" "https://registry.npmjs.org/class-validator/-/class-validator-0.13.2.tgz"
   "version" "0.13.2"
@@ -5124,6 +5124,25 @@
   "resolved" "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   "version" "1.2.1"
 
+"ifmcommon@^0.0.16":
+  "integrity" "sha512-eNxCbqMCLsHHNRhHavaX2Cx0hKNNql9i4W6UxMazIIOj5FCcO7TvmehF7VTt7gOmu/woGIHFn6DO7H1znfjkmw=="
+  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.16.tgz"
+  "version" "0.0.16"
+  dependencies:
+    "@nestjs/common" "^8.0.0"
+    "@nestjs/core" "^8.0.0"
+    "@nestjs/microservices" "^8.4.4"
+    "@nestjs/platform-express" "^8.0.0"
+    "class-transformer" "^0.5.1"
+    "kafkajs" "^1.16.0"
+    "mongoose" "^6.3.1"
+    "nest-keycloak-connect" "^1.8.3"
+    "nestjs-i18n" "^9.0.10"
+    "nestjs-otel" "^3.0.4"
+    "reflect-metadata" "^0.1.13"
+    "rimraf" "^3.0.2"
+    "rxjs" "^7.2.0"
+
 "ignore@^4.0.6":
   "integrity" "sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg=="
   "resolved" "https://registry.npmjs.org/ignore/-/ignore-4.0.6.tgz"
@@ -6003,10 +6022,10 @@
   "resolved" "https://registry.npmjs.org/kafkajs/-/kafkajs-1.16.0.tgz"
   "version" "1.16.0"
 
-"kareem@2.3.4":
-  "integrity" "sha512-Vcrt8lcpVl0s8ePx634BxwRqmFo+5DcOhlmNadehxreMTIQi/9hOL/B3hZQQbK5DgMS7Lem3xABXV7/S3jy+7g=="
-  "resolved" "https://registry.npmjs.org/kareem/-/kareem-2.3.4.tgz"
-  "version" "2.3.4"
+"kareem@2.3.5":
+  "integrity" "sha512-qxCyQtp3ioawkiRNQr/v8xw9KIviMSSNmy+63Wubj7KmMn3g7noRXIZB4vPCAP+ETi2SR8eH6CvmlKZuGpoHOg=="
+  "resolved" "https://registry.npmjs.org/kareem/-/kareem-2.3.5.tgz"
+  "version" "2.3.5"
 
 "keycloak-connect@>= 10.0.0 < 16.0.0":
   "integrity" "sha512-vbCEiEqPFz5NKiX1/j0Et2KUj3K2bKIR90HOTSSRqcS3tj/6rGSE42Z4Lci1zcGgArf/PTAsjNe4/hb/gFRFFg=="
@@ -6286,7 +6305,7 @@
   "resolved" "https://registry.npmjs.org/module-details-from-path/-/module-details-from-path-1.0.3.tgz"
   "version" "1.0.3"
 
-"mongodb-connection-string-url@^2.4.1":
+"mongodb-connection-string-url@^2.5.2":
   "integrity" "sha512-tWDyIG8cQlI5k3skB6ywaEA5F9f5OntrKKsT/Lteub2zgwSUlhqEN2inGgBTm8bpYJf8QYBdA/5naz65XDpczA=="
   "resolved" "https://registry.npmjs.org/mongodb-connection-string-url/-/mongodb-connection-string-url-2.5.2.tgz"
   "version" "2.5.2"
@@ -6307,26 +6326,26 @@
   optionalDependencies:
     "saslprep" "^1.0.0"
 
-"mongodb@4.3.1":
-  "integrity" "sha512-sNa8APSIk+r4x31ZwctKjuPSaeKuvUeNb/fu/3B6dRM02HpEgig7hTHM8A/PJQTlxuC/KFWlDlQjhsk/S43tBg=="
-  "resolved" "https://registry.npmjs.org/mongodb/-/mongodb-4.3.1.tgz"
-  "version" "4.3.1"
+"mongodb@4.5.0":
+  "integrity" "sha512-A2l8MjEpKojnhbCM0MK3+UOGUSGvTNNSv7AkP1fsT7tkambrkkqN/5F2y+PhzsV0Nbv58u04TETpkaSEdI2zKA=="
+  "resolved" "https://registry.npmjs.org/mongodb/-/mongodb-4.5.0.tgz"
+  "version" "4.5.0"
   dependencies:
-    "bson" "^4.6.1"
+    "bson" "^4.6.2"
     "denque" "^2.0.1"
-    "mongodb-connection-string-url" "^2.4.1"
-    "socks" "^2.6.1"
+    "mongodb-connection-string-url" "^2.5.2"
+    "socks" "^2.6.2"
   optionalDependencies:
     "saslprep" "^1.0.3"
 
-"mongoose@*", "mongoose@^6.0.2", "mongoose@^6.2.1":
-  "integrity" "sha512-3hA3IGxBzZdlp1+/I9qn53NjEAd01qvKAH2WUCPahjVO8+uAmR0B4m+1bC3x9a4r0ExY8QYQ2ryG3E/v5Tj+jA=="
-  "resolved" "https://registry.npmjs.org/mongoose/-/mongoose-6.2.4.tgz"
-  "version" "6.2.4"
+"mongoose@*", "mongoose@^6.0.2", "mongoose@^6.2.1", "mongoose@^6.3.1":
+  "integrity" "sha512-bknh/VzU/7mBudfE4/5N7NR2Bpjvuxl93iePvyCGLhjeHF6w+mCRmucYGQkG6wEbCmEUVmBQrcgr2b40krMo/Q=="
+  "resolved" "https://registry.npmjs.org/mongoose/-/mongoose-6.3.1.tgz"
+  "version" "6.3.1"
   dependencies:
-    "bson" "^4.2.2"
-    "kareem" "2.3.4"
-    "mongodb" "4.3.1"
+    "bson" "^4.6.2"
+    "kareem" "2.3.5"
+    "mongodb" "4.5.0"
     "mpath" "0.8.4"
     "mquery" "4.0.2"
     "ms" "2.1.3"
@@ -6413,10 +6432,10 @@
   "resolved" "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   "version" "2.6.2"
 
-"nest-keycloak-connect@^1.8.2":
-  "integrity" "sha512-ttrmK5zd2UCrvcrQ7gZo9Zw12R80U8xcVjYDM9JaNRP73Gw53krYi8wht2MKIprYwr16FFyQEAdEOY9hvF+YMw=="
-  "resolved" "https://registry.npmjs.org/nest-keycloak-connect/-/nest-keycloak-connect-1.8.2.tgz"
-  "version" "1.8.2"
+"nest-keycloak-connect@^1.8.2", "nest-keycloak-connect@^1.8.3":
+  "integrity" "sha512-WPDFlcoP5bVgTLENP7JMrK6DD+cWt9DYzoPdsAkZB75f7Xg4vyQDHH0ubFfy+Gr182mHQ4BA6Y+7jcmFLEIePg=="
+  "resolved" "https://registry.npmjs.org/nest-keycloak-connect/-/nest-keycloak-connect-1.8.3.tgz"
+  "version" "1.8.3"
 
 "nestjs-i18n@^8.2.2":
   "integrity" "sha512-xjmr9wFnDDJqEOPRjLxDCpKpHHvFY+pLk4UQch2lj9VqXXA507u250C5eYVNLQM6T3sbuj6i2cKH+JqGB3AvNQ=="
@@ -6428,10 +6447,21 @@
     "cookie" "^0.4.1"
     "string-format" "^2.0.0"
 
-"nestjs-otel@^3.0.0":
-  "integrity" "sha512-adq1EZLL0jKjD3WH9CeJA4T5bYsNDwhJOHvMtmi4tXdMvNaqLzF56H6UCIqzK5rrzdncOzrlw1xfTXdlAYtecA=="
-  "resolved" "https://registry.npmjs.org/nestjs-otel/-/nestjs-otel-3.0.0.tgz"
-  "version" "3.0.0"
+"nestjs-i18n@^9.0.10":
+  "integrity" "sha512-Niqk166yvTsWtRV4Ku/tgCXi7lXkMKgK6aQJjEa6ihAjCWBAeXOqq0H73UYArMCiNH/EIXMSKSdWyRz6oxlgGw=="
+  "resolved" "https://registry.npmjs.org/nestjs-i18n/-/nestjs-i18n-9.0.10.tgz"
+  "version" "9.0.10"
+  dependencies:
+    "accept-language-parser" "^1.5.0"
+    "chokidar" "^3.5.3"
+    "cookie" "^0.4.1"
+    "js-yaml" "^4.1.0"
+    "string-format" "^2.0.0"
+
+"nestjs-otel@^3.0.0", "nestjs-otel@^3.0.4":
+  "integrity" "sha512-xehn0ozOhGPLc1Mqg3oX6szvyxvOkNFNon08Ru5UAiH4N7/NG6GjHYRyhclwrkxjxNvHnYIihz8mMysaorI+8Q=="
+  "resolved" "https://registry.npmjs.org/nestjs-otel/-/nestjs-otel-3.0.4.tgz"
+  "version" "3.0.4"
   dependencies:
     "@opentelemetry/api" "^1.0.4"
     "@opentelemetry/api-metrics" "^0.27.0"
@@ -7738,7 +7768,7 @@
   "resolved" "https://registry.npmjs.org/smart-buffer/-/smart-buffer-4.2.0.tgz"
   "version" "4.2.0"
 
-"socks@^2.6.1":
+"socks@^2.6.2":
   "integrity" "sha512-zDZhHhZRY9PxRruRMR7kMhnf3I8hDs4S3f9RecfnGxvcBHQcKcIH/oUcEWffsfl1XxdYlA7nnlGbbTvPz9D8gA=="
   "resolved" "https://registry.npmjs.org/socks/-/socks-2.6.2.tgz"
   "version" "2.6.2"

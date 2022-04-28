@@ -3,5 +3,4 @@
  */
 export enum ConnectionEnums {
   WINFORM = 'winform',
-
 }

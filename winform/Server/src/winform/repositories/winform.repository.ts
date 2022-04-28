@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {Winform}  from '../entities/winform.entity'
-import {CreateWinformDto} from '../dtos/create.winform.dto';
+import { Winform } from '../entities/winform.entity';
+import { CreateWinformDto } from '../dtos/create.winform.dto';
 
 // import { checkObjectIddİsValid } from 'src/common/func/objectId.check';
-import { BaseInterfaceRepository } from '../../common/repositories/crud.repository.interface';
+import { BaseInterfaceRepository } from 'ifmcommon';
 // import { FacilityNotFountException } from '../../common/notFoundExceptions/not.found.exception';
-
 
 @Injectable()
 export class WinformRepository implements BaseInterfaceRepository<Winform> {
   constructor(@InjectModel(Winform.name) private readonly winformModel: Model<Winform>) {}
-  
+
   findWithRelations(relations: any): Promise<Winform[]> {
     throw new Error(relations);
   }
@@ -25,19 +24,15 @@ export class WinformRepository implements BaseInterfaceRepository<Winform> {
     return winform;
   }
   async findAll() {
-    
-  
-    const result = await this.winformModel
-      .find().exec();
-    
+    const result = await this.winformModel.find().exec();
+
     const winform = [];
     winform.push(result);
-   
+
     return winform;
   }
 
   async create(createWinformDto: CreateWinformDto) {
-
     //checkObjectIddİsValid(classifications.classificationId);
 
     const winform = new this.winformModel(createWinformDto);
@@ -45,15 +40,12 @@ export class WinformRepository implements BaseInterfaceRepository<Winform> {
     return await winform.save();
   }
   async update(_id: string, updateWinformDto: any) {
-    
-
     //checkObjectIddİsValid(classifications.classificationId);
 
     const updatedWinform = await this.winformModel
       .findOneAndUpdate({ _id }, { $set: updateWinformDto }, { new: true })
       .exec();
 
-    
     return updatedWinform;
   }
   async delete(_id: string) {
