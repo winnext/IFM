@@ -5393,10 +5393,10 @@
   "resolved" "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   "version" "1.2.1"
 
-"ifmcommon@^0.0.14":
-  "integrity" "sha512-8hf2gQ8Gt66ebGA33PgbUREu1zOngmyFEsIgxiwiBQWJLdBMK3mZxC9TxbPdGxa2MNTfSm5vnBt4rDiQvvekBQ=="
-  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.14.tgz"
-  "version" "0.0.14"
+"ifmcommon@^0.0.16":
+  "integrity" "sha512-eNxCbqMCLsHHNRhHavaX2Cx0hKNNql9i4W6UxMazIIOj5FCcO7TvmehF7VTt7gOmu/woGIHFn6DO7H1znfjkmw=="
+  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.16.tgz"
+  "version" "0.0.16"
   dependencies:
     "@nestjs/common" "^8.0.0"
     "@nestjs/core" "^8.0.0"

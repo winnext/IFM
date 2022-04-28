@@ -37,7 +37,7 @@ export class MongoExceptionFilter implements ExceptionFilter {
 
     console.log('--------This error from MONGO EXCEPTİON FİLTER-----------');
     const exceptionMessage = exception.errmsg;
-    const errorProperties = exceptionMessage.match(/\{.*\}/)[0];
+    console.log(exceptionMessage);
 
     const errorType = ExceptionType.MONGO_EXCEPTİON;
     const requestInformation = {
@@ -65,6 +65,7 @@ export class MongoExceptionFilter implements ExceptionFilter {
         response.status(500).json({ code: 500, message: 'Server down' });
         break;
       case 11000: // duplicate exceptio
+        const errorProperties = exceptionMessage.match(/\{.*\}/)[0];
         const message = await getI18nMongoErrorMessage(this.i18n, request, I18NEnums.DUBLICATE_ERROR, errorProperties);
         const clientResponse = { code: 400, message, errorProperties: errorProperties };
         const finalExcep = {
