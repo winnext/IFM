@@ -26,7 +26,7 @@ const provider = new BasicTracerProvider({
   resource: new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: 'user_service' }),
 });
 provider.register();
-provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter()));
+provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter({host:process.env.JAEGER_HOST,port:Number(process.env.JAEGER_PORT)})));
 trace.setGlobalTracerProvider(provider);
 
 /**
