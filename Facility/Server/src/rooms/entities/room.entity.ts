@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document, Types, Schema as MongooseSchema } from 'mongoose';
-import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
-import { Languages } from 'src/common/const/language.enum';
-import { genCurrentDate } from 'ifmcommon';
+import { BasePersistantDocumentObject } from 'ifmcommon';
 
 export type RoomDocument = Room & Document;
 
@@ -17,23 +15,6 @@ export class Room extends BasePersistantDocumentObject {
    */
   @Prop()
   code: string;
-  /**
-   * createDate of room
-   */
-  @Prop({
-    type: Date,
-    default: genCurrentDate(),
-  })
-  createdAt: Date;
-
-  /**
-   * updateDate of room when created
-   */
-  @Prop({
-    type: Date,
-    default: genCurrentDate(),
-  })
-  updatedAt: Date;
 
   /**
    * Return class name(Room)
@@ -45,18 +26,6 @@ export class Room extends BasePersistantDocumentObject {
     },
   })
   class_name: string;
-
-  /**
-   * is room deleted(true or false)
-   */
-  @Prop({ default: false })
-  isDeleted: boolean;
-
-  /**
-   * is room active(true or false)
-   */
-  @Prop({ default: true })
-  isActive: boolean;
 }
 
 /**

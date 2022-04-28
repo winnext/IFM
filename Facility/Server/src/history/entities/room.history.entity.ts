@@ -2,15 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Document } from 'mongoose';
-import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
-
 export type RoomDocument = RoomHistory & Document;
 
 /**
  * Create User  History Entity with Mongoose
  */
 @Schema()
-export class RoomHistory extends BasePersistantDocumentObject {
+export class RoomHistory {
   /**
    * user object
    */

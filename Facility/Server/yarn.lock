@@ -1491,10 +1491,10 @@
     "json-socket" "0.3.0"
     "tslib" "2.3.1"
 
-"@nestjs/mongoose@^9.0.2":
-  "integrity" "sha512-v4Umk3hssJ1RJJIe2LBVHvrsGfY+srq2nfOVCw36PGe7+eObzSBIryMJi+h2mTZpYIohNRGM2O66clEmhctYQQ=="
-  "resolved" "https://registry.npmjs.org/@nestjs/mongoose/-/mongoose-9.0.2.tgz"
-  "version" "9.0.2"
+"@nestjs/mongoose@^9.0.2", "@nestjs/mongoose@^9.0.3":
+  "integrity" "sha512-y3M4LKVUP28HSp7hO7dXGvhs4PzpVI6LyIDqunlnzDdQhWtqaaxhW7VomqY8esOSv7otpF1v/vcCvoQVtSW4qA=="
+  "resolved" "https://registry.npmjs.org/@nestjs/mongoose/-/mongoose-9.0.3.tgz"
+  "version" "9.0.3"
 
 "@nestjs/platform-express@^7.0.0":
   "integrity" "sha512-Dty2bBhsW7EInMRPS1pkXKJ3GBBusEj6fnEpb0UfkaT3E7asay9c64kCmZE+8hU430qQjY+fhBb1RNWWPnUiwQ=="
@@ -5485,14 +5485,15 @@
   "resolved" "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   "version" "1.2.1"
 
-"ifmcommon@^0.0.16":
-  "integrity" "sha512-eNxCbqMCLsHHNRhHavaX2Cx0hKNNql9i4W6UxMazIIOj5FCcO7TvmehF7VTt7gOmu/woGIHFn6DO7H1znfjkmw=="
-  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.16.tgz"
-  "version" "0.0.16"
+"ifmcommon@^0.0.17":
+  "integrity" "sha512-fWDivpn1Jqxguyvm9FkgY+S4DYyX6ZhLCuY8MN583wyJR8i/9sDuDhsB7zd/rIp82U649DOanIZ9r8L+XdpwQw=="
+  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.17.tgz"
+  "version" "0.0.17"
   dependencies:
     "@nestjs/common" "^8.0.0"
     "@nestjs/core" "^8.0.0"
     "@nestjs/microservices" "^8.4.4"
+    "@nestjs/mongoose" "^9.0.3"
     "@nestjs/platform-express" "^8.0.0"
     "class-transformer" "^0.5.1"
     "kafkajs" "^1.16.0"
