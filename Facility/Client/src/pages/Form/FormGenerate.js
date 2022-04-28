@@ -104,30 +104,29 @@ const Input = ({ value, onChange, type, ...rest }) => {
   }
 };
 
-const dumpData={
+const dumpData = {
   Sözleşme: true,
   Tarih: "Mon Apr 25 2022 00:00:00 GMT+0300 (GMT+03:00) {}",
   adres: "xfgdg",
   cinsiyet: "bay",
   meyve: "armut",
   textlabel: "gfdgfdgf",
-  şehir: "Ankara"
-}
+  şehir: "Ankara",
+};
 
 const Dynamic = () => {
   const [selectedForm, setSelectedForm] = useState(undefined);
+  const [formId, setFormId] = useState("");
   const [nodeId, setNodeId] = useState({ id: "123456" });
 
   const params = useLocation();
   console.log(params);
 
   const history = useNavigate();
-  const { type } = useParams();
 
   const getForms = () => {
     // const id = params.id || "";
-    const id = "62626288d37913d212f5b3f0";
-    FormBuilderService.findOne(id).then((res) => {
+    FormBuilderService.findOne(params.state.data.typeId).then((res) => {
       setSelectedForm(res.data);
     });
   };
@@ -150,7 +149,7 @@ const Dynamic = () => {
     console.log(nodeId);
     let lastData = { ...data, ...nodeId };
     console.log(lastData);
-    history("/facilitystructure");
+    // history("/facilitystructure");
   };
 
   return (
@@ -160,7 +159,6 @@ const Dynamic = () => {
           {selectedForm &&
             Object.keys(selectedForm.items).map((e) => {
               const { rules, defaultValue, label } = selectedForm.items[e];
-              console.log(selectedForm.items);
               return (
                 <section key={e}>
                   <label className="mb-4">{label}</label>
@@ -168,7 +166,7 @@ const Dynamic = () => {
                     name={label.replaceAll(" ", "")}
                     control={control}
                     rules={rules}
-                    defaultValue={"test"}
+                    defaultValue={defaultValue}
                     render={({ field }) => (
                       <div>
                         <Input
