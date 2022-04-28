@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
 import { Languages } from 'src/common/const/language.enum';
-import { genCurrentDate } from 'src/common/func/generate.new.date';
+import { genCurrentDate } from 'ifmcommon';
 
 /**
  * User Document type for Mongoose

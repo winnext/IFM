@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
+import { NoCache } from 'ifmcommon';
 import { UserHistory } from './entities/user.history.entity';
 import { UserHistoryService } from './user.history.service';
 

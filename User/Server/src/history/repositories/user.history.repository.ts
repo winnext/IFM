@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { UserNotFountException } from 'src/common/notFoundExceptions/user.not.found.exception';
 
-import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateUserHistoryDto } from '../dtos/create.user.history.dto';
 import { UserHistory } from '../entities/user.history.entity';
 

@@ -48,7 +48,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "commenintertest": "^1.0.0",
-    "i": "^0.3.7",
+    "ifmcommon": "^0.0.14",
     "joi": "^17.6.0",
     "kafkajs": "^1.16.0",
     "mongoose": "^6.2.1",

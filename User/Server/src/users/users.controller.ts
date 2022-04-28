@@ -4,7 +4,7 @@ import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 
 import { UserRoles } from 'src/common/const/keycloak.role.enum';
-import { NoCache } from 'src/common/interceptors/http.cache.interceptor';
+import { NoCache } from 'ifmcommon';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

@@ -44,6 +44,7 @@ export class MessagebrokerController {
 
       default:
         console.log('undefined history call from user microservice');
+        console.log(message.key);
         break;
     }
   }

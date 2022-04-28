@@ -7,7 +7,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import * as redisStore from 'cache-manager-redis-store';
-import { HttpCacheInterceptor } from './common/interceptors/http.cache.interceptor';
+import { HttpCacheInterceptor } from 'ifmcommon';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { UsersModule } from './users/users.module';

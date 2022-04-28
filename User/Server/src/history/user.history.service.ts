@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { BaseHistoryRepositoryInterface } from 'src/common/repositories/history.repository.interface';
+import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
 import { CreateUserHistoryDto } from './dtos/create.user.history.dto';
 import { UserHistory } from './entities/user.history.entity';

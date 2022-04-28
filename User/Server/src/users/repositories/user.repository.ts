@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 
-import { BaseInterfaceRepository } from 'src/common/repositories/crud.repository.interface';
+import { BaseInterfaceRepository } from 'ifmcommon';
 import { UserNotFountException } from '../../common/notFoundExceptions/user.not.found.exception';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
