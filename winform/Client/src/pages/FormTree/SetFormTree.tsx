@@ -9,16 +9,11 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from 'primereact/dropdown';
-import { Checkbox } from 'primereact/checkbox';
-import FormType from "../../components/Form/FormType";
-import { useForm, Controller } from "react-hook-form";
 
-import FacilityStructureService from "../../services/facilitystructure";
-import FormBuilderService from "../../services/formBuilder";
+import FormTreeService from "../../services/formtree";
 
 
-interface StructureInterface {
+interface FormTreeInterface {
   root:
   {
     code: string;
@@ -44,7 +39,6 @@ interface Node {
   hasParent?: boolean;
   children: Node[];
   type?: string;
-  typeId?: string;
   parent_id?: string;
   selectable?: boolean;
   self_id: {
@@ -52,19 +46,14 @@ interface Node {
     high: string;
   },
   labelclass: string;
-  description: string;
 }
 
-interface Type {
-  _id: string;
-  name: string;
-  items: any[]
-}
 
-const SetClassification = () => {
+
+const SetFormTree = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
-  const [structure, setStructure] = useState<StructureInterface>({
+  const [classification, setClassification] = useState<FormTreeInterface>({
     root: [
       {
         code: "",
@@ -84,10 +73,7 @@ const SetClassification = () => {
   const [data, setData] = useState<Node[]>([]);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
-  const [type, setType] = useState("");
-  const [typeId, setTypeId]=useState("");
   const [tag, setTag] = useState<string[]>([]);
-  const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
@@ -95,28 +81,6 @@ const SetClassification = () => {
   const cm: any = React.useRef(null);
   const params = useParams()
   const navigate = useNavigate()
-  const [formData, setFormData] = useState<Type[]>([]);
-  const [selectedForm, setSelectedForm] = useState<any>(undefined);
-
-  const getForms = async () => {
-    await FormBuilderService.findAll().then((res) => {
-      setFormData(res.data[0]);
-    });
-  };
-
-  useEffect(() => {
-    getForms();
-  }, []);
-
-  const {
-    handleSubmit,
-    control,
-    // watch,
-    unregister,
-    reset,
-    formState: { errors },
-  } = useForm();
-
 
   const menu = [
     {
@@ -130,13 +94,11 @@ const SetClassification = () => {
       label: "Edit Item",
       icon: "pi pi-pencil",
       command: () => {
-        FacilityStructureService.nodeInfo(selectedNodeKey)
+        FormTreeService.nodeInfo(selectedNodeKey)
           .then((res) => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
-            setSelectedForm(formData.find(item => item.name === res.data.properties.type));
-            setIsActive(res.data.properties.isActive);
           })
           .catch((err) => {
             toast.current.show({
@@ -160,8 +122,10 @@ const SetClassification = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FacilityStructureService.findOne(id).then((res) => {
-      setStructure(res.data);
+    FormTreeService.findOne(id).then((res) => {
+
+      setClassification(res.data);
+
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
       }
@@ -177,7 +141,7 @@ const SetClassification = () => {
         life: 2000,
       });
       setTimeout(() => {
-        navigate("/facilitystructure")
+        navigate("/classifications")
       }, 2000)
     })
   }
@@ -201,19 +165,15 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
-          type: type,
-          typeId:typeId,
-          description: "description"
-          
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
-        FacilityStructureService.create(newNode)
+        FormTreeService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Structure  Created",
+              detail: "Classification Created",
               life: 3000,
             });
             getClassification();
@@ -248,11 +208,9 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
-          isActive: isActive,
-          description: "description"
         };
 
-        FacilityStructureService.update(node.self_id.low, updateNode)
+        FormTreeService.update(node.self_id.low, updateNode)
           .then((res) => {
             showSuccess("Saved!");
             getClassification();
@@ -284,15 +242,15 @@ const SetClassification = () => {
 
       if (node.key === search) {
         if (node.hasParent === false) {
-          FacilityStructureService.remove(node.self_id.low)
+          FormTreeService.remove(node.self_id.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Structure Deleted",
+                detail: "Classification Deleted",
                 life: 2000,
               });
-              navigate("/facilitystructure");
+              navigate("/classifications")
             })
             .catch((err) => {
               toast.current.show({
@@ -304,12 +262,12 @@ const SetClassification = () => {
             });
         }
         else {
-          FacilityStructureService.remove(node.self_id.low)
+          FormTreeService.remove(node.self_id.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Structure Deleted",
+                detail: "Classification Deleted",
                 life: 2000,
               });
               getClassification();
@@ -350,7 +308,6 @@ const SetClassification = () => {
     setName("");
     setCode("");
     setTag([]);
-    setSelectedForm(undefined);
     setAddDia(false);
   };
 
@@ -361,7 +318,6 @@ const SetClassification = () => {
     setName("");
     setCode("");
     setTag([]);
-    setSelectedForm(undefined);
     setEditDia(false);
   }
 
@@ -371,9 +327,9 @@ const SetClassification = () => {
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {
-    FacilityStructureService.relation(dragId, dropId)
+    FormTreeService.relation(dragId, dropId)
       .then((res) => {
-        showSuccess("Structure Updated");
+        showSuccess("Updated");
         getClassification();
       })
       .catch((err) => {
@@ -415,7 +371,6 @@ const SetClassification = () => {
             setAddDia(false);
             setName("");
             setCode("");
-            setSelectedForm(undefined);
             setTag([]);
           }}
           className="p-button-text"
@@ -441,7 +396,6 @@ const SetClassification = () => {
             setName("");
             setCode("");
             setTag([]);
-            setSelectedForm(undefined);
           }}
           className="p-button-text"
         />
@@ -476,7 +430,6 @@ const SetClassification = () => {
           setName("");
           setCode("");
           setTag([]);
-          setSelectedForm(undefined);
           setAddDia(false);
         }}
       >
@@ -485,7 +438,6 @@ const SetClassification = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -493,32 +445,11 @@ const SetClassification = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
-            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <Dropdown
-            optionLabel="name"
-            value={selectedForm}
-            options={formData}
-            onChange={(e) => {
-              const temp = selectedForm ? selectedForm.items : [];
-              for (let item of temp) {
-                unregister(item.label);
-              }
-              reset();
-              setSelectedForm(e.value);
-              setType(e.value.name);
-              setTypeId(e.value._id);
-            }}
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width:"50%"}} />
+          <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
       </Dialog>
       <Dialog
@@ -530,7 +461,6 @@ const SetClassification = () => {
           setName("");
           setCode("");
           setTag([]);
-          setSelectedForm(undefined);
           setEditDia(false);
         }}
       >
@@ -539,7 +469,6 @@ const SetClassification = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -547,39 +476,15 @@ const SetClassification = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
-            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <Dropdown
-            optionLabel="name"
-            value={selectedForm}
-            options={formData}
-            onChange={(e) => {
-              const temp = selectedForm ? selectedForm.items : [];
-              for (let item of temp) {
-                unregister(item.label);
-              }
-              reset();
-              setSelectedForm(e.value);
-              setType(e.value.name);
-            }}
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }}/>
-        </div>
-        <div className="field flex">
-          <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
-          <Checkbox className="ml-3" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} />
         </div>
       </Dialog>
-      <h1>Edit Facility Structure</h1>
-      {/* <h3>Code : {classification.root[0].code} </h3> */}
+      <h1>Edit Classification</h1>
+      <h3>Code : {classification.root[0].code} </h3>
       <div className="field">
         <Tree
           loading={loading}
@@ -605,11 +510,6 @@ const SetClassification = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data, options) => <span>{data.label} {<button onClick={(e) => navigate("/form", {
-            state: {
-              data: data,
-            }
-          })} className="ml-3">Edit Form</button>} </span>}
         />
       </div>
       <div className="field">
@@ -619,4 +519,4 @@ const SetClassification = () => {
   );
 };
 
-export default SetClassification;
+export default SetFormTree;

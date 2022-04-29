@@ -7,14 +7,14 @@ import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState, useRef } from "react";
 // import { useAppDispatch, useAppSelector } from "../../app/hook";
 // import { save } from "../../features/tree/treeSlice";
-import FacilityStructureService from "../../services/facilitystructure";
+import FormTreeService from "../../services/formtree";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { useNavigate } from "react-router-dom";
 import { Menu } from 'primereact/menu';
 import { Chips } from 'primereact/chips';
 
-interface ClassificationInterface {
+interface FormTreeInterface {
   identity?: {
     low: string;
     high: string;
@@ -26,16 +26,13 @@ interface ClassificationInterface {
   key: string;
   hasParent?: boolean,
   labelclass: string;
-  type: string;
-  typeId: string;
-  description: string;
 }
 
-
-const FacilityStructure = () => {
+const FormTree = () => {
+  // const tree = useAppSelector((state) => state.tree);
 
   const navigate = useNavigate();
-  const [data, setData] = useState<ClassificationInterface[]>([]);
+  const [data, setData] = useState<FormTreeInterface[]>([]);
   const [addDia, setAddDia] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -50,7 +47,7 @@ const FacilityStructure = () => {
     page: 0,
     sortField: undefined||"",
     sortOrder: undefined,
-    class_name: "FacilityStructure",
+    class_name:"Classification",
   });
   const dt = useRef<any>();
   const toast = useRef<any>();
@@ -64,7 +61,7 @@ const FacilityStructure = () => {
   const loadLazyData = () => {
     let soertField2=lazyParams.sortField.split('.')[1];
     setLoading(true);
-    FacilityStructureService.findAll({
+    FormTreeService.findAll({
       page: lazyParams.page,
       limit: lazyParams.rows,
       sortField: soertField2,
@@ -90,20 +87,17 @@ const FacilityStructure = () => {
   // const dispatch = useAppDispatch();
 
   const addItem = () => {
-    const _classification: ClassificationInterface = {
+    const _classification: FormTreeInterface = {
 
       code: code,
       name: name,
       key: uuidv4(),
       tag: tag,
       labelclass: labelClass,
-      type:"",
-      typeId:"",
-      description:""
 
     };
 
-    FacilityStructureService.create(_classification)
+    FormTreeService.create(_classification)
       .then((res) => {
         toast.current.show({
           severity: "success",
@@ -125,8 +119,6 @@ const FacilityStructure = () => {
     setAddDia(false);
     setName("");
     setCode("");
-    setLabelClass("");
-    setTag([]);
   };
 
   const onPage = (event: any) => {
@@ -139,7 +131,7 @@ const FacilityStructure = () => {
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-      <h5 className="m-0">Manage Facility Structure</h5>
+      <h5 className="m-0">Manage Classifications</h5>
       <span className="block mt-2 md:mt-0">
         <InputText
           type="search"
@@ -256,7 +248,7 @@ const FacilityStructure = () => {
         header={header}
         selectionMode="single"
         onSelectionChange={(e) => {
-          navigate("/facilitystructure/" + e.value.identity.low);
+          navigate("/classifications/" + e.value.identity.low);
         }}
         responsiveLayout="scroll"
         onSort={onSort}
@@ -306,4 +298,4 @@ const FacilityStructure = () => {
   );
 };
 
-export default FacilityStructure;
+export default FormTree;

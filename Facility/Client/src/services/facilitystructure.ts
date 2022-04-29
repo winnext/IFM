@@ -25,9 +25,9 @@ interface StructureInterface {
     selectable?: boolean;
     parent_id?: string;
     type?: string;
+    typeId?: string;
     description?: string;
     isActive?: boolean;
-    isDeleted?: boolean;
 }
 
 

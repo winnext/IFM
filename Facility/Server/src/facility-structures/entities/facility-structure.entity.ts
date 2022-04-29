@@ -16,13 +16,14 @@ export class FacilityStructure {
   createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   isActive: boolean = true;  // not in create dto
-  isDeleted: boolean = false; // not in create dto
+  isDeleted: boolean = false; // not in dtos
   class_name: string = FacilityStructure.name; // not in dtos
 
   hasParent: Boolean = true;  // not in dtos
   labelclass: string;
   self_id: number;     // not in dtos
   selectable: boolean; // not in dtos
+  typeId:string;
 }
 function generateUuid() {
   return uuidv4()
