@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { kafkaOptions } from './common/configs/message.broker.options';
-import { HttpExceptionFilter, Topics, MongoExceptionFilter, LoggingInterceptor, TimeoutInterceptor } from 'ifmcommon';
+import { Topics, MongoExceptionFilter, LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter } from 'ifmcommon';
 import trial from './tracing';
 import { I18nService } from 'nestjs-i18n';
 import { kafkaConf } from './common/const/kafka.conf';
