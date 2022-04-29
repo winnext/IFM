@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Document } from 'mongoose';
-import { BasePersistantDocumentObject } from 'src/common/baseObject/base.object';
+import { BasePersistantDocumentObject } from 'ifmcommon';
 
 export type UserDocument = UserHistory & Document;
 
