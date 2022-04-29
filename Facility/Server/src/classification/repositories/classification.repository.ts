@@ -21,23 +21,30 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       //  WITH COLLECT(p) AS ps \
       //CALL apoc.convert.toTree(ps) yield value \
       //RETURN value",
-      'MATCH (n)-[:CHILDREN*]->(m) \
-      WHERE  id(n) = $idNum  and  NOT (m)-[:CHILDREN]->() \
-      WITH n, m \
-      ORDER BY n.code, m.code \
-      MATCH p=(n)-[:CHILDREN*]->(m) \
-      WHERE NOT ()-[:CHILDREN]->(n) \
+
+    //   'MATCH (n)-[:CHILDREN*]->(m) \
+    //   WHERE  id(n) = $idNum  and  NOT (m)-[:CHILDREN]->() \
+    //   WITH n, m \
+    //   ORDER BY n.code, m.code \
+    //   MATCH p=(n)-[:CHILDREN*]->(m) \
+    //   WHERE NOT ()-[:CHILDREN]->(n) \
+    //   WITH COLLECT(p) AS ps \
+    //   CALL apoc.convert.toTree(ps) yield value \
+    //   RETURN value',
+    //   { idNum },
+    // );
+      'MATCH p=(n)-[:CHILDREN*]->(m) \
+      WHERE  id(n) = $idNum and n.isDeleted=false and m.isDeleted=false \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
       { idNum },
     );
-
     var x = result['records'][0]['_fields'][0];
     if (!result) {
       throw new ClassificationNotFountException(id);
     } else if (Object.keys(x).length === 0) {
-      result = await this.neo4jService.read('MATCH (n) where id(n) = $idNum return n', { idNum });
+      result = await this.neo4jService.read('MATCH (n {isDeleted: false}) where id(n) = $idNum return n', { idNum });
       const o = { root: result['records'][0]['_fields'] };
       return o;
     } else {
@@ -56,7 +63,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     if (orderByColumn == 'undefined') {
       orderByColumn = 'name';
     }
-    const count = await this.neo4jService.read(`MATCH (c) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
+    const count = await this.neo4jService.read(`MATCH (c {isDeleted: false}) where c.hasParent = false and c.class_name=$class_name RETURN count(c)`,
     {class_name: data.class_name});
     const coun = count['records'][0]['_fields'][0].low;
     const pagecount = Math.ceil(coun / limit);
@@ -72,7 +79,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       }
     }
     let getNodeWithoutParent =
-      'MATCH (x) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x.' +
+      'MATCH (x {isDeleted: false}) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x.' +
       orderByColumn +
       ' ' +
       orderBy +
@@ -105,11 +112,10 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
 
     if (createClassificationDto.parent_id || createClassificationDto.parent_id == 0) { //if there is a parent of created node
       let makeNodeConnectParent = `(x: ${createClassificationDto.labelclass} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
-         labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt, selectable: $selectable, class_name: $className})`;
-      makeNodeConnectParent = ` match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + 
+        isActive :$isActive, isDeleted: $isDeleted,labelclass: $labelclass,createdAt: $createdAt , updatedAt: $updatedAt, selectable: $selectable, class_name: $className})`;
+      makeNodeConnectParent = ` match (y: ${createClassificationDto.labelclass} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + 
       makeNodeConnectParent;
       await this.neo4jService.write(makeNodeConnectParent, {
-        labelclass: createClassificationDto.labelclass,
         name: classification.name,
         code: classification.code,
         key: classification.key,
@@ -121,21 +127,23 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         parent_id: int(createClassificationDto.parent_id),
         selectable: classification.selectable,
         className: classification.class_name,
+        isActive: classification.isActive,
+        isDeleted: classification.isDeleted
       });
       await this.neo4jService.write(
-        `match (x: ${createClassificationDto.labelclass} {key: $key}) set x.self_id = id(x)`,
+        `match (x: ${createClassificationDto.labelclass} {isDeleted: false, key: $key}) set x.self_id = id(x)`,
         {
           key: classification.key,
         },
       );
-      const createChildOfRelation = `match (x: ${createClassificationDto.labelclass} {code: $code}) \
-         match (y: ${createClassificationDto.labelclass}) where id(y)= $parent_id \
+      const createChildOfRelation = `match (x: ${createClassificationDto.labelclass} {isDeleted: false, code: $code}) \
+         match (y: ${createClassificationDto.labelclass} {isDeleted: false}) where id(y)= $parent_id \
          create (x)-[:CHILD_OF]->(y)`;
       await this.neo4jService.write(createChildOfRelation, {
         code: classification.code,
         parent_id: int(createClassificationDto.parent_id),
       });
-      const makeUnSelectableToParent = `match (x: ${createClassificationDto.labelclass}) where id(x) = $parent_id set x.selectable = false`;
+      const makeUnSelectableToParent = `match (x: ${createClassificationDto.labelclass} {isDeleted: false}) where id(x) = $parent_id set x.selectable = false`;
       await this.neo4jService.write(makeUnSelectableToParent, { parent_id: int(createClassificationDto.parent_id) });
       return new Classification();
     } else {
@@ -150,11 +158,13 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       const updatedAt = classification.updatedAt;
       const labelclass = createClassificationDto.labelclass;
       const className = classification.class_name;
+      const isDeleted = classification.isDeleted;
+      const isActive = classification.isActive;
 
       const createNode = `CREATE (x:${createClassificationDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
-        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className })`;
+        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className,isActive :$isActive, isDeleted: $isDeleted, })`;
 
       await this.neo4jService.write(createNode, {
         name,
@@ -166,10 +176,12 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
         createdAt,
         updatedAt,
         labelclass,
-        className
+        className,
+        isActive,
+        isDeleted
       });
       await this.neo4jService.write(
-        `match (x:${createClassificationDto.labelclass}  {key: $key}) set x.self_id = id(x)`,
+        `match (x:${createClassificationDto.labelclass}  {isDeleted: false,  key: $key}) set x.self_id = id(x)`,
         {
           key: classification.key,
         },
@@ -179,17 +191,18 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   }
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {
     const checkNodeisExist = await this.findOneById(_id);
-    const { name, code, tag } = updateClassificationto;
+    const { name, code, tag, isActive } = updateClassificationto;
 
     if (checkNodeisExist.hasOwnProperty('root')) {
       const updatedNode = await this.neo4jService.write(
-        'MATCH (c) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label',
+        'MATCH (c {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label, c.isActive = $isActive',
         {
           name: name,
           code: code,
           tag: tag,
           label: code + ' . ' + name,
           id: int(_id),
+          isActive: isActive
         },
       );
       console.log('Node updated ................... ');
@@ -201,31 +214,29 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   }
   async delete(_id: string) {
     try {
-      let res = await this.neo4jService.read('MATCH (c)  -[r:CHILDREN]->(p) where id(c)= $id return count(p)', {
+      let res = await this.neo4jService.read('MATCH (c {isDeleted: false})  -[r:CHILDREN]->(p) where id(c)= $id return count(p)', {
         id: parseInt(_id),
       });
       if (parseInt(JSON.stringify(res.records[0]['_fields'][0]['low'])) > 0) {
-        res = await this.neo4jService.read('MATCH (c) where id(c)= $id return c', {
+        res = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
           id: parseInt(_id),
         });
 
         nodeHasChildException(res['records'][0]['_fields'][0]['properties'].name);
-        //console.log('Can not delete a node include children ....................');
-        //return new Classification();
       } else {
         const parent = await this.neo4jService.read(
-          'MATCH (c) where id(c)= $id match(k) match (c)-[:CHILD_OF]-(k) return k',
+          'MATCH (c {isDeleted: false}) where id(c)= $id match(k {isDeleted: false}) match (c)-[:CHILD_OF]-(k) return k',
           { id: parseInt(_id) },
         );
 
-        res = await this.neo4jService.write('MATCH (c) where id(c)= $id detach delete c', { id: parseInt(_id) });
+        res = await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $id set c.isDeleted=true', { id: parseInt(_id) });
         if (parent['records'][0]) {
           res = await this.neo4jService.read(
-            'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
+            'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (d {isDeleted: false}) MATCH (c)-[:CHILDREN]->(d) return count(d)',
             { id: parent['records'][0]['_fields'][0]['properties'].self_id },
           );
           if (res['records'][0]['_fields'][0].low == 0) {
-            this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+            this.neo4jService.write(`match (n {isDeleted: false}) where id(n) = $id set n.selectable = true`, {
               id: parent['records'][0]['_fields'][0]['properties'].self_id,
             });
           }
@@ -242,29 +253,29 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     await this.addRelations(_id, _target_parent_id);
   }
   async deleteRelations(_id: string) {
-    const res = await this.neo4jService.read('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id return p', {
+    const res = await this.neo4jService.read('MATCH (c {isDeleted: false})-[r:CHILD_OF]->(p {isDeleted: false}) where id(c)= $id return p', {
       id: parseInt(_id),
     });
 
     if (res.records[0]) {
-      await this.neo4jService.write('MATCH (c)<-[r:CHILDREN]-(p) where id(c)= $id delete r', {
+      await this.neo4jService.write('MATCH (c {isDeleted: false})<-[r:CHILDREN]-(p {isDeleted: false}) where id(c)= $id delete r', {
         id: parseInt(_id),
       });
 
-      await this.neo4jService.write('MATCH (c)-[r:CHILD_OF]->(p) where id(c)= $id delete r', {
+      await this.neo4jService.write('MATCH (c {isDeleted: false})-[r:CHILD_OF]->(p {isDeleted: false}) where id(c)= $id delete r', {
         id: parseInt(_id),
       });
 
-      await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent=false', {
+      await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $id set c.hasParent=false', {
         id: parseInt(_id),
       });
 
       const parentChildCount = await this.neo4jService.read(
-        'MATCH (c) where id(c)= $id MATCH (d) MATCH (c)-[:CHILDREN]->(d) return count(d)',
+        'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (d {isDeleted: false}) MATCH (c)-[:CHILDREN]->(d) return count(d)',
         { id: res['records'][0]['_fields'][0]['properties'].self_id.low },
       );
       if (parentChildCount['records'][0]['_fields'][0].low == 0) {
-        this.neo4jService.write(`match (n) where id(n) = $id set n.selectable = true`, {
+        this.neo4jService.write(`match (n {isDeleted: false}) where id(n) = $id set n.selectable = true`, {
           id: res['records'][0]['_fields'][0]['properties'].self_id.low,
         });
       }
@@ -272,25 +283,25 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
   }
   async addRelations(_id: string, _target_parent_id: string) {
     await this.neo4jService.write(
-      'MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (p)-[:CHILDREN]-> (c)',
+      'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  create (p)-[:CHILDREN]-> (c)',
       { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) },
     );
     await this.neo4jService.write(
-      'MATCH (c) where id(c)= $id MATCH (p) where id(p)= $target_parent_id  create (c)-[:CHILD_OF]-> (p)',
+      'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  create (c)-[:CHILD_OF]-> (p)',
       { id: parseInt(_id), target_parent_id: parseInt(_target_parent_id) },
     );
 
-    await this.neo4jService.write('MATCH (c) where id(c)= $id set c.hasParent = true', {
+    await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $id set c.hasParent = true', {
       id: parseInt(_id),
     });
-    await this.neo4jService.write('MATCH (c) where id(c)= $target_parent_id set c.selectable = false', {
+    await this.neo4jService.write('MATCH (c {isDeleted: false}) where id(c)= $target_parent_id set c.selectable = false', {
       target_parent_id: parseInt(_target_parent_id),
     });
   }
 
   async findOneNodeByKey(key: string) {
     try {
-      const result = await this.neo4jService.read('match (n {key:$key})  return n', { key: key });
+      const result = await this.neo4jService.read('match (n {isDeleted: false, key:$key})  return n', { key: key });
 
       if (!result) {
         throw new ClassificationNotFountException(key);

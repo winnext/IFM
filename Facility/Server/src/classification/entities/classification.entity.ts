@@ -15,6 +15,10 @@ export class Classification {
   self_id: number;
   selectable: boolean;
   class_name: string = Classification.name; // not in dtos
+
+  isActive: boolean = true;  // not in create dto
+  isDeleted: boolean = false; // not in dtos
+
 }
 
 function generateUuid() {
