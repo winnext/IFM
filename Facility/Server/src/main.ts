@@ -37,10 +37,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(
-      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
-      new ValidationPipe({
-        exceptionFactory: i18nValidationErrorFactory,
-      }),
+      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, exceptionFactory: i18nValidationErrorFactory }),
     );
     app.useGlobalFilters(
       new MongoExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),

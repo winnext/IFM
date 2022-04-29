@@ -53,7 +53,7 @@
     "kafkajs": "^1.16.0",
     "mongoose": "^6.2.1",
     "nest-keycloak-connect": "^1.8.2",
-    "nestjs-i18n": "^8.2.2",
+    "nestjs-i18n": "^9.0.10",
     "nestjs-otel": "^3.0.0",
     "nestjs-pino": "^2.4.0",
     "npm": "^8.7.0",

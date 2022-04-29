@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { i18nValidationMessage } from 'nestjs-i18n';
 import { Languages } from 'src/common/const/language.enum';
 
 /**
@@ -37,8 +38,8 @@ export class CreateUserDto {
    * UserId from keycloack
    */
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: i18nValidationMessage('greet.NOT_EMPTY') })
+  @IsString({ message: i18nValidationMessage('greet.IS_STRING') })
   @Length(1, 50)
   userId: string;
 

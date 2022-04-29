@@ -4,10 +4,11 @@ import { Type } from 'class-transformer';
 import { Adress } from '../entities/facility.address';
 
 import { ClassificationDetail } from '../entities/classification.detail';
+import { i18nValidationMessage } from 'nestjs-i18n';
 export class CreateFacilityDto {
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: i18nValidationMessage('greet.NOT_EMPTY') })
+  @IsString({ message: i18nValidationMessage('greet.IS_STRING') })
   @Length(1, 50)
   facility_name: string;
 

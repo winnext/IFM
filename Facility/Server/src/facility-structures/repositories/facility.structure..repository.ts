@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {FacilityStructureNotFountException} from '../../common/notFoundExceptions/not.found.exception';
+import { FacilityStructureNotFountException } from '../../common/notFoundExceptions/not.found.exception';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { checkObjectIddİsValid } from 'ifmcommon';
 
@@ -235,8 +235,8 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
           description: description,
           isActive: isActive,
           id: int(_id),
-          typeId : typeId,
-          type : type
+          typeId: typeId,
+          type: type,
         },
       );
       console.log('Node updated ................... ');
