@@ -65,6 +65,7 @@ const FormBuilder = () => {
     })
       .then((response) => {
         setFormLists(response.data[0]);
+        console.log(response);
         setCountForms(response.data.length);
         setLoading(false);
       })
