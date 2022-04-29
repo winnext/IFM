@@ -26,7 +26,7 @@ const provider = new BasicTracerProvider({
   resource: new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: 'winform_service' }),
 });
 provider.register();
-provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter({host:process.env.JAEGER_HOST,port:Number(process.env.JAEGER_PORT)})));
+provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter({host:process.env.JAEGER_HOST})));
 trace.setGlobalTracerProvider(provider);
 
 /**
@@ -46,7 +46,7 @@ const tracer = trace.getTracer(name, version);
  */
 const trial = new NodeSDK({
   metricExporter: new PrometheusExporter({
-    port: 8090,
+    port: 8091,
   }),
   metricInterval: 6000,
   spanProcessor: tracer, //new BatchSpanProcessor(new JaegerExporter()),

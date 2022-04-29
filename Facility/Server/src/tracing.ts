@@ -25,7 +25,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
  
  const provider = new BasicTracerProvider({resource:new Resource({[SemanticResourceAttributes.SERVICE_NAME]:"facility_service"})});
  provider.register()
- provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter({host:process.env.JAEGER_HOST,port:Number(process.env.JAEGER_PORT)})));
+ provider.addSpanProcessor(new BatchSpanProcessor(new JaegerExporter({host:process.env.JAEGER_HOST})));
  trace.setGlobalTracerProvider(provider);
  
  const name = 'facility_service';
