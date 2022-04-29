@@ -3517,7 +3517,7 @@
     "parse5-htmlparser2-tree-adapter" "^6.0.1"
     "tslib" "^2.2.0"
 
-"chokidar@^3.5.1", "chokidar@^3.5.2", "chokidar@^3.5.3", "chokidar@3.5.3":
+"chokidar@^3.5.2", "chokidar@^3.5.3", "chokidar@3.5.3":
   "integrity" "sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw=="
   "resolved" "https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz"
   "version" "3.5.3"
@@ -6931,16 +6931,6 @@
     "@nestjs/core" "^7.4.2"
     "neo4j-driver" "^4.4.1"
     "reflect-metadata" "^0.1.13"
-
-"nestjs-i18n@^8.2.2":
-  "integrity" "sha512-xjmr9wFnDDJqEOPRjLxDCpKpHHvFY+pLk4UQch2lj9VqXXA507u250C5eYVNLQM6T3sbuj6i2cKH+JqGB3AvNQ=="
-  "resolved" "https://registry.npmjs.org/nestjs-i18n/-/nestjs-i18n-8.2.2.tgz"
-  "version" "8.2.2"
-  dependencies:
-    "accept-language-parser" "^1.5.0"
-    "chokidar" "^3.5.1"
-    "cookie" "^0.4.1"
-    "string-format" "^2.0.0"
 
 "nestjs-i18n@^9.0.10":
   "integrity" "sha512-Niqk166yvTsWtRV4Ku/tgCXi7lXkMKgK6aQJjEa6ihAjCWBAeXOqq0H73UYArMCiNH/EIXMSKSdWyRz6oxlgGw=="

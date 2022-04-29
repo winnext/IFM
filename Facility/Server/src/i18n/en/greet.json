@@ -13,5 +13,6 @@
       "GOODBYE": "Goodbye {0.username}"
     },
     "ARRAY": ["ONE", "TWO", "THREE"],
-    "NODE_HAS_CHILD": "{name} node has children thats why not deleted."
+    "NODE_HAS_CHILD": "{name} node has children thats why not deleted.",
+    "NOT_EMPTY": "{property} cannot be empty"
   }

@@ -12,5 +12,6 @@
       "GOODBYE": "Goodbye {0.username}"
     },
     "ARRAY": ["ONE", "TWO", "THREE"],
-    "NODE_HAS_CHILD": "{name} isimli düğüm, alt düğümlere sahip olduğundan siliinemedi."
+    "NODE_HAS_CHILD": "{name} isimli düğüm, alt düğümlere sahip olduğundan siliinemedi.",
+    "NOT_EMPTY": "{property} boş bırakılamaz"
   }

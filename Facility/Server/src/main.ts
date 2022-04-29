@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { kafkaOptions } from './common/configs/message.broker.options';
 import { Topics, MongoExceptionFilter, LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter } from 'ifmcommon';
 import trial from './tracing';
-import { I18nService } from 'nestjs-i18n';
+import { I18nService, i18nValidationErrorFactory, I18nValidationExceptionFilter } from 'nestjs-i18n';
 import { kafkaConf } from './common/const/kafka.conf';
 
 async function bootstrap() {
@@ -36,10 +36,16 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+      new ValidationPipe({
+        exceptionFactory: i18nValidationErrorFactory,
+      }),
+    );
     app.useGlobalFilters(
       new MongoExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
       new HttpExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new I18nValidationExceptionFilter(),
     );
     app.useGlobalInterceptors(
       new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),

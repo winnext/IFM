@@ -57,7 +57,7 @@
     "mongoose": "^6.2.1",
     "nest-keycloak-connect": "^1.8.1",
     "nest-neo4j": "^0.1.5",
-    "nestjs-i18n": "^8.2.2",
+    "nestjs-i18n": "^9.0.10",
     "nestjs-otel": "^3.0.0",
     "nestjs-pino": "^2.4.0",
     "opentelemetry-instrumentation-kafkajs": "^0.27.0",
