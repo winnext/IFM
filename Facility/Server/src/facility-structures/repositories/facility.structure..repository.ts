@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  FacilityNotFountException,
-  FacilityStructureNotFountException,
-} from '../../common/notFoundExceptions/not.found.exception';
+import {FacilityStructureNotFountException} from '../../common/notFoundExceptions/not.found.exception';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
 import { checkObjectIddİsValid } from 'ifmcommon';
 
@@ -224,12 +221,12 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   }
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
     const checkNodeisExist = await this.findOneById(_id);
-    const { name, code, tag, description, isActive } = updateFacilityStructureDto;
+    const { name, code, tag, description, isActive, typeId, type } = updateFacilityStructureDto;
 
     if (checkNodeisExist.hasOwnProperty('root')) {
       const updatedNode = await this.neo4jService.write(
         'MATCH (c {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label, c.description = $description, ' +
-          'c.isActive = $isActive',
+          'c.isActive = $isActive, c.typeId = $typeId, c.type = $type',
         {
           name: name,
           code: code,
@@ -238,6 +235,8 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
           description: description,
           isActive: isActive,
           id: int(_id),
+          typeId : typeId,
+          type : type
         },
       );
       console.log('Node updated ................... ');
