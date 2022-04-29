@@ -62,7 +62,7 @@ interface Type {
 }
 
 const SetClassification = () => {
-  const [selectedNodeKey, setSelectedNodeKey] = useState("");
+  const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
   const [structure, setStructure] = useState<StructureInterface>({
     root: [
@@ -130,6 +130,7 @@ const SetClassification = () => {
       label: "Edit Item",
       icon: "pi pi-pencil",
       command: () => {
+
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
             setName(res.data.properties.name || "");
@@ -161,6 +162,8 @@ const SetClassification = () => {
   const getClassification = () => {
     const id = params.id || "";
     FacilityStructureService.findOne(id).then((res) => {
+      console.log(res.data);
+
       setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
@@ -614,14 +617,20 @@ const SetClassification = () => {
                 <Button
                   icon="pi pi-plus"
                   className="p-button-rounded p-button-success mr-2"
-                  onClick={() => setAddDia(true)
+                  onClick={() => {
+                    setSelectedNodeKey(data.key);
+                    setAddDia(true)
+                  }
                   }
                 />
                 <Button
                   icon="pi pi-pencil"
                   className="p-button-rounded p-button-secondary mr-2"
                   onClick={() => {
-                    FacilityStructureService.nodeInfo(selectedNodeKey)
+                    setSelectedNodeKey(data.key);
+                    let dataKey: any = data.key
+
+                    FacilityStructureService.nodeInfo(dataKey)
                       .then((res) => {
                         setName(res.data.properties.name || "");
                         setCode(res.data.properties.code || "");
@@ -644,11 +653,15 @@ const SetClassification = () => {
                 <Button
                   icon="pi pi-trash"
                   className="p-button-rounded p-button-danger mt-2"
-                  onClick={() => setDelDia(true)}
+                  onClick={() => {
+                    setSelectedNodeKey(data.key);
+                    setDelDia(true)
+                  }}
                 />
                 <Button onClick={(e) => navigate("/form", {
                   state: {
                     data: data,
+                    rootId: structure.root[0]._id.low,
                   }
                 })} className="p-button-rounded ml-3">Edit Form</Button>
               </span>

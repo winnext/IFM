@@ -149,11 +149,11 @@ const Dynamic = () => {
     console.log(nodeId);
     let lastData = { ...data, ...nodeId };
     console.log(lastData);
-    history("/facilitystructure");
+    history(`/facilitystructure/${params.state.rootId}`);
   };
 
   const backPage = () => {
-    history(`/facilitystructure/${params.state.data.self_id.low}`);
+    history(`/facilitystructure/${params.state.rootId}`);
   };
 
   return (
