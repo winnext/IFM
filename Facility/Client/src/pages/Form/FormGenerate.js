@@ -152,6 +152,10 @@ const Dynamic = () => {
     history("/facilitystructure");
   };
 
+  const backPage = () => {
+    history(`/facilitystructure/${params.state.data.self_id.low}`);
+  };
+
   return (
     <div>
       {selectedForm && (
@@ -181,7 +185,10 @@ const Dynamic = () => {
                 </section>
               );
             })}
-          <div>{selectedForm && <Button type="submit">Submit</Button>}</div>
+          <div>{selectedForm && <>
+            <Button className="ml-3" type="submit">Submit</Button>
+            <Button className="ml-4" onClick={()=>backPage()}>Back</Button>
+          </>}</div>
         </form>
       )}
     </div>

@@ -85,7 +85,7 @@ const SetClassification = () => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [type, setType] = useState("");
-  const [typeId, setTypeId]=useState("");
+  const [typeId, setTypeId] = useState("");
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
@@ -202,9 +202,9 @@ const SetClassification = () => {
           tag: tag,
           labelclass: node.labelclass,
           type: type,
-          typeId:typeId,
+          typeId: typeId,
           description: "description"
-          
+
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
@@ -248,6 +248,8 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
+          type: type,
+          typeId: typeId,
           isActive: isActive,
           description: "description"
         };
@@ -518,7 +520,7 @@ const SetClassification = () => {
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width:"50%"}} />
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "50%" }} />
         </div>
       </Dialog>
       <Dialog
@@ -564,6 +566,7 @@ const SetClassification = () => {
               reset();
               setSelectedForm(e.value);
               setType(e.value.name);
+              setTypeId(e.value._id);
             }}
             placeholder="Select Type"
             style={{ width: '50%' }}
@@ -571,7 +574,7 @@ const SetClassification = () => {
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }}/>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
         </div>
         <div className="field flex">
           <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
@@ -605,11 +608,53 @@ const SetClassification = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data, options) => <span>{data.label} {<button onClick={(e) => navigate("/form", {
-            state: {
-              data: data,
-            }
-          })} className="ml-3">Edit Form</button>} </span>}
+          nodeTemplate={(data, options) => <span className="flex align-items-center font-bold">{data.label} {
+            <>
+              <span className="ml-4 ">
+                <Button
+                  icon="pi pi-plus"
+                  className="p-button-rounded p-button-success mr-2"
+                  onClick={() => setAddDia(true)
+                  }
+                />
+                <Button
+                  icon="pi pi-pencil"
+                  className="p-button-rounded p-button-secondary mr-2"
+                  onClick={() => {
+                    FacilityStructureService.nodeInfo(selectedNodeKey)
+                      .then((res) => {
+                        setName(res.data.properties.name || "");
+                        setCode(res.data.properties.code || "");
+                        setTag(res.data.properties.tag || []);
+                        setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+                        setIsActive(res.data.properties.isActive);
+                      })
+                      .catch((err) => {
+                        toast.current.show({
+                          severity: "error",
+                          summary: "Error",
+                          detail: err.response ? err.response.data.message : err.message,
+                          life: 2000,
+                        });
+                      });
+                    setEditDia(true);
+                  }
+                  }
+                />
+                <Button
+                  icon="pi pi-trash"
+                  className="p-button-rounded p-button-danger mt-2"
+                  onClick={() => setDelDia(true)}
+                />
+                <Button onClick={(e) => navigate("/form", {
+                  state: {
+                    data: data,
+                  }
+                })} className="p-button-rounded ml-3">Edit Form</Button>
+              </span>
+            </>
+          }
+          </span>}
         />
       </div>
       <div className="field">
