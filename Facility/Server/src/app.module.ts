@@ -70,7 +70,7 @@ import { HttpCacheInterceptor } from 'ifmcommon';
     }),
     Neo4jModule.forRoot({
       scheme: 'neo4j',
-      host: '172.19.99.120',
+      host: '172.30.99.120',
       port: 7687,
       username: 'neo4j',
       password: 'password',
