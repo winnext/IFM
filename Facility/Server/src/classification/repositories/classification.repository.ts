@@ -116,6 +116,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       makeNodeConnectParent = ` match (y: ${createClassificationDto.labelclass} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` + 
       makeNodeConnectParent;
       await this.neo4jService.write(makeNodeConnectParent, {
+        labelclass: createClassificationDto.labelclass,
         name: classification.name,
         code: classification.code,
         key: classification.key,
@@ -164,7 +165,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       const createNode = `CREATE (x:${createClassificationDto.labelclass} {name: \
         $name, code:$code,key:$key, hasParent: $hasParent \
         ,tag: $tag , label: $label, labelclass:$labelclass \
-        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className,isActive :$isActive, isDeleted: $isDeleted, })`;
+        , createdAt: $createdAt, updatedAt: $updatedAt,class_name: $className,isActive :$isActive, isDeleted: $isDeleted })`;
 
       await this.neo4jService.write(createNode, {
         name,
