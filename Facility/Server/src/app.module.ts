@@ -9,7 +9,7 @@ import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
 import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
-import { HistoryModule } from './history/history.module';
+import { HistoryModule } from './kiramenKatibin/history.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
