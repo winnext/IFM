@@ -4,7 +4,7 @@ import { Unprotected } from 'nest-keycloak-connect';
 import { PathEnums } from 'src/common/const/path.enum';
 
 import { UserTopics } from 'src/common/const/kafta.topic.enum';
-import { UserHistoryService } from 'src/history/user.history.service';
+import { UserHistoryService } from 'src/kiramenKatibin/user.history.service';
 
 /**
  * message broker controller
