@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { HistoryModule } from 'src/history/history.module';
+import { HistoryModule } from 'src/kiramenKatibin/history.module';
 import { MessagebrokerController } from './messagebroker.controller';
 
 @Module({

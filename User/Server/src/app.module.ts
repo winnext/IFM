@@ -11,7 +11,7 @@ import { HttpCacheInterceptor } from 'ifmcommon';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 import { UsersModule } from './users/users.module';
-import { HistoryModule } from './history/history.module';
+import { HistoryModule } from './kiramenKatibin/history.module';
 import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloack/keycloak.module';
 
