@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Length } from 'class-validator';
 import { IsNotEmptyWithI18nMessage, IsStringWithI18nMessage, LengthWithI18nMessage } from 'ifmcommon/dist';
-import { i18nValidationMessage } from 'nestjs-i18n';
+import { i18nValidationMessageEnum } from 'ifmcommon';
 import { Languages } from 'src/common/const/language.enum';
 
 /**
@@ -37,12 +37,13 @@ export class CreateUserDto {
 
   /**
    * UserId from keycloack
+   *
    * greet.NOT_EMPTY
    */
   @ApiProperty()
-  @IsNotEmptyWithI18nMessage('greet.NOT_EMPTY')
-  @IsStringWithI18nMessage('greet.IS_STRING')
-  @LengthWithI18nMessage('greet.LENGTH', 1, 50)
+  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
+  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
+  @LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
   userId: string;
 
   /**
