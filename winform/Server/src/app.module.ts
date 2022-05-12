@@ -14,8 +14,9 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
 // import { HistoryModule } from './history/history.module';
 import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloack/keycloak.module';
-import { WinformModule } from './winform/winform.module';
 import { TestModule } from './test/test.module';
+import { Neo4jModule ,} from 'nest-neo4j/dist';
+import { TypeModule } from './winform/type.module';
 
 @Module({
   imports: [
@@ -46,6 +47,17 @@ import { TestModule } from './test/test.module';
       inject: [ConfigService],
     }),
 
+    Neo4jModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        host: configService.get('NEO4J_HOST'),
+        password: configService.get('NEO4J_PASSWORD'),
+        port: configService.get('NEO4J_PORT'),
+        scheme: configService.get('NEO4J_SCHEME'),
+        username: configService.get('NEO4J_USERNAME'),
+      }),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
@@ -55,7 +67,7 @@ import { TestModule } from './test/test.module';
     }),
     //MessagebrokerModule,
     //HistoryModule,
-    WinformModule,
+    TypeModule,
     TestModule,
   ],
   providers: [
