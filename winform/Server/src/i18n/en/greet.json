@@ -12,5 +12,6 @@
       "WELCOME": "Welcome {0.username}",
       "GOODBYE": "Goodbye {0.username}"
     },
-    "ARRAY": ["ONE", "TWO", "THREE"]
+    "ARRAY": ["ONE", "TWO", "THREE"],
+    "TYPE_NOT_FOUND": "No #{label} tagged nodes found."
   }
