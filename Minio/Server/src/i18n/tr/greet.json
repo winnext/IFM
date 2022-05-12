@@ -1,0 +1,19 @@
+{
+  "HELLO_MESSAGE": "Merhaba {username}",
+  "USER_NOT_FOUND": "#{id} no lu kullanıcı bulunamadı",
+  "FACILITY_STRUCTURE_NOT_FOUND": "#{id} no lu bina bulunamadı",
+  "CLASSIFICATION_NOT_FOUND": " id #{id} no lu sınıflandırma bulunamadı ",
+  "USER_NOT_HAVE_PERMISSION": "kullanıcı '{username}' bu işlem için izniniz yoktur.Yöneticinizle irtibata geçiniz ",
+  "OBJECTID_NOT_VALID": "girdiğiniz ıd #{id} geçerli değil",
+  "DUBLICATE_ERROR": "girilen değerler  #{errorProperties} sistemde zaten mevcut",
+  "GOODBYE_MESSAGE": "İyi günler {username}",
+  "USER_ADDED_PRODUCT": "{0.username} added {1.productName} to cart",
+  "SETUP": {
+    "WELCOME": "Welcome {0.username}",
+    "GOODBYE": "Goodbye {0.username}"
+  },
+  "ARRAY": ["ONE", "TWO", "THREE"],
+  "NOT_EMPTY": "{property} boş bırakılamaz",
+  "IS_STRING": "{property} string bir değer olmalı",
+  "LENGTH": "{property}  en az  {constraints.0} en fazla  {constraints.1} karakterli olmalıdır"
+}

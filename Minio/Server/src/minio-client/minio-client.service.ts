@@ -1,7 +1,5 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
-import { Stream } from 'stream';
-import { config } from './config';
 import { BufferedFile } from './file.model';
 import * as crypto from 'crypto';
 
@@ -34,20 +32,16 @@ export class MinioClientService {
     const temp_filename = Date.now().toString();
     const hashedFileName = crypto.createHash('md5').update(temp_filename).digest('hex');
     const ext = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
-    const metaData = {
-      'Content-Type': file.mimetype,
-      'X-Amz-Meta-Testing': 1234,
-    };
     const filename = hashedFileName + ext;
     const fileName = `${filename}`;
     const fileBuffer = file.buffer;
-    const x = await this.client.putObject(baseBucket, fileName, fileBuffer, function (err, res) {
+    await this.client.putObject(baseBucket, fileName, fileBuffer, function (err, res) {
       if (err) throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
       console.log(res);
     });
 
     return {
-      url: `${config.MINIO_ENDPOINT}:9001/${config.MINIO_BUCKET}/${filename}`,
+      url: `${process.env.MINIO_ENDPOINT}:9001/${process.env.MINIO_BUCKET}/${filename}`,
     };
   }
 }
