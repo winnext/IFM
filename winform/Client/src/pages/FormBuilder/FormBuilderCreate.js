@@ -1,19 +1,34 @@
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { v4 as uuid } from "uuid";
-import { DragDropContext } from "react-beautiful-dnd";
-import React, { useState } from "react";
-import FormBuilderService from "../../services/formBuilder";
-import { useNavigate } from "react-router-dom";
-import Toolbox from "./ToolBox";
-import DropZone from "./DropZone";
-import { Card } from "primereact/card";
-import ITEMS from "./Items";
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { v4 as uuid } from 'uuid';
+import { DragDropContext } from 'react-beautiful-dnd';
+import React, { useState, useEffect } from 'react';
+import FormBuilderService from '../../services/formBuilder';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Toolbox from './ToolBox';
+import DropZone from './DropZone';
+import { Card } from 'primereact/card';
+import ITEMS from './Items';
 
 function FormBuilderCreate() {
   const [items, setItems] = useState([]);
-  const [formName, setFormName] = useState("");
+  const [formName, setFormName] = useState('');
+  const [data, setData] = useState('');
   const navigate = useNavigate();
+
+  const params = useLocation();
+  console.log(params);
+
+  useEffect(() => {
+    if (params.state) {
+      localStorage.setItem(
+        'data',
+        JSON.stringify(params.state.data.properties),
+      );
+      setData(JSON.parse(localStorage.getItem('data')));
+    }
+    setFormName(JSON.parse(localStorage.getItem('data')).name);
+  }, []);
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -28,7 +43,7 @@ function FormBuilderCreate() {
     destination,
     droppableSource,
     droppableDestination,
-    isBase
+    isBase,
   ) => {
     const sourceClone = Array.from(source);
     const destClone = Array.from(destination);
@@ -37,13 +52,13 @@ function FormBuilderCreate() {
     if (isBase) {
       destClone.splice(droppableDestination.index, 0, {
         type: item.type,
-        label: "",
-        defaultValue: "",
+        label: '',
+        defaultValue: '',
         rules: { required: false },
         id: uuid(),
       });
     } else {
-      console.log("Droppable dest ", droppableDestination);
+      console.log('Droppable dest ', droppableDestination);
     }
     return destClone;
   };
@@ -58,10 +73,10 @@ function FormBuilderCreate() {
     switch (source.droppableId) {
       case destination.droppableId:
         setItems((prevValue) =>
-          reorder(prevValue, source.index, destination.index)
+          reorder(prevValue, source.index, destination.index),
         );
         break;
-      case "Toolbox":
+      case 'Toolbox':
         setItems(copy(ITEMS, items, source, destination, true));
         break;
       default:
@@ -77,11 +92,11 @@ function FormBuilderCreate() {
         </div>
         <div className="col-8">
           <div className="field">
-            <label className="block">Form Name</label>
-            <InputText
-              style={{ width: "50%" }}
+            <label className="block">Form Name : {formName} </label>
+            {/* <InputText
+              style={{ width: '50%' }}
               onChange={(e) => setFormName(e.target.value)}
-            />
+            /> */}
           </div>
           <Card>
             <DropZone droppableId="form" items={items} setItems={setItems} />
@@ -96,7 +111,7 @@ function FormBuilderCreate() {
               };
               console.log(data);
               FormBuilderService.create(data).then((res) => {
-                navigate("/formbuilder");
+                navigate('/formbuilder');
               });
             }}
           >

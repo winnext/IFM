@@ -126,13 +126,18 @@ const Dynamic = () => {
 
   const getForms = () => {
     // const id = params.id || "";
-    FormBuilderService.findOne(params.state.data.typeId).then((res) => {
+    FormBuilderService.findOne(localStorage.getItem("nodeId")).then((res) => {
       setSelectedForm(res.data);
     });
   };
 
   useEffect(() => {
+    
+    if(params.state){
+      localStorage.setItem("nodeId", params.state.data.typeId);
+    }
     getForms();
+    
   }, []);
 
   const {

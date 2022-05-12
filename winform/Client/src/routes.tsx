@@ -11,6 +11,7 @@ import FormBuilderCreate from "./pages/FormBuilder/FormBuilderCreate";
 import EditForm from "./pages/TestForm/EditForm";
 import TestForm from "./pages/TestForm/TestForm";
 import FormTree from "./pages/FormTree/FormTree";
+import SetFormTree from "./pages/FormTree/SetFormTree";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -29,6 +30,16 @@ export default function Router() {
       path: "/formbuilder",
       element: <AppLayout />,
       children: [{ path: "create", element: <FormBuilderCreate/> }],
+    },
+    {
+      path: "/formbuilder",
+      element: <AppLayout />,
+      children: [{ path: ":id", element: <FormBuilderCreate/> }],
+    },
+    {
+      path: "/formtree",
+      element: <AppLayout />,
+      children: [{ path: ":id", element: <SetFormTree /> }],
     },
     {
       path: "/test-form",
