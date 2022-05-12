@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from 'ifmcommon';
 import { I18nService } from 'nestjs-i18n';
 import { AppModule } from './app.module';
 import { kafkaOptions } from './common/configs/message.broker.options';
 import { kafkaConf } from './common/const/kafka.conf';
 import { MinioTopis } from './common/const/kafta.topic.enum';
-import { HttpExceptionFilter } from './common/exceptionFilters/exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logger.interceptor';
 
 async function bootstrap() {

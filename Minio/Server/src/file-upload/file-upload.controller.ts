@@ -1,10 +1,9 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, OnModuleInit } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
 import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { PostKafka, KafkaService } from 'ifmcommon/dist';
 import { kafkaConf } from 'src/common/const/kafka.conf';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('file-upload')
 export class FileUploadController {
@@ -22,7 +21,7 @@ export class FileUploadController {
   async uploadSingle(@UploadedFile() image: BufferedFile) {
     const x = await this.postKafka.producerSendMessage('test', 'test', 'user');
 
-    // return await this.fileUploadService.uploadSingle(image);
+    return await this.fileUploadService.uploadSingle(image);
   }
 
   @Post('many')
