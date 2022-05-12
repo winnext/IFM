@@ -3,7 +3,7 @@ import Keycloak from 'keycloak-js';
 // Setup Keycloak instance as needed
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
 const keycloak = Keycloak({
-  url: 'http://172.19.100.120:8080/auth',
+  url: 'http://172.30.99.121:8080/auth',
   realm: 'IFM',
   clientId: 'front',
 });

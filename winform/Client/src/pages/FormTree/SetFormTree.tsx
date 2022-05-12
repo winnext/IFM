@@ -9,11 +9,16 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Dropdown } from 'primereact/dropdown';
+import { Checkbox } from 'primereact/checkbox';
+import FormType from "../../components/Form/FormType";
+import { useForm, Controller } from "react-hook-form";
 
-import FormTreeService from "../../services/formtree";
+import FacilityStructureService from "../../services/formtree";
+import FormBuilderService from "../../services/formBuilder";
 
 
-interface FormTreeInterface {
+interface StructureInterface {
   root:
   {
     code: string;
@@ -39,6 +44,7 @@ interface Node {
   hasParent?: boolean;
   children: Node[];
   type?: string;
+  typeId?: string;
   parent_id?: string;
   selectable?: boolean;
   self_id: {
@@ -46,14 +52,19 @@ interface Node {
     high: string;
   },
   labelclass: string;
+  description: string;
 }
 
-
+interface Type {
+  _id: string;
+  name: string;
+  items: any[]
+}
 
 const SetFormTree = () => {
-  const [selectedNodeKey, setSelectedNodeKey] = useState("");
+  const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
-  const [classification, setClassification] = useState<FormTreeInterface>({
+  const [structure, setStructure] = useState<StructureInterface>({
     root: [
       {
         code: "",
@@ -73,7 +84,10 @@ const SetFormTree = () => {
   const [data, setData] = useState<Node[]>([]);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [typeId, setTypeId] = useState("");
   const [tag, setTag] = useState<string[]>([]);
+  const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
@@ -81,10 +95,32 @@ const SetFormTree = () => {
   const cm: any = React.useRef(null);
   const params = useParams()
   const navigate = useNavigate()
+  const [formData, setFormData] = useState<Type[]>([]);
+  const [selectedForm, setSelectedForm] = useState<any>(undefined);
+
+  const getForms = async () => {
+    await FormBuilderService.findAll().then((res) => {
+      setFormData(res.data[0]);
+    });
+  };
+
+  useEffect(() => {
+    getForms();
+  }, []);
+
+  const {
+    handleSubmit,
+    control,
+    // watch,
+    unregister,
+    reset,
+    formState: { errors },
+  } = useForm();
+
 
   const menu = [
     {
-      label: "Add Item",
+      label: "Add Child",
       icon: "pi pi-plus",
       command: () => {
         setAddDia(true);
@@ -94,11 +130,14 @@ const SetFormTree = () => {
       label: "Edit Item",
       icon: "pi pi-pencil",
       command: () => {
-        FormTreeService.nodeInfo(selectedNodeKey)
+
+        FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
+            setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+            setIsActive(res.data.properties.isActive);
           })
           .catch((err) => {
             toast.current.show({
@@ -112,6 +151,37 @@ const SetFormTree = () => {
       },
     },
     {
+      label: "Edit Form",
+      icon: "pi pi-pencil",
+      command: () => {
+        
+        console.log(data);
+        FacilityStructureService.nodeInfo(selectedNodeKey)
+          .then((res) => {
+            console.log(res.data);
+            navigate("/formbuilder/" + res.data.identity.low, {
+              state: {
+                data: res.data,
+                rootId: structure.root[0]._id.low,
+              }
+            })
+            
+          })
+          .catch((err) => {
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: err.response ? err.response.data.message : err.message,
+              life: 2000,
+            });
+          });
+
+          // navigate("/formbuilder/" + selectedNodeKey);
+          
+
+      },
+    },
+    {
       label: "Delete",
       icon: "pi pi-trash",
       command: () => {
@@ -122,10 +192,10 @@ const SetFormTree = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FormTreeService.findOne(id).then((res) => {
+    FacilityStructureService.findOne(id).then((res) => {
+      console.log(res.data);
 
-      setClassification(res.data);
-
+      setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
       }
@@ -141,7 +211,7 @@ const SetFormTree = () => {
         life: 2000,
       });
       setTimeout(() => {
-        navigate("/classifications")
+        navigate("/facilitystructure")
       }, 2000)
     })
   }
@@ -165,15 +235,19 @@ const SetFormTree = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
+          type: type,
+          typeId: typeId,
+          description: "description"
+
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
-        FormTreeService.create(newNode)
+        FacilityStructureService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Classification Created",
+              detail: "Structure  Created",
               life: 3000,
             });
             getClassification();
@@ -208,9 +282,13 @@ const SetFormTree = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
+          type: type,
+          typeId: typeId,
+          isActive: isActive,
+          description: "description"
         };
 
-        FormTreeService.update(node.self_id.low, updateNode)
+        FacilityStructureService.update(node.self_id.low, updateNode)
           .then((res) => {
             showSuccess("Saved!");
             getClassification();
@@ -242,15 +320,15 @@ const SetFormTree = () => {
 
       if (node.key === search) {
         if (node.hasParent === false) {
-          FormTreeService.remove(node.self_id.low)
+          FacilityStructureService.remove(node.self_id.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Classification Deleted",
+                detail: "Structure Deleted",
                 life: 2000,
               });
-              navigate("/classifications")
+              navigate("/facilitystructure");
             })
             .catch((err) => {
               toast.current.show({
@@ -262,12 +340,12 @@ const SetFormTree = () => {
             });
         }
         else {
-          FormTreeService.remove(node.self_id.low)
+          FacilityStructureService.remove(node.self_id.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Classification Deleted",
+                detail: "Structure Deleted",
                 life: 2000,
               });
               getClassification();
@@ -308,6 +386,7 @@ const SetFormTree = () => {
     setName("");
     setCode("");
     setTag([]);
+    setSelectedForm(undefined);
     setAddDia(false);
   };
 
@@ -318,6 +397,7 @@ const SetFormTree = () => {
     setName("");
     setCode("");
     setTag([]);
+    setSelectedForm(undefined);
     setEditDia(false);
   }
 
@@ -327,9 +407,9 @@ const SetFormTree = () => {
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {
-    FormTreeService.relation(dragId, dropId)
+    FacilityStructureService.relation(dragId, dropId)
       .then((res) => {
-        showSuccess("Updated");
+        showSuccess("Structure Updated");
         getClassification();
       })
       .catch((err) => {
@@ -371,6 +451,7 @@ const SetFormTree = () => {
             setAddDia(false);
             setName("");
             setCode("");
+            setSelectedForm(undefined);
             setTag([]);
           }}
           className="p-button-text"
@@ -396,6 +477,7 @@ const SetFormTree = () => {
             setName("");
             setCode("");
             setTag([]);
+            setSelectedForm(undefined);
           }}
           className="p-button-text"
         />
@@ -430,6 +512,7 @@ const SetFormTree = () => {
           setName("");
           setCode("");
           setTag([]);
+          setSelectedForm(undefined);
           setAddDia(false);
         }}
       >
@@ -438,6 +521,7 @@ const SetFormTree = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -445,12 +529,33 @@ const SetFormTree = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} />
+        {/* <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <Dropdown
+            optionLabel="name"
+            value={selectedForm}
+            options={formData}
+            onChange={(e) => {
+              const temp = selectedForm ? selectedForm.items : [];
+              for (let item of temp) {
+                unregister(item.label);
+              }
+              reset();
+              setSelectedForm(e.value);
+              setType(e.value.name);
+              setTypeId(e.value._id);
+            }}
+            placeholder="Select Type"
+            style={{ width: '50%' }}
+          />
         </div>
+        <div className="field structureChips">
+          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "50%" }} />
+        </div> */}
       </Dialog>
       <Dialog
         header="Edit Item"
@@ -461,6 +566,7 @@ const SetFormTree = () => {
           setName("");
           setCode("");
           setTag([]);
+          setSelectedForm(undefined);
           setEditDia(false);
         }}
       >
@@ -469,6 +575,7 @@ const SetFormTree = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -476,15 +583,40 @@ const SetFormTree = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} />
+        {/* <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <Dropdown
+            optionLabel="name"
+            value={selectedForm}
+            options={formData}
+            onChange={(e) => {
+              const temp = selectedForm ? selectedForm.items : [];
+              for (let item of temp) {
+                unregister(item.label);
+              }
+              reset();
+              setSelectedForm(e.value);
+              setType(e.value.name);
+              setTypeId(e.value._id);
+            }}
+            placeholder="Select Type"
+            style={{ width: '50%' }}
+          />
         </div>
+        <div className="field structureChips">
+          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
+        </div>
+        <div className="field flex">
+          <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
+          <Checkbox className="ml-3" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
+        </div> */}
       </Dialog>
-      <h1>Edit Classification</h1>
-      <h3>Code : {classification.root[0].code} </h3>
+      <h1>Edit Facility Structure</h1>
+      {/* <h3>Code : {classification.root[0].code} </h3> */}
       <div className="field">
         <Tree
           loading={loading}
@@ -510,6 +642,58 @@ const SetFormTree = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
+        // nodeTemplate={(data, options) => <span className="flex align-items-center font-bold">{data.label} {
+        //   <>
+        //     {!data.children ? 
+        //     <span className="ml-4 ">
+        //     <Button
+        //       icon="pi pi-plus"
+        //       className="p-button-rounded p-button-success mr-2"
+        //       onClick={() => {
+        //         setSelectedNodeKey(data.key);
+        //         setAddDia(true)
+        //       }
+        //       }
+        //     />
+        //     <Button
+        //       icon="pi pi-pencil"
+        //       className="p-button-rounded p-button-secondary mr-2"
+        //       onClick={() => {
+        //         setSelectedNodeKey(data.key);
+        //         let dataKey: any = data.key
+
+        //         FacilityStructureService.nodeInfo(dataKey)
+        //           .then((res) => {
+        //             setName(res.data.properties.name || "");
+        //             setCode(res.data.properties.code || "");
+        //             setTag(res.data.properties.tag || []);
+        //             setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+        //             setIsActive(res.data.properties.isActive);
+        //           })
+        //           .catch((err) => {
+        //             toast.current.show({
+        //               severity: "error",
+        //               summary: "Error",
+        //               detail: err.response ? err.response.data.message : err.message,
+        //               life: 2000,
+        //             });
+        //           });
+        //         setEditDia(true);
+        //       }
+        //       }
+        //     />
+        //     <Button
+        //       icon="pi pi-trash"
+        //       className="p-button-rounded p-button-danger mt-2"
+        //       onClick={() => {
+        //         setSelectedNodeKey(data.key);
+        //         setDelDia(true)
+        //       }}
+        //     />
+        //   </span> : null}
+        //   </>
+        // }
+        // </span>}
         />
       </div>
       <div className="field">
