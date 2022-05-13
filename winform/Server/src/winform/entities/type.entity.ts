@@ -16,6 +16,7 @@ export class Type {
 
   hasParent: Boolean = true;  // not in dtos
   labelclass: string;
+  icon: string = "";  // not in dtos
 
   
   
