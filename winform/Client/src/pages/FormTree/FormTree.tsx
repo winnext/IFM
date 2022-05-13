@@ -7,7 +7,7 @@ import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState, useRef } from "react";
 // import { useAppDispatch, useAppSelector } from "../../app/hook";
 // import { save } from "../../features/tree/treeSlice";
-import FacilityStructureService from "../../services/formtree";
+import FacilityStructureService from "../../services/formTree";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { useNavigate } from "react-router-dom";
