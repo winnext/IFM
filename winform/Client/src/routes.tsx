@@ -23,7 +23,7 @@ export default function Router() {
         { path: "", element: <Dashboard /> },
         { path: "formbuilder", element: <FormBuilder /> },
         { path: "test-form", element: <TestForm /> },
-        { path: "formtree", element: <FormTree /> },
+        { path: "formtree", element: <SetFormTree /> },
       ],
     },
     {

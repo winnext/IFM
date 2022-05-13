@@ -14,7 +14,7 @@ import { Checkbox } from 'primereact/checkbox';
 import FormType from "../../components/Form/FormType";
 import { useForm, Controller } from "react-hook-form";
 
-import FacilityStructureService from "../../services/formtree";
+import FacilityTreeService from "../../services/formTree";
 import FormBuilderService from "../../services/formBuilder";
 
 
@@ -131,7 +131,7 @@ const SetFormTree = () => {
       icon: "pi pi-pencil",
       command: () => {
 
-        FacilityStructureService.nodeInfo(selectedNodeKey)
+        FacilityTreeService.nodeInfo(selectedNodeKey)
           .then((res) => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
@@ -156,7 +156,7 @@ const SetFormTree = () => {
       command: () => {
         
         console.log(data);
-        FacilityStructureService.nodeInfo(selectedNodeKey)
+        FacilityTreeService.nodeInfo(selectedNodeKey)
           .then((res) => {
             console.log(res.data);
             navigate("/formbuilder/" + res.data.identity.low, {
@@ -192,7 +192,7 @@ const SetFormTree = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FacilityStructureService.findOne(id).then((res) => {
+    FacilityTreeService.findOne('121').then((res) => {
       console.log(res.data);
 
       setStructure(res.data);
@@ -242,7 +242,7 @@ const SetFormTree = () => {
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
-        FacilityStructureService.create(newNode)
+        FacilityTreeService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
@@ -288,7 +288,7 @@ const SetFormTree = () => {
           description: "description"
         };
 
-        FacilityStructureService.update(node.self_id.low, updateNode)
+        FacilityTreeService.update(node.self_id.low, updateNode)
           .then((res) => {
             showSuccess("Saved!");
             getClassification();
@@ -320,7 +320,7 @@ const SetFormTree = () => {
 
       if (node.key === search) {
         if (node.hasParent === false) {
-          FacilityStructureService.remove(node.self_id.low)
+          FacilityTreeService.remove(node.self_id.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -340,7 +340,7 @@ const SetFormTree = () => {
             });
         }
         else {
-          FacilityStructureService.remove(node.self_id.low)
+          FacilityTreeService.remove(node.self_id.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -407,7 +407,7 @@ const SetFormTree = () => {
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {
-    FacilityStructureService.relation(dragId, dropId)
+    FacilityTreeService.relation(dragId, dropId)
       .then((res) => {
         showSuccess("Structure Updated");
         getClassification();
