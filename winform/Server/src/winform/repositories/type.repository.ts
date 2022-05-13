@@ -20,7 +20,7 @@ export class TypeRepository implements BaseGraphDatabaseInterfaceRepository<Type
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
       'MATCH p=(n)-[:CHILDREN*]->(m) \
-      WHERE  id(n)=$idNum and  m:ChildNode  and  m:Type and NOT m:TypeProperty  and n.isDeleted=false and m.isActive=true \
+      WHERE  id(n)=$idNum and  m:ChildNode  and NOT m:Type and NOT m:TypeProperty  and n.isDeleted=false and m.isActive=true \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
