@@ -37,11 +37,6 @@ export default function Router() {
       children: [{ path: ":id", element: <FormBuilderCreate/> }],
     },
     {
-      path: "/formtree",
-      element: <AppLayout />,
-      children: [{ path: ":id", element: <SetFormTree /> }],
-    },
-    {
       path: "/test-form",
       element: <AppLayout />,
       children: [{ path: "edit-form", element: <EditForm/> }],

@@ -7,16 +7,13 @@ import { CreateTypeDto } from '../dtos/create.type.dto';
 
 
 @Injectable()
-export class TypeRepository implements BaseGraphDatabaseInterfaceRepository<Type> {
+export class TypeRepository {
   constructor(
     private readonly neo4jService: Neo4jService,
-    
-  ) {}
-  findWithRelations(relations: any): Promise<Type[]> {
-    throw new Error(relations);
-  }
-  
-  async findOneById(id:string) {
+
+  ) { }
+
+  async findOneById(id: string) {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
       'MATCH p=(n)-[:CHILDREN*]->(m) \
@@ -26,7 +23,7 @@ export class TypeRepository implements BaseGraphDatabaseInterfaceRepository<Type
       RETURN value',
       { idNum }
     );
- 
+
     var resultRow = result['records'][0]['_fields'][0];
     if (!result) {
       throw new TypeNotFountException("Type");

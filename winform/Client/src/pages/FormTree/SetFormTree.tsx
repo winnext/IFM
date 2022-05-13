@@ -15,7 +15,6 @@ import FormType from "../../components/Form/FormType";
 import { useForm, Controller } from "react-hook-form";
 
 import FacilityTreeService from "../../services/formTree";
-import FormBuilderService from "../../services/formBuilder";
 
 
 interface StructureInterface {
@@ -33,6 +32,7 @@ interface StructureInterface {
     hasParent: boolean;
     parent_id?: string;
     selectable?: boolean;
+    icon?: string;
   }[];
 }
 
@@ -53,6 +53,7 @@ interface Node {
   },
   labelclass: string;
   description: string;
+  icon?: string;
 }
 
 interface Type {
@@ -97,16 +98,8 @@ const SetFormTree = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<Type[]>([]);
   const [selectedForm, setSelectedForm] = useState<any>(undefined);
+  const [icon, setIcon] = useState("");
 
-  const getForms = async () => {
-    await FormBuilderService.findAll().then((res) => {
-      setFormData(res.data[0]);
-    });
-  };
-
-  useEffect(() => {
-    getForms();
-  }, []);
 
   const {
     handleSubmit,
@@ -154,7 +147,7 @@ const SetFormTree = () => {
       label: "Edit Form",
       icon: "pi pi-pencil",
       command: () => {
-        
+
         console.log(data);
         FacilityTreeService.nodeInfo(selectedNodeKey)
           .then((res) => {
@@ -165,7 +158,7 @@ const SetFormTree = () => {
                 rootId: structure.root[0]._id.low,
               }
             })
-            
+
           })
           .catch((err) => {
             toast.current.show({
@@ -176,8 +169,8 @@ const SetFormTree = () => {
             });
           });
 
-          // navigate("/formbuilder/" + selectedNodeKey);
-          
+        // navigate("/formbuilder/" + selectedNodeKey);
+
 
       },
     },
@@ -193,8 +186,11 @@ const SetFormTree = () => {
   const getClassification = () => {
     const id = params.id || "";
     FacilityTreeService.findOne('121').then((res) => {
-      console.log(res.data);
 
+      let temp = [res.data.root[0]] || []
+      
+      console.log(res.data.root[0]);
+      
       setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
@@ -202,6 +198,12 @@ const SetFormTree = () => {
       else if (res.data.root[0].children) {
         setData([res.data.root[0]] || []);
       }
+
+      temp = JSON.parse(JSON.stringify(temp));
+      fixNodes(temp)
+      setData(temp)
+
+
       setLoading(false);
     }).catch(err => {
       toast.current.show({
@@ -367,16 +369,18 @@ const SetFormTree = () => {
     })[0];
   };
 
+  // Formu olanlara icon belirtme 
+
   const fixNodes = (nodes: Node[]) => {
-    return nodes.map((node) => {
-      if (node.children.length === 0) {
-        node.selectable = true;
-      } else {
-        fixNodes(node.children);
-        node.selectable = false;
+    if(!nodes || nodes.length === 0){
+      return;
+    }
+    for(let i of nodes){
+      fixNodes(i.children)
+      if(true){
+        i.icon = "pi pi-fw pi-file";
       }
-      return node;
-    });
+    }
   };
 
   const addItem = (key: string) => {
