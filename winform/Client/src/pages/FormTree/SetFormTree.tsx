@@ -33,6 +33,7 @@ interface StructureInterface {
     parent_id?: string;
     selectable?: boolean;
     icon?: string;
+    hasType?: boolean;
   }[];
 }
 
@@ -54,6 +55,7 @@ interface Node {
   labelclass: string;
   description: string;
   icon?: string;
+  hasType?: boolean;
 }
 
 interface Type {
@@ -98,8 +100,6 @@ const SetFormTree = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<Type[]>([]);
   const [selectedForm, setSelectedForm] = useState<any>(undefined);
-  const [icon, setIcon] = useState("");
-
 
   const {
     handleSubmit,
@@ -377,7 +377,9 @@ const SetFormTree = () => {
     }
     for(let i of nodes){
       fixNodes(i.children)
-      if(true){
+      console.log(i);
+      
+      if(i.hasType===true){
         i.icon = "pi pi-fw pi-file";
       }
     }
