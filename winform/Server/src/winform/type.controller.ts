@@ -7,32 +7,31 @@ import { UpdateTypeDto } from './dtos/update.type.dto';
 import { Type } from './entities/type.entity';
 import { TypeService } from './type.service';
 
-
 @ApiTags('type')
 @ApiBearerAuth('JWT-auth')
 @Controller('type')
 export class TypeController {
-    constructor(private readonly typeService: TypeService) {}
+  constructor(private readonly typeService: TypeService) {}
 
+  @Unprotected()
+  @Get('/:id')
+  @NoCache()
+  getTypeById(@Param('id') id: string) {
+    return this.typeService.findOne(id);
+  }
+  @Unprotected()
+  @Post('')
+  createType(@Body() createTypeDto: CreateTypeDto) {
+    return this.typeService.createType(createTypeDto);
+  }
+
+  /*
       @Unprotected()
       @NoCache()
       @Get()
       async getAllTypes() {
         return this.typeService.findAll();
       }
-      @Unprotected()
-      @Get('/:id')
-      @NoCache()
-      getTypeById(@Param('id') id: string) {
-        return this.typeService.findOne(id);
-      }
-
-  
-      @Post('')
-      createType(@Body()   createTypeDto: CreateTypeDto) {
-        return this.typeService.create(createTypeDto);
-      }
-
       @Delete('/:_id')
       deleteType(@Param('_id') id: string) {
         return this.typeService.remove(id);
@@ -42,4 +41,5 @@ export class TypeController {
       updateType(@Param('_id') id: string, @Body() updateTypeDto:UpdateTypeDto) {
         return this.typeService.update(id, updateTypeDto);
       }
+      */
 }
