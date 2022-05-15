@@ -15,6 +15,7 @@ import FormType from "../../components/Form/FormType";
 import { useForm, Controller } from "react-hook-form";
 
 import FacilityTreeService from "../../services/formTree";
+import { log } from "console";
 
 
 interface StructureInterface {
@@ -56,6 +57,10 @@ interface Node {
   description: string;
   icon?: string;
   hasType?: boolean;
+  _id: {
+    low: string;
+    high: string;
+  },
 }
 
 interface Type {
@@ -149,28 +154,30 @@ const SetFormTree = () => {
       command: () => {
 
         console.log(data);
-        FacilityTreeService.nodeInfo(selectedNodeKey)
-          .then((res) => {
-            console.log(res.data);
-            navigate("/formbuilder/" + res.data.identity.low, {
-              state: {
-                data: res.data,
-                rootId: structure.root[0]._id.low,
-              }
-            })
+        // FacilityTreeService.nodeInfo(selectedNodeKey)
+        //   .then((res) => {
+        //     console.log(res.data);
+        //     navigate("/formbuilder/" + res.data.identity.low, {
+        //       state: {
+        //         data: res.data,
+        //         rootId: structure.root[0]._id.low,
+        //       }
+        //     })
 
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
-            });
-          });
+        //   })
+        //   .catch((err) => {
+        //     toast.current.show({
+        //       severity: "error",
+        //       summary: "Error",
+        //       detail: err.response ? err.response.data.message : err.message,
+        //       life: 2000,
+        //     });
+        //   });
 
         // navigate("/formbuilder/" + selectedNodeKey);
-
+        console.log(selectedNodeKey);
+        
+        addForm(selectedNodeKey);
 
       },
     },
@@ -185,7 +192,7 @@ const SetFormTree = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FacilityTreeService.findOne('121').then((res) => {
+    FacilityTreeService.findOne('117').then((res) => {
 
       let temp = [res.data.root[0]] || []
       
@@ -228,19 +235,15 @@ const SetFormTree = () => {
     nodes: Node[]
   ): Node | undefined => {
     if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
+    return nodes.map((node) => {      
       if (node.key === search) {
         const newNode = {
           key: uuidv4(),
-          parent_id: node.self_id.low,
+          parent_id: node._id.low,
           name: name,
           code: code,
           tag: tag,
           labelclass: node.labelclass,
-          type: type,
-          typeId: typeId,
-          description: "description"
-
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
@@ -266,6 +269,53 @@ const SetFormTree = () => {
         return node;
       }
       return findNodeAndAddItem(search, node.children ? node.children : []);
+    })[0];
+  };
+
+  const findNodeAndAddForm = (
+    search: string,
+    nodes: Node[]
+  ): Node | undefined => {
+    if (nodes.length === 0) return undefined;
+    return nodes.map((node) => {
+      
+      
+      if (node.key === search) {
+        console.log(node);
+        const newNode = {
+          key: uuidv4(),
+          parent_id: node._id.low,
+          name: node.name,
+          code: node.code,
+          tag: node.tag,
+          labelclass: 'Type',
+        };
+        // node.children = node.children ? [...node.children, newNode] : [newNode];
+
+        FacilityTreeService.create(newNode)
+          .then((res) => {
+            toast.current.show({
+              severity: "success",
+              summary: "Successful",
+              detail: "Structure  Created",
+              life: 3000,
+            });
+            getClassification();
+            navigate("/formbuilder/" + newNode.key);
+          })
+          .catch((err) => {
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: err.response ? err.response.data.message : err.message,
+              life: 20000,
+            });
+          });
+
+        return node;
+        
+      }
+      return findNodeAndAddForm(search, node.children ? node.children : []);
     })[0];
   };
 
@@ -377,7 +427,6 @@ const SetFormTree = () => {
     }
     for(let i of nodes){
       fixNodes(i.children)
-      console.log(i);
       
       if(i.hasType===true){
         i.icon = "pi pi-fw pi-file";
@@ -388,6 +437,17 @@ const SetFormTree = () => {
   const addItem = (key: string) => {
     const temp = JSON.parse(JSON.stringify(data));
     findNodeAndAddItem(key, temp);
+    setData(temp);
+    setName("");
+    setCode("");
+    setTag([]);
+    setSelectedForm(undefined);
+    setAddDia(false);
+  };
+
+  const addForm = (key: string) => {
+    const temp = JSON.parse(JSON.stringify(data));
+    findNodeAndAddForm(key, temp);
     setData(temp);
     setName("");
     setCode("");
