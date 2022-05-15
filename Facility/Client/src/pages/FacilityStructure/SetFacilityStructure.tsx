@@ -615,8 +615,7 @@ const SetClassification = () => {
             <>
               <span className="ml-4 ">
                 <Button
-                  icon="pi pi-plus"
-                  className="p-button-rounded p-button-success mr-2"
+                  icon="pi pi-plus" className="p-button-rounded p-button-secondary p-button-text" aria-label="Add Item"
                   onClick={() => {
                     setSelectedNodeKey(data.key);
                     setAddDia(true)
@@ -624,8 +623,7 @@ const SetClassification = () => {
                   }
                 />
                 <Button
-                  icon="pi pi-pencil"
-                  className="p-button-rounded p-button-secondary mr-2"
+                  icon="pi pi-pencil" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Item"
                   onClick={() => {
                     setSelectedNodeKey(data.key);
                     let dataKey: any = data.key
@@ -651,19 +649,20 @@ const SetClassification = () => {
                   }
                 />
                 <Button
-                  icon="pi pi-trash"
-                  className="p-button-rounded p-button-danger mt-2"
+                  icon="pi pi-trash" className="p-button-rounded p-button-secondary p-button-text" aria-label="Delete"
                   onClick={() => {
                     setSelectedNodeKey(data.key);
                     setDelDia(true)
                   }}
                 />
-                <Button onClick={(e) => navigate("/form", {
-                  state: {
-                    data: data,
-                    rootId: structure.root[0]._id.low,
-                  }
-                })} className="p-button-rounded ml-3">Edit Form</Button>
+                <Button
+                  icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
+                  onClick={(e) => navigate("/form", {
+                    state: {
+                      data: data,
+                      rootId: structure.root[0]._id.low,
+                    }
+                  })}/>
               </span>
             </>
           }
