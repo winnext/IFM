@@ -429,7 +429,7 @@ const SetFormTree = () => {
       fixNodes(i.children)
       
       if(i.hasType===true){
-        i.icon = "pi pi-fw pi-file";
+        i.icon = "pi pi-fw pi-book";
       }
     }
   };
