@@ -53,6 +53,7 @@ interface Node {
   },
   labelclass: string;
   description: string;
+  icon?: string;
 }
 
 interface Type {
@@ -164,6 +165,8 @@ const SetClassification = () => {
     FacilityStructureService.findOne(id).then((res) => {
       console.log(res.data);
 
+      let temp = [res.data.root[0]] || [];
+
       setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
@@ -171,6 +174,11 @@ const SetClassification = () => {
       else if (res.data.root[0].children) {
         setData([res.data.root[0]] || []);
       }
+
+      temp = JSON.parse(JSON.stringify(temp));
+      fixNodes(temp)
+      setData(temp)
+
       setLoading(false);
     }).catch(err => {
       toast.current.show({
@@ -337,15 +345,13 @@ const SetClassification = () => {
   };
 
   const fixNodes = (nodes: Node[]) => {
-    return nodes.map((node) => {
-      if (node.children.length === 0) {
-        node.selectable = true;
-      } else {
-        fixNodes(node.children);
-        node.selectable = false;
-      }
-      return node;
-    });
+    if (!nodes || nodes.length === 0) {
+      return;
+    }
+    for (let i of nodes) {
+      fixNodes(i.children)
+      i.icon = "pi pi-fw pi-building";
+    }
   };
 
   const addItem = (key: string) => {
@@ -662,7 +668,7 @@ const SetClassification = () => {
                       data: data,
                       rootId: structure.root[0]._id.low,
                     }
-                  })}/>
+                  })} />
               </span>
             </>
           }
