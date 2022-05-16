@@ -165,19 +165,25 @@ const SetClassification = () => {
     FacilityStructureService.findOne(id).then((res) => {
       console.log(res.data);
 
-      let temp = [res.data.root[0]] || [];
+      // let temp = [res.data.root[0].properties] || [];
 
       setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
+        let temp = JSON.parse(JSON.stringify([res.data.root[0].properties] || []));
+        fixNodes(temp)
+        setData(temp)
       }
       else if (res.data.root[0].children) {
         setData([res.data.root[0]] || []);
+        let temp = JSON.parse(JSON.stringify([res.data.root[0]] || []));
+        fixNodes(temp)
+        setData(temp)
       }
 
-      temp = JSON.parse(JSON.stringify(temp));
-      fixNodes(temp)
-      setData(temp)
+      // temp = JSON.parse(JSON.stringify(temp));
+      // fixNodes(temp)
+      // setData(temp)
 
       setLoading(false);
     }).catch(err => {
