@@ -71,6 +71,7 @@ interface Type {
 
 const SetFormTree = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
+  const [selectedNodeId, setSelectedNodeId] = useState<any>("");
   const [loading, setLoading] = useState(true);
   const [structure, setStructure] = useState<StructureInterface>({
     root: [
@@ -461,6 +462,10 @@ const SetFormTree = () => {
     setAddDia(false);
   };
 
+  const editForm = (id: string) => {
+    navigate("/formbuilder/" + id);
+  };
+
   const saveItem = (key: string) => {
     const temp = JSON.parse(JSON.stringify(data));
     findNodeAndChangeItem(key, temp);
@@ -736,7 +741,8 @@ const SetFormTree = () => {
                     FacilityTreeService.nodeInfo(dataKey)
                       .then((res) => {
                         console.log(res.data);
-                        
+                        setSelectedNodeId(res.data.identity.low)
+                        editForm(res.data.identity.low)
                       })
                       .catch((err) => {
                         toast.current.show({
@@ -746,7 +752,7 @@ const SetFormTree = () => {
                           life: 2000,
                         });
                       });
-                    
+
                   }
                   }
                 />
@@ -756,8 +762,11 @@ const SetFormTree = () => {
                   icon="pi pi-plus"
                   className="p-button-rounded p-button-success ml-4"
                   onClick={() => {
+
                     setSelectedNodeKey(data.key);
-                    setAddDia(true)
+                    console.log(data.key);
+                    
+                    setAddFormDia(true)
                   }
                   }
                 />
