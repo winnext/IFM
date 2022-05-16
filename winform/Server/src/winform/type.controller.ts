@@ -35,6 +35,12 @@ export class TypeController {
   createTypeProperties(@Body() createTypeProperties: CreateTypePropertyDto[]) {
     return this.typeService.createTypeProperties(createTypeProperties);
   }
+  @Unprotected()
+  @Get('/nodeinfo/:key')
+  @NoCache()
+  findOneNode(@Param('key') key: string) {
+    return this.typeService.findOneNode(key);
+  }
   /*
   @Patch(':id')
   @Unprotected()
