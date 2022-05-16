@@ -105,6 +105,7 @@ const SetFormTree = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<Type[]>([]);
   const [selectedForm, setSelectedForm] = useState<any>(undefined);
+  const [addFormDia, setAddFormDia] = useState<boolean>(false);
 
   const {
     handleSubmit,
@@ -149,10 +150,11 @@ const SetFormTree = () => {
       },
     },
     {
-      label: "Edit Form",
+      label: "Add/Edit Form",
       icon: "pi pi-pencil",
       command: () => {
 
+        setAddFormDia(true);
         console.log(data);
         // FacilityTreeService.nodeInfo(selectedNodeKey)
         //   .then((res) => {
@@ -176,8 +178,8 @@ const SetFormTree = () => {
 
         // navigate("/formbuilder/" + selectedNodeKey);
         console.log(selectedNodeKey);
-        
-        addForm(selectedNodeKey);
+
+
 
       },
     },
@@ -195,9 +197,9 @@ const SetFormTree = () => {
     FacilityTreeService.findOne('117').then((res) => {
 
       let temp = [res.data.root[0]] || []
-      
+
       console.log(res.data.root[0]);
-      
+
       setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
@@ -235,7 +237,7 @@ const SetFormTree = () => {
     nodes: Node[]
   ): Node | undefined => {
     if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {      
+    return nodes.map((node) => {
       if (node.key === search) {
         const newNode = {
           key: uuidv4(),
@@ -278,10 +280,13 @@ const SetFormTree = () => {
   ): Node | undefined => {
     if (nodes.length === 0) return undefined;
     return nodes.map((node) => {
-      
-      
+
+
       if (node.key === search) {
         console.log(node);
+        if (node.hasType === true) {
+          navigate("/formbuilder/" + node._id.low);
+        }
         const newNode = {
           key: uuidv4(),
           parent_id: node._id.low,
@@ -313,7 +318,7 @@ const SetFormTree = () => {
           });
 
         return node;
-        
+
       }
       return findNodeAndAddForm(search, node.children ? node.children : []);
     })[0];
@@ -422,13 +427,13 @@ const SetFormTree = () => {
   // Formu olanlara icon belirtme 
 
   const fixNodes = (nodes: Node[]) => {
-    if(!nodes || nodes.length === 0){
+    if (!nodes || nodes.length === 0) {
       return;
     }
-    for(let i of nodes){
+    for (let i of nodes) {
       fixNodes(i.children)
-      
-      if(i.hasType===true){
+
+      if (i.hasType === true) {
         i.icon = "pi pi-fw pi-book";
       }
     }
@@ -569,6 +574,14 @@ const SetFormTree = () => {
         icon="pi pi-exclamation-triangle"
         accept={() => deleteItem(selectedNodeKey)}
       />
+      <ConfirmDialog
+        visible={addFormDia}
+        onHide={() => setAddFormDia(false)}
+        message="Do you want to add form?"
+        header="Add Confirmation"
+        icon="pi pi-exclamation-triangle"
+        accept={() => addForm(selectedNodeKey)}
+      />
       <Dialog
         header="Add New Item"
         visible={addDia}
@@ -708,58 +721,53 @@ const SetFormTree = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-        // nodeTemplate={(data, options) => <span className="flex align-items-center font-bold">{data.label} {
-        //   <>
-        //     {!data.children ? 
-        //     <span className="ml-4 ">
-        //     <Button
-        //       icon="pi pi-plus"
-        //       className="p-button-rounded p-button-success mr-2"
-        //       onClick={() => {
-        //         setSelectedNodeKey(data.key);
-        //         setAddDia(true)
-        //       }
-        //       }
-        //     />
-        //     <Button
-        //       icon="pi pi-pencil"
-        //       className="p-button-rounded p-button-secondary mr-2"
-        //       onClick={() => {
-        //         setSelectedNodeKey(data.key);
-        //         let dataKey: any = data.key
+          nodeTemplate={(data, options) => <span className="flex align-items-center font-bold">{data.label} {
 
-        //         FacilityStructureService.nodeInfo(dataKey)
-        //           .then((res) => {
-        //             setName(res.data.properties.name || "");
-        //             setCode(res.data.properties.code || "");
-        //             setTag(res.data.properties.tag || []);
-        //             setSelectedForm(formData.find(item => item.name === res.data.properties.type));
-        //             setIsActive(res.data.properties.isActive);
-        //           })
-        //           .catch((err) => {
-        //             toast.current.show({
-        //               severity: "error",
-        //               summary: "Error",
-        //               detail: err.response ? err.response.data.message : err.message,
-        //               life: 2000,
-        //             });
-        //           });
-        //         setEditDia(true);
-        //       }
-        //       }
-        //     />
-        //     <Button
-        //       icon="pi pi-trash"
-        //       className="p-button-rounded p-button-danger mt-2"
-        //       onClick={() => {
-        //         setSelectedNodeKey(data.key);
-        //         setDelDia(true)
-        //       }}
-        //     />
-        //   </span> : null}
-        //   </>
-        // }
-        // </span>}
+
+            <>
+              {data.icon ?
+                <Button
+                  icon="pi pi-pencil"
+                  className="p-button-rounded p-button-secondary ml-4"
+                  onClick={() => {
+                    setSelectedNodeKey(data.key);
+                    let dataKey: any = data.key
+
+                    FacilityTreeService.nodeInfo(dataKey)
+                      .then((res) => {
+                        console.log(res.data);
+                        
+                      })
+                      .catch((err) => {
+                        toast.current.show({
+                          severity: "error",
+                          summary: "Error",
+                          detail: err.response ? err.response.data.message : err.message,
+                          life: 2000,
+                        });
+                      });
+                    
+                  }
+                  }
+                />
+                :
+
+                <Button
+                  icon="pi pi-plus"
+                  className="p-button-rounded p-button-success ml-4"
+                  onClick={() => {
+                    setSelectedNodeKey(data.key);
+                    setAddDia(true)
+                  }
+                  }
+                />
+
+
+
+              }
+            </>
+          }
+          </span>}
         />
       </div>
       <div className="field">
