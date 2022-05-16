@@ -32,6 +32,10 @@ export class TypeService {
   async createTypeProperties(createTypeProperties: CreateTypePropertyDto[]) {
     return this.typeRepository.createTypeProperties(createTypeProperties);
   }
+  async findOneNode(key: string) {
+    //checkObjectIddİsValid(id);
+    return await this.typeRepository.findOneNodeByKey(key);
+  }
   /*
   update(id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
     return this.facilityStructureRepository.update(id, updateFacilityStructureDto);
@@ -44,4 +48,5 @@ export interface GeciciTypeInterface {
   findOneById(id: string);
   createType(createTypeDto: CreateTypeDto);
   createTypeProperties(createTypeProperties: CreateTypePropertyDto[]);
+  findOneNodeByKey(key: string); 
 }

@@ -13,12 +13,12 @@ export class CreateTypePropertyDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  type?: string;
+  type: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  typeId?: string;
+  typeId: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -48,6 +48,6 @@ export class CreateTypePropertyDto {
 
   @ApiProperty()
   @IsNumber()
-  @IsNotEmpty()
+  @IsNotEmpty()  
   parent_id: number; //not in entity
 }

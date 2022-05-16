@@ -18,16 +18,16 @@ export class CreateTypeDto {
   @IsString()
   @Length(1, 200)
   @IsOptional()
-  key: string;
+  key?: string;
 
   @ApiProperty()
   @IsOptional()
-  tag: string[];
+  tag?: string[];
 
   @ApiProperty()
   @IsNumber()
   @IsOptional()
-  parent_id: number; //not in entity
+  parent_id?: number; //not in entity
 
   @ApiProperty()
   @IsNotEmpty()
