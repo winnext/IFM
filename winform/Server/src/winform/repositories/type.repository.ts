@@ -6,6 +6,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTypeDto } from '../dtos/create.type.dto';
 import { int } from 'neo4j-driver';
 import { GeciciTypeInterface } from '../type.service';
+import { TypeProperty } from '../entities/type.property.entity';
+import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
 
 @Injectable()
 export class TypeRepository implements GeciciTypeInterface {
@@ -99,9 +101,6 @@ export class TypeRepository implements GeciciTypeInterface {
         });
       }
      
-      //await this.neo4jService.write(`match (x: ${_type}  {isDeleted: false,key: $key}) set x.self_id = id(x)`, {
-      //  key: type.key,
-      //});
       const createChildOfRelation = `match (x: ${_type} {isDeleted: false,code: $code}) \
          match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id \
          create (x)-[:CHILD_OF]->(y)`;
@@ -151,13 +150,118 @@ export class TypeRepository implements GeciciTypeInterface {
         isDeleted,
         hasType,
       });
-      //await this.neo4jService.write(
-      //  `match (x:${type.labelclass} {isDeleted: false,key: $key}) set x.self_id = id(x)`,
-      //  {
-      //    key: type.key,
-      //  },
-      //);
+     
       return new Type();
     }
   }
+
+  async createTypeProperties(createTypeProperties: CreateTypePropertyDto[]) {
+    for (let i=0; i < createTypeProperties.length; i++ ) {
+      
+      let createTypeDto = createTypeProperties[i]
+      const type = new TypeProperty();
+      
+      type.label = createTypeDto.label;
+      type.type = createTypeDto.type;
+      type.typeId = createTypeDto.typeId;
+      type.labelclass = createTypeDto.labelclass;
+
+      if (createTypeDto.key) {
+        type.key = createTypeDto.key;
+      } 
+      if (createTypeDto.tag) {
+        type.tag = createTypeDto.tag;
+      }
+      if (createTypeDto.rules) {
+        type.rules = createTypeDto.rules;
+      }
+      if (createTypeDto.defaultValue) {
+         type.defaultValue = createTypeDto.defaultValue;
+      }
+
+  
+      let _type = 'ChildNode:Type:TypeProperty';
+      let _typeParent = 'ChildNode:Type';
+
+        
+          let parent = await this.neo4jService.write(`match (x {isDeleted: false}) where id(x)=$parent_id return x`, {
+            parent_id: int(createTypeDto.parent_id), 
+          });
+        
+        let makeNodeConnectParent = `(x: ${_type} {label: $label, key: $key , tag: $tag , labelclass:$labelclass,createdAt: $createdAt , \
+                                                   updatedAt: $updatedAt, isActive :$isActive, isDeleted: $isDeleted, \
+                                                   defaultValue: $defaultValue, rules: $rules, type: $type, typeId: $typeId, name: $label})`;
+        makeNodeConnectParent =
+          ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
+          makeNodeConnectParent;
+          await this.neo4jService.write(makeNodeConnectParent, {
+          labelclass: type.labelclass,
+          label: type.label,
+          createdAt: type.createdAt,
+          updatedAt: type.updatedAt,
+          isActive: type.isActive,
+          isDeleted: type.isDeleted,
+          key: type.key,
+          tag: type.tag,
+          parent_id: createTypeDto.parent_id,
+          rules: type.rules,
+          defaultValue: type.defaultValue,
+          type: type.type,
+          typeId: type.typeId
+        });
+       
+        const createChildOfRelation = `match (x: ${_type} {isDeleted: false, key: $key}) \
+           match (y: ${_typeParent} {isDeleted: false}) where  id(y)= $parent_id \
+           create (x)-[:CHILD_OF]->(y)`;
+        await this.neo4jService.write(createChildOfRelation, {
+          key: type.key,
+          parent_id: int(createTypeDto.parent_id),
+        });
+        
+    }
+
+    return createTypeProperties;
+
+  }
+
+
+  async findOneNodeByKey(key: string) {
+    const result = await this.neo4jService.read('match (n {isDeleted: false, key:$key})  return n', { key: key });
+
+    const x = result['records'][0]['_fields'][0];
+    if (!result) {
+      throw new TypeNotFountException(key);
+    } else {
+      return x;
+    }
+  }
+  /*
+  async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
+    const checkNodeisExist = await this.findOneById(_id);
+    const { name, code, tag, description, isActive, typeId, type } = updateFacilityStructureDto;
+
+    if (checkNodeisExist.hasOwnProperty('root')) {
+      const updatedNode = await this.neo4jService.write(
+        'MATCH (c {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label, c.description = $description, ' +
+          'c.isActive = $isActive, c.typeId = $typeId, c.type = $type',
+        {
+          name: name,
+          code: code,
+          tag: tag,
+          label: code + ' . ' + name,
+          description: description,
+          isActive: isActive,
+          id: int(_id),
+          typeId: typeId,
+          type: type,
+        },
+      );
+      console.log('Node updated ................... ');
+      return updatedNode;
+    } else {
+      console.log('Can not find a node for update  ....................');
+      throw new FacilityStructureNotFountException('Can not find a node for update  ');
+    }
+  }
+  */
 }

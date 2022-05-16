@@ -8,7 +8,7 @@ export class CreateTypePropertyDto {
   @IsString()
   @Length(1, 200)
   @IsOptional()
-  key: string;
+  key?: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -24,20 +24,30 @@ export class CreateTypePropertyDto {
   @IsNotEmpty()
   @IsString()
   @Length(1, 50)
-  name: string;
+  label: string;
   
   @ApiProperty()
   @IsOptional()
-  tag: string[];
+  tag?: string[];
 
   @ApiProperty()
   @IsOptional()
-  rules: string[];
+  rules?: string[];
 
   @ApiProperty()
   @IsOptional()
   @IsString()
   @Length(1, 50)
-  defaultValue: string; 
+  defaultValue?: string; 
 
-  }
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Length(1, 50)
+  labelclass: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  parent_id: number; //not in entity
+}
