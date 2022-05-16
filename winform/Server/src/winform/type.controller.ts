@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NoCache } from 'ifmcommon/dist';
 import { Unprotected } from 'nest-keycloak-connect';
 import { CreateTypeDto } from './dtos/create.type.dto';
+import { CreateTypePropertyDto } from './dtos/create.type.property.dto';
 import { UpdateTypeDto } from './dtos/update.type.dto';
 import { Type } from './entities/type.entity';
 import { TypeService } from './type.service';
@@ -24,7 +25,23 @@ export class TypeController {
   createType(@Body() createTypeDto: CreateTypeDto) {
     return this.typeService.createType(createTypeDto);
   }
-
+  
+  @Unprotected()
+  @Post('/properties')
+  @ApiBody({
+    type: [CreateTypePropertyDto],
+    description: 'Store product structure',
+  })
+  createTypeProperties(@Body() createTypeProperties: CreateTypePropertyDto[]) {
+    return this.typeService.createTypeProperties(createTypeProperties);
+  }
+  /*
+  @Patch(':id')
+  @Unprotected()
+  update(@Param('id') id: string, @Body() updateTypeDto: UpdateTypeDto) {
+    return this.typeService.update(id, updateTypeDto);
+  }
+  */
   /*
       @Unprotected()
       @NoCache()
@@ -37,9 +54,5 @@ export class TypeController {
         return this.typeService.remove(id);
       }
 
-      @Patch('/:_id')
-      updateType(@Param('_id') id: string, @Body() updateTypeDto:UpdateTypeDto) {
-        return this.typeService.update(id, updateTypeDto);
-      }
       */
 }
