@@ -13,7 +13,7 @@ import ITEMS from './Items';
 function FormBuilderCreate() {
   const [items, setItems] = useState([]);
   const [formName, setFormName] = useState('');
-  const [data, setData] = useState('');
+  const [parentId, setParentId] = useState('');
   const navigate = useNavigate();
 
   const params = useLocation();
@@ -21,13 +21,11 @@ function FormBuilderCreate() {
 
   useEffect(() => {
     if (params.state) {
-      localStorage.setItem(
-        'data',
-        JSON.stringify(params.state.data.properties),
-      );
-      setData(JSON.parse(localStorage.getItem('data')));
+      localStorage.setItem('data', JSON.stringify(params.state.data));
+      localStorage.setItem('formbuilderId', JSON.stringify(params.state.id));
     }
     setFormName(JSON.parse(localStorage.getItem('data')).name);
+    setParentId(JSON.parse(localStorage.getItem('formbuilderId')));
   }, []);
 
   const reorder = (list, startIndex, endIndex) => {
@@ -54,8 +52,13 @@ function FormBuilderCreate() {
         type: item.type,
         label: '',
         defaultValue: '',
-        rules: { required: false },
-        id: uuid(),
+        // rules: { required: false },
+        rules: [false],
+        tag: ['deneme'],
+        typeId: uuid(),
+        key: uuid(),
+        labelclass: 'TypeProperty',
+        parent_id: parentId,
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
@@ -105,10 +108,7 @@ function FormBuilderCreate() {
         <div className="col-2">
           <Button
             onClick={() => {
-              const data = {
-                name: formName,
-                items: items,
-              };
+              const data = items;
               console.log(data);
               FormBuilderService.create(data).then((res) => {
                 navigate('/formbuilder');
