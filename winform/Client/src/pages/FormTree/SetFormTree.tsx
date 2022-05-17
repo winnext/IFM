@@ -151,40 +151,6 @@ const SetFormTree = () => {
       },
     },
     {
-      label: "Add/Edit Form",
-      icon: "pi pi-pencil",
-      command: () => {
-
-        setAddFormDia(true);
-        console.log(data);
-        // FacilityTreeService.nodeInfo(selectedNodeKey)
-        //   .then((res) => {
-        //     console.log(res.data);
-        //     navigate("/formbuilder/" + res.data.identity.low, {
-        //       state: {
-        //         data: res.data,
-        //         rootId: structure.root[0]._id.low,
-        //       }
-        //     })
-
-        //   })
-        //   .catch((err) => {
-        //     toast.current.show({
-        //       severity: "error",
-        //       summary: "Error",
-        //       detail: err.response ? err.response.data.message : err.message,
-        //       life: 2000,
-        //     });
-        //   });
-
-        // navigate("/formbuilder/" + selectedNodeKey);
-        console.log(selectedNodeKey);
-
-
-
-      },
-    },
-    {
       label: "Delete",
       icon: "pi pi-trash",
       command: () => {
@@ -452,18 +418,48 @@ const SetFormTree = () => {
   };
 
   const addForm = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    findNodeAndAddForm(key, temp);
-    setData(temp);
-    setName("");
-    setCode("");
-    setTag([]);
-    setSelectedForm(undefined);
-    setAddDia(false);
+    FacilityTreeService.nodeInfo(key)
+      .then((res) => {
+        console.log(res.data);
+        setSelectedNodeId(res.data.identity.low)
+        const newNode = {
+          key: uuidv4(),
+          parent_id: res.data.identity.low,
+          name: res.data.properties.name,
+          code: res.data.properties.code,
+          tag: res.data.properties.tag,
+          labelclass: 'Type',
+        };
+        FacilityTreeService.create(newNode)
+          .then((res) => {
+            toast.current.show({
+              severity: "success",
+              summary: "Successful",
+              detail: "Structure  Created",
+              life: 3000,
+            });
+            getClassification();
+          })
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
   };
 
-  const editForm = (id: string) => {
-    navigate("/formbuilder/" + id);
+  const editForm = (id: string, data: any) => {
+    console.log(data);
+    
+    navigate("/formbuilder/" + id, {
+      state: {
+        data: data,
+        id:id
+      }
+    });
   };
 
   const saveItem = (key: string) => {
@@ -733,7 +729,7 @@ const SetFormTree = () => {
               {data.icon ?
                 <Button
                   icon="pi pi-pencil"
-                  className="p-button-rounded p-button-secondary ml-4"
+                  className="p-button-rounded p-button-secondary p-button-outlined ml-4"
                   onClick={() => {
                     setSelectedNodeKey(data.key);
                     let dataKey: any = data.key
@@ -742,7 +738,7 @@ const SetFormTree = () => {
                       .then((res) => {
                         console.log(res.data);
                         setSelectedNodeId(res.data.identity.low)
-                        editForm(res.data.identity.low)
+                        editForm(res.data.identity.low, res.data.properties)
                       })
                       .catch((err) => {
                         toast.current.show({
@@ -760,12 +756,12 @@ const SetFormTree = () => {
 
                 <Button
                   icon="pi pi-plus"
-                  className="p-button-rounded p-button-success ml-4"
+                  className="p-button-rounded p-button-secondary p-button-outlined ml-4"
                   onClick={() => {
 
                     setSelectedNodeKey(data.key);
                     console.log(data.key);
-                    
+
                     setAddFormDia(true)
                   }
                   }
