@@ -2,12 +2,13 @@ import { Neo4jService } from 'nest-neo4j/dist';
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { Type } from '../entities/type.entity';
 import { TypeNotFountException } from 'src/common/notFoundExceptions/not.found.Exceptions';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTypeDto } from '../dtos/create.type.dto';
 import { int } from 'neo4j-driver';
 import { GeciciTypeInterface } from '../type.service';
 import { TypeProperty } from '../entities/type.property.entity';
 import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
+import { UpdateTypeDto } from '../dtos/update.type.dto';
 
 @Injectable()
 export class TypeRepository implements GeciciTypeInterface {
@@ -234,6 +235,53 @@ export class TypeRepository implements GeciciTypeInterface {
     } else {
       return x;
     }
+  }
+  async updateNode(id: string, updateTypeDto: UpdateTypeDto) {
+    const checkNodeisExist = await this.findOneById(id);
+    const { name, code, tag } = updateTypeDto;
+
+    if (checkNodeisExist.hasOwnProperty('root')) {
+      const updatedNode = await this.neo4jService.write(
+        'MATCH (c:ChildNode {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag, c.label = $label ',
+        {
+          name: name,
+          code: code,
+          tag: tag,
+          label: code + ' - ' + name,
+          id: int(id)
+        },
+      );
+
+
+      const hasTypeChild = await this.neo4jService.read(
+        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type) where id(c)=$id return n',
+        {
+          id: int(id)
+        }
+      );
+     
+      if (hasTypeChild['records'][0]) {
+
+        await this.neo4jService.write(
+          'MATCH (c:Type {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name, c.label=$label',
+          {
+            id: hasTypeChild['records'][0]['_fields'][0]['identity']['low'],  
+            name: name,
+            code: code,
+            label: code+' - '+name
+          }
+        );
+
+      }
+
+      console.log('Node updated ................... ');
+      return updatedNode;
+    } else {
+      console.log('Can not find a node for update  ....................');
+      throw new NotFoundException('Can not find a node for update  ');
+      //throw new TypeNotFoundException('Can not find a node for update  ');
+    }
+
   }
   /*
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {

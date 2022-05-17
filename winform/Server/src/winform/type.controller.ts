@@ -5,6 +5,7 @@ import { Unprotected } from 'nest-keycloak-connect';
 import { CreateTypeDto } from './dtos/create.type.dto';
 import { CreateTypePropertyDto } from './dtos/create.type.property.dto';
 import { UpdateTypeDto } from './dtos/update.type.dto';
+import { UpdateTypePropertyDto } from './dtos/update.type.property.dto';
 import { Type } from './entities/type.entity';
 import { TypeService } from './type.service';
 
@@ -41,13 +42,14 @@ export class TypeController {
   findOneNode(@Param('key') key: string) {
     return this.typeService.findOneNode(key);
   }
-  /*
+  
   @Patch(':id')
   @Unprotected()
-  update(@Param('id') id: string, @Body() updateTypeDto: UpdateTypeDto) {
-    return this.typeService.update(id, updateTypeDto);
+  updateNode(@Param('id') id: string, @Body() updateTypeDto: UpdateTypeDto) {
+    return this.typeService.updateNode(id, updateTypeDto);
   }
-  */
+
+
   /*
       @Unprotected()
       @NoCache()

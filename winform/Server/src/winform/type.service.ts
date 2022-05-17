@@ -36,11 +36,11 @@ export class TypeService {
     //checkObjectIddİsValid(id);
     return await this.typeRepository.findOneNodeByKey(key);
   }
-  /*
-  update(id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
-    return this.facilityStructureRepository.update(id, updateFacilityStructureDto);
+  
+  updateNode(id: string, updateTypeDto: UpdateTypeDto) {
+    return this.typeRepository.updateNode(id, updateTypeDto);
   }
-  */
+  
 }
 
 export interface GeciciTypeInterface {
@@ -48,5 +48,6 @@ export interface GeciciTypeInterface {
   findOneById(id: string);
   createType(createTypeDto: CreateTypeDto);
   createTypeProperties(createTypeProperties: CreateTypePropertyDto[]);
-  findOneNodeByKey(key: string); 
+  findOneNodeByKey(key: string);
+  updateNode(id: string, updateTypeDto: UpdateTypeDto);  
 }
