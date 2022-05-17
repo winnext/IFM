@@ -1,6 +1,6 @@
 /* eslint-disable no-var */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Neo4jService } from 'nest-neo4j/dist';
+import { Neo4jService } from 'sgnm-neo4j';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
