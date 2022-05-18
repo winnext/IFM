@@ -49,6 +49,11 @@ export class TypeController {
     return this.typeService.updateNode(id, updateTypeDto);
   }
 
+  @Unprotected()
+  @Get('/properties/:id')
+  findTypePropertiesByNodeId(@Param('id') id: string)  {
+    return this.typeService.findTypePropertiesByNodeId(id);
+  }
 
   /*
       @Unprotected()
