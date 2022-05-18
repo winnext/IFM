@@ -299,20 +299,18 @@ const SetFormTree = () => {
     if (nodes.length === 0) return undefined;
     return nodes.map((node) => {
       if (node.key === search) {
-
+        console.log(node);
+        
         const updateNode = {
           key: node.key,
           name: name,
           code: code,
           tag: tag,
           labelclass: node.labelclass,
-          type: type,
-          typeId: typeId,
-          isActive: isActive,
-          description: "description"
+          isActive:true
         };
 
-        FacilityTreeService.update(node.self_id.low, updateNode)
+        FacilityTreeService.update(node._id.low, updateNode)
           .then((res) => {
             showSuccess("Saved!");
             getClassification();
@@ -579,7 +577,7 @@ const SetFormTree = () => {
         visible={addFormDia}
         onHide={() => setAddFormDia(false)}
         message="Do you want to add form?"
-        header="Add Confirmation"
+        header="Add Form Confirmation"
         icon="pi pi-exclamation-triangle"
         accept={() => addForm(selectedNodeKey)}
       />
