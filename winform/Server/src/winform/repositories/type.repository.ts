@@ -313,17 +313,27 @@ export class TypeRepository implements GeciciTypeInterface {
         id: int(id)
       }
     );
+
     if (nodeType['records'][0]) {
+
        const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
        const childrenList = await this.neo4jService.read(
       'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty) where id(c)=$id return n',
       {
         id: type_node_id
-      }
+      } 
     );
+    
+
     if (childrenList['records'][0]) {
-      return childrenList['records'][0]["_fields"];
-    }
+      let propertyList = [];
+       for (let i=0; i<childrenList['records'].length; i++ ) {
+        let property = childrenList['records'][i];
+       property["_fields"][0]["properties"]._id = property["_fields"][0]["identity"]["low"];
+       propertyList.push(property["_fields"][0]["properties"]); 
+      }
+      return propertyList;
+     }
    
     }
     throw new NotFoundException('Can not find type node');

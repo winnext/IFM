@@ -51,6 +51,7 @@ export class TypeController {
 
   @Unprotected()
   @Get('/properties/:id')
+  @NoCache()
   findTypePropertiesByNodeId(@Param('id') id: string)  {
     return this.typeService.findTypePropertiesByNodeId(id);
   }
