@@ -338,4 +338,85 @@ export class TypeRepository implements GeciciTypeInterface {
     }
     throw new NotFoundException('Can not find type node');
   } 
+
+  async delete(_id: string) {
+    try {
+      let nodeChildCount = await this.neo4jService.read(
+        'MATCH (c {isDeleted: false})  -[r:CHILDREN]->(p {isDeleted: false}) where id(c)= $id return count(p)',
+        {
+          id: parseInt(_id),
+        },
+      );
+       
+      let nodeChildCountNumber = parseInt(JSON.stringify(nodeChildCount.records[0]['_fields'][0]['low']));
+      if (nodeChildCountNumber > 0) {
+        if (nodeChildCountNumber == 1) {
+          let nodeChildIsTypeCount = 
+          await this.neo4jService.read(
+            'MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false}) '+ 
+            'where id(c)= $id and p:Type and not p:TypeProperty return count(p)',
+            {
+              id: parseInt(_id),
+            },
+          );
+          let nodeChildIsTypeCountNumber = parseInt(JSON.stringify(nodeChildIsTypeCount.records[0]['_fields'][0]['low']));
+          if (nodeChildIsTypeCountNumber > 0) {
+            let nodeChildIsTypeWithoutPropertyCount = 
+            await this.neo4jService.read(
+              'MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false})-[r2:CHILDREN]-(s {isDeleted: false}) '+ 
+              'where id(c)= $id and p:Type and not p:TypeProperty and s:TypeProperty return count(s)',
+              {
+                id: parseInt(_id),
+              },
+            );
+            let nodeChildIsTypeWithoutPropertyCountNumber =  parseInt(JSON.stringify(nodeChildIsTypeWithoutPropertyCount.records[0]['_fields'][0]['low']));  
+            if (nodeChildIsTypeWithoutPropertyCountNumber == 0) {
+              let deleteNode = await this.neo4jService.write('MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false}) '+ 
+              'where id(c)= $id and p:Type and not p:TypeProperty set c.isDeleted= true, p.isDeleted = true',
+              {
+                id: parseInt(_id),
+              },
+              );
+            }
+            else {
+              let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
+                id: parseInt(_id),
+              });
+              throw new HttpException({ message: 'Type (form tipinde) ancak property içeren çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+              // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
+            }
+          }
+          else {
+            let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
+              id: parseInt(_id),
+            });
+            throw new HttpException({ message: 'Type (form tipinde) dışında Çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+            // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
+          }
+        }
+        else {
+          let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
+            id: parseInt(_id),
+          });
+          throw new HttpException({ message: 'Birden çok çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+          // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
+        }
+
+      } else {
+       
+        let deleteNode = await this.neo4jService.write(
+          'MATCH (c {isDeleted: false}) where id(c)= $id set c.isDeleted = true',
+          {
+            id: parseInt(_id),
+          },
+        );
+       
+        console.log('Node deleted ................... ');
+        return 'successfully deleted';
+      }
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 }
