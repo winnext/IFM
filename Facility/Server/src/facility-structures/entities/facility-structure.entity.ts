@@ -1,31 +1,17 @@
-import {SchemaFactory } from '@nestjs/mongoose';
-import { v4 as uuidv4 } from 'uuid';
-import * as moment from 'moment'
-import { string } from 'joi';
+import { SchemaFactory } from '@nestjs/mongoose';
 
+import { BaseGraphObject } from 'src/common/baseobject/base.graph.object';
 
-export class FacilityStructure {
-
-  key:string = generateUuid();
-  type:string;
-  code:string;
-  name:string;
+export class FacilityStructure extends BaseGraphObject {
+  type: string;
+  code: string;
+  name: string;
   description: string;
-  tag: string[] = [];
-  label: string;  // not in dtos
-  createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
-  updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
-  isActive: boolean = true;  // not in create dto
-  isDeleted: boolean = false; // not in dtos
+  label: string; // not in dtos
   class_name: string = FacilityStructure.name; // not in dtos
-
-  hasParent: Boolean = true;  // not in dtos
   labelclass: string;
-  self_id: number;     // not in dtos
-  selectable: boolean; // not in dtos
-  typeId:string;
+  self_id: number; // not in dtos
+  typeId: string;
 }
-function generateUuid() {
-  return uuidv4()
-}
+
 export const FaciliyStructureSchema = SchemaFactory.createForClass(FacilityStructure);

@@ -12,7 +12,7 @@ export class CreateClassificationDto {
   @IsNotEmpty()
   @IsString()
   @Length(1, 200)
-  name:       string;
+  name: string;
 
   @ApiProperty()
   @IsString()
@@ -23,7 +23,7 @@ export class CreateClassificationDto {
   @ApiProperty()
   @IsOptional()
   tag: string[];
-  
+
   @ApiProperty()
   @IsNumber()
   @IsOptional()
