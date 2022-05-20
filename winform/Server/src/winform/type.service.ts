@@ -43,6 +43,9 @@ export class TypeService {
   async findTypePropertiesByNodeId(id: string) {
     return this.typeRepository.findTypePropertiesByNodeId(id);
   }
+  async remove(id: string) {
+    return this.typeRepository.delete(id);
+  }
 }
 
 export interface GeciciTypeInterface {
@@ -52,5 +55,6 @@ export interface GeciciTypeInterface {
   createTypeProperties(createTypeProperties: CreateTypePropertyDto[]);
   findOneNodeByKey(key: string);
   updateNode(id: string, updateTypeDto: UpdateTypeDto);
-  findTypePropertiesByNodeId(id: string);  
+  findTypePropertiesByNodeId(id: string);
+  delete(id: string);   
 }
