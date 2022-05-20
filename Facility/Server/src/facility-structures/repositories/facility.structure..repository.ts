@@ -9,7 +9,12 @@ import { int } from 'neo4j-driver';
 
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
-import { assignDtoPropToEntity, createDynamicCyperObject, createDynamiCyperParam } from 'src/common/func/neo4js.func';
+import {
+  assignDtoPropToEntity,
+  createDynamicCyperObject,
+  createDynamiCyperParam,
+  updateNodeQuery,
+} from 'src/common/func/neo4js.func';
 
 @Injectable()
 export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure> {
@@ -90,7 +95,6 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     let facilityStructure = new FacilityStructure();
     facilityStructure.label = createFacilityStructureDto.code + ' . ' + createFacilityStructureDto.name;
-    facilityStructure.selectable = true;
 
     //dynamicall assign dtos properties to entity
     facilityStructure = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
@@ -125,7 +129,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       });
       const makeUnSelectableToParent = `match (x: ${facilityStructure.labelclass} {isDeleted: false}) where id(x) = $parent_id set x.selectable = false`;
       await this.neo4jService.write(makeUnSelectableToParent, { parent_id: int(createFacilityStructureDto.parent_id) });
-      return 'success';
+      return facilityStructure;
     } else {
       facilityStructure.hasParent = false;
       const dynamicObject = createDynamicCyperObject(facilityStructure);
@@ -145,7 +149,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
           key: facilityStructure.key,
         },
       );
-      return 'success';
+      return facilityStructure;
     }
   }
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
@@ -156,13 +160,11 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
 
     dynamicObject['label'] = code + ' . ' + name;
     dynamicObject['id'] = int(_id);
+
+    const updateNodeQuer = updateNodeQuery(_id, dynamicObject);
     if (checkNodeisExist.hasOwnProperty('root')) {
       //id sini dışardan alan dynamic bir updateNode fonksiyonu yazılacak
-      const updatedNode = await this.neo4jService.write(
-        'MATCH (c {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag , c.label= $label, c.description = $description, ' +
-          'c.isActive = $isActive, c.typeId = $typeId, c.type = $type',
-        dynamicObject,
-      );
+      const updatedNode = await this.neo4jService.write(updateNodeQuer, dynamicObject);
       console.log('Node updated ................... ');
       return updatedNode;
     } else {

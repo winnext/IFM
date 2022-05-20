@@ -9,7 +9,7 @@ export abstract class BaseGraphObject {
   isDeleted = false;
   hasParent = true; // not in dtos
   tag: string[] = [];
-  selectable: true; // not in dtos
+  selectable = true; // not in dtos
 }
 
 function generateUuid() {
