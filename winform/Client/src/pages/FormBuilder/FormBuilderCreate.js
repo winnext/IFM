@@ -2,24 +2,28 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { v4 as uuid } from 'uuid';
 import { DragDropContext } from 'react-beautiful-dnd';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import FormBuilderService from '../../services/formBuilder';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Toolbox from './ToolBox';
 import DropZone from './DropZone';
 import { Card } from 'primereact/card';
 import ITEMS from './Items';
+import { Toast } from 'primereact/toast';
 
 function FormBuilderCreate() {
   const [items, setItems] = useState([]);
   const [formName, setFormName] = useState('');
   const [parentId, setParentId] = useState('');
+  const toast = React.useRef(null);
   const navigate = useNavigate();
 
   const params = useLocation();
+  const paramsId = useParams();
   console.log(params);
+  console.log(paramsId);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (params.state) {
       localStorage.setItem('data', JSON.stringify(params.state.data));
       localStorage.setItem('formbuilderId', JSON.stringify(params.state.id));
@@ -27,6 +31,32 @@ function FormBuilderCreate() {
     setFormName(JSON.parse(localStorage.getItem('data')).name);
     setParentId(JSON.parse(localStorage.getItem('formbuilderId')));
   }, []);
+
+  useEffect(() => {
+    FormBuilderService.getProperties(paramsId.id)
+      .then((res) => {
+        console.log(res.data);
+
+        const convertedData = res.data.map(function (item) {
+          return {
+            ...item,
+            rules: { required: item.rules[0] },
+            // options: item.options.map(function (option) {
+            //   return { optionsName: option };
+            // }),
+          };
+        });
+        setItems(convertedData);
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
+  }, [paramsId.id]);
 
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -58,7 +88,8 @@ function FormBuilderCreate() {
         typeId: uuid(),
         key: uuid(),
         labelclass: 'TypeProperty',
-        parent_id: parentId,
+        parent_id: paramsId.id,
+        deneme:paramsId.id
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
@@ -89,6 +120,7 @@ function FormBuilderCreate() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
+      <Toast ref={toast} position="top-right" />
       <div className="grid">
         <div className="col-2">
           <Toolbox />
@@ -110,7 +142,22 @@ function FormBuilderCreate() {
             onClick={() => {
               const data = items;
               console.log(data);
-              FormBuilderService.create(data).then((res) => {
+              const dataNeo4j = data.map((item) => {
+                return {
+                  key: item.key,
+                  type: item.type,
+                  typeId: item.typeId,
+                  label: item.label,
+                  tag: item.tag,
+                  defaultValue: item.defaultValue,
+                  labelclass: item.labelclass,
+                  rules: [item.rules.required],
+                  parent_id: item.parent_id||parentId,
+                  // options: item.options.map((option) => option.optionsName),
+                };
+              });
+              console.log(dataNeo4j);
+              FormBuilderService.create(dataNeo4j).then((res) => {
                 navigate('/formbuilder');
               });
             }}
