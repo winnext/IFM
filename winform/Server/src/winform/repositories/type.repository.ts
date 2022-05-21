@@ -18,7 +18,8 @@ export class TypeRepository implements GeciciTypeInterface {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
       'MATCH p=(n)-[:CHILDREN*]->(m) \
-      WHERE  id(n)=$idNum and  m:ChildNode  and NOT m:Type and NOT m:TypeProperty  and n.isDeleted=false and m.isActive=true \
+      WHERE  id(n)=$idNum and  m:ChildNode  and NOT m:Type and NOT m:TypeProperty  and n.isDeleted=false and \
+      n.isDeleted=false and n.isActive=true and m.isActive=true \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
@@ -160,7 +161,7 @@ export class TypeRepository implements GeciciTypeInterface {
    
     if (createTypeProperties[0].parent_id != null) {
       const nodeType = await this.neo4jService.read(
-        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type) where id(c)=$id return n',
+        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
         {
           id: int(createTypeProperties[0].parent_id)
         }
@@ -169,7 +170,7 @@ export class TypeRepository implements GeciciTypeInterface {
          console.log(nodeType['records'][0]['_fields'][0]["identity"]["low"]);
          const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
          const childrenList = await this.neo4jService.write(
-        'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty) where id(c)=$id detach delete n',
+        'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty {isDeleted: false}) where id(c)=$id detach delete n',
         {
           id: type_node_id
         }
@@ -280,7 +281,7 @@ export class TypeRepository implements GeciciTypeInterface {
 
 
       const hasTypeChild = await this.neo4jService.read(
-        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type) where id(c)=$id return n',
+        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
         {
           id: int(id)
         }
@@ -386,7 +387,7 @@ export class TypeRepository implements GeciciTypeInterface {
               let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
                 id: parseInt(_id),
               });
-              throw new HttpException({ message: 'Type (form tipinde) ancak property içeren çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+              throw new HttpException({ message: 'Type (form tipinde) ancak property içeren çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
               // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
             }
           }
@@ -394,7 +395,7 @@ export class TypeRepository implements GeciciTypeInterface {
             let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
               id: parseInt(_id),
             });
-            throw new HttpException({ message: 'Type (form tipinde) dışında Çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+            throw new HttpException({ message: 'Type (form tipinde) dışında Çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
             // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
           }
         }
@@ -402,7 +403,7 @@ export class TypeRepository implements GeciciTypeInterface {
           let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
             id: parseInt(_id),
           });
-          throw new HttpException({ message: 'Birden çok çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+          throw new HttpException({ message: 'Birden çok çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
           // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
         }
 
