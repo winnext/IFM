@@ -264,7 +264,6 @@ const InputTextareaComponent = (props) => {
 };
 
 const DropDownComponent = (props) => {
-  console.log(props);
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [displayResponsive2, setDisplayResponsive2] = useState(false);
   const [position, setPosition] = useState("center");
@@ -341,8 +340,7 @@ const DropDownComponent = (props) => {
       </div>
     );
   };
-
-  const [inputList, setInputList] = useState([{ optionsName: "" }]);
+  const [inputList, setInputList] = useState(props.item.options||[{ optionsName: "" }]);
 
   // handle input change
   const handleInputChange = (e, index) => {
