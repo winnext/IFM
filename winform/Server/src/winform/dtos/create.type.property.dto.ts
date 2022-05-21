@@ -50,4 +50,8 @@ export class CreateTypePropertyDto {
   @IsNumber()
   @IsNotEmpty()  
   parent_id: number; //not in entity
+
+  @ApiProperty()
+  @IsOptional()
+  options?: string[];
 }

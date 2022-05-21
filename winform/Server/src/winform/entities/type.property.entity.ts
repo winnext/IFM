@@ -16,6 +16,7 @@ export class TypeProperty {
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   isActive: boolean = true;  // not in create dto
   isDeleted: boolean = false; // not in dtos
+  options: string[] = [];
 
 
 }
