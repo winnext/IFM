@@ -300,14 +300,14 @@ const SetFormTree = () => {
     return nodes.map((node) => {
       if (node.key === search) {
         console.log(node);
-        
+
         const updateNode = {
           key: node.key,
           name: name,
           code: code,
           tag: tag,
           labelclass: node.labelclass,
-          isActive:true
+          isActive: true
         };
 
         FacilityTreeService.update(node._id.low, updateNode)
@@ -451,11 +451,11 @@ const SetFormTree = () => {
 
   const editForm = (id: string, data: any) => {
     console.log(data);
-    
+
     navigate("/formbuilder/" + id, {
       state: {
         data: data,
-        id:id
+        id: id
       }
     });
   };
@@ -472,8 +472,62 @@ const SetFormTree = () => {
   }
 
   const deleteItem = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    findNodeAndDelete(key, temp);
+    // const temp = JSON.parse(JSON.stringify(data));
+    // findNodeAndDelete(key, temp);
+    FacilityTreeService.nodeInfo(key)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.properties.hasParent === false) {
+          FacilityTreeService.remove(res.data.identity.low)
+            .then(() => {
+              toast.current.show({
+                severity: "success",
+                summary: "Success",
+                detail: "Structure Deleted",
+                life: 2000,
+              });
+              navigate("/facilitystructure");
+            })
+            .catch((err) => {
+              toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: err.response ? err.response.data.message : err.message,
+                life: 2000,
+              });
+            });
+        }
+        else {
+          FacilityTreeService.remove(res.data.identity.low)
+            .then(() => {
+              toast.current.show({
+                severity: "success",
+                summary: "Success",
+                detail: "Structure Deleted",
+                life: 2000,
+              });
+              getClassification();
+
+            })
+            .catch((err) => {
+              toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: err.response ? err.response.data.message : err.message,
+                life: 2000,
+              });
+            });
+        }
+
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {

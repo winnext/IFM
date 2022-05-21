@@ -41,9 +41,9 @@ function FormBuilderCreate() {
           return {
             ...item,
             rules: { required: item.rules[0] },
-            // options: item.options.map(function (option) {
-            //   return { optionsName: option };
-            // }),
+            options: item.options.map(function (option) {
+              return { optionsName: option };
+            }),
           };
         });
         setItems(convertedData);
@@ -82,14 +82,14 @@ function FormBuilderCreate() {
         type: item.type,
         label: '',
         defaultValue: '',
-        // rules: { required: false },
-        rules: [false],
+        rules: { required: false },
+        // rules: [false],
         tag: ['deneme'],
         typeId: uuid(),
         key: uuid(),
         labelclass: 'TypeProperty',
         parent_id: paramsId.id,
-        deneme:paramsId.id
+        options: [],
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
@@ -142,6 +142,7 @@ function FormBuilderCreate() {
             onClick={() => {
               const data = items;
               console.log(data);
+              // console.log(dataNeo4j);
               const dataNeo4j = data.map((item) => {
                 return {
                   key: item.key,
@@ -153,7 +154,7 @@ function FormBuilderCreate() {
                   labelclass: item.labelclass,
                   rules: [item.rules.required],
                   parent_id: item.parent_id||parentId,
-                  // options: item.options.map((option) => option.optionsName),
+                  options: item.options?.map((option) => option.optionsName),
                 };
               });
               console.log(dataNeo4j);
