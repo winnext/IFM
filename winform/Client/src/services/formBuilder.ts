@@ -8,11 +8,11 @@ const findAll = async () => {
   return axios.get(url);
 };
 
-// const findOne = async () => {
-//   return axios.get(url + id);
-// };
+const getProperties = async (id: string) => {
+  return axios.get(url + id);
+};
 
-const create = async (form:any) => {
+const create = async (form: any) => {
   return axios.post(url, form);
 };
 
@@ -27,7 +27,7 @@ const remove = async (id: string) => {
 
 
 
-const service = { findAll, create, remove,update};
+const service = { findAll, getProperties, create, remove, update };
 
 export default service;
 
