@@ -90,6 +90,7 @@ function FormBuilderCreate() {
         labelclass: 'TypeProperty',
         parent_id: paramsId.id,
         options: [],
+        isActive: true,
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
@@ -155,6 +156,7 @@ function FormBuilderCreate() {
                   rules: [item.rules.required],
                   parent_id: item.parent_id||parentId,
                   options: item.options?.map((option) => option.optionsName),
+                  isActive: item.isActive,
                 };
               });
               console.log(dataNeo4j);

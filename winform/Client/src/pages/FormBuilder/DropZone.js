@@ -15,7 +15,6 @@ const InputComponent = (props) => {
   console.log(props.item.rules.required);
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [position, setPosition] = useState('center');
-  const [active, setActive] = useState(true);
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -139,14 +138,21 @@ const InputComponent = (props) => {
           />
         ) : (
           <div>
-            {active === true ? (
+            {props.item.isActive === true ? (
               <span className="mr-2 font-bold text-lg">Active</span>
             ) : (
               <span className="mr-2 font-bold text-lg">Passive</span>
             )}
             <Checkbox
-              onChange={(e) => setActive(e.checked)}
-              checked={active}
+              inputId="cb11"
+              onChange={(e) => {
+                props.setItems((prevValue) => {
+                  const temp = [...prevValue];
+                  temp[props.index].isActive = !temp[props.index].isActive;
+                  return temp;
+                });
+              }}
+              checked={props.item.isActive}
             ></Checkbox>
           </div>
         )}
@@ -262,20 +268,45 @@ const InputTextareaComponent = (props) => {
 
       <InputTextarea disabled placeholder="Text Area" style={{ width: 250 }} />
 
-      <Button
-        className="ml-2 mb-2 p-button-sm p-button-raised p-button-info"
-        label="Details"
-        onClick={() => onClick('displayResponsive')}
-      />
-      <Button
-        className="ml-2 mb-2  p-button-sm p-button-raised p-button-danger"
-        label="Remove"
-        onClick={() => {
-          const list = [...props.items];
-          list.splice(props.index, 1);
-          props.setItems(list);
-        }}
-      />
+      <div className="flex justify-content-between mt-2">
+        <div>
+          <Button
+            className="p-button-rounded p-button-sm  p-button-info"
+            label="Details"
+            onClick={() => onClick('displayResponsive')}
+          />
+        </div>
+        {!props.item._id ? (
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-danger"
+            onClick={() => {
+              const list = [...props.items];
+              list.splice(props.index, 1);
+              props.setItems(list);
+            }}
+          />
+        ) : (
+          <div>
+            {props.item.isActive === true ? (
+              <span className="mr-2 font-bold text-lg">Active</span>
+            ) : (
+              <span className="mr-2 font-bold text-lg">Passive</span>
+            )}
+            <Checkbox
+              inputId="cb22"
+              onChange={(e) => {
+                props.setItems((prevValue) => {
+                  const temp = [...prevValue];
+                  temp[props.index].isActive = !temp[props.index].isActive;
+                  return temp;
+                });
+              }}
+              checked={props.item.isActive}
+            ></Checkbox>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -383,20 +414,45 @@ const DropDownComponent = (props) => {
   return (
     <div key={props.index} className="field">
       <Dropdown disabled placeholder="Dropdown" style={{ width: 250 }} />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-info"
-        label="Details"
-        onClick={() => onClick('displayResponsive')}
-      />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-danger"
-        label="Remove"
-        onClick={() => {
-          const list = [...props.items];
-          list.splice(props.index, 1);
-          props.setItems(list);
-        }}
-      />
+      <div className="flex justify-content-between mt-2">
+        <div>
+          <Button
+            className="p-button-rounded p-button-sm  p-button-info"
+            label="Details"
+            onClick={() => onClick('displayResponsive')}
+          />
+        </div>
+        {!props.item._id ? (
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-danger"
+            onClick={() => {
+              const list = [...props.items];
+              list.splice(props.index, 1);
+              props.setItems(list);
+            }}
+          />
+        ) : (
+          <div>
+            {props.item.isActive === true ? (
+              <span className="mr-2 font-bold text-lg">Active</span>
+            ) : (
+              <span className="mr-2 font-bold text-lg">Passive</span>
+            )}
+            <Checkbox
+              inputId="cb33"
+              onChange={(e) => {
+                props.setItems((prevValue) => {
+                  const temp = [...prevValue];
+                  temp[props.index].isActive = !temp[props.index].isActive;
+                  return temp;
+                });
+              }}
+              checked={props.item.isActive}
+            ></Checkbox>
+          </div>
+        )}
+      </div>
 
       <Dialog
         header="Details"
@@ -612,21 +668,45 @@ const RadioComponent = (props) => {
       <span className="ml-2" style={{ color: '#a3a9af' }}>
         RadioButton
       </span>
-      <Button
-        className="p-button-sm p-button-raised p-button-info"
-        label="Details"
-        onClick={() => onClick('displayResponsive')}
-        style={{ marginLeft: 152 }}
-      />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-danger"
-        label="Remove"
-        onClick={() => {
-          const list = [...props.items];
-          list.splice(props.index, 1);
-          props.setItems(list);
-        }}
-      />
+      <div className="flex justify-content-between mt-2">
+        <div>
+          <Button
+            className="p-button-rounded p-button-sm  p-button-info"
+            label="Details"
+            onClick={() => onClick('displayResponsive')}
+          />
+        </div>
+        {!props.item._id ? (
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-danger"
+            onClick={() => {
+              const list = [...props.items];
+              list.splice(props.index, 1);
+              props.setItems(list);
+            }}
+          />
+        ) : (
+          <div>
+            {props.item.isActive === true ? (
+              <span className="mr-2 font-bold text-lg">Active</span>
+            ) : (
+              <span className="mr-2 font-bold text-lg">Passive</span>
+            )}
+            <Checkbox
+              inputId="cb44"
+              onChange={(e) => {
+                props.setItems((prevValue) => {
+                  const temp = [...prevValue];
+                  temp[props.index].isActive = !temp[props.index].isActive;
+                  return temp;
+                });
+              }}
+              checked={props.item.isActive}
+            ></Checkbox>
+          </div>
+        )}
+      </div>
 
       <Dialog
         header="Details"
@@ -806,21 +886,45 @@ const CheckBoxComponent = (props) => {
       <span className="ml-2" style={{ color: '#a3a9af' }}>
         Checkbox
       </span>
-      <Button
-        className="p-button-sm p-button-raised p-button-info"
-        label="Details"
-        onClick={() => onClick('displayResponsive')}
-        style={{ marginLeft: 165 }}
-      />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-danger"
-        label="Remove"
-        onClick={() => {
-          const list = [...props.items];
-          list.splice(props.index, 1);
-          props.setItems(list);
-        }}
-      />
+      <div className="flex justify-content-between mt-2">
+        <div>
+          <Button
+            className="p-button-rounded p-button-sm  p-button-info"
+            label="Details"
+            onClick={() => onClick('displayResponsive')}
+          />
+        </div>
+        {!props.item._id ? (
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-danger"
+            onClick={() => {
+              const list = [...props.items];
+              list.splice(props.index, 1);
+              props.setItems(list);
+            }}
+          />
+        ) : (
+          <div>
+            {props.item.isActive === true ? (
+              <span className="mr-2 font-bold text-lg">Active</span>
+            ) : (
+              <span className="mr-2 font-bold text-lg">Passive</span>
+            )}
+            <Checkbox
+              inputId="cb55"
+              onChange={(e) => {
+                props.setItems((prevValue) => {
+                  const temp = [...prevValue];
+                  temp[props.index].isActive = !temp[props.index].isActive;
+                  return temp;
+                });
+              }}
+              checked={props.item.isActive}
+            ></Checkbox>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -918,20 +1022,45 @@ const DateComponent = (props) => {
       </Dialog>
 
       <Calendar disabled placeholder="Date" showIcon style={{ width: 250 }} />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-info"
-        label="Details"
-        onClick={() => onClick('displayResponsive')}
-      />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-danger"
-        label="Remove"
-        onClick={() => {
-          const list = [...props.items];
-          list.splice(props.index, 1);
-          props.setItems(list);
-        }}
-      />
+      <div className="flex justify-content-between mt-2">
+        <div>
+          <Button
+            className="p-button-rounded p-button-sm  p-button-info"
+            label="Details"
+            onClick={() => onClick('displayResponsive')}
+          />
+        </div>
+        {!props.item._id ? (
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-danger"
+            onClick={() => {
+              const list = [...props.items];
+              list.splice(props.index, 1);
+              props.setItems(list);
+            }}
+          />
+        ) : (
+          <div>
+            {props.item.isActive === true ? (
+              <span className="mr-2 font-bold text-lg">Active</span>
+            ) : (
+              <span className="mr-2 font-bold text-lg">Passive</span>
+            )}
+            <Checkbox
+              inputId="cb66"
+              onChange={(e) => {
+                props.setItems((prevValue) => {
+                  const temp = [...prevValue];
+                  temp[props.index].isActive = !temp[props.index].isActive;
+                  return temp;
+                });
+              }}
+              checked={props.item.isActive}
+            ></Checkbox>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
