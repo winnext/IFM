@@ -18,8 +18,8 @@ export class TypeRepository implements GeciciTypeInterface {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
       'MATCH p=(n)-[:CHILDREN*]->(m) \
-      WHERE  id(n)=$idNum and  m:ChildNode  and NOT m:Type and NOT m:TypeProperty  and n.isDeleted=false and \
-      n.isDeleted=false and n.isActive=true and m.isActive=true \
+      WHERE  id(n)=$idNum and  n:ChildNode  and NOT n:Type and NOT n:TypeProperty  and n.isDeleted=false and n.isActive=true \
+      and m:ChildNode  and NOT m:Type and NOT m:TypeProperty and  m.isDeleted=false and m.isActive=true \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
