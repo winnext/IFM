@@ -1,20 +1,21 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Droppable } from "react-beautiful-dnd";
-import DraggableItem from "./DraggableItem";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { Checkbox } from "primereact/checkbox";
-import { Calendar } from "primereact/calendar";
-import { Dropdown } from "primereact/dropdown";
-import { RadioButton } from "primereact/radiobutton";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
+import React, { useEffect, useState, useRef } from 'react';
+import { Droppable } from 'react-beautiful-dnd';
+import DraggableItem from './DraggableItem';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Checkbox } from 'primereact/checkbox';
+import { Calendar } from 'primereact/calendar';
+import { Dropdown } from 'primereact/dropdown';
+import { RadioButton } from 'primereact/radiobutton';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 
 const InputComponent = (props) => {
   console.log(props);
   console.log(props.item.rules.required);
   const [displayResponsive, setDisplayResponsive] = useState(false);
-  const [position, setPosition] = useState("center");
+  const [position, setPosition] = useState('center');
+  const [active, setActive] = useState(true);
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -53,12 +54,11 @@ const InputComponent = (props) => {
       <Dialog
         header="Details"
         visible={displayResponsive}
-        onHide={() => onHide("displayResponsive")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter("displayResponsive")}
+        onHide={() => onHide('displayResponsive')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter('displayResponsive')}
       >
-  
         <div>
           <InputText
             placeholder="Label"
@@ -119,20 +119,38 @@ const InputComponent = (props) => {
 
       <InputText disabled placeholder="Text" style={{ width: 250 }} />
 
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-info"
-        label="Details"
-        onClick={() => onClick("displayResponsive")}
-      />
-      <Button
-        className="ml-2 p-button-sm p-button-raised p-button-danger"
-        label="Remove"
-        onClick={() => {
-          const list = [...props.items];
-          list.splice(props.index, 1);
-          props.setItems(list);
-        }}
-      />
+      <div className="flex justify-content-between mt-2">
+        <div>
+          <Button
+            className="p-button-rounded p-button-sm  p-button-info"
+            label="Details"
+            onClick={() => onClick('displayResponsive')}
+          />
+        </div>
+        {!props.item._id ? (
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-danger"
+            onClick={() => {
+              const list = [...props.items];
+              list.splice(props.index, 1);
+              props.setItems(list);
+            }}
+          />
+        ) : (
+          <div>
+            {active === true ? (
+              <span className="mr-2 font-bold text-lg">Active</span>
+            ) : (
+              <span className="mr-2 font-bold text-lg">Passive</span>
+            )}
+            <Checkbox
+              onChange={(e) => setActive(e.checked)}
+              checked={active}
+            ></Checkbox>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -140,7 +158,7 @@ const InputComponent = (props) => {
 const InputTextareaComponent = (props) => {
   console.log(props);
   const [displayResponsive, setDisplayResponsive] = useState(false);
-  const [position, setPosition] = useState("center");
+  const [position, setPosition] = useState('center');
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -179,12 +197,11 @@ const InputTextareaComponent = (props) => {
       <Dialog
         header="Details"
         visible={displayResponsive}
-        onHide={() => onHide("displayResponsive")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter("displayResponsive")}
+        onHide={() => onHide('displayResponsive')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter('displayResponsive')}
       >
-        
         <div>
           <InputText
             placeholder="Label"
@@ -248,7 +265,7 @@ const InputTextareaComponent = (props) => {
       <Button
         className="ml-2 mb-2 p-button-sm p-button-raised p-button-info"
         label="Details"
-        onClick={() => onClick("displayResponsive")}
+        onClick={() => onClick('displayResponsive')}
       />
       <Button
         className="ml-2 mb-2  p-button-sm p-button-raised p-button-danger"
@@ -266,7 +283,7 @@ const InputTextareaComponent = (props) => {
 const DropDownComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [displayResponsive2, setDisplayResponsive2] = useState(false);
-  const [position, setPosition] = useState("center");
+  const [position, setPosition] = useState('center');
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -340,7 +357,9 @@ const DropDownComponent = (props) => {
       </div>
     );
   };
-  const [inputList, setInputList] = useState(props.item.options||[{ optionsName: "" }]);
+  const [inputList, setInputList] = useState(
+    props.item.options || [{ optionsName: '' }],
+  );
 
   // handle input change
   const handleInputChange = (e, index) => {
@@ -359,7 +378,7 @@ const DropDownComponent = (props) => {
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([...inputList, { optionsName: "" }]);
+    setInputList([...inputList, { optionsName: '' }]);
   };
   return (
     <div key={props.index} className="field">
@@ -367,7 +386,7 @@ const DropDownComponent = (props) => {
       <Button
         className="ml-2 p-button-sm p-button-raised p-button-info"
         label="Details"
-        onClick={() => onClick("displayResponsive")}
+        onClick={() => onClick('displayResponsive')}
       />
       <Button
         className="ml-2 p-button-sm p-button-raised p-button-danger"
@@ -382,12 +401,11 @@ const DropDownComponent = (props) => {
       <Dialog
         header="Details"
         visible={displayResponsive}
-        onHide={() => onHide("displayResponsive")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter("displayResponsive")}
+        onHide={() => onHide('displayResponsive')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter('displayResponsive')}
       >
-      
         <div>
           <InputText
             placeholder="Label"
@@ -448,16 +466,16 @@ const DropDownComponent = (props) => {
           className="ml-3"
           label="Options"
           icon="pi pi-external-link"
-          onClick={() => onClick2("displayResponsive2")}
+          onClick={() => onClick2('displayResponsive2')}
         />
       </Dialog>
       <Dialog
         header="Details"
         visible={displayResponsive2}
-        onHide={() => onHide2("displayResponsive2")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter2("displayResponsive2")}
+        onHide={() => onHide2('displayResponsive2')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter2('displayResponsive2')}
       >
         {inputList.map((x, i) => {
           return (
@@ -492,7 +510,7 @@ const DropDownComponent = (props) => {
 const RadioComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [displayResponsive2, setDisplayResponsive2] = useState(false);
-  const [position, setPosition] = useState("center");
+  const [position, setPosition] = useState('center');
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -567,7 +585,7 @@ const RadioComponent = (props) => {
     );
   };
 
-  const [inputList, setInputList] = useState([{ optionsName: "" }]);
+  const [inputList, setInputList] = useState([{ optionsName: '' }]);
 
   // handle input change
   const handleInputChange = (e, index) => {
@@ -586,19 +604,19 @@ const RadioComponent = (props) => {
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([...inputList, { optionsName: "" }]);
+    setInputList([...inputList, { optionsName: '' }]);
   };
   return (
     <div key={props.index} className="field">
       <RadioButton disabled placeholder="RadioButton" />
-      <span className="ml-2" style={{ color: "#a3a9af"}}>
+      <span className="ml-2" style={{ color: '#a3a9af' }}>
         RadioButton
       </span>
       <Button
         className="p-button-sm p-button-raised p-button-info"
         label="Details"
-        onClick={() => onClick("displayResponsive")}
-        style = {{ marginLeft : 152 }}
+        onClick={() => onClick('displayResponsive')}
+        style={{ marginLeft: 152 }}
       />
       <Button
         className="ml-2 p-button-sm p-button-raised p-button-danger"
@@ -613,12 +631,11 @@ const RadioComponent = (props) => {
       <Dialog
         header="Details"
         visible={displayResponsive}
-        onHide={() => onHide("displayResponsive")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter("displayResponsive")}
+        onHide={() => onHide('displayResponsive')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter('displayResponsive')}
       >
-        
         <div>
           <InputText
             placeholder="Label"
@@ -632,7 +649,6 @@ const RadioComponent = (props) => {
             }}
             value={props.item.label}
           />
-
         </div>
         <div className="my-2">
           <Checkbox
@@ -655,16 +671,16 @@ const RadioComponent = (props) => {
           className="ml-3"
           label="Options"
           icon="pi pi-external-link"
-          onClick={() => onClick2("displayResponsive2")}
+          onClick={() => onClick2('displayResponsive2')}
         />
       </Dialog>
       <Dialog
         header="Details"
         visible={displayResponsive2}
-        onHide={() => onHide2("displayResponsive2")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter2("displayResponsive2")}
+        onHide={() => onHide2('displayResponsive2')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter2('displayResponsive2')}
       >
         {inputList.map((x, i) => {
           return (
@@ -698,7 +714,7 @@ const RadioComponent = (props) => {
 
 const CheckBoxComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
-  const [position, setPosition] = useState("center");
+  const [position, setPosition] = useState('center');
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -737,12 +753,11 @@ const CheckBoxComponent = (props) => {
       <Dialog
         header="Details"
         visible={displayResponsive}
-        onHide={() => onHide("displayResponsive")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter("displayResponsive")}
+        onHide={() => onHide('displayResponsive')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter('displayResponsive')}
       >
-        
         <div>
           <InputText
             placeholder="Label"
@@ -787,15 +802,15 @@ const CheckBoxComponent = (props) => {
           </label>
         </div>
       </Dialog>
-      <Checkbox disabled></Checkbox>{" "}
-      <span className="ml-2" style={{ color: "#a3a9af" }}>
+      <Checkbox disabled></Checkbox>{' '}
+      <span className="ml-2" style={{ color: '#a3a9af' }}>
         Checkbox
       </span>
       <Button
         className="p-button-sm p-button-raised p-button-info"
         label="Details"
-        onClick={() => onClick("displayResponsive")}
-        style = {{ marginLeft : 165 }}
+        onClick={() => onClick('displayResponsive')}
+        style={{ marginLeft: 165 }}
       />
       <Button
         className="ml-2 p-button-sm p-button-raised p-button-danger"
@@ -812,7 +827,7 @@ const CheckBoxComponent = (props) => {
 
 const DateComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
-  const [position, setPosition] = useState("center");
+  const [position, setPosition] = useState('center');
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -851,12 +866,11 @@ const DateComponent = (props) => {
       <Dialog
         header="Details"
         visible={displayResponsive}
-        onHide={() => onHide("displayResponsive")}
-        breakpoints={{ "960px": "75vw" }}
-        style={{ width: "30vw" }}
-        footer={renderFooter("displayResponsive")}
+        onHide={() => onHide('displayResponsive')}
+        breakpoints={{ '960px': '75vw' }}
+        style={{ width: '30vw' }}
+        footer={renderFooter('displayResponsive')}
       >
-      
         <div>
           <InputText
             placeholder="Label"
@@ -907,7 +921,7 @@ const DateComponent = (props) => {
       <Button
         className="ml-2 p-button-sm p-button-raised p-button-info"
         label="Details"
-        onClick={() => onClick("displayResponsive")}
+        onClick={() => onClick('displayResponsive')}
       />
       <Button
         className="ml-2 p-button-sm p-button-raised p-button-danger"
@@ -927,7 +941,7 @@ const DropZone = (props) => {
 
   const renderItem = (item, index) => {
     switch (item.type) {
-      case "text":
+      case 'text':
         return (
           <InputComponent
             item={item}
@@ -936,7 +950,7 @@ const DropZone = (props) => {
             items={props.items}
           />
         );
-      case "textarea":
+      case 'textarea':
         return (
           <InputTextareaComponent
             item={item}
@@ -945,7 +959,7 @@ const DropZone = (props) => {
             items={props.items}
           />
         );
-      case "dropdown":
+      case 'dropdown':
         return (
           <DropDownComponent
             item={item}
@@ -954,7 +968,7 @@ const DropZone = (props) => {
             items={props.items}
           />
         );
-      case "radio":
+      case 'radio':
         return (
           <RadioComponent
             item={item}
@@ -963,7 +977,7 @@ const DropZone = (props) => {
             items={props.items}
           />
         );
-      case "checkbox":
+      case 'checkbox':
         return (
           <CheckBoxComponent
             item={item}
@@ -972,7 +986,7 @@ const DropZone = (props) => {
             items={props.items}
           />
         );
-      case "date":
+      case 'date':
         return (
           <DateComponent
             item={item}
@@ -996,7 +1010,7 @@ const DropZone = (props) => {
           <div
             style={{
               minHeight: 500,
-              backgroundColor: snapshot.isDraggingOver ? "#f5f5f5" : "",
+              backgroundColor: snapshot.isDraggingOver ? '#f5f5f5' : '',
             }}
             ref={provided.innerRef}
             isDraggingOver={snapshot.isDraggingOver}
@@ -1004,7 +1018,7 @@ const DropZone = (props) => {
             {props.items.length > 0
               ? props.items.map((item, index) => (
                   <DraggableItem
-                    key={"di" + index}
+                    key={'di' + index}
                     item={item}
                     index={index}
                     hoverdCompId={hoverdCompId}
@@ -1015,9 +1029,9 @@ const DropZone = (props) => {
               : !snapshot.isDraggingOver && (
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       minHeight: 500,
                     }}
                   >

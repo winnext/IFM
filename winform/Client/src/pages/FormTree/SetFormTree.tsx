@@ -15,8 +15,6 @@ import FormType from "../../components/Form/FormType";
 import { useForm, Controller } from "react-hook-form";
 
 import FacilityTreeService from "../../services/formTree";
-import { log } from "console";
-
 
 interface StructureInterface {
   root:
