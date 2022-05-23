@@ -267,7 +267,7 @@ const FacilityStructure = () => {
         <Column field="properties.name" header="Name" sortable></Column>
       </DataTable>
       <Dialog
-        header="Add New Classification"
+        header="Add New Facility Structure"
         visible={addDia}
         style={{ width: "40vw" }}
         footer={renderFooter}
