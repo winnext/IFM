@@ -176,6 +176,8 @@ const SetClassification = () => {
 
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
+            console.log(res.data);
+            
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
@@ -409,7 +411,7 @@ const SetClassification = () => {
     setName("");
     setCode("");
     setTag([]);
-    setSelectedForm(undefined);
+    setTypeId(undefined);
     setAddDia(false);
   };
 
@@ -420,7 +422,7 @@ const SetClassification = () => {
     setName("");
     setCode("");
     setTag([]);
-    setSelectedForm(undefined);
+    setTypeId(undefined);
     setEditDia(false);
   }
 
@@ -474,7 +476,7 @@ const SetClassification = () => {
             setAddDia(false);
             setName("");
             setCode("");
-            setSelectedForm(undefined);
+            setTypeId(undefined);
             setTag([]);
           }}
           className="p-button-text"
@@ -500,7 +502,7 @@ const SetClassification = () => {
             setName("");
             setCode("");
             setTag([]);
-            setSelectedForm(undefined);
+            setTypeId(undefined);
           }}
           className="p-button-text"
         />
@@ -535,7 +537,7 @@ const SetClassification = () => {
           setName("");
           setCode("");
           setTag([]);
-          setSelectedForm(undefined);
+          setTypeId(undefined);
           setAddDia(false);
         }}
       >
@@ -576,15 +578,16 @@ const SetClassification = () => {
           />
         </div> */}
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type2</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
           <TreeSelect
-            value={selectedForm}
+            value={typeId}
             options={formData}
             onChange={(e) => {
-              setSelectedForm(e.value); console.log(e);
+              setTypeId(e.value)
             }}
             filter
-            placeholder="Select Items"
+            placeholder="Select Type"
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field structureChips">
@@ -601,7 +604,7 @@ const SetClassification = () => {
           setName("");
           setCode("");
           setTag([]);
-          setSelectedForm(undefined);
+          setTypeId(undefined);
           setEditDia(false);
         }}
       >
@@ -630,7 +633,8 @@ const SetClassification = () => {
               setTypeId(e.value)
             }}
             filter
-            placeholder="Select Items"
+            placeholder="Select Type"
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field structureChips">

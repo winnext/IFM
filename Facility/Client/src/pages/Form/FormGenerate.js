@@ -8,7 +8,9 @@ import { RadioButton } from "primereact/radiobutton";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import FormBuilderService from "../../services/formType";
+import { Toast } from "primereact/toast";
+import FormTypeService from "../../services/formType";
+import FormBuilderService from "../../services/formBuilder";
 import "./FormGenerate.css";
 
 const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
@@ -104,40 +106,57 @@ const Input = ({ value, onChange, type, ...rest }) => {
   }
 };
 
-const dumpData = {
-  Sözleşme: true,
-  Tarih: "Mon Apr 25 2022 00:00:00 GMT+0300 (GMT+03:00) {}",
-  adres: "xfgdg",
-  cinsiyet: "bay",
-  meyve: "armut",
-  textlabel: "gfdgfdgf",
-  şehir: "Ankara",
-};
-
 const Dynamic = () => {
-  const [selectedForm, setSelectedForm] = useState(undefined);
-  const [formId, setFormId] = useState("");
-  const [nodeId, setNodeId] = useState({ id: "123456" });
+
+  const [items, setItems] = useState([]);
+  const toast = React.useRef(null);
 
   const params = useLocation();
   console.log(params);
 
   const history = useNavigate();
 
-  const getForms = () => {
-    // const id = params.id || "";
-    FormBuilderService.findOne(localStorage.getItem("nodeId")).then((res) => {
-      setSelectedForm(res.data);
-    });
-  };
-
   useEffect(() => {
-    
-    if(params.state){
-      localStorage.setItem("nodeId", params.state.data.typeId);
+    if (params.state) {
+      localStorage.setItem("nodeId", params.state.data._id.low);
+      localStorage.setItem("typeId", params.state.data.typeId);
     }
-    getForms();
-    
+    FormTypeService.nodeInfo(localStorage.getItem("typeId"))
+      .then((res) => {
+        console.log(res.data);
+        FormBuilderService.getProperties(res.data.identity.low)
+          .then((res) => {
+            console.log(res.data);
+
+            const convertedData = res.data.map(function (item) {
+              return {
+                ...item,
+                rules: { required: item.rules[0] },
+                options: item.options.map(function (option) {
+                  return { optionsName: option };
+                }),
+              };
+            });
+            setItems(convertedData);
+          })
+          .catch((err) => {
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: err.response ? err.response.data.message : err.message,
+              life: 2000,
+            });
+          });
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
+
   }, []);
 
   const {
@@ -151,9 +170,6 @@ const Dynamic = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    console.log(nodeId);
-    let lastData = { ...data, ...nodeId };
-    console.log(lastData);
     history(`/facilitystructure/${params.state.rootId}`);
   };
 
@@ -163,11 +179,11 @@ const Dynamic = () => {
 
   return (
     <div>
-      {selectedForm && (
+      {items && (
         <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
-          {selectedForm &&
-            Object.keys(selectedForm.items).map((e) => {
-              const { rules, defaultValue, label } = selectedForm.items[e];
+          {items &&
+            Object.keys(items).map((e) => {
+              const { rules, defaultValue, label } = items[e];
               return (
                 <section key={e}>
                   <label className="mb-4">{label}</label>
@@ -181,7 +197,7 @@ const Dynamic = () => {
                         <Input
                           value={field.value || ""}
                           onChange={field.onChange}
-                          {...selectedForm.items[e]}
+                          {...items[e]}
                         />
                       </div>
                     )}
@@ -190,10 +206,18 @@ const Dynamic = () => {
                 </section>
               );
             })}
-          <div>{selectedForm && <>
-            <Button className="ml-3" type="submit">Submit</Button>
-            <Button className="ml-4" onClick={()=>backPage()}>Back</Button>
-          </>}</div>
+          <div>
+            {items && (
+              <>
+                <Button className="ml-3" type="submit">
+                  Submit
+                </Button>
+                <Button className="ml-4" onClick={() => backPage()}>
+                  Back
+                </Button>
+              </>
+            )}
+          </div>
         </form>
       )}
     </div>
