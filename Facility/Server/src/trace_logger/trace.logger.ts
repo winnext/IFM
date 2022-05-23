@@ -1,6 +1,11 @@
 import Pino, { Logger ,LoggerOptions,destination } from 'pino';
 import { trace, context } from '@opentelemetry/api';
 
+const timer =()=>{
+  let date = new Date();
+  return date;
+}
+
 export const loggerOptions: LoggerOptions = {
   formatters: {
     log(object) {
@@ -8,7 +13,8 @@ export const loggerOptions: LoggerOptions = {
       
       if (!span) return { ...object };
       const { spanId, traceId } = trace.getSpan(context.active())?.spanContext();
-      return { ...object ,spanId, traceId };
+      let time1 = timer();
+      return { ...object, spanId, traceId,time1 };
     },
   },
   prettyPrint:
