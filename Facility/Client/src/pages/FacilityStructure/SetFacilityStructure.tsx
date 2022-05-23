@@ -109,7 +109,7 @@ const SetClassification = () => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [type, setType] = useState("");
-  const [typeId, setTypeId] = useState("");
+  const [typeId, setTypeId] = useState<any>(undefined);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
@@ -580,7 +580,8 @@ const SetClassification = () => {
           <TreeSelect
             value={selectedForm}
             options={formData}
-            onChange={(e) => {setSelectedForm(e.value); console.log(e);
+            onChange={(e) => {
+              setSelectedForm(e.value); console.log(e);
             }}
             filter
             placeholder="Select Items"
@@ -622,22 +623,14 @@ const SetClassification = () => {
         </div>
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <Dropdown
-            optionLabel="name"
-            value={selectedForm}
+          <TreeSelect
+            value={typeId}
             options={formData}
             onChange={(e) => {
-              const temp = selectedForm ? selectedForm.items : [];
-              for (let item of temp) {
-                unregister(item.label);
-              }
-              reset();
-              setSelectedForm(e.value);
-              setType(e.value.name);
-              setTypeId(e.value._id);
+              setTypeId(e.value)
             }}
-            placeholder="Select Type"
-            style={{ width: '50%' }}
+            filter
+            placeholder="Select Items"
           />
         </div>
         <div className="field structureChips">
@@ -722,7 +715,7 @@ const SetClassification = () => {
                 />
                 <Button
                   icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
-                  onClick={(e) => navigate(`/formgenerate/${selectedForm}`, {
+                  onClick={(e) => navigate(`/formgenerate/${data.key}`, {
                     state: {
                       data: data,
                       rootId: structure.root[0]._id.low,
