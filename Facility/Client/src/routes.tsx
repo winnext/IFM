@@ -28,7 +28,6 @@ export default function Router() {
         { path: "facility", element: <Facility /> },
         { path: "classifications", element: <Classifications /> },
         { path: "facilitystructure", element: <FacilityStructure /> },
-        { path: "formbuilder", element: <FormBuilder /> },
         { path: "formgenerate", element: <FormGenerate />},
       ],
     },
@@ -51,11 +50,6 @@ export default function Router() {
       path: "/classifications",
       element: <AppLayout />,
       children: [{ path: "fileimport", element: <ClassificationFileImport /> }],
-    },
-    {
-      path: "/formbuilder",
-      element: <AppLayout />,
-      children: [{ path: "create", element: <FormBuilderCreate/> }],
     },
     {
       path: "/formgenerate",
