@@ -54,7 +54,7 @@ async function bootstrap() {
     );
     app.enableCors();
     await app.startAllMicroservices();
-    await app.listen(3003);
+    await app.listen(3011);
   } catch (error) {
     console.log(error);
   }
