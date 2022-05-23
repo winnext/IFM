@@ -13,9 +13,10 @@ import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
 import FormType from "../../components/Form/FormType";
 import { useForm, Controller } from "react-hook-form";
+import { TreeSelect } from "primereact/treeselect";
 
 import FacilityStructureService from "../../services/facilitystructure";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formType";
 
 
 interface StructureInterface {
@@ -53,6 +54,28 @@ interface Node {
   },
   labelclass: string;
   description: string;
+  icon?: string;
+}
+
+interface FormNode {
+  code: string;
+  name: string;
+  tag: string[];
+  key: string;
+  hasParent?: boolean;
+  hasType?: boolean;
+  isActive?: boolean;
+  isDeleted?: boolean;
+  label: string;
+  children: FormNode[];
+  _type?: string;
+  typeId?: string;
+  selectable?: boolean;
+  _id: {
+    low: string;
+    high: string;
+  },
+  labelclass: string;
   icon?: string;
 }
 
@@ -96,12 +119,31 @@ const SetClassification = () => {
   const cm: any = React.useRef(null);
   const params = useParams()
   const navigate = useNavigate()
-  const [formData, setFormData] = useState<Type[]>([]);
+  const [formData, setFormData] = useState<FormNode[]>([]);
   const [selectedForm, setSelectedForm] = useState<any>(undefined);
 
   const getForms = async () => {
-    await FormBuilderService.findAll().then((res) => {
-      setFormData(res.data[0]);
+    await FormBuilderService.findOne('92').then((res) => {
+      console.log(res.data.root[0]);
+      let temp = JSON.parse(JSON.stringify([res.data.root[0]] || []));
+      const iconFormNodes = (nodes: FormNode[]) => {
+        if (!nodes || nodes.length === 0) {
+          return;
+        }
+        for (let i of nodes) {
+          iconFormNodes(i.children)
+          if (i.hasType === true) {
+            i.icon = "pi pi-fw pi-book";
+            i.selectable = true;
+          }
+          else {
+            i.selectable = false;
+          }
+        }
+      };
+      iconFormNodes(temp);
+
+      setFormData(temp);
     });
   };
 
@@ -513,7 +555,7 @@ const SetClassification = () => {
             style={{ width: '50%' }}
           />
         </div>
-        <div className="field">
+        {/* <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
           <Dropdown
             optionLabel="name"
@@ -531,6 +573,17 @@ const SetClassification = () => {
             }}
             placeholder="Select Type"
             style={{ width: '50%' }}
+          />
+        </div> */}
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Type2</h5>
+          <TreeSelect
+            value={selectedForm}
+            options={formData}
+            onChange={(e) => {setSelectedForm(e.value); console.log(e);
+            }}
+            filter
+            placeholder="Select Items"
           />
         </div>
         <div className="field structureChips">
@@ -669,7 +722,7 @@ const SetClassification = () => {
                 />
                 <Button
                   icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
-                  onClick={(e) => navigate("/form", {
+                  onClick={(e) => navigate(`/formgenerate/${selectedForm}`, {
                     state: {
                       data: data,
                       rootId: structure.root[0]._id.low,

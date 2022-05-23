@@ -745,7 +745,7 @@ const SetFormTree = () => {
           <Checkbox className="ml-3" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
         </div> */}
       </Dialog>
-      <h1>Edit Facility Structure</h1>
+      <h1>Edit Form Tree</h1>
       {/* <h3>Code : {classification.root[0].code} </h3> */}
       <div className="field">
         <Tree

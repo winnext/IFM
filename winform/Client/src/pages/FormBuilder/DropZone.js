@@ -388,9 +388,13 @@ const DropDownComponent = (props) => {
       </div>
     );
   };
-  const [inputList, setInputList] = useState(
-    props.item.options || [{ optionsName: '' }],
-  );
+  const [inputList, setInputList] = useState([{ optionsName: '' }]);
+  console.log(props.item.options.length);
+  useEffect(() => {
+    if (props.item.options.length > 0) {
+      setInputList(props.item.options);
+    }
+  }, [props.item.options]);
 
   // handle input change
   const handleInputChange = (e, index) => {

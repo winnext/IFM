@@ -3,7 +3,7 @@ import { InputText } from "primereact/inputtext";
 import { v4 as uuid } from "uuid";
 import { DragDropContext } from "react-beautiful-dnd";
 import React, { useState } from "react";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formType";
 import { useNavigate } from "react-router-dom";
 import Toolbox from "./ToolBox";
 import DropZone from "./DropZone";

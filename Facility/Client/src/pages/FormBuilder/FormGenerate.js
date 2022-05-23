@@ -7,7 +7,7 @@ import { Checkbox } from "primereact/checkbox";
 import { RadioButton } from "primereact/radiobutton";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formType";
 import "./FormGenerate.css";
 
 const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
