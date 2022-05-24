@@ -25,11 +25,10 @@ export class TypeRepository implements GeciciTypeInterface {
       RETURN value',
       { idNum },
     );
-
-    if (!result['records'][0]) {
-      let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum',{idNum});
-      if  (resultRoot['records'][0]["_fields"]) {
-         const o = { root: result['records'][0]['_fields'] };
+    if (!result['records'][0]["_fields"][0]["label"]) {
+      let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum return n',{idNum});
+      if  (resultRoot['records'][0]["_fields"][0]["properties"]["label"]) {
+         const o = { root: resultRoot['records'][0]['_fields'] };
           return  o;
       }
       else {
