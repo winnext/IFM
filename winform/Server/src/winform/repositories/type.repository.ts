@@ -26,9 +26,16 @@ export class TypeRepository implements GeciciTypeInterface {
       { idNum },
     );
 
-    var resultRow = result['records'][0]['_fields'][0];
-    if (!result) {
-      throw new TypeNotFountException('Type');
+    if (!result['records'][0]) {
+      let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum',{idNum});
+      if  (resultRoot['records'][0]["_fields"]) {
+         const o = { root: result['records'][0]['_fields'] };
+          return  o;
+      }
+      else {
+        throw new TypeNotFountException('Type');
+      }
+      
     } else {
       const o = { root: result['records'][0]['_fields'] };
       return o;
