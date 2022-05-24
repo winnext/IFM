@@ -159,7 +159,7 @@ const SetFormTree = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FacilityTreeService.findOne('92').then((res) => {
+    FacilityTreeService.findOne('254').then((res) => {
 
       let temp = [res.data.root[0]] || []
 
