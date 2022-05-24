@@ -18,7 +18,6 @@ import { TreeSelect } from "primereact/treeselect";
 import FacilityStructureService from "../../services/facilitystructure";
 import FormBuilderService from "../../services/formType";
 
-
 interface StructureInterface {
   root:
   {
@@ -177,12 +176,13 @@ const SetClassification = () => {
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
             console.log(res.data);
-            
+
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));
             setIsActive(res.data.properties.isActive);
+            setTypeId(res.data.properties.typeId);
           })
           .catch((err) => {
             toast.current.show({
@@ -630,7 +630,7 @@ const SetClassification = () => {
             value={typeId}
             options={formData}
             onChange={(e) => {
-              setTypeId(e.value)
+              setTypeId(e.value);
             }}
             filter
             placeholder="Select Type"
