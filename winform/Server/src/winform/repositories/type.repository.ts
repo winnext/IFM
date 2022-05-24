@@ -187,22 +187,40 @@ export class TypeRepository implements GeciciTypeInterface {
       if (createTypeDto.tag) {
         type.tag = createTypeDto.tag;
       }
+      else {
+        type.tag = [];
+      }
       if (createTypeDto.rules) {
         type.rules = createTypeDto.rules;
+      }
+      else {
+        type.rules = [];
       }
       if (createTypeDto.options) {
         type.options = createTypeDto.options;
       }
+      else {
+        type.options = [];
+      }
       if (createTypeDto.defaultValue) {
          type.defaultValue = createTypeDto.defaultValue;
+      }
+      else {
+        type.defaultValue = "";
       }
       if (createTypeDto.placeholder) {
         type.placeholder = createTypeDto.placeholder;
       }
-      if (createTypeDto.label2) {
-        type.label2 = createTypeDto.label2;
-     }
-
+      else {
+        type.placeholder = "";
+      }
+       if (createTypeDto.label2) {
+         type.label2 = createTypeDto.label2;
+      }
+      else {
+        type.label2 = "";
+      }
+  
   
       let _type = 'ChildNode:Type:TypeProperty';
       let _typeParent = 'ChildNode:Type';
