@@ -27,6 +27,7 @@ export class TypeRepository implements GeciciTypeInterface {
     );
     if (!result['records'][0]["_fields"][0]["label"]) {
       let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum return n',{idNum});
+      console.log(resultRoot['records'][0]["_fields"][0]);
       if  (resultRoot['records'][0]["_fields"][0]["properties"]["label"]) {
          const o = { root: resultRoot['records'][0]['_fields'] };
           return  o;
