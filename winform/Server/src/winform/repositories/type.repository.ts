@@ -17,9 +17,9 @@ export class TypeRepository implements GeciciTypeInterface {
   async findOneById(id: string) {
     const idNum = parseInt(id);
     let result = await this.neo4jService.read(
-      'MATCH p=(n)-[:CHILDREN*]->(m) \
-      WHERE  id(n)=$idNum and  n:ChildNode  and NOT n:Type and NOT n:TypeProperty  and n.isDeleted=false and n.isActive=true \
-      and m:ChildNode  and NOT m:Type and NOT m:TypeProperty and  m.isDeleted=false and m.isActive=true \
+      'MATCH p=(n {isDeleted:false})-[:CHILDREN*]->(m {isDeleted:false}) \
+      WHERE  id(n)=$idNum and  n:ChildNode  and NOT n:Type and NOT n:TypeProperty  and  \
+      and m:ChildNode  and NOT m:Type and NOT m:TypeProperty \
       WITH COLLECT(p) AS ps \
       CALL apoc.convert.toTree(ps) yield value \
       RETURN value',
@@ -56,22 +56,17 @@ export class TypeRepository implements GeciciTypeInterface {
       _type = _type + ':Type';
       _parentHasType = true;
     }
-    /*
-    if (type.labelclass == 'TypeProperty') {
-      _type = _type + ':Type:TypeProperty';
-      _typeParent = _typeParent + ':Type';
-    }
-    */
+ 
     if (createTypeDto.parent_id || createTypeDto.parent_id == 0) {
       
         let parent = await this.neo4jService.write(`match (x {isDeleted: false}) where id(x)=$parent_id return x`, {
           parent_id: int(createTypeDto.parent_id), 
         });
         if (type.labelclass == 'Type' && parent["records"][0]["_fields"][0]["properties"]["hasType"]) {
-          throw new HttpException({ message: 'Tip düğümüne sahip bir düğüme başka tip eklenemez.' }, HttpStatus.BAD_REQUEST);
+          throw new HttpException({ message: 'Tip düğümüne sahip bir düğüme başka tip eklenemez.' }, HttpStatus.NOT_FOUND);
         }
         else if (parent["records"][0]["_fields"][0]["properties"]["labelclass"] != 'ChildNode') {
-          throw new HttpException({ message: 'Tip düğümüne yeni düğüm eklenemez.' }, HttpStatus.BAD_REQUEST);
+          throw new HttpException({ message: 'Tip düğümüne yeni düğüm eklenemez.' }, HttpStatus.NOT_FOUND);
         }
         
      
@@ -103,14 +98,14 @@ export class TypeRepository implements GeciciTypeInterface {
         });
       }
      
-      const createChildOfRelation = `match (x: ${_type} {isDeleted: false,code: $code}) \
+      const createChildOfRelation = `match (x: ${_type} {isDeleted: false, code: $code}) \
          match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id \
          create (x)-[:CHILD_OF]->(y)`;
       await this.neo4jService.write(createChildOfRelation, {
         code: type.code,
         parent_id: int(createTypeDto.parent_id),
       });
-      return new Type();
+      return type;
     } else {
 
       if (type.labelclass == 'Type') {
@@ -153,7 +148,7 @@ export class TypeRepository implements GeciciTypeInterface {
         hasType,
       });
      
-      return new Type();
+      return type;
     }
   }
 
@@ -167,7 +162,6 @@ export class TypeRepository implements GeciciTypeInterface {
         }
       );
       if (nodeType['records'][0]) {
-         console.log(nodeType['records'][0]['_fields'][0]["identity"]["low"]);
          const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
          const childrenList = await this.neo4jService.write(
         'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty {isDeleted: false}) where id(c)=$id detach delete n',
@@ -202,6 +196,12 @@ export class TypeRepository implements GeciciTypeInterface {
       if (createTypeDto.defaultValue) {
          type.defaultValue = createTypeDto.defaultValue;
       }
+      if (createTypeDto.placeholder) {
+        type.placeholder = createTypeDto.placeholder;
+      }
+      if (createTypeDto.label2) {
+        type.label2 = createTypeDto.label2;
+     }
 
   
       let _type = 'ChildNode:Type:TypeProperty';
@@ -214,7 +214,8 @@ export class TypeRepository implements GeciciTypeInterface {
         
         let makeNodeConnectParent = `(x: ${_type} {label: $label, key: $key , tag: $tag , labelclass:$labelclass,createdAt: $createdAt , \
                                                    updatedAt: $updatedAt, isActive :$isActive, isDeleted: $isDeleted, \
-                                                   defaultValue: $defaultValue, rules: $rules, options: $options, type: $type, typeId: $typeId, name: $label})`;
+                                                   defaultValue: $defaultValue, rules: $rules, options: $options, type: $type, typeId: $typeId, name: $label,
+                                                   placeholder: $placeholder, label2: $label2})`;
         makeNodeConnectParent =
           ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
           makeNodeConnectParent;
@@ -232,7 +233,9 @@ export class TypeRepository implements GeciciTypeInterface {
           options: type.options,
           defaultValue: type.defaultValue,
           type: type.type,
-          typeId: type.typeId
+          typeId: type.typeId,
+          placeholder: type.placeholder,
+          label2: type.label2
         });
        
         const createChildOfRelation = `match (x: ${_type} {isDeleted: false, key: $key}) \
@@ -265,17 +268,18 @@ export class TypeRepository implements GeciciTypeInterface {
   }
   async updateNode(id: string, updateTypeDto: UpdateTypeDto) {
     const checkNodeisExist = await this.findOneById(id);
-    const { name, code, tag } = updateTypeDto;
+    const { name, code, tag, isActive } = updateTypeDto;
 
     if (checkNodeisExist.hasOwnProperty('root')) {
       const updatedNode = await this.neo4jService.write(
-        'MATCH (c:ChildNode {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag, c.label = $label ',
+        'MATCH (c:ChildNode {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag, c.label = $label, c.isActive = $isActive ',
         {
           name: name,
           code: code,
           tag: tag,
           label: code + ' - ' + name,
-          id: int(id)
+          id: int(id),
+          isActive: isActive
         },
       );
 
@@ -323,7 +327,7 @@ export class TypeRepository implements GeciciTypeInterface {
 
        const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
        const childrenList = await this.neo4jService.read(
-      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by id(n)',
+      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by id(n) desc',
       {
         id: type_node_id
       } 

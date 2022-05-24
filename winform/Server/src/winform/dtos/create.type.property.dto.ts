@@ -54,4 +54,16 @@ export class CreateTypePropertyDto {
   @ApiProperty()
   @IsOptional()
   options?: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  placeholder?: string; 
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  label2?: string; 
 }
