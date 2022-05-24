@@ -159,18 +159,20 @@ const SetFormTree = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FacilityTreeService.findOne('254').then((res) => {
+    FacilityTreeService.findOne('50').then((res) => {
 
-      let temp = [res.data.root[0]] || []
 
+      let temp;
       console.log(res.data.root[0]);
 
       setStructure(res.data);
       if (!res.data.root[0].children) {
         setData([res.data.root[0].properties] || []);
+        temp = [res.data.root[0].properties] || []
       }
       else if (res.data.root[0].children) {
         setData([res.data.root[0]] || []);
+        temp = [res.data.root[0]] || []
       }
 
       temp = JSON.parse(JSON.stringify(temp));
@@ -184,7 +186,7 @@ const SetFormTree = () => {
         severity: "error",
         summary: "Error",
         detail: err.response ? err.response.data.message : err.message,
-        life: 2000,
+        life: 20000,
       });
       setTimeout(() => {
         navigate("/facilitystructure")
@@ -204,6 +206,8 @@ const SetFormTree = () => {
     if (nodes.length === 0) return undefined;
     return nodes.map((node) => {
       if (node.key === search) {
+        console.log(node);
+
         const newNode = {
           key: uuidv4(),
           parent_id: node._id.low,
@@ -403,9 +407,39 @@ const SetFormTree = () => {
   };
 
   const addItem = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    findNodeAndAddItem(key, temp);
-    setData(temp);
+    // const temp = JSON.parse(JSON.stringify(data));
+    // findNodeAndAddItem(key, temp);
+    FacilityTreeService.nodeInfo(key)
+      .then((res) => {
+        console.log(res.data);
+        const newNode = {
+          key: uuidv4(),
+          parent_id: res.data.identity.low,
+          name: name,
+          code: code,
+          tag: tag,
+          labelclass: res.data.properties.labelclass,
+        };
+        FacilityTreeService.create(newNode)
+          .then((res) => {
+            toast.current.show({
+              severity: "success",
+              summary: "Successful",
+              detail: "Structure  Created",
+              life: 3000,
+            });
+            getClassification();
+          })
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
+    // setData(temp);
     setName("");
     setCode("");
     setTag([]);

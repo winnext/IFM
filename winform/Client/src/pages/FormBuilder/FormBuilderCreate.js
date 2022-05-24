@@ -91,8 +91,8 @@ function FormBuilderCreate() {
         parent_id: paramsId.id,
         options: [],
         isActive: true,
-        placeholder: 'test',
-        label2: 'test',
+        placeholder: '',
+        label2: '',
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
