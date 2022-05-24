@@ -181,7 +181,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       } else {
         //id si girilen nodun parentını getiren query
         const parent = await this.neo4jService.read(
-          'MATCH (c {isDeleted: false}) where id(c)= $id match(k {isDeleted: false}) match (c)-[:CHILD_OF]-(k) return k',
+          'MATCH (c {isDeleted: false}) where id(c)= $id match(k {isDeleted: false}) match (c)-[:CHILD_OF]->(k) return k',
           { id: parseInt(_id) },
         );
         console.log(parent);
