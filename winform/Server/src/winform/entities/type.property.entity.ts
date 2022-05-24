@@ -17,8 +17,8 @@ export class TypeProperty {
   isActive: boolean = true;  // not in create dto
   isDeleted: boolean = false; // not in dtos
   options: string[] = [];
-
-
+  placeholder:string;
+  label2:string
 }
 function generateUuid() {
   return uuidv4()
