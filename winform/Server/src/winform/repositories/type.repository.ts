@@ -16,6 +16,7 @@ export class TypeRepository implements GeciciTypeInterface {
 
   async findOneById(id: string) {
     const idNum = parseInt(id);
+    
     let result = await this.neo4jService.read(
       'MATCH p=(n {isDeleted:false})-[:CHILDREN*]->(m {isDeleted:false}) \
       WHERE  id(n)=$idNum and  n:ChildNode  and NOT n:Type and NOT n:TypeProperty  \
@@ -25,9 +26,12 @@ export class TypeRepository implements GeciciTypeInterface {
       RETURN value',
       { idNum },
     );
+    console.log('---------------------------------------------------'+id)
+    console.log('---------------------------------------------------'+idNum)
+    console.log(result['records'][0]);
+     console.log('---------------------------------------------------'+idNum)
     if (!result['records'][0]["_fields"][0]["label"]) {
       let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum return n',{idNum});
-      console.log(resultRoot['records'][0]["_fields"][0]);
       if  (resultRoot['records'][0]["_fields"][0]["properties"]["label"]) {
          const o = { root: resultRoot['records'][0]['_fields'] };
           return  o;
