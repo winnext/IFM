@@ -1,6 +1,5 @@
-/* eslint-disable no-var */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Neo4jService } from 'sgnm-neo4j';
+import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
@@ -60,9 +59,11 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       }
       return deletedNode;
     } catch (error) {
-      console.log(error);
-      if (error.response && error.response.code === 200) {
+      const { code } = error.response;
+      if (code === CustomNeo4jError.HAS_CHİLDREN) {
         nodeHasChildException(_id);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
