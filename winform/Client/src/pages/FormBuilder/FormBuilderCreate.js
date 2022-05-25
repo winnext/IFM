@@ -165,7 +165,7 @@ function FormBuilderCreate() {
               });
               console.log(dataNeo4j);
               FormBuilderService.create(dataNeo4j).then((res) => {
-                navigate('/formbuilder');
+                navigate('/formtree');
               });
             }}
           >

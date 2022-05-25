@@ -119,6 +119,8 @@ const Classifications = () => {
     setAddDia(false);
     setName("");
     setCode("");
+    setLabelClass("");
+    setTag([]);
   };
 
   const onPage = (event: any) => {
