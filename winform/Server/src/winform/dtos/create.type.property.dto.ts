@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Length, IsOptional, IsNumber  } from 'class-validator';
+import { IsNotEmpty, IsString, Length, IsOptional, IsNumber, IsBoolean  } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTypePropertyDto {
@@ -66,4 +66,10 @@ export class CreateTypePropertyDto {
   @IsString()
   @Length(1, 50)
   label2?: string; 
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
+    
 }

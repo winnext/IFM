@@ -187,6 +187,7 @@ export class TypeRepository implements GeciciTypeInterface {
       type.type = createTypeDto.type;
       type.typeId = createTypeDto.typeId;
       type.labelclass = createTypeDto.labelclass;
+      type.isActive = createTypeDto.isActive;
 
       if (createTypeDto.key) {
         type.key = createTypeDto.key;

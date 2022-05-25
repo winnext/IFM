@@ -9,7 +9,7 @@ export class Type {
   label: string; // not in dtos
   createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
-  isActive: boolean = true; // not in create dto
+  isActive: boolean = true;
   isDeleted: boolean = false; // not in dtos
 
   hasParent: Boolean = true; // not in dtos
