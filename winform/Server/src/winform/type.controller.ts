@@ -19,7 +19,6 @@ export class TypeController {
   @Get('/:id')
   @NoCache()
   getTypeById(@Param('id') id: string) {
-    console.log(id)
     return this.typeService.findOne(id);
   }
   @Unprotected()

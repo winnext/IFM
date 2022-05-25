@@ -30,14 +30,14 @@ export class TypeService {
 
   @Span('create a new type')
   @OtelMethodCounter()
-  createType(createTypeDto: CreateTypeDto) {
-    return this.typeRepository.createType(createTypeDto);
+  async createType(createTypeDto: CreateTypeDto) {
+    return await this.typeRepository.createType(createTypeDto);
   }
 
   @Span('create new type properties')
   @OtelMethodCounter()
   async createTypeProperties(createTypeProperties: CreateTypePropertyDto[]) {
-    return this.typeRepository.createTypeProperties(createTypeProperties);
+    return await this.typeRepository.createTypeProperties(createTypeProperties);
   }
 
   @Span('find a node by key')
@@ -50,19 +50,19 @@ export class TypeService {
   @Span('update a node')
   @OtelMethodCounter()
   async updateNode(id: string, updateTypeDto: UpdateTypeDto) {
-    return this.typeRepository.updateNode(id, updateTypeDto);
+    return await this.typeRepository.updateNode(id, updateTypeDto);
   }
 
   @Span('find type properties by node id')
   @OtelMethodCounter()
   async findTypePropertiesByNodeId(id: string) {
-    return this.typeRepository.findTypePropertiesByNodeId(id);
+    return await this.typeRepository.findTypePropertiesByNodeId(id);
   }
 
   @Span('remove a type')
   @OtelMethodCounter()
   async remove(id: string) {
-    return this.typeRepository.delete(id);
+    return await this.typeRepository.delete(id);
   }
 }
 
