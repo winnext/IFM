@@ -7,6 +7,7 @@ import { Topics, MongoExceptionFilter, LoggingInterceptor, TimeoutInterceptor, H
 import trial from './tracing';
 import { I18nService, i18nValidationErrorFactory, I18nValidationExceptionFilter } from 'nestjs-i18n';
 import { kafkaConf } from './common/const/kafka.conf';
+import { Neo4jErrorFilter } from 'sgnm-neo4j';
 
 async function bootstrap() {
   try {
@@ -43,6 +44,7 @@ async function bootstrap() {
       new MongoExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
       new HttpExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
       new I18nValidationExceptionFilter(),
+      new Neo4jErrorFilter(),
     );
     app.useGlobalInterceptors(
       new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),

@@ -45,7 +45,7 @@ export class PaginationNeo4jParams {
    * Class name(for example: Classification)
    */
   @ApiProperty({
-   enum:ClassNames
+    enum: ClassNames,
   })
   @IsOptional()
   @IsEnum(ClassNames)
