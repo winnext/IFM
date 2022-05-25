@@ -25,7 +25,7 @@ export class TypeService {
   @Span('find a type by id')
   @OtelMethodCounter()
   async findOne(id: string) {
-    return this.typeRepository.findOneById(id);
+    return await this.typeRepository.findOneById(id);
   }
 
   @Span('create a new type')
