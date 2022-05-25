@@ -156,11 +156,11 @@ function FormBuilderCreate() {
                   defaultValue: item.defaultValue,
                   labelclass: item.labelclass,
                   rules: [item.rules.required],
-                  parent_id: item.parent_id||parentId,
+                  parent_id: item.parent_id || parentId,
                   options: item.options?.map((option) => option.optionsName),
                   isActive: item.isActive,
                   placeholder: item.placeholder,
-                  label2:item.label2
+                  label2: item.label2,
                 };
               });
               console.log(dataNeo4j);
@@ -170,6 +170,14 @@ function FormBuilderCreate() {
             }}
           >
             Save
+          </Button>
+          <Button
+            className="p-button-danger ml-2"
+            onClick={() => {
+              navigate('/formtree');
+            }}
+          >
+            Cancel
           </Button>
         </div>
       </div>

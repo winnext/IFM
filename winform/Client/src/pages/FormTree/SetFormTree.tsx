@@ -223,7 +223,7 @@ const SetFormTree = () => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Structure  Created",
+              detail: "Form  Created",
               life: 3000,
             });
             getClassification();
@@ -271,7 +271,7 @@ const SetFormTree = () => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Structure  Created",
+              detail: "Form  Created",
               life: 3000,
             });
             getClassification();
@@ -349,7 +349,7 @@ const SetFormTree = () => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Structure Deleted",
+                detail: "Form Deleted",
                 life: 2000,
               });
               navigate("/facilitystructure");
@@ -369,7 +369,7 @@ const SetFormTree = () => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Structure Deleted",
+                detail: "Form Deleted",
                 life: 2000,
               });
               getClassification();
@@ -425,7 +425,7 @@ const SetFormTree = () => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Structure  Created",
+              detail: "Form  Created",
               life: 3000,
             });
             getClassification();
@@ -465,7 +465,7 @@ const SetFormTree = () => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Structure  Created",
+              detail: "Form Created",
               life: 3000,
             });
             getClassification();
@@ -515,7 +515,7 @@ const SetFormTree = () => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Structure Deleted",
+                detail: "Node Deleted",
                 life: 2000,
               });
               navigate("/facilitystructure");
@@ -535,7 +535,7 @@ const SetFormTree = () => {
               toast.current.show({
                 severity: "success",
                 summary: "Success",
-                detail: "Structure Deleted",
+                detail: "Node Deleted",
                 life: 2000,
               });
               getClassification();
