@@ -352,7 +352,7 @@ export class TypeRepository implements GeciciTypeInterface {
 
        const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
        const childrenList = await this.neo4jService.read(
-      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by id(n) desc',
+      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by id(n) asc',
       {
         id: type_node_id
       } 
