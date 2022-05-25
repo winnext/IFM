@@ -5,9 +5,5 @@ import { CreateTypePropertyDto } from './create.type.property.dto';
 
 export class UpdateTypePropertyDto extends PartialType(CreateTypePropertyDto) {
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsBoolean()
-  isActive: boolean;
-    
+  
   }
