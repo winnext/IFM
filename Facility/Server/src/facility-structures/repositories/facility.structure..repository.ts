@@ -59,7 +59,8 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       orderByColumn = 'name';
     }
 
-    const count = await this.neo4jService.findNodeCountWithoutChildrenByClassName(class_name);
+    const res = await this.neo4jService.findNodeCountWithoutChildrenByClassName(class_name);
+    const count = res.result;
 
     const pagecount = Math.ceil(count / limit);
 
@@ -74,14 +75,14 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       }
     }
 
-    const result = await this.neo4jService.findNodeWithoutChildrenByClassName({
+    const result = await this.neo4jService.findRootNodeByClassName({
       class_name,
       skip,
       limit,
     });
 
     const facilityStructure = [];
-    result.records.forEach((element) => {
+    result.result.records.forEach((element) => {
       facilityStructure.push(element.get('node'));
     });
 
@@ -184,7 +185,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
         let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
           id: parseInt(_id),
         });
-        throw new HttpException({ message: 'Çocuğu olan node silinemez' }, HttpStatus.BAD_REQUEST);
+        throw new HttpException('cannot delete node with children', 400);
         // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
       } else {
         const parent = await this.neo4jService.read(
