@@ -93,6 +93,7 @@ function FormBuilderCreate() {
         isActive: true,
         placeholder: '',
         label2: '',
+        index:'',
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
@@ -161,6 +162,7 @@ function FormBuilderCreate() {
                   isActive: item.isActive,
                   placeholder: item.placeholder,
                   label2: item.label2,
+                  index: item.index,
                 };
               });
               console.log(dataNeo4j);
