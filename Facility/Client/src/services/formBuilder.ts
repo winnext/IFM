@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_URL2 + "type/properties/";
+const url = process.env.REACT_APP_API_URL2 + "type/properties/active/";
 // const url = "http://localhost:3002/";
 
 
