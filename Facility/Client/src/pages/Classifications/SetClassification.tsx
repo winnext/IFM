@@ -28,7 +28,8 @@ interface ClassificationInterface {
     hasParent: boolean;
     parent_id?: string;
     selectable?: boolean;
-  }[];
+    label: string;
+  };
 }
 
 interface Node {
@@ -54,7 +55,7 @@ const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [classification, setClassification] = useState<ClassificationInterface>({
-    root: [
+    root: 
       {
         code: "",
         children: [],
@@ -65,9 +66,10 @@ const SetClassification = () => {
           high: ""
         },
         key: "",
-        hasParent: false
+        hasParent: false,
+        label:""
       }
-    ]
+    
   });
 
   const [data, setData] = useState<Node[]>([]);
@@ -125,12 +127,14 @@ const SetClassification = () => {
     ClassificationsService.findOne(id).then((res) => {
 
       setClassification(res.data);
+      console.log(res.data);
+      
 
-      if (!res.data.root[0].children) {
-        setData([res.data.root[0].properties] || []);
+      if (!res.data.root.children) {
+        setData([res.data.root.properties] || []);
       }
-      else if (res.data.root[0].children) {
-        setData([res.data.root[0]] || []);
+      else if (res.data.root.children) {
+        setData([res.data.root] || []);
       }
       setLoading(false);
     }).catch(err => {
@@ -165,6 +169,7 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
+          label:code+":"+name
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
@@ -208,6 +213,7 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
+          label:code+":"+name
         };
 
         ClassificationsService.update(node.self_id.low, updateNode)
@@ -484,7 +490,7 @@ const SetClassification = () => {
         </div>
       </Dialog>
       <h1>Edit Classification</h1>
-      <h3>Code : {classification.root[0].code} </h3>
+      <h3>Code : {classification.root.code} </h3>
       <div className="field">
         <Tree
           loading={loading}

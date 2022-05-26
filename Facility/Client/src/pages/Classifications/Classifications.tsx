@@ -26,6 +26,7 @@ interface ClassificationInterface {
   key: string;
   hasParent?: boolean,
   labelclass: string;
+  label: string;
 }
 
 const Classifications = () => {
@@ -45,9 +46,9 @@ const Classifications = () => {
     first: 0,
     rows: 5,
     page: 0,
-    sortField: undefined||"",
+    sortField: undefined || "",
     sortOrder: undefined,
-    class_name:"Classification",
+    class_name: "Classification",
   });
   const dt = useRef<any>();
   const toast = useRef<any>();
@@ -59,14 +60,14 @@ const Classifications = () => {
   }, [lazyParams]);
 
   const loadLazyData = () => {
-    let soertField2=lazyParams.sortField.split('.')[1];
+    let soertField2 = lazyParams.sortField.split('.')[1];
     setLoading(true);
     ClassificationsService.findAll({
       page: lazyParams.page,
       limit: lazyParams.rows,
       sortField: soertField2,
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
-      class_name:lazyParams.class_name,
+      class_name: lazyParams.class_name,
     })
       .then((response) => {
         setData(response.data[0]);
@@ -94,7 +95,7 @@ const Classifications = () => {
       key: uuidv4(),
       tag: tag,
       labelclass: labelClass,
-
+      label: code + ":" + name
     };
 
     ClassificationsService.create(_classification)

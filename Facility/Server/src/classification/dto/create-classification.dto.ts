@@ -34,4 +34,10 @@ export class CreateClassificationDto {
   @IsString()
   @Length(1, 50)
   labelclass: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Length(1, 50)
+  label: string;
 }

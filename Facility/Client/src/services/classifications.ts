@@ -20,10 +20,11 @@ interface ClassificationInterface {
   name: string;
   code: string;
   key: string;
-  hasParent?: boolean,
+  hasParent?: boolean;
   labelclass?: string;
   selectable?: boolean;
   parent_id?: string;
+  label: string;
 }
 
 
@@ -54,14 +55,14 @@ const remove = async (id: string) => {
 
 const relation = async (id1: string, id2: string) => {
   console.log(url + "/relation" + "/" + id1 + "/" + id2);
-  
-   return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
+
+  return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
 };
 
 const nodeInfo = async (key: string) => {
-  return axios.get(url + "/nodeinfo" + "/"  + key);
+  return axios.get(url + "/nodeinfo" + "/" + key);
 };
 
-const service = { findAll, findOne, create, update, remove, relation ,nodeInfo };
+const service = { findAll, findOne, create, update, remove, relation, nodeInfo };
 
 export default service;

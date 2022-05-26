@@ -30,8 +30,6 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
 
   async create(createClassificationDto: CreateClassificationDto) {
     let classification = new Classification();
-
-    classification.label = createClassificationDto.code + ' . ' + createClassificationDto.name;
     classification = assignDtoPropToEntity(classification, createClassificationDto);
 
     const createdNode = await this.neo4jService.create(classification);
@@ -39,10 +37,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     return createdNode;
   }
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {
-    const { name, code } = updateClassificationto;
-
     const dynamicObject = createDynamicCyperObject(updateClassificationto);
-    dynamicObject['label'] = code + ' . ' + name;
     dynamicObject['id'] = int(_id);
 
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
@@ -60,7 +55,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       return deletedNode;
     } catch (error) {
       const { code } = error.response;
-      if (code === CustomNeo4jError.HAS_CHİLDREN) {
+      if (code === CustomNeo4jError.HAS_CHILDREN) {
         nodeHasChildException(_id);
       } else {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
