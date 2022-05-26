@@ -15,6 +15,16 @@ const InputComponent = (props) => {
   console.log(props.item.rules.required);
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [position, setPosition] = useState('center');
+
+  //Form property sıralama indeksi
+  useEffect(() => {
+    props.setItems((prevValue) => {
+      const temp = [...prevValue];
+      temp[props.index].index = props.index;
+      return temp;
+    });
+  }, [props.index]);
+
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -165,6 +175,16 @@ const InputTextareaComponent = (props) => {
   console.log(props);
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [position, setPosition] = useState('center');
+
+  //Form property sıralama indeksi
+  useEffect(() => {
+    props.setItems((prevValue) => {
+      const temp = [...prevValue];
+      temp[props.index].index = props.index;
+      return temp;
+    });
+  }, [props.index]);
+
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -315,6 +335,16 @@ const DropDownComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [displayResponsive2, setDisplayResponsive2] = useState(false);
   const [position, setPosition] = useState('center');
+
+  //Form property sıralama indeksi
+  useEffect(() => {
+    props.setItems((prevValue) => {
+      const temp = [...prevValue];
+      temp[props.index].index = props.index;
+      return temp;
+    });
+  }, [props.index]);
+
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -571,6 +601,16 @@ const RadioComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [displayResponsive2, setDisplayResponsive2] = useState(false);
   const [position, setPosition] = useState('center');
+
+  //Form property sıralama indeksi
+  useEffect(() => {
+    props.setItems((prevValue) => {
+      const temp = [...prevValue];
+      temp[props.index].index = props.index;
+      return temp;
+    });
+  }, [props.index]);
+
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -799,6 +839,16 @@ const RadioComponent = (props) => {
 const CheckBoxComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [position, setPosition] = useState('center');
+
+  //Form property sıralama indeksi
+  useEffect(() => {
+    props.setItems((prevValue) => {
+      const temp = [...prevValue];
+      temp[props.index].index = props.index;
+      return temp;
+    });
+  }, [props.index]);
+
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -936,6 +986,16 @@ const CheckBoxComponent = (props) => {
 const DateComponent = (props) => {
   const [displayResponsive, setDisplayResponsive] = useState(false);
   const [position, setPosition] = useState('center');
+
+  //Form property sıralama indeksi
+  useEffect(() => {
+    props.setItems((prevValue) => {
+      const temp = [...prevValue];
+      temp[props.index].index = props.index;
+      return temp;
+    });
+  }, [props.index]);
+
   const dialogFuncMap = {
     displayResponsive: setDisplayResponsive,
   };
@@ -1134,7 +1194,7 @@ const DropZone = (props) => {
   };
 
   const toggleHover = (e, item) => {
-    sethoverdCompId(item.id);
+    sethoverdCompId(item.key);
   };
   return (
     <div>
