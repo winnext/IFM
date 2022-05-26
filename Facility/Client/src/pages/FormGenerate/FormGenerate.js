@@ -120,6 +120,7 @@ const Dynamic = () => {
     if (params.state) {
       localStorage.setItem("nodeId", params.state.data._id.low);
       localStorage.setItem("typeId", params.state.data.typeId);
+      localStorage.setItem("rootId", params.state.data.rootId);
     }
     FormTypeService.nodeInfo(localStorage.getItem("typeId"))
       .then((res) => {

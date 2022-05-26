@@ -13,9 +13,7 @@ import FacilityFileImport from "./pages/FacilityFileImport";
 import ClassificationFileImport from "./pages/ClassificationFileImport";
 import FacilityStructure from "./pages/FacilityStructure/FacilityStructure";
 import SetFacilityStructure from "./pages/FacilityStructure/SetFacilityStructure";
-import FormBuilder from "./pages/FormBuilder/FormBuilder";
-import FormBuilderCreate from "./pages/FormBuilder/FormBuilderCreate";
-import FormGenerate from "./pages/Form/FormGenerate";
+import FormGenerate from "./pages/FormGenerate/FormGenerate";
 // import Main from './pages/Main';
 
 export default function Router() {
