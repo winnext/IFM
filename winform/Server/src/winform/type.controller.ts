@@ -61,7 +61,12 @@ export class TypeController {
   remove(@Param('id') id: string) {
     return this.typeService.remove(id);
   }
-
+  @Unprotected()
+  @Get('/properties/active/:id')
+  @NoCache()
+  findTypeActivePropertiesByNodeId(@Param('id') id: string)  {
+    return this.typeService.findTypeActivePropertiesByNodeId(id);
+  }
   /*
       @Unprotected()
       @NoCache()
