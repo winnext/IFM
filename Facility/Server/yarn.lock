@@ -8259,10 +8259,17 @@
   "resolved" "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   "version" "1.2.0"
 
+<<<<<<< HEAD
 "sgnm-neo4j@^0.0.84":
   "integrity" "sha512-7pxE9BE3XQi98lVB7gTsMEJ00Nl/YJ6NH8za01tTACFDG2ijMi/NDcp5VV9GIIu7Et151Dh3Ea0F5pGTlQJSOg=="
   "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.84.tgz"
   "version" "0.0.84"
+=======
+"sgnm-neo4j@^0.0.81":
+  "integrity" "sha512-mNDzaHaPip9DZLXqUBZ9UW+lTYhFFLlcYMbvUM28A3SgkUVwms7/UOJQ2YYx0BfFxhtoFnObHxVcdQlwum4Vxg=="
+  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.81.tgz"
+  "version" "0.0.81"
+>>>>>>> hydr
   dependencies:
     "@nestjs/common" "^8.4.5"
     "@nestjs/config" "^2.0.0"

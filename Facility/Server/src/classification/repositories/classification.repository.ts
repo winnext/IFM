@@ -62,15 +62,23 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       }
     }
   }
-  async changeNodeBranch(_id: string, _target_parent_id: string) {
-    await this.deleteRelations(_id);
-    await this.addRelations(_id, _target_parent_id);
+  async changeNodeBranch(_id: string, target_parent_id: string) {
+    try {
+      await this.deleteRelations(_id);
+      await this.addRelations(_id, target_parent_id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
   async deleteRelations(_id: string) {
     await this.neo4jService.deleteRelations(_id);
   }
-  async addRelations(_id: string, _target_parent_id: string) {
-    await this.neo4jService.addRelations(_id, _target_parent_id);
+  async addRelations(_id: string, target_parent_id: string) {
+    try {
+      await this.neo4jService.addRelations(_id, target_parent_id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async findOneNodeByKey(key: string) {

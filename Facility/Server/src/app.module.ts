@@ -68,12 +68,16 @@ import { HttpCacheInterceptor } from 'ifmcommon';
       }),
       inject: [ConfigService],
     }),
-    Neo4jModule.forRoot({
-      scheme: 'neo4j',
-      host: '172.30.99.120',
-      port: 7687,
-      username: 'neo4j',
-      password: 'password',
+    Neo4jModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        host: configService.get('NEO4J_HOST'),
+        password: configService.get('NEO4J_PASSWORD'),
+        port: configService.get('NEO4J_PORT'),
+        scheme: configService.get('NEO4J_SCHEME'),
+        username: configService.get('NEO4J_USERNAME'),
+      }),
     }),
 
     MongooseModule.forRootAsync({
