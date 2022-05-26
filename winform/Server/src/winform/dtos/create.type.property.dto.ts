@@ -71,5 +71,10 @@ export class CreateTypePropertyDto {
   @IsNotEmpty()
   @IsBoolean()
   isActive: boolean;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()  
+  index: number;
     
 }

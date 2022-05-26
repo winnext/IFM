@@ -18,7 +18,8 @@ export class TypeProperty {
   isDeleted: boolean = false; // not in dtos
   options: string[] = [];
   placeholder:string;
-  label2:string
+  label2:string;
+  index:number;
 }
 function generateUuid() {
   return uuidv4()
