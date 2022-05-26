@@ -456,4 +456,39 @@ export class TypeRepository implements GeciciTypeInterface {
     }
   }
 
+
+  async findTypeActivePropertiesByNodeId(id: string) {
+    
+    const nodeType = await this.neo4jService.read(
+      'MATCH (c:ChildNode {isDeleted: false, isActive: true})-[:CHILDREN]->(n:Type {isDeleted: false, isActive: true}) where id(c)=$id return n',
+      {
+        id: int(id)
+      }
+    );
+
+    if (nodeType['records'][0]) {
+
+       const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
+       const childrenList = await this.neo4jService.read(
+      'MATCH (c:Type {isDeleted: false, isActive: true})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false, isActive: true}) where id(c)=$id return n order by n.index asc',
+      {
+        id: type_node_id
+      } 
+    );
+    
+
+    if (childrenList['records'][0]) {
+      let propertyList = [];
+       for (let i=0; i<childrenList['records'].length; i++ ) {
+        let property = childrenList['records'][i];
+       property["_fields"][0]["properties"]._id = property["_fields"][0]["identity"]["low"];
+       propertyList.push(property["_fields"][0]["properties"]); 
+      }
+      return propertyList;
+     }
+   
+    }
+    return [];
+  } 
+
 }

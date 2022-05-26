@@ -64,6 +64,11 @@ export class TypeService {
   async remove(id: string) {
     return await this.typeRepository.delete(id);
   }
+  @Span('find type active properties by node id')
+  @OtelMethodCounter()
+  async findTypeActivePropertiesByNodeId(id: string) {
+    return await this.typeRepository.findTypeActivePropertiesByNodeId(id);
+  }
 }
 
 export interface GeciciTypeInterface {
@@ -74,5 +79,6 @@ export interface GeciciTypeInterface {
   findOneNodeByKey(key: string);
   updateNode(id: string, updateTypeDto: UpdateTypeDto);
   findTypePropertiesByNodeId(id: string);
-  delete(id: string);   
+  delete(id: string);
+  findTypeActivePropertiesByNodeId(id: string);   
 }
