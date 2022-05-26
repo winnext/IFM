@@ -188,6 +188,7 @@ export class TypeRepository implements GeciciTypeInterface {
       type.typeId = createTypeDto.typeId;
       type.labelclass = createTypeDto.labelclass;
       type.isActive = createTypeDto.isActive;
+      type.index = createTypeDto.index;
 
       if (createTypeDto.key) {
         type.key = createTypeDto.key;
@@ -241,7 +242,7 @@ export class TypeRepository implements GeciciTypeInterface {
         let makeNodeConnectParent = `(x: ${_type} {label: $label, key: $key , tag: $tag , labelclass:$labelclass,createdAt: $createdAt , \
                                                    updatedAt: $updatedAt, isActive :$isActive, isDeleted: $isDeleted, \
                                                    defaultValue: $defaultValue, rules: $rules, options: $options, type: $type, typeId: $typeId, name: $label,
-                                                   placeholder: $placeholder, label2: $label2})`;
+                                                   placeholder: $placeholder, label2: $label2, index: $index})`;
         makeNodeConnectParent =
           ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
           makeNodeConnectParent;
@@ -261,7 +262,8 @@ export class TypeRepository implements GeciciTypeInterface {
           type: type.type,
           typeId: type.typeId,
           placeholder: type.placeholder,
-          label2: type.label2
+          label2: type.label2,
+          index: type.index
         });
        
         const createChildOfRelation = `match (x: ${_type} {isDeleted: false, key: $key}) \
@@ -353,7 +355,7 @@ export class TypeRepository implements GeciciTypeInterface {
 
        const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
        const childrenList = await this.neo4jService.read(
-      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by id(n) asc',
+      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by n.index asc',
       {
         id: type_node_id
       } 
