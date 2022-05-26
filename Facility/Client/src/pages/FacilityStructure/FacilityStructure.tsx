@@ -50,7 +50,6 @@ const FacilityStructure = () => {
     page: 0,
     sortField: undefined||"",
     sortOrder: undefined,
-    class_name: "FacilityStructure",
   });
   const dt = useRef<any>();
   const toast = useRef<any>();
@@ -69,7 +68,7 @@ const FacilityStructure = () => {
       limit: lazyParams.rows,
       sortField: soertField2,
       sortKind: lazyParams.sortOrder === 1 ? "ascending" : "descending",
-      class_name:lazyParams.class_name,
+      class_name:"FacilityStructure",
     })
       .then((response) => {
         setData(response.data[0]);
