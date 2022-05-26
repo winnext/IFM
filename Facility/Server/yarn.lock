@@ -8259,10 +8259,10 @@
   "resolved" "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   "version" "1.2.0"
 
-"sgnm-neo4j@^0.0.80":
-  "integrity" "sha512-Wh9i4cBe44eGwIq7pssolnFDT8hspz/9AUry8i9qVsqmx4bpHb2F8pcQ2bad4lMGAQiKQ6ckalpX4HzNf6t/LA=="
-  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.80.tgz"
-  "version" "0.0.80"
+"sgnm-neo4j@^0.0.81":
+  "integrity" "sha512-mNDzaHaPip9DZLXqUBZ9UW+lTYhFFLlcYMbvUM28A3SgkUVwms7/UOJQ2YYx0BfFxhtoFnObHxVcdQlwum4Vxg=="
+  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.81.tgz"
+  "version" "0.0.81"
   dependencies:
     "@nestjs/common" "^8.4.5"
     "@nestjs/config" "^2.0.0"
