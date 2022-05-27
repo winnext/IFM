@@ -10,6 +10,8 @@ import DropZone from './DropZone';
 import { Card } from 'primereact/card';
 import ITEMS from './Items';
 import { Toast } from 'primereact/toast';
+import { Dialog } from 'primereact/dialog';
+import FormGenerate from '../FormGenerate/FormGenerate';
 
 function FormBuilderCreate() {
   const [items, setItems] = useState([]);
@@ -17,11 +19,29 @@ function FormBuilderCreate() {
   const [parentId, setParentId] = useState('');
   const toast = React.useRef(null);
   const navigate = useNavigate();
+  const [displayResponsive, setDisplayResponsive] = useState(false);
+  const [position, setPosition] = useState('center');
 
   const params = useLocation();
   const paramsId = useParams();
   console.log(params);
   console.log(paramsId);
+
+  const dialogFuncMap = {
+    displayResponsive: setDisplayResponsive,
+  };
+
+  const onClick = (name, position) => {
+    dialogFuncMap[`${name}`](true);
+
+    if (position) {
+      setPosition(position);
+    }
+  };
+
+  const onHide = (name) => {
+    dialogFuncMap[`${name}`](false);
+  };
 
   useLayoutEffect(() => {
     if (params.state) {
@@ -93,7 +113,7 @@ function FormBuilderCreate() {
         isActive: true,
         placeholder: '',
         label2: '',
-        index:'',
+        index: '',
       });
     } else {
       console.log('Droppable dest ', droppableDestination);
@@ -132,10 +152,11 @@ function FormBuilderCreate() {
         <div className="col-8">
           <div className="field">
             <label className="block">Form Name : {formName} </label>
-            {/* <InputText
-              style={{ width: '50%' }}
-              onChange={(e) => setFormName(e.target.value)}
-            /> */}
+            <Button
+              label="Form Show"
+              icon="pi pi-book"
+              onClick={() => onClick('displayResponsive')}
+            />
           </div>
           <Card>
             <DropZone droppableId="form" items={items} setItems={setItems} />
@@ -181,6 +202,16 @@ function FormBuilderCreate() {
           >
             Cancel
           </Button>
+
+          <Dialog
+            header="Form"
+            visible={displayResponsive}
+            onHide={() => onHide('displayResponsive')}
+            breakpoints={{ '960px': '75vw' }}
+            style={{ width: '40vw' }}
+          >
+            <FormGenerate items={items} />
+          </Dialog>
         </div>
       </div>
     </DragDropContext>
