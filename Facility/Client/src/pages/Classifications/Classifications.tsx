@@ -1,18 +1,17 @@
+import React, { useEffect, useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
-import { v4 as uuidv4 } from "uuid";
 import { InputText } from "primereact/inputtext";
-import React, { useEffect, useState, useRef } from "react";
-// import { useAppDispatch, useAppSelector } from "../../app/hook";
-// import { save } from "../../features/tree/treeSlice";
-import ClassificationsService from "../../services/classifications";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
-import { useNavigate } from "react-router-dom";
 import { Menu } from 'primereact/menu';
 import { Chips } from 'primereact/chips';
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+
+import ClassificationsService from "../../services/classifications";
 
 interface ClassificationInterface {
   identity?: {
@@ -20,7 +19,6 @@ interface ClassificationInterface {
     high: string;
   };
   tag: string[];
-
   name: string;
   code: string;
   key: string;
@@ -30,7 +28,6 @@ interface ClassificationInterface {
 }
 
 const Classifications = () => {
-  // const tree = useAppSelector((state) => state.tree);
 
   const navigate = useNavigate();
   const [data, setData] = useState<ClassificationInterface[]>([]);
@@ -84,8 +81,6 @@ const Classifications = () => {
         setLoading(false);
       });
   };
-
-  // const dispatch = useAppDispatch();
 
   const addItem = () => {
     const _classification: ClassificationInterface = {
