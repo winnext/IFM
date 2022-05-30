@@ -29,6 +29,7 @@ interface ClassificationInterface {
   type: string;
   typeId: string;
   description: string;
+  label: string;
 }
 
 
@@ -98,8 +99,8 @@ const FacilityStructure = () => {
       labelclass: labelClass,
       type:"",
       typeId:"",
-      description:""
-
+      description:"",
+      label: code + ":" + name
     };
 
     FacilityStructureService.create(_classification)

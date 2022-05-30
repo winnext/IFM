@@ -33,7 +33,8 @@ interface StructureInterface {
     hasParent: boolean;
     parent_id?: string;
     selectable?: boolean;
-  }[];
+    label: string;
+  };
 }
 
 interface Node {
@@ -54,6 +55,7 @@ interface Node {
   labelclass: string;
   description: string;
   icon?: string;
+  label: string;
 }
 
 interface FormNode {
@@ -88,7 +90,7 @@ const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
   const [structure, setStructure] = useState<StructureInterface>({
-    root: [
+    root: 
       {
         code: "",
         children: [],
@@ -99,9 +101,9 @@ const SetClassification = () => {
           high: ""
         },
         key: "",
-        hasParent: false
+        hasParent: false,
+        label: "",
       }
-    ]
   });
 
   const [data, setData] = useState<Node[]>([]);
@@ -212,15 +214,15 @@ const SetClassification = () => {
       // let temp = [res.data.root[0].properties] || [];
 
       setStructure(res.data);
-      if (!res.data.root[0].children) {
-        setData([res.data.root[0].properties] || []);
-        let temp = JSON.parse(JSON.stringify([res.data.root[0].properties] || []));
+      if (!res.data.root.children) {
+        setData([res.data.root.properties] || []);
+        let temp = JSON.parse(JSON.stringify([res.data.root.properties] || []));
         fixNodes(temp)
         setData(temp)
       }
-      else if (res.data.root[0].children) {
-        setData([res.data.root[0]] || []);
-        let temp = JSON.parse(JSON.stringify([res.data.root[0]] || []));
+      else if (res.data.root.children) {
+        setData([res.data.root] || []);
+        let temp = JSON.parse(JSON.stringify([res.data.root] || []));
         fixNodes(temp)
         setData(temp)
       }
@@ -264,8 +266,8 @@ const SetClassification = () => {
           labelclass: node.labelclass,
           type: type,
           typeId: typeId,
-          description: "description"
-
+          description: "description",
+          label: code + ":" + name
         };
         // node.children = node.children ? [...node.children, newNode] : [newNode];
 
@@ -312,7 +314,8 @@ const SetClassification = () => {
           type: type,
           typeId: typeId,
           isActive: isActive,
-          description: "description"
+          description: "description",
+          label: code + ":" + name
         };
 
         FacilityStructureService.update(node.self_id.low, updateNode)
@@ -722,7 +725,7 @@ const SetClassification = () => {
                   onClick={(e) => navigate(`/formgenerate/${data.key}`, {
                     state: {
                       data: data,
-                      rootId: structure.root[0]._id.low,
+                      rootId: structure.root._id.low,
                     }
                   })} />
               </span>

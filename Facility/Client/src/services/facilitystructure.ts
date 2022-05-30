@@ -16,11 +16,11 @@ interface StructureInterface {
         high: string;
     };
     tag?: string[];
-
+    label: string;
     name: string;
     code: string;
     key: string;
-    hasParent?: boolean,
+    hasParent?: boolean;
     labelclass?: string;
     selectable?: boolean;
     parent_id?: string;
