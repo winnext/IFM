@@ -671,6 +671,7 @@ const SetClassification = () => {
                         setTag(res.data.properties.tag || []);
                         setSelectedForm(formData.find(item => item.name === res.data.properties.type));
                         setIsActive(res.data.properties.isActive);
+                        setTypeId(res.data.properties.typeId);
                       })
                       .catch((err) => {
                         toast.current.show({
