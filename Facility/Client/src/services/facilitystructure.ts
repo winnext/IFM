@@ -30,7 +30,6 @@ interface StructureInterface {
     isActive?: boolean;
 }
 
-
 const findAll = async (query: PaginationParams) => {
     return axios.get(
         url +
@@ -55,13 +54,11 @@ const remove = async (id: string) => {
 };
 
 const relation = async (id1: string, id2: string) => {
-    console.log(url + "/relation" + "/" + id1 + "/" + id2);
-
-    return axios.post(url + "/relation" + "/" + id1 + "/" + id2);
+    return axios.post(`${url}/relation/${id1}/${id2}`);
 };
 
 const nodeInfo = async (key: string) => {
-    return axios.get(url + "/nodeinfo" + "/" + key);
+    return axios.get(`${url}/nodeinfo/${key}`);
 };
 
 const service = { findAll, findOne, create, update, remove, relation, nodeInfo };

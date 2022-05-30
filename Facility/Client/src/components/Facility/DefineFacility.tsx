@@ -105,9 +105,9 @@ const DefineFacility = ({
   useEffect(() => {
     ClassificationsService.findOne("0")
       .then((res) => {
-        console.log(res.data.root[0]);
+        console.log(res.data.root);
         
-        setClassifications([res.data.root[0]]);
+        setClassifications([res.data.root]);
       })
       .catch((err) => {
         // toast.current.show({
