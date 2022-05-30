@@ -911,11 +911,11 @@ const CheckBoxComponent = (props) => {
             onChange={(e) => {
               props.setItems((prevValue) => {
                 const temp = [...prevValue];
-                temp[props.index].checkboxLabel = e.target.value;
+                temp[props.index].label2 = e.target.value;
                 return temp;
               });
             }}
-            value={props.item.checkboxLabel}
+            value={props.item.label2}
           />
         </div>
         <div className="my-2">
