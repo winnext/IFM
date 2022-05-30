@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Tree } from "primereact/tree";
-import { v4 as uuidv4 } from "uuid";
 import { ContextMenu } from "primereact/contextmenu";
 import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
@@ -9,9 +8,9 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { v4 as uuidv4 } from "uuid";
 
 import ClassificationsService from "../../services/classifications";
-
 
 interface ClassificationInterface {
   root:
@@ -49,27 +48,25 @@ interface Node {
   labelclass: string;
 }
 
-
-
 const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [classification, setClassification] = useState<ClassificationInterface>({
-    root: 
-      {
-        code: "",
-        children: [],
-        _type: "",
-        name: "",
-        _id: {
-          low: "",
-          high: ""
-        },
-        key: "",
-        hasParent: false,
-        label:""
-      }
-    
+    root:
+    {
+      code: "",
+      children: [],
+      _type: "",
+      name: "",
+      _id: {
+        low: "",
+        high: ""
+      },
+      key: "",
+      hasParent: false,
+      label: ""
+    }
+
   });
 
   const [data, setData] = useState<Node[]>([]);
@@ -127,9 +124,7 @@ const SetClassification = () => {
     ClassificationsService.findOne(id).then((res) => {
 
       setClassification(res.data);
-      console.log(res.data);
       
-
       if (!res.data.root.children) {
         setData([res.data.root.properties] || []);
       }
@@ -155,70 +150,26 @@ const SetClassification = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const findNodeAndAddItem = (
-    search: string,
-    nodes: Node[]
-  ): Node | undefined => {
-    if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
-      if (node.key === search) {
+  const addItem = (key: string) => {
+    ClassificationsService.nodeInfo(key)
+      .then((res) => {
         const newNode = {
           key: uuidv4(),
-          parent_id: node.self_id.low,
+          parent_id: res.data.identity.low,
           name: name,
           code: code,
           tag: tag,
-          labelclass: node.labelclass,
-          label:code+":"+name
+          labelclass: res.data.properties.labelclass,
+          label: code + ":" + name
         };
-        // node.children = node.children ? [...node.children, newNode] : [newNode];
-
         ClassificationsService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Classification Created",
+              detail: "Form  Created",
               life: 3000,
             });
-            getClassification();
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 20000,
-            });
-          });
-
-        return node;
-      }
-      return findNodeAndAddItem(search, node.children ? node.children : []);
-    })[0];
-  };
-
-  const findNodeAndChangeItem = (
-    search: string,
-    nodes: Node[]
-  ): Node | undefined => {
-
-    if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
-      if (node.key === search) {
-
-        const updateNode = {
-          key: node.key,
-          name: name,
-          code: code,
-          tag: tag,
-          labelclass: node.labelclass,
-          label:code+":"+name
-        };
-
-        ClassificationsService.update(node.self_id.low, updateNode)
-          .then((res) => {
-            showSuccess("Saved!");
             getClassification();
           })
           .catch((err) => {
@@ -229,26 +180,72 @@ const SetClassification = () => {
               life: 2000,
             });
           });
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
 
-        return node;
-      }
-      return findNodeAndChangeItem(search, node.children ? node.children : []);
-    })[0];
+    setName("");
+    setCode("");
+    setTag([]);
+    setAddDia(false);
   };
 
-  const findNodeAndDelete = (
-    search: string,
-    nodes: Node[]
-  ): Node | undefined => {
-    if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
-      // node.children = node.children
-      //   ? node.children.filter((child) => child.key !== search)
-      //   : [];
+  const editItem = (key: string) => {
+    ClassificationsService.nodeInfo(key)
+      .then((res) => {
+        const updateNode = {
+          key: uuidv4(),
+          name: name,
+          code: code,
+          tag: tag,
+          labelclass: res.data.properties.labelclass,
+          label: code + ":" + name
+        };
+        ClassificationsService.update(res.data.identity.low, updateNode)
+          .then((res) => {
+            toast.current.show({
+              severity: "success",
+              summary: "Successful",
+              detail: "Form  Created",
+              life: 3000,
+            });
+            getClassification();
+          })
+          .catch((err) => {
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: err.response ? err.response.data.message : err.message,
+              life: 2000,
+            });
+          });
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
 
-      if (node.key === search) {
-        if (node.hasParent === false) {
-          ClassificationsService.remove(node.self_id.low)
+    setName("");
+    setCode("");
+    setTag([]);
+    setEditDia(false);
+  }
+
+  const deleteItem = (key: string) => {
+    ClassificationsService.nodeInfo(key)
+      .then((res) => {
+        if (res.data.properties.hasParent === false) {
+          ClassificationsService.remove(res.data.identity.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -266,9 +263,8 @@ const SetClassification = () => {
                 life: 2000,
               });
             });
-        }
-        else {
-          ClassificationsService.remove(node.self_id.low)
+        } else {
+          ClassificationsService.remove(res.data.identity.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -287,49 +283,17 @@ const SetClassification = () => {
                 life: 2000,
               });
             });
-          return node;
         }
-      }
-      findNodeAndDelete(search, node.children ? node.children : []);
 
-    })[0];
-  };
-
-  const fixNodes = (nodes: Node[]) => {
-    return nodes.map((node) => {
-      if (node.children.length === 0) {
-        node.selectable = true;
-      } else {
-        fixNodes(node.children);
-        node.selectable = false;
-      }
-      return node;
-    });
-  };
-
-  const addItem = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    findNodeAndAddItem(key, temp);
-    setData(temp);
-    setName("");
-    setCode("");
-    setTag([]);
-    setAddDia(false);
-  };
-
-  const saveItem = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    findNodeAndChangeItem(key, temp);
-    setData(temp);
-    setName("");
-    setCode("");
-    setTag([]);
-    setEditDia(false);
-  }
-
-  const deleteItem = (key: string) => {
-    const temp = JSON.parse(JSON.stringify(data));
-    findNodeAndDelete(key, temp);
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {
@@ -408,7 +372,7 @@ const SetClassification = () => {
         <Button
           label="Save"
           icon="pi pi-check"
-          onClick={() => saveItem(selectedNodeKey)}
+          onClick={() => editItem(selectedNodeKey)}
           autoFocus
         />
       </div>
@@ -490,7 +454,6 @@ const SetClassification = () => {
         </div>
       </Dialog>
       <h1>Edit Classification</h1>
-      <h3>Code : {classification.root.code} </h3>
       <div className="field">
         <Tree
           loading={loading}
@@ -510,7 +473,7 @@ const SetClassification = () => {
                 life: 1000,
               });
               return
-            }
+            }            
             dragConfirm(event.dragNode.self_id.low, event.dropNode.self_id.low)
           }}
           filter
