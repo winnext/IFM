@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
+import { RepositoryEnums } from 'src/common/const/repository.enum';
+
 import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
 
@@ -10,8 +11,8 @@ export class FacilityStructuresService {
     @Inject(RepositoryEnums.FACILITY_STRUCTURE)
     private readonly facilityStructureRepository: BaseGraphDatabaseInterfaceRepository<any>,
   ) {}
-  create(createFacilityStructureDto: CreateFacilityStructureDto) {
-    return this.facilityStructureRepository.create(createFacilityStructureDto);
+  async create(createFacilityStructureDto: CreateFacilityStructureDto) {
+    return await this.facilityStructureRepository.create(createFacilityStructureDto);
   }
 
   async findAll(queryParams) {
@@ -29,7 +30,6 @@ export class FacilityStructuresService {
   remove(id: string) {
     return this.facilityStructureRepository.delete(id);
   }
-
 
   async changeNodeBranch(id: string, target_parent_id: string) {
     return await this.facilityStructureRepository.changeNodeBranch(id, target_parent_id);

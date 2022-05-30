@@ -1,31 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { i18nValidationMessageEnum, IsStringWithI18nMessage, LengthWithI18nMessage } from 'ifmcommon';
+import { IsNotEmptyWithI18nMessage } from 'ifmcommon';
 
 export class CreateFacilityStructureDto {
  
 @ApiProperty()
 @IsOptional()
-@IsString()
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
 type?: string;
 
 @ApiProperty()
-@IsNotEmpty()
-@IsString()
+@IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
 code: string;
 
 @ApiProperty()
 @IsNotEmpty()
-@IsString()
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
 name: string;
 
 @ApiProperty()
 @IsOptional()
-@IsString()
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
 description: string;
 
 @ApiProperty()
-@IsString()
-@Length(1, 200)
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
+@LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
 @IsOptional()
 key: string;
 
@@ -39,13 +41,19 @@ tag: string[];
 parent_id: number;  //not in entity 
 
 @ApiProperty()
-@IsNotEmpty()
-@IsString()
-@Length(1, 50)
+@IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
+@LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
 labelclass: string;
 
 @ApiProperty()
 @IsOptional()
-@IsString()
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
 typeId?: string;
+
+@ApiProperty()
+@IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
+@IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
+@LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
+label: string;
 }

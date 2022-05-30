@@ -47,7 +47,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "csv-parser": "^3.0.0",
-    "ifmcommon": "^0.0.30",
+    "ifmcommon": "^0.0.31",
     "joi": "^17.6.0",
     "kafkajs": "^1.16.0",
     "keycloak-connect": "^15.1.1",
@@ -66,7 +66,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "sgnm-neo4j": "^0.0.81",
+    "sgnm-neo4j": "^0.0.85",
     "swagger-ui-express": "^4.3.0",
     "uuid": "^8.3.2"
   },

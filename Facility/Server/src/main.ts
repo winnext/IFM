@@ -41,8 +41,8 @@ async function bootstrap() {
       new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, exceptionFactory: i18nValidationErrorFactory }),
     );
     app.useGlobalFilters(
-      new MongoExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
-      new HttpExceptionFilter(i18NService, kafkaConf, Topics.FACILITY_EXCEPTIONS),
+
+      new HttpExceptionFilter( kafkaConf, Topics.FACILITY_EXCEPTIONS),
       new I18nValidationExceptionFilter(),
       new Neo4jErrorFilter(),
     );
