@@ -3,9 +3,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { kafkaOptions } from './common/configs/message.broker.options';
-import { Topics, MongoExceptionFilter, LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter } from 'ifmcommon';
+import { Topics, LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter, MongoExceptionFilter } from 'ifmcommon';
 import trial from './tracing';
-import { I18nService, i18nValidationErrorFactory, I18nValidationExceptionFilter } from 'nestjs-i18n';
+import { i18nValidationErrorFactory, I18nValidationExceptionFilter } from 'nestjs-i18n';
 import { kafkaConf } from './common/const/kafka.conf';
 import { Neo4jErrorFilter } from 'sgnm-neo4j';
 
@@ -13,8 +13,7 @@ async function bootstrap() {
   try {
     await trial.start();
     const app = await NestFactory.create(AppModule, { abortOnError: false });
-    //to get i18nService from app module
-    const i18NService = app.get<I18nService>(I18nService);
+
     app.connectMicroservice(kafkaOptions);
 
     const config = new DocumentBuilder()
@@ -37,8 +36,13 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-    app.useGlobalFilters(new HttpExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS), new Neo4jErrorFilter());
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, exceptionFactory: i18nValidationErrorFactory }));
+    app.useGlobalFilters(
+      new HttpExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new MongoExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new Neo4jErrorFilter(),
+      new I18nValidationExceptionFilter(),
+    );
     app.useGlobalInterceptors(
       new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),
       new TimeoutInterceptor(),

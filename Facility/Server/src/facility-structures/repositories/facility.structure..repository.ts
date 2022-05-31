@@ -54,7 +54,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     try {
       const node = await this.neo4jService.findById(_id);
       if (!node.properties.hasParent) {
-        throw new HttpException('root node can not be deleted', HttpStatus.BAD_REQUEST);
+        throw new HttpException({ message: 'root node cannot deleted', code: 400 }, HttpStatus.BAD_REQUEST);
       }
 
       const deletedNode = await this.neo4jService.delete(_id);
@@ -63,11 +63,11 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
       }
       return deletedNode;
     } catch (error) {
-      const { code } = error.response;
+      const { code, message } = error.response;
       if (code === CustomNeo4jError.HAS_CHILDREN) {
         nodeHasChildException(_id);
       } else {
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new HttpException(message, code);
       }
     }
   }

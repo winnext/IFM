@@ -9,6 +9,7 @@ import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
+import { FacilityHistory } from 'src/kiramenKatibin/entities/facility.history.entity';
 
 @Injectable()
 export class FacilityService {
@@ -38,15 +39,13 @@ export class FacilityService {
   @Span('update a facility')
   @OtelMethodCounter()
   async update(id: string, updateFacilityDto: UpdateFacilityDto) {
-    checkObjectIddİsValid(id);
     return this.facilityRepository.update(id, updateFacilityDto);
   }
 
   @Span('remove a facility')
   @OtelMethodCounter()
   async remove(id: string) {
-    const facility = await this.findOne(id);
-    return facility.remove();
+    return this.facilityRepository.delete(id);
   }
 
   @Span('create many facilities with file')

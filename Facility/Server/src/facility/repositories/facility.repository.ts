@@ -63,15 +63,15 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
   async create(createFacilityDto: CreateFacilityDto) {
     const structure = createFacilityDto.structure as CreateFacilityStructureDto;
-    const rootNode = await this.facilityStructureService.create(structure);
-    console.log(rootNode);
-    delete createFacilityDto['structure'];
 
     const facility = new this.facilityModel(createFacilityDto);
+    await this.facilityStructureService.create(structure);
+    delete createFacilityDto['structure'];
 
     return await facility.save();
   }
   async update(_id: string, updateFacilityDto: UpdateFacilityDto) {
+    await this.facilityModel.findById(_id);
     const updatedFacility = await this.facilityModel
       .findOneAndUpdate({ _id }, { $set: updateFacilityDto }, { new: true })
       .exec();
@@ -83,7 +83,17 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     return updatedFacility;
   }
   async delete(_id: string) {
-    const facility = await this.findOneById(_id);
+    const facility = await this.findOne(_id);
     return this.facilityModel.remove(facility);
+  }
+
+  async findOne(id: string): Promise<Facility> {
+    const facility = await this.facilityModel.findById({ _id: id }).exec();
+
+    if (!facility) {
+      throw new FacilityNotFountException(id);
+    }
+
+    return facility;
   }
 }

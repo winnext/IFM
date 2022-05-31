@@ -10,5 +10,5 @@ export enum I18NEnums {
   OBJECTID_NOT_VALID = 'greet.OBJECTID_NOT_VALID',
   CLASSIFICATION = 'classification',
   DUBLICATE_ERROR = 'greet.DUBLICATE_ERROR',
-  NODE_HAS_CHILD = 'greet.NODE_HAS_CHILD'
+  NODE_HAS_CHILD = 'greet.NODE_HAS_CHILD',
 }
