@@ -27,6 +27,9 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop()
   address: Adress[];
 
+  @Prop()
+  realm: string;
+
   @Prop({
     type: String,
     default: function getClassName() {

@@ -27,5 +27,6 @@ import { FacilityStructuresController } from './facility-structures.controller';
       useClass: FacilityStructureRepository,
     },
   ],
+  exports: [FacilityStructuresService],
 })
 export class FacilityStructuresModule {}

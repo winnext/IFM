@@ -5,11 +5,6 @@ export class ClassificationDetail {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  classificationId: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
   rootKey: string;
 
   @ApiProperty()
