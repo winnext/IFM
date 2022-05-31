@@ -25,8 +25,8 @@ export class FacilityService {
 
   @Span('find a facility by id')
   @OtelMethodCounter()
-  async findOne(id: string): Promise<Facility> {
-    return this.facilityRepository.findOneById(id);
+  async findOne(realm: string): Promise<Facility> {
+    return this.facilityRepository.findOneById(realm);
   }
 
   @Span('create a facility')

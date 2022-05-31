@@ -38,11 +38,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-    app.useGlobalFilters(
-      new HttpExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
-
-      new Neo4jErrorFilter(),
-    );
+    app.useGlobalFilters(new HttpExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS), new Neo4jErrorFilter());
     app.useGlobalInterceptors(
       new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),
       new TimeoutInterceptor(),

@@ -17,10 +17,11 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     private facilityStructureService: FacilityStructuresService,
   ) {}
 
-  async findOneById(id: string): Promise<Facility> {
-    const facility = await this.facilityModel.findOne({ realm: id }).exec();
+  async findOneById(realm: string): Promise<Facility> {
+    const facility = await this.facilityModel.findOne({ realm }).exec();
+
     if (!facility) {
-      throw new FacilityNotFountException(id);
+      throw new FacilityNotFountException(realm);
     }
 
     return facility;
