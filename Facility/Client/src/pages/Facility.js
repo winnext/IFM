@@ -349,7 +349,7 @@ const Facility = () => {
 
           <Dialog
             visible={facilityDialog}
-            style={{ width: "450px" }}
+            style={{ width: "550px" }}
             header="Facility Details"
             modal
             className="p-fluid"

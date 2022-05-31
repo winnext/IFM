@@ -73,11 +73,11 @@ const Input = ({ value, onChange, type, ...rest }) => {
     case 'checkbox':
       return (
         <div>
-          <label>{rest?.checkboxLabel}</label>
+          <label>{rest?.label2}</label>
           <Checkbox
             className="mt-1 ml-2"
             type="checkbox"
-            label={rest?.checkboxLabel}
+            label={rest?.label2}
             onChange={(e) => onChange(e.target.checked)}
             checked={value}
           />

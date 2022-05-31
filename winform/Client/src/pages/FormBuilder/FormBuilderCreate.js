@@ -151,7 +151,7 @@ function FormBuilderCreate() {
         </div>
         <div className="col-8">
           <div className="field">
-            <label className="block">Form Name : {formName} </label>
+            <h5 className="block">Form Name : {formName} </h5>
             <Button
               label="Form Show"
               icon="pi pi-book"
@@ -204,7 +204,7 @@ function FormBuilderCreate() {
           </Button>
 
           <Dialog
-            header="Form"
+            header={formName}
             visible={displayResponsive}
             onHide={() => onHide('displayResponsive')}
             breakpoints={{ '960px': '75vw' }}

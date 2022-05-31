@@ -16,7 +16,7 @@ interface Address{
   address: string;
 }
 interface ClassificationDetail {
-  classificationId: string;
+  // classificationId: string;
   rootKey: string;
   leafKey: string;
 }
@@ -30,6 +30,19 @@ interface Facility {
   label: string[];
   uuid?: string;
   __v?: number;
+  realm: string;
+  structure: {
+    code: string;
+    name: string;
+    key: string;
+    tag: string[];
+    labelclass: string;
+    type: string;
+    typeId: string;
+    description: string;
+    label: string;
+    realm: string;
+}
 }
 
 const findAll = async (query: PaginationParams) => {

@@ -37,6 +37,19 @@ interface Params {
     address: Address[];
     label: string[];
     __v: number;
+    realm: string;
+    structure: {
+      code: string;
+      name: string;
+      key: string;
+      tag: string[];
+      labelclass: string;
+      type: string;
+      typeId: string;
+      description: string;
+      label: string;
+      realm: string;
+  }
   };
 }
 
@@ -48,7 +61,7 @@ interface Address {
 }
 
 interface ClassificationDetail {
-  classificationId: string;
+  // classificationId: string;
   rootKey: string;
   leafKey: string;
 }
@@ -71,6 +84,18 @@ type Inputs = {
   address?: Address[];
   classifications: string;
   label: string[];
+  structure: {
+    code: string;
+    name: string;
+    key: string;
+    tag: string[];
+    labelclass: string;
+    type: string;
+    typeId: string;
+    description: string;
+    label: string;
+    realm: string;
+}
 };
 
 const typesOfFacility = [
@@ -97,8 +122,8 @@ const DefineFacility = ({
   const [classifications, setClassifications] = useState<Node[]>([]);
   const [addresses, setAddresses] = useState<Address[]>(facility.address);
   const [facility_classfication, setFacility_classfication] = useState(
-    facility.classifications[0].classificationId !== ""
-      ? facility.classifications[0].classificationId
+    facility.classifications[0].rootKey !== ""
+      ? facility.classifications[0].rootKey
       : process.env.REACT_APP_FACILITY_CLASSIFICATION || ""
   );
 
@@ -131,22 +156,22 @@ const DefineFacility = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
 
-  const findNode = (
-    search: string,
-    data: Node[],
-    result: Node[] = []
-  ): { node: Node; result: Node[] } | undefined => {
-    for (let node of data) {
-      var _result = [...result, node];
-      if (node.key === search) {
-        return { node: node, result: _result };
-      }
-      const found = findNode(search, node.children, _result);
-      if (found) {
-        return { node: found.node, result: found.result };
-      }
-    }
-  };
+  // const findNode = (
+  //   search: string,
+  //   data: Node[],
+  //   result: Node[] = []
+  // ): { node: Node; result: Node[] } | undefined => {
+  //   for (let node of data) {
+  //     var _result = [...result, node];
+  //     if (node.key === search) {
+  //       return { node: node, result: _result };
+  //     }
+  //     const found = findNode(search, node.children, _result);
+  //     if (found) {
+  //       return { node: found.node, result: found.result };
+  //     }
+  //   }
+  // };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (facility._id === "") {
@@ -155,10 +180,23 @@ const DefineFacility = ({
         address: addresses,
         type_of_facility: data.type_of_facility.name,
         classifications: {
-          classificationId: facility_classfication,
+          // classificationId: facility_classfication,
           rootKey: classifications[0].key,
           leafKey: data.classifications,
         },
+        realm: 'ifm',
+        structure: {
+          code: 'test',
+          name: 'test',
+          key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
+          tag: ['test'],
+          labelclass: 'test',
+          type: '',
+          typeId: '',
+          description: '',
+          label: 'test:test',
+          realm: 'ifm'
+        }
       })
         .then((res) => {
           loadLazyData();
@@ -185,10 +223,11 @@ const DefineFacility = ({
         address: addresses,
         type_of_facility: data.type_of_facility.name,
         classifications: {
-          classificationId: facility_classfication,
+          // classificationId: facility_classfication,
           rootKey: classifications[0].key,
           leafKey: data.classifications,
         },
+        realm: 'ifm',
       })
         .then((res) => {
           loadLazyData();
@@ -266,13 +305,13 @@ const DefineFacility = ({
           )}
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Classification of Facility</h5>
+          <label>Classification of Facility</label>
           <Controller
             name="classifications"
             rules={{ required: "Classification of Facility is required." }}
             control={control}
             defaultValue={
-              facility.classifications[0].classificationId !== ""
+              facility.classifications[0].rootKey !== ""
                 ? facility.classifications[0].leafKey
                 : ""
             }
@@ -323,6 +362,7 @@ const DefineFacility = ({
           />
         </div>
         <Addresses addresses={addresses} setAddresses={setAddresses} />
+        <h5>Structure Details</h5>
       </form>
     </div>
   );
