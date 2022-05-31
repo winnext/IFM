@@ -14,5 +14,6 @@
   "ARRAY": ["ONE", "TWO", "THREE"],
   "NODE_HAS_CHILD": "{name} isimli düğüm, alt düğümlere sahip olduğundan siliinemedi.",
   "NOT_EMPTY": "{property} boş bırakılamaz",
-  "IS_STRING": "{property} string bir değer olmalı"
+  "IS_STRING": "{property} string bir değer olmalı",
+  "LENGTH": "{property}  en az  {constraints.0} en fazla  {constraints.1} karakterli olmalıdır"
 }

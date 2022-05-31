@@ -15,5 +15,6 @@
   "ARRAY": ["ONE", "TWO", "THREE"],
   "NODE_HAS_CHILD": "{name} node has children thats why not deleted.",
   "NOT_EMPTY": "{property} cannot be empty",
-  "IS_STRING": "{property} must be string"
+  "IS_STRING": "{property} must be string",
+  "LENGTH": "{property} needs to be at least {constraints.0} and at most  {constraints.1} characters long"
 }

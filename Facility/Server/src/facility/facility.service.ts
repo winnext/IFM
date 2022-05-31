@@ -31,7 +31,7 @@ export class FacilityService {
 
   @Span('create a facility')
   @OtelMethodCounter()
-  create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
+  async create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityRepository.create(createFacilityDto);
   }
 
