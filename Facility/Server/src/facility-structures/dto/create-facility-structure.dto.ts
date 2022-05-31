@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 import { i18nValidationMessageEnum, IsStringWithI18nMessage, LengthWithI18nMessage } from 'ifmcommon';
 import { IsNotEmptyWithI18nMessage } from 'ifmcommon';
 
@@ -15,7 +15,7 @@ export class CreateFacilityStructureDto {
   code: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
   @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
   name: string;
 

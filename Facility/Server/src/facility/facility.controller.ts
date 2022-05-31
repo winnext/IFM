@@ -50,7 +50,6 @@ export class FacilityController {
   @NoCache()
   @Roles({ roles: [UserRoles.ADMIN] })
   getFacility(@Param('realm') realm: string): Promise<Facility> {
-    console.log(realm);
     return this.facilityService.findOne(realm);
   }
   @ApiBody({
