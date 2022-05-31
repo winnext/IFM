@@ -46,10 +46,12 @@ export class FacilityController {
     description:
       'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
   })
-  @Get('/:_id')
+  @Get('/:realm')
+  @NoCache()
   @Roles({ roles: [UserRoles.ADMIN] })
-  getFacility(@Param('_id') id: string): Promise<Facility> {
-    return this.facilityService.findOne(id);
+  getFacility(@Param('realm') realm: string): Promise<Facility> {
+    console.log(realm);
+    return this.facilityService.findOne(realm);
   }
   @ApiBody({
     type: CreateFacilityDto,

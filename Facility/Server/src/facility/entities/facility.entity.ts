@@ -27,7 +27,7 @@ export class Facility extends BasePersistantDocumentObject {
   @Prop()
   address: Adress[];
 
-  @Prop()
+  @Prop({ unique: true })
   realm: string;
 
   @Prop({
