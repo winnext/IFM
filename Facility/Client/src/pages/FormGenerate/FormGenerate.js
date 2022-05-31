@@ -171,6 +171,11 @@ const Dynamic = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    const formData={
+      nodeId:localStorage.getItem("nodeId"),
+      data:data
+    }
+    console.log(formData);
     history(`/facilitystructure/${params.state.rootId}`);
   };
 

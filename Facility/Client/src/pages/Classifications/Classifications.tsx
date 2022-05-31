@@ -90,7 +90,7 @@ const Classifications = () => {
       key: uuidv4(),
       tag: tag,
       labelclass: labelClass,
-      label: code + ":" + name
+      label: code + " : " + name
     };
 
     ClassificationsService.create(_classification)

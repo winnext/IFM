@@ -8,7 +8,10 @@ import { Dropdown } from "primereact/dropdown";
 import FacilityService from "../../services/facility";
 import Addresses from "../Address/Addresses";
 import { TreeSelect } from "primereact/treeselect";
+
 import ClassificationsService from "../../services/classifications";
+import FacilityStructureService from "../../services/facilitystructure";
+import { useAppSelector } from "../../app/hook";
 
 interface Node {
   _id?: string;
@@ -49,7 +52,7 @@ interface Params {
       description: string;
       label: string;
       realm: string;
-  }
+    }
   };
 }
 
@@ -95,7 +98,7 @@ type Inputs = {
     description: string;
     label: string;
     realm: string;
-}
+  }
 };
 
 const typesOfFacility = [
@@ -126,12 +129,15 @@ const DefineFacility = ({
       ? facility.classifications[0].rootKey
       : process.env.REACT_APP_FACILITY_CLASSIFICATION || ""
   );
+  const [structure, setStructure] = useState<any>([]);
+  const auth = useAppSelector((state) => state.auth);
+  const [realm, setRealm] = useState(auth.auth.realm);
 
   useEffect(() => {
     ClassificationsService.findOne("0")
       .then((res) => {
         console.log(res.data.root);
-        
+
         setClassifications([res.data.root]);
       })
       .catch((err) => {
@@ -155,6 +161,16 @@ const DefineFacility = ({
     setSubmitted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
+
+  useEffect(() => {
+    FacilityStructureService.findOne(realm).then((res) => {
+      if (!res.data.root.children) {
+        setStructure([res.data.root.properties] || []);
+      } else if (res.data.root.children) {
+        setStructure([res.data.root] || []);
+      }
+    });
+  }, [])
 
   // const findNode = (
   //   search: string,
@@ -184,18 +200,18 @@ const DefineFacility = ({
           rootKey: classifications[0].key,
           leafKey: data.classifications,
         },
-        realm: 'IFM',
+        realm: 'GARANTI',
         structure: {
           code: 'test',
-          name: 'IFM-Test',
+          name: 'GARANTI-Test',
           key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
           tag: ['test'],
           labelclass: 'test',
           type: '',
           typeId: '',
           description: '',
-          label: 'IFM',
-          realm: 'IFM'
+          label: 'GARANTI',
+          realm: 'GARANTI'
         }
       })
         .then((res) => {
@@ -362,7 +378,9 @@ const DefineFacility = ({
           />
         </div>
         <Addresses addresses={addresses} setAddresses={setAddresses} />
-        <h5>Structure Details</h5>
+        {structure.length < 1 && (
+          <h5>Structure Details</h5>
+        )}
       </form>
     </div>
   );

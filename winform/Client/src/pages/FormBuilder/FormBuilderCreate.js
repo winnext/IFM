@@ -187,9 +187,24 @@ function FormBuilderCreate() {
                 };
               });
               console.log(dataNeo4j);
-              FormBuilderService.create(dataNeo4j).then((res) => {
-                navigate('/formtree');
-              });
+              function hasDuplicates(array) {
+                return new Set(array).size !== array.length;
+              }
+              //property label girili değilse uyarı ver
+              if (dataNeo4j.map((item) => item.label).includes('')) {
+                alert('Please fill all the property labels');
+              } else {
+                //aynı isimde property label varsa uyarı ver
+                if (
+                  hasDuplicates(dataNeo4j.map((item) => item.label)) === true
+                ) {
+                  alert('Please fill all the different property labels');
+                } else {
+                  FormBuilderService.create(dataNeo4j).then((res) => {
+                    navigate('/formtree');
+                  });
+                }
+              }
             }}
           >
             Save

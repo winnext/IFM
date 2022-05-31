@@ -160,7 +160,7 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: res.data.properties.labelclass,
-          label: code + ":" + name
+          label: code + " : " + name
         };
         ClassificationsService.create(newNode)
           .then((res) => {
@@ -205,7 +205,7 @@ const SetClassification = () => {
           code: code,
           tag: tag,
           labelclass: res.data.properties.labelclass,
-          label: code + ":" + name
+          label: code + " : " + name
         };
         ClassificationsService.update(res.data.identity.low, updateNode)
           .then((res) => {
