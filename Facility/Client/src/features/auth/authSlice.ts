@@ -8,6 +8,7 @@ interface AuthState {
     type: string;
     name: string;
     token: string;
+    realm: string;
   };
 }
 
@@ -19,6 +20,7 @@ const initialState: AuthState = {
     type: "",
     name: "",
     token: "",
+    realm: "",
   },
 };
 
@@ -34,6 +36,7 @@ export const authSlice = createSlice({
         type: string;
         name: string;
         token: string;
+        realm: string;
       }>
     ) => {
       state.auth = {

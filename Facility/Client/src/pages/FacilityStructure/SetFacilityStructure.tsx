@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import FacilityStructureService from "../../services/facilitystructure";
 import FormTypeService from "../../services/formType";
+import { useAppSelector } from "../../app/hook";
 
 interface StructureInterface {
   root:
@@ -114,6 +115,8 @@ const SetClassification = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<FormNode[]>([]);
   const [selectedForm, setSelectedForm] = useState<any>(undefined);
+  const auth = useAppSelector((state) => state.auth);
+  const [realm, setRealm] = useState(auth.auth.realm);
 
   const getForms = async () => {
     await FormTypeService.findOne('269').then((res) => {
@@ -200,7 +203,7 @@ const SetClassification = () => {
 
   const getFacilityStructure = () => {
     const id = params.id || "";
-    FacilityStructureService.findOne(id).then((res) => {
+    FacilityStructureService.findOne(realm).then((res) => {
       console.log(res.data);
 
       // let temp = [res.data.root[0].properties] || [];

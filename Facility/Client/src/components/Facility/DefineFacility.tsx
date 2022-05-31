@@ -184,18 +184,18 @@ const DefineFacility = ({
           rootKey: classifications[0].key,
           leafKey: data.classifications,
         },
-        realm: 'ifm',
+        realm: 'IFM',
         structure: {
           code: 'test',
-          name: 'test',
+          name: 'IFM-Test',
           key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
           tag: ['test'],
           labelclass: 'test',
           type: '',
           typeId: '',
           description: '',
-          label: 'test:test',
-          realm: 'ifm'
+          label: 'IFM',
+          realm: 'IFM'
         }
       })
         .then((res) => {

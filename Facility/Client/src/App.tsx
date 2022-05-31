@@ -18,7 +18,7 @@ function App() {
       } else {
         axios.defaults.headers.common["Authorization"] =
           "Bearer " + keycloak.token;
-        console.log(keycloak.token)
+        console.log(keycloak)
         if (keycloak.token !== undefined) {
           dispatch(
             login({
@@ -28,6 +28,7 @@ function App() {
                 ? keycloak.tokenParsed.given_name
                 : "No Name",
               token: keycloak.token ? keycloak.token : "",
+              realm: keycloak.realm ? keycloak.realm : "",
             })
           );
         }

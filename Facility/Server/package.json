@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@compodoc/compodoc": "^1.1.19",
-    "@nestjs/axios": "^0.0.8",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.2.0",
     "@nestjs/core": "^8.0.0",
@@ -67,7 +66,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "sgnm-neo4j": "^0.0.90",
+    "sgnm-neo4j": "^0.0.92",
     "swagger-ui-express": "^4.3.0",
     "uuid": "^8.3.2"
   },

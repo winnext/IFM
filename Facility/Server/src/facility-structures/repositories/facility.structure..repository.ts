@@ -16,7 +16,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneById(id: string) {
-    const node = await this.neo4jService.findByIdWithTreeStructure(id);
+    const node = await this.neo4jService.findByRealmWithTreeStructure(id);
     if (!node) {
       throw new FacilityStructureNotFountException(id);
     }

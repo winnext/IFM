@@ -18,7 +18,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   ) {}
 
   async findOneById(id: string): Promise<Facility> {
-    const facility = await this.facilityModel.findById({ _id: id }).exec();
+    const facility = await this.facilityModel.findOne({ realm: id }).exec();
     if (!facility) {
       throw new FacilityNotFountException(id);
     }

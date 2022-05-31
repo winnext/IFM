@@ -57,6 +57,6 @@ export class CreateFacilityStructureDto {
   label: string;
 
   @ApiProperty()
-  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
+  @IsOptional()
   realm: string;
 }

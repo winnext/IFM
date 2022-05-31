@@ -14,6 +14,7 @@ import ClassificationFileImport from "./pages/ClassificationFileImport";
 import FacilityStructure from "./pages/FacilityStructure/FacilityStructure";
 import SetFacilityStructure from "./pages/FacilityStructure/SetFacilityStructure";
 import FormGenerate from "./pages/FormGenerate/FormGenerate";
+import Facility2 from "./pages/Facility2";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -23,9 +24,11 @@ export default function Router() {
       element: <AppLayout />,
       children: [
         { path: "", element: <Dashboard /> },
-        { path: "facility", element: <Facility /> },
+        // { path: "facility", element: <Facility /> },
+        { path: "facility", element: <Facility2 /> },
         { path: "classifications", element: <Classifications /> },
-        { path: "facilitystructure", element: <FacilityStructure /> },
+        // { path: "facilitystructure", element: <FacilityStructure /> },
+        { path: "facilitystructure", element: <SetFacilityStructure /> },
         { path: "formgenerate", element: <FormGenerate />},
       ],
     },
