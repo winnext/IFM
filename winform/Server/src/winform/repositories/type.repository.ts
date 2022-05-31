@@ -1,4 +1,6 @@
-import { Neo4jService } from 'nest-neo4j/dist';
+//import { Neo4jService } from 'nest-neo4j/dist';
+import { Neo4jService} from '../sgnm-neo4j/src';
+
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { Type } from '../entities/type.entity';
 import { TypeNotFountException } from 'src/common/notFoundExceptions/not.found.Exceptions';
@@ -9,274 +11,352 @@ import { GeciciTypeInterface } from '../type.service';
 import { TypeProperty } from '../entities/type.property.entity';
 import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
 import { UpdateTypeDto } from '../dtos/update.type.dto';
+import { assignDtoPropToEntity } from '../sgnm-neo4j/src/func/common.func';
+
 
 @Injectable()
 export class TypeRepository implements GeciciTypeInterface {
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneById(id: string) {
-    const idNum = parseInt(id);
-    
-    let result = await this.neo4jService.read(
-      'MATCH p=(n {isDeleted:false})-[:CHILDREN*]->(m {isDeleted:false}) \
-      WHERE  id(n)=$idNum and  n:ChildNode  and NOT n:Type and NOT n:TypeProperty  \
-      and m:ChildNode  and NOT m:Type and NOT m:TypeProperty \
-      WITH COLLECT(p) AS ps \
-      CALL apoc.convert.toTree(ps) yield value \
-      RETURN value',
-      { idNum },
-    );
-    if (!result['records'][0]["_fields"][0]["label"]) {
-      let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum return n',{idNum});
-      if  (resultRoot['records'][0]["_fields"][0]["properties"]["label"]) {
-         const o = { root: resultRoot['records'][0]['_fields'] };
-          return  o;
-      }
-      else {
-        throw new TypeNotFountException('Type');
-      }
-      
-    } else {
-      const o = { root: result['records'][0]['_fields'] };
-      return o;
+    return null;
+  } 
+
+  async findOneByIdAndLabels(id: string, label1: string, label2: string) {
+
+    const tree = await this.neo4jService.findByIdAndLabelsWithTreeStructure(id, label1, label2);
+
+    if (!tree) {
+      throw new TypeNotFountException(id);
     }
+
+    return tree;
+
+    // const idNum = parseInt(id);
+    
+    // let result = await this.neo4jService.read(
+    //   'MATCH p=(n {isDeleted:false})-[:CHILDREN]->(m {isDeleted:false}) \
+    //   WHERE  id(n)=$idNum and n.labelclass=$label1 \
+    //   and m.labelclass=$label2 \
+    //   WITH COLLECT(p) AS ps \
+    //   CALL apoc.convert.toTree(ps) yield value \
+    //   RETURN value',
+    //   { idNum, label1, label2 },
+    // );
+    // if (!result['records'][0]["_fields"][0]["label"]) {
+    //   let resultRoot = await this.neo4jService.read('match (n) where id(n)=$idNum  return n',{idNum});
+    //   if  (resultRoot['records'][0]["_fields"][0]["properties"]["label"]) {
+    //      const o = { root: resultRoot['records'][0]['_fields'] };
+    //       return  o;
+    //   }
+    //   else {
+    //     throw new TypeNotFountException('Type');
+    //   }
+      
+    // } else {
+    //   const o = { root: result['records'][0]['_fields'] };
+    //   return o;
+    // }
   }
 
   async createType(createTypeDto: CreateTypeDto) {
-    const type = new Type();
-    type.name = createTypeDto.name;
-    type.code = createTypeDto.code;
-    type.label = createTypeDto.code + ' - ' + createTypeDto.name;
-    type.labelclass = createTypeDto.labelclass;
-
-    if (createTypeDto.key) {
-      type.key = createTypeDto.key;
-    }
-    if (createTypeDto.tag) {
-      type.tag = createTypeDto.tag;
-    }
-
-    let _type = 'ChildNode';
-    let _typeParent = 'ChildNode';
-    let _parentHasType = false;
+    
+    let type = new Type();
+    type = assignDtoPropToEntity(type, createTypeDto);
+    type.label = createTypeDto.code + ' . ' + createTypeDto.name;
+    let _label = 'ChildNode';
+    let _labelParent = 'ChildNode';
+    let _parentHasLabeledNode = false;
     if (type.labelclass == 'Type') {
-      _type = _type + ':Type';
-      _parentHasType = true;
+      _label = _label + ':Type';
+      _parentHasLabeledNode = true;
     }
- 
-    if (createTypeDto.parent_id || createTypeDto.parent_id == 0) {
+    type["__label"] = _label;
+    type["__labelParent"] = _labelParent;
+    type["__parentHasLabeledNode"] = _parentHasLabeledNode;
+
+    if (createTypeDto.parent_id)
+    { 
+
+    let parent =  await this.neo4jService.findById(createTypeDto.parent_id.toString());
+  
+    if (type.labelclass == 'Type' && parent[0]["properties"]["hasType"]) {
       
-        let parent = await this.neo4jService.write(`match (x {isDeleted: false}) where id(x)=$parent_id return x`, {
-          parent_id: int(createTypeDto.parent_id), 
-        });
-        if (type.labelclass == 'Type' && parent["records"][0]["_fields"][0]["properties"]["hasType"]) {
-          throw new HttpException({ message: 'Tip düğümüne sahip bir düğüme başka tip eklenemez.' }, HttpStatus.NOT_FOUND);
+            throw new HttpException(  'Tip düğümüne sahip bir düğüme başka tip eklenemez.', HttpStatus.NOT_FOUND);
         }
-        else if (parent["records"][0]["_fields"][0]["properties"]["labelclass"] != 'ChildNode') {
-          throw new HttpException({ message: 'Tip düğümüne yeni düğüm eklenemez.' }, HttpStatus.NOT_FOUND);
-        }
+    else if (parent[0]["properties"]["labelclass"] != 'ChildNode') {
+
+      throw new HttpException(  'Tip düğümüne  yeni düğüm eklenemez.', HttpStatus.NOT_FOUND);
+      }
+
+     if (_label == 'ChildNode:Type') {
+      this.neo4jService.updateHasTypeProp(createTypeDto.parent_id.toString(), _parentHasLabeledNode)
+     }
+    const createdNode = await this.neo4jService.createNodeWithLabel(type);
+    return createdNode;
+    }
+    else {
+      if (_label == 'ChildNode:Type') {
+             throw new HttpException( 'Bir düğüme bağlı olmayan tip düğümü eklememez.' , HttpStatus.BAD_REQUEST);
+           }
+      type.hasParent=false;       
+      let typeResult = this.neo4jService.createNode(type);
+      return typeResult;
+    }
+
+    // const type = new Type();
+    // type.name = createTypeDto.name;
+    // type.code = createTypeDto.code;
+    // type.label = createTypeDto.code + ' - ' + createTypeDto.name;
+    // type.labelclass = createTypeDto.labelclass;
+
+    // if (createTypeDto.key) {
+    //   type.key = createTypeDto.key;
+    // }
+    // if (createTypeDto.tag) {
+    //   type.tag = createTypeDto.tag;
+    // }
+
+    // let _type = 'ChildNode';
+    // let _typeParent = 'ChildNode';
+    // let _parentHasType = false;
+    // if (type.labelclass == 'Type') {
+    //   _type = _type + ':Type';
+    //   _parentHasType = true;
+    // }
+ 
+    // if (createTypeDto.parent_id || createTypeDto.parent_id == 0) {
+      
+    //     let parent = await this.neo4jService.write(`match (x {isDeleted: false}) where id(x)=$parent_id return x`, {
+    //       parent_id: int(createTypeDto.parent_id), 
+    //     });
+    //     if (type.labelclass == 'Type' && parent["records"][0]["_fields"][0]["properties"]["hasType"]) {
+    //       throw new HttpException({ message: 'Tip düğümüne sahip bir düğüme başka tip eklenemez.' }, HttpStatus.NOT_FOUND);
+    //     }
+    //     else if (parent["records"][0]["_fields"][0]["properties"]["labelclass"] != 'ChildNode') {
+    //       throw new HttpException({ message: 'Tip düğümüne yeni düğüm eklenemez.' }, HttpStatus.NOT_FOUND);
+    //     }
         
      
-      //if there is a parent of created node
-      let makeNodeConnectParent = `(x: ${_type} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
-                                                             labelclass:$labelclass,createdAt: $createdAt , updatedAt: $updatedAt, isActive :$isActive,\ 
-                                                             isDeleted: $isDeleted, hasType: $hasType})`;
-      makeNodeConnectParent =
-        ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
-        makeNodeConnectParent;
-        await this.neo4jService.write(makeNodeConnectParent, {
-        labelclass: type.labelclass,
-        name: type.name,
-        code: type.code,
-        key: type.key,
-        hasParent: type.hasParent,
-        tag: type.tag,
-        label: type.label,
-        createdAt: type.createdAt,
-        updatedAt: type.updatedAt,
-        isActive: type.isActive,
-        isDeleted: type.isDeleted,
-        parent_id: createTypeDto.parent_id,
-        hasType: type.hasType,
-      });
-      if (type.labelclass == 'Type') {
-        await this.neo4jService.write(`match (x {isDeleted: false}) where id(x)=$parent_id set x.hasType=$hasParentType`, {
-          parent_id: int(createTypeDto.parent_id), hasParentType: _parentHasType, 
-        });
-      }
+    //   //if there is a parent of created node
+    //   let makeNodeConnectParent = `(x: ${_type} {name: $name,code: $code ,key: $key , hasParent: $hasParent,tag: $tag ,label: $label, \
+    //                                                          labelclass:$labelclass,createdAt: $createdAt , updatedAt: $updatedAt, isActive :$isActive,\ 
+    //                                                          isDeleted: $isDeleted, hasType: $hasType})`;
+    //   makeNodeConnectParent =
+    //     ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
+    //     makeNodeConnectParent;
+    //     await this.neo4jService.write(makeNodeConnectParent, {
+    //     labelclass: type.labelclass,
+    //     name: type.name,
+    //     code: type.code,
+    //     key: type.key,
+    //     hasParent: type.hasParent,
+    //     tag: type.tag,
+    //     label: type.label,
+    //     createdAt: type.createdAt,
+    //     updatedAt: type.updatedAt,
+    //     isActive: type.isActive,
+    //     isDeleted: type.isDeleted,
+    //     parent_id: createTypeDto.parent_id,
+    //     hasType: type.hasType,
+    //   });
+    //   if (type.labelclass == 'Type') {
+    //     await this.neo4jService.write(`match (x {isDeleted: false}) where id(x)=$parent_id set x.hasType=$hasParentType`, {
+    //       parent_id: int(createTypeDto.parent_id), hasParentType: _parentHasType, 
+    //     });
+    //   }
      
-      const createChildOfRelation = `match (x: ${_type} {isDeleted: false, code: $code}) \
-         match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id \
-         create (x)-[:CHILD_OF]->(y)`;
-      await this.neo4jService.write(createChildOfRelation, {
-        code: type.code,
-        parent_id: int(createTypeDto.parent_id),
-      });
-      return type;
-    } else {
+    //   const createChildOfRelation = `match (x: ${_type} {isDeleted: false, code: $code}) \
+    //      match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id \
+    //      create (x)-[:CHILD_OF]->(y)`;
+    //   await this.neo4jService.write(createChildOfRelation, {
+    //     code: type.code,
+    //     parent_id: int(createTypeDto.parent_id),
+    //   });
+    //   return type;
+    // } else {
 
-      if (type.labelclass == 'Type') {
-        throw new HttpException({ message: 'Bir düğüme bağlı olmayan tip düğümü eklememez.' }, HttpStatus.BAD_REQUEST);
-      }
+    //   if (type.labelclass == 'Type') {
+    //     throw new HttpException({ message: 'Bir düğüme bağlı olmayan tip düğümü eklememez.' }, HttpStatus.BAD_REQUEST);
+    //   }
 
-      type.hasParent = false;
+    //   type.hasParent = false;
 
-      const labelclass = type.labelclass;
-      const name = type.name;
-      const code = type.code;
-      const key = type.key;
-      const hasParent = type.hasParent;
-      const tag = type.tag;
-      const label = type.label;
-      const createdAt = type.createdAt;
-      const updatedAt = type.updatedAt;
-      const isActive = type.isActive;
-      const isDeleted = type.isDeleted;
-      const hasType = type.hasType;
+    //   const labelclass = type.labelclass;
+    //   const name = type.name;
+    //   const code = type.code;
+    //   const key = type.key;
+    //   const hasParent = type.hasParent;
+    //   const tag = type.tag;
+    //   const label = type.label;
+    //   const createdAt = type.createdAt;
+    //   const updatedAt = type.updatedAt;
+    //   const isActive = type.isActive;
+    //   const isDeleted = type.isDeleted;
+    //   const hasType = type.hasType;
 
-      const createNode = `CREATE (x:${_type} {name: \
-        $name, code:$code,key:$key, hasParent: $hasParent \
-        ,tag: $tag , label: $label, labelclass:$labelclass \
-        , createdAt: $createdAt, updatedAt: $updatedAt,isActive :$isActive\ 
-        , isDeleted: $isDeleted, hasType: $hasType })`;
+    //   const createNode = `CREATE (x:${_type} {name: \
+    //     $name, code:$code,key:$key, hasParent: $hasParent \
+    //     ,tag: $tag , label: $label, labelclass:$labelclass \
+    //     , createdAt: $createdAt, updatedAt: $updatedAt,isActive :$isActive\ 
+    //     , isDeleted: $isDeleted, hasType: $hasType })`;
 
-      await this.neo4jService.write(createNode, {
-        name,
-        code,
-        key,
-        hasParent,
-        tag,
-        label,
-        createdAt,
-        updatedAt,
-        labelclass,
-        isActive,
-        isDeleted,
-        hasType,
-      });
+    //   await this.neo4jService.write(createNode, {
+    //     name,
+    //     code,
+    //     key,
+    //     hasParent,
+    //     tag,
+    //     label,
+    //     createdAt,
+    //     updatedAt,
+    //     labelclass,
+    //     isActive,
+    //     isDeleted,
+    //     hasType,
+    //   });
      
-      return type;
+    //   return type;
     }
-  }
+  
 
   async createTypeProperties(createTypeProperties: CreateTypePropertyDto[]) {
-   
-    if (createTypeProperties[0].parent_id != null) {
-      const nodeType = await this.neo4jService.read(
-        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
-        {
-          id: int(createTypeProperties[0].parent_id)
-        }
-      );
-      if (nodeType['records'][0]) {
-         const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
-         const childrenList = await this.neo4jService.write(
-        'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty {isDeleted: false}) where id(c)=$id detach delete n',
-        {
-          id: type_node_id
-        }
-      );
-      //return null;
- 
+    
+    if (createTypeProperties[0]["parent_id"]) {
+      
+      // const nodeType = await this.neo4jService.read(
+      //   'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
+      //   {
+      //     id: int(createTypeProperties[0].parent_id)
+      //   }
+      // );
+      // if (nodeType['records'][0]) {
+      //    const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
+      //    const childrenList = await this.neo4jService.write(
+      //   'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty {isDeleted: false}) where id(c)=$id detach delete n',
+      //   {
+      //     id: type_node_id
+      //   }
+      // );
+  
+    const nodeType = await this.neo4jService.findByIdAndLabelsWithChildNodes(createTypeProperties[0].parent_id.toString() , "ChildNode", "Type");
+    
+     if (nodeType[0]) {
+         const type_node_id = nodeType[0]['_fields'][0]["identity"]["low"];
+         const childrenList = await this.neo4jService.deleteChildrenNodesByIdAndLabels(type_node_id, "Type", "TypeProperty");
+         
+    let typePropertiesArray = []; 
     for (let i=0; i < createTypeProperties.length; i++ ) {
-      
+     
+      let _label = 'ChildNode:Type:TypeProperty';
+      let _labelParent = 'ChildNode:Type';
       let createTypeDto = createTypeProperties[i]
-      const type = new TypeProperty();
+      let type = new TypeProperty();
+      type = assignDtoPropToEntity(type, createTypeDto);
+      type["__label"] = _label;
+      type["__labelParent"] = _labelParent;
+      type["parent_id"] = type_node_id;
+      type["name"] = type["label"]; //Neo4j arayüzünde isim gözüksün diye 
+      const createdNode = await this.neo4jService.createNodeWithLabel(type);
+      typePropertiesArray.push(createdNode);
       
-      type.label = createTypeDto.label;
-      type.type = createTypeDto.type;
-      type.typeId = createTypeDto.typeId;
-      type.labelclass = createTypeDto.labelclass;
-      type.isActive = createTypeDto.isActive;
-      type.index = createTypeDto.index;
+      // let createTypeDto = createTypeProperties[i]
+      // const type = new TypeProperty();
+      
+      // type.label = createTypeDto.label;
+      // type.type = createTypeDto.type;
+      // type.typeId = createTypeDto.typeId;
+      // type.labelclass = createTypeDto.labelclass;
+      // type.isActive = createTypeDto.isActive;
+      // type.index = createTypeDto.index;
 
-      if (createTypeDto.key) {
-        type.key = createTypeDto.key;
-      } 
-      if (createTypeDto.tag) {
-        type.tag = createTypeDto.tag;
-      }
-      else {
-        type.tag = [];
-      }
-      if (createTypeDto.rules) {
-        type.rules = createTypeDto.rules;
-      }
-      else {
-        type.rules = [];
-      }
-      if (createTypeDto.options) {
-        type.options = createTypeDto.options;
-      }
-      else {
-        type.options = [];
-      }
-      if (createTypeDto.defaultValue) {
-         type.defaultValue = createTypeDto.defaultValue;
-      }
-      else {
-        type.defaultValue = "";
-      }
-      if (createTypeDto.placeholder) {
-        type.placeholder = createTypeDto.placeholder;
-      }
-      else {
-        type.placeholder = "";
-      }
-       if (createTypeDto.label2) {
-         type.label2 = createTypeDto.label2;
-      }
-      else {
-        type.label2 = "";
-      }
+      // if (createTypeDto.key) {
+      //   type.key = createTypeDto.key;
+      // } 
+      // if (createTypeDto.tag) {
+      //   type.tag = createTypeDto.tag;
+      // }
+      // else {
+      //   type.tag = [];
+      // }
+      // if (createTypeDto.rules) {
+      //   type.rules = createTypeDto.rules;
+      // }
+      // else {
+      //   type.rules = [];
+      // }
+      // if (createTypeDto.options) {
+      //   type.options = createTypeDto.options;
+      // }
+      // else {
+      //   type.options = [];
+      // }
+      // if (createTypeDto.defaultValue) {
+      //    type.defaultValue = createTypeDto.defaultValue;
+      // }
+      // else {
+      //   type.defaultValue = "";
+      // }
+      // if (createTypeDto.placeholder) {
+      //   type.placeholder = createTypeDto.placeholder;
+      // }
+      // else {
+      //   type.placeholder = "";
+      // }
+      //  if (createTypeDto.label2) {
+      //    type.label2 = createTypeDto.label2;
+      // }
+      // else {
+      //   type.label2 = "";
+      // }
   
   
-      let _type = 'ChildNode:Type:TypeProperty';
-      let _typeParent = 'ChildNode:Type';
+      // let _type = 'ChildNode:Type:TypeProperty';
+      // let _typeParent = 'ChildNode:Type';
 
         
-          let parent = await this.neo4jService.read(`match (x {isDeleted: false}) where id(x)=$parent_id return x`, {
-            parent_id: type_node_id, 
-          });
+      //     let parent = await this.neo4jService.read(`match (x {isDeleted: false}) where id(x)=$parent_id return x`, {
+      //       parent_id: type_node_id, 
+      //     });
         
-        let makeNodeConnectParent = `(x: ${_type} {label: $label, key: $key , tag: $tag , labelclass:$labelclass,createdAt: $createdAt , \
-                                                   updatedAt: $updatedAt, isActive :$isActive, isDeleted: $isDeleted, \
-                                                   defaultValue: $defaultValue, rules: $rules, options: $options, type: $type, typeId: $typeId, name: $label,
-                                                   placeholder: $placeholder, label2: $label2, index: $index})`;
-        makeNodeConnectParent =
-          ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
-          makeNodeConnectParent;
-          await this.neo4jService.write(makeNodeConnectParent, {
-          labelclass: type.labelclass,
-          label: type.label,
-          createdAt: type.createdAt,
-          updatedAt: type.updatedAt,
-          isActive: type.isActive,
-          isDeleted: type.isDeleted,
-          key: type.key,
-          tag: type.tag,
-          parent_id: type_node_id,
-          rules: type.rules,
-          options: type.options,
-          defaultValue: type.defaultValue,
-          type: type.type,
-          typeId: type.typeId,
-          placeholder: type.placeholder,
-          label2: type.label2,
-          index: type.index
-        });
+      //   let makeNodeConnectParent = `(x: ${_type} {label: $label, key: $key , tag: $tag , labelclass:$labelclass,createdAt: $createdAt , \
+      //                                              updatedAt: $updatedAt, isActive :$isActive, isDeleted: $isDeleted, \
+      //                                              defaultValue: $defaultValue, rules: $rules, options: $options, type: $type, typeId: $typeId, name: $label,
+      //                                              placeholder: $placeholder, label2: $label2, index: $index})`;
+      //   makeNodeConnectParent =
+      //     ` match (y: ${_typeParent} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->` +
+      //     makeNodeConnectParent;
+      //     await this.neo4jService.write(makeNodeConnectParent, {
+      //     labelclass: type.labelclass,
+      //     label: type.label,
+      //     createdAt: type.createdAt,
+      //     updatedAt: type.updatedAt,
+      //     isActive: type.isActive,
+      //     isDeleted: type.isDeleted,
+      //     key: type.key,
+      //     tag: type.tag,
+      //     parent_id: type_node_id,
+      //     rules: type.rules,
+      //     options: type.options,
+      //     defaultValue: type.defaultValue,
+      //     type: type.type,
+      //     typeId: type.typeId,
+      //     placeholder: type.placeholder,
+      //     label2: type.label2,
+      //     index: type.index
+      //   });
        
-        const createChildOfRelation = `match (x: ${_type} {isDeleted: false, key: $key}) \
-           match (y: ${_typeParent} {isDeleted: false}) where  id(y)= $parent_id \
-           create (x)-[:CHILD_OF]->(y)`;
-        await this.neo4jService.write(createChildOfRelation, {
-          key: type.key,
-          parent_id: type_node_id,
-        });
+      //   const createChildOfRelation = `match (x: ${_type} {isDeleted: false, key: $key}) \
+      //      match (y: ${_typeParent} {isDeleted: false}) where  id(y)= $parent_id \
+      //      create (x)-[:CHILD_OF]->(y)`;
+      //   await this.neo4jService.write(createChildOfRelation, {
+      //     key: type.key,
+      //     parent_id: type_node_id,
+      //   });
         
      }
+     return typePropertiesArray;
     } 
-     return createTypeProperties;
    }
    return null; 
   }
@@ -295,7 +375,7 @@ export class TypeRepository implements GeciciTypeInterface {
 
   }
   async updateNode(id: string, updateTypeDto: UpdateTypeDto) {
-    const checkNodeisExist = await this.findOneById(id);
+    const checkNodeisExist = await this.findOneByIdAndLabels(id,'ChildNode','ChildNode');
     const { name, code, tag, isActive } = updateTypeDto;
 
     if (checkNodeisExist.hasOwnProperty('root')) {
