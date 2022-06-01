@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-// import { classNames } from 'primereact/utils';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
@@ -24,7 +23,6 @@ const Facility2 = () => {
     address: [],
     classifications: [
       {
-        classificationId: "",
         rootKey: "",
         leafKey: "",
       },
@@ -62,7 +60,6 @@ const Facility2 = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err.response);
         if (err.response.status !== 404) {
           toast.current.show({
             severity: "error",
@@ -70,7 +67,6 @@ const Facility2 = () => {
             detail: err.response ? err.response.data.message : err.message,
             life: 2000,
           });
-          
         }
         setLoading(false);
       });
