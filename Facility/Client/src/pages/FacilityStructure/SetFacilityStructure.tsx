@@ -228,15 +228,18 @@ const SetClassification = () => {
 
       setLoading(false);
     }).catch(err => {
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: err.response ? err.response.data.message : err.message,
-        life: 2000,
-      });
-      setTimeout(() => {
-        navigate("/facilitystructure")
-      }, 2000)
+      if (err.response.status !== 404) {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      }
+      setLoading(false);
+      // setTimeout(() => {
+      //   navigate("/facilitystructure")
+      // }, 2000)
     })
   }
 
