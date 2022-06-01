@@ -203,14 +203,14 @@ const DefineFacility = ({
         realm: realm,
         structure: {
           code: 'test',
-          name: 'GARANTI-Test',
+          name: 'IFM',
           key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
           tag: ['test'],
           labelclass: 'test',
           type: '',
           typeId: '',
           description: '',
-          label: 'GARANTI',
+          label: 'IFM',
           realm: realm
         }
       })

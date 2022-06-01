@@ -45,7 +45,6 @@ const Facility2 = () => {
   const menu = useRef(null);
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
- 
 
   useEffect(() => {
     loadLazyData();
@@ -57,21 +56,24 @@ const Facility2 = () => {
     setLoading(true);
     FacilityService.findOne(realm)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
         setFacilities([response.data] || []);
         // setCountFacilities(response.data[1].count);
         setLoading(false);
       })
       .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
-        });
+        console.log(err.response);
+        if (err.response.status !== 404) {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
+          
+        }
         setLoading(false);
       });
-    
   };
 
   const openNew = () => {
@@ -97,7 +99,7 @@ const Facility2 = () => {
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
-        {facilities.length >= 1 && (
+        {facilities.length < 1 && (
           <div className="my-2">
             <Button
               label="New"
