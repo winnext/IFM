@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { checkObjectIddİsValid } from 'ifmcommon';
 import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateFacilityStructureHistoryDto } from '../dtos/create.facilitystructure.history.dto';
 import { FacilityStructureHistory } from '../entities/facilitystructure.history.entity';
@@ -20,7 +19,6 @@ export class FacilityStructureHistoryService {
   }
 
   async findOne(id: string) {
-    checkObjectIddİsValid(id);
     return await this.facilityStructureHistoryRepository.findOneById(id);
   }
 }

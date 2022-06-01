@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { FacilityStructureNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateFacilityStructureHistoryDto } from '../dtos/create.facilitystructure.history.dto';
 import { FacilityStructureHistory } from '../entities/facilitystructure.history.entity';
@@ -15,14 +14,41 @@ export class FacilityStructureHistoryRepository implements BaseHistoryRepository
   ) {}
 
   async findOneById(id: string): Promise<FacilityStructureHistory[]> {
-    const facilityStructureHistory = await this.facilityStructureHistoryModel
-      .find({ 'facilityStructure._id': id })
-      .exec();
-    if (!facilityStructureHistory) {
-      throw new FacilityStructureNotFountException(id);
-    }
+    const page = 0;
+    const limit = 100;
+    //orderBy = orderBy || 'ascending';
 
-    return facilityStructureHistory;
+    // orderByColumn = orderByColumn || '';
+    const count = parseInt(
+      (
+        await this.facilityStructureHistoryModel.find({ 'facilityStructure.properties.labelclass': id }).count()
+      ).toString(),
+    );
+    const pagecount = Math.ceil(count / limit);
+    let pg = parseInt(page.toString());
+    const lmt = parseInt(limit.toString());
+    if (pg > pagecount) {
+      pg = pagecount;
+    }
+    let skip = pg * lmt;
+    if (skip >= count) {
+      skip = count - lmt;
+      if (skip < 0) {
+        skip = 0;
+      }
+    }
+    const result = await this.facilityStructureHistoryModel
+      .find({ 'facilityStructure.properties.labelclass': id })
+      .skip(skip)
+      .limit(lmt)
+      .sort({ 'facilityStructure.updatedAt': 1 })
+      .exec();
+    const pagination = { count: count, page: pg, limit: lmt };
+    const classification = [];
+    classification.push(result);
+    classification.push(pagination);
+
+    return classification;
   }
 
   async findAll(data: PaginationParams) {

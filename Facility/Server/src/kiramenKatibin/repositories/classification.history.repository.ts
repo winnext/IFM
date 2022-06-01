@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 import { CreateClassificationHistoryDto } from '../dtos/create.classification.history.dto';
 import { ClassificationHistory } from '../entities/classification.history.entity';
@@ -15,12 +14,39 @@ export class ClassificationHistoryRepository implements BaseHistoryRepositoryInt
   ) {}
 
   async findOneById(id: string): Promise<ClassificationHistory[]> {
-    const classificationHistory = await this.classificationHistoryModel.find({ 'classification._id': id }).exec();
-    if (!classificationHistory) {
-      throw new ClassificationNotFountException(id);
-    }
+    const page = 0;
+    const limit = 100;
+    //orderBy = orderBy || 'ascending';
 
-    return classificationHistory;
+    // orderByColumn = orderByColumn || '';
+    const count = parseInt(
+      (await this.classificationHistoryModel.find({ 'classification.properties.labelclass': id }).count()).toString(),
+    );
+    const pagecount = Math.ceil(count / limit);
+    let pg = parseInt(page.toString());
+    const lmt = parseInt(limit.toString());
+    if (pg > pagecount) {
+      pg = pagecount;
+    }
+    let skip = pg * lmt;
+    if (skip >= count) {
+      skip = count - lmt;
+      if (skip < 0) {
+        skip = 0;
+      }
+    }
+    const result = await this.classificationHistoryModel
+      .find({ 'classification.properties.labelclass': id })
+      .skip(skip)
+      .limit(lmt)
+      .sort({ 'classification.updatedAt': 1 })
+      .exec();
+    const pagination = { count: count, page: pg, limit: lmt };
+    const classification = [];
+    classification.push(result);
+    classification.push(pagination);
+
+    return classification;
   }
   async findAll(data: PaginationParams) {
     let { page, limit } = data;
