@@ -1,17 +1,17 @@
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { v4 as uuid } from 'uuid';
-import { DragDropContext } from 'react-beautiful-dnd';
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import FormBuilderService from '../../services/formBuilder';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import Toolbox from './ToolBox';
-import DropZone from './DropZone';
+import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-import ITEMS from './Items';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
+import { v4 as uuid } from 'uuid';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+
+import Toolbox from './ToolBox';
+import DropZone from './DropZone';
+import ITEMS from './Items';
 import FormGenerate from '../FormGenerate/FormGenerate';
+import FormBuilderService from '../../services/formBuilder';
 
 function FormBuilderCreate() {
   const [items, setItems] = useState([]);
@@ -187,22 +187,46 @@ function FormBuilderCreate() {
                 };
               });
               console.log(dataNeo4j);
+              //array'de tekrar eden elaman varsa true dönüyor
               function hasDuplicates(array) {
                 return new Set(array).size !== array.length;
               }
               //property label girili değilse uyarı ver
               if (dataNeo4j.map((item) => item.label).includes('')) {
-                alert('Please fill all the property labels');
+                toast.current.show({
+                  severity: 'error',
+                  summary: 'Error Message',
+                  detail: 'Please fill all the property labels',
+                  life: 4000,
+                });
               } else {
                 //aynı isimde property label varsa uyarı ver
                 if (
                   hasDuplicates(dataNeo4j.map((item) => item.label)) === true
                 ) {
-                  alert('Please fill all the different property labels');
-                } else {
-                  FormBuilderService.create(dataNeo4j).then((res) => {
-                    navigate('/formtree');
+                  toast.current.show({
+                    severity: 'error',
+                    summary: 'Error Message',
+                    detail: 'Please fill different property labels',
+                    life: 4000,
                   });
+                } else {
+                  if (dataNeo4j.length > 0) {
+                    FormBuilderService.create(dataNeo4j)
+                      .then((res) => {
+                        navigate('/formtree');
+                      })
+                      .catch((err) => {
+                        toast.current.show({
+                          severity: 'error',
+                          summary: 'Error',
+                          detail: err.response
+                            ? err.response.data.message
+                            : err.message,
+                          life: 2000,
+                        });
+                      });
+                  }
                 }
               }
             }}
