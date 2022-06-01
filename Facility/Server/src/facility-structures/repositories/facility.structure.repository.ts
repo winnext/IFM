@@ -10,6 +10,7 @@ import { int } from 'neo4j-driver';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
 import { assignDtoPropToEntity, createDynamicCyperObject } from 'src/common/func/neo4js.func';
+import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 
 @Injectable()
 export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure> {
@@ -34,7 +35,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
 
     facilityStructure = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
 
-    const value = await this.neo4jService.create(facilityStructure, 'FacilityStructure');
+    const value = await this.neo4jService.create(facilityStructure, Neo4jLabelEnum.FACILITY_STRUCTURE);
 
     return value;
   }

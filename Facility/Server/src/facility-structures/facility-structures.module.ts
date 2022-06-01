@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConnectionEnums } from 'src/common/const/connection.enum';
 import { FacilityStructure, FaciliyStructureSchema } from './entities/facility-structure.entity';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { FacilityStructureRepository } from './repositories/facility.structure..repository';
+import { FacilityStructureRepository } from './repositories/facility.structure.repository';
 import { FacilityStructuresController } from './facility-structures.controller';
 
 @Module({

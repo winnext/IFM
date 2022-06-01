@@ -8,6 +8,7 @@ import { Classification } from '../entities/classification.entity';
 import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { assignDtoPropToEntity, createDynamicCyperObject } from 'src/common/func/neo4js.func';
+import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 
 @Injectable()
 export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification> {
@@ -32,7 +33,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     let classification = new Classification();
     classification = assignDtoPropToEntity(classification, createClassificationDto);
 
-    const createdNode = await this.neo4jService.create(classification, 'Classification');
+    const createdNode = await this.neo4jService.create(classification, Neo4jLabelEnum.CLASSIFICATION);
 
     return createdNode;
   }
