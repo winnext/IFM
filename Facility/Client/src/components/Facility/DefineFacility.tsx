@@ -200,7 +200,7 @@ const DefineFacility = ({
           rootKey: classifications[0].key,
           leafKey: data.classifications,
         },
-        realm: 'GARANTI',
+        realm: realm,
         structure: {
           code: 'test',
           name: 'GARANTI-Test',
@@ -211,7 +211,7 @@ const DefineFacility = ({
           typeId: '',
           description: '',
           label: 'GARANTI',
-          realm: 'GARANTI'
+          realm: realm
         }
       })
         .then((res) => {
@@ -243,7 +243,7 @@ const DefineFacility = ({
           rootKey: classifications[0].key,
           leafKey: data.classifications,
         },
-        realm: 'ifm',
+        realm: realm,
       })
         .then((res) => {
           loadLazyData();
