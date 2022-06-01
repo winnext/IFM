@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { BaseInterfaceRepository } from 'ifmcommon';
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
 import { Facility } from './entities/facility.entity';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
+import { BaseInterfaceRepository } from 'src/common/interface/base.facility.interface';
 
 @Injectable()
 export class FacilityService {
@@ -13,10 +13,16 @@ export class FacilityService {
     private readonly facilityRepository: BaseInterfaceRepository<Facility>,
   ) {}
 
+  @Span('find a facility by realm')
+  @OtelMethodCounter()
+  async findOneByRealm(realm: string): Promise<Facility> {
+    return this.facilityRepository.findOneByRealm(realm);
+  }
+
   @Span('find a facility by id')
   @OtelMethodCounter()
-  async findOne(realm: string): Promise<Facility> {
-    return this.facilityRepository.findOneById(realm);
+  async findOneById(id: string): Promise<Facility> {
+    return this.facilityRepository.findOneById(id);
   }
 
   @Span('create a facility')

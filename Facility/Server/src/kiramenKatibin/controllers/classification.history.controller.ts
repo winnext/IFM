@@ -17,9 +17,9 @@ export class ClassificationHistoryController {
   async getAllClassification(@Query() query: PaginationParams): Promise<ClassificationHistory[]> {
     return await this.classificationHistoryService.findAll(query);
   }
-  @Get(':id')
+  @Get(':labelclass')
   @NoCache()
-  async getClassificationHistory(@Param('id') _id: string): Promise<ClassificationHistory[]> {
+  async getClassificationHistory(@Param('labelclass') _id: string): Promise<ClassificationHistory[]> {
     return await this.classificationHistoryService.findOne(_id);
   }
 }

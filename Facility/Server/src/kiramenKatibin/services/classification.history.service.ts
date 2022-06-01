@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { checkObjectIddİsValid } from 'ifmcommon';
 import { BaseHistoryRepositoryInterface } from 'ifmcommon';
 
 import { Span, OtelMethodCounter } from 'nestjs-otel';
@@ -27,7 +26,6 @@ export class ClassificationHistoryService {
   @Span('find a history of the classification by id')
   @OtelMethodCounter()
   async findOne(id: string) {
-    checkObjectIddİsValid(id);
     return await this.classificationHistoryRepository.findOneById(id);
   }
 }

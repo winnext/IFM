@@ -2,12 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { FacilityStructuresService } from './facility-structures.service';
 import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
-import { Roles, Unprotected } from 'nest-keycloak-connect';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
-import { UserRoles } from 'src/common/const/keycloak.role.enum';
+import { Unprotected } from 'nest-keycloak-connect';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { NoCache } from 'ifmcommon';
-import { ClassNames } from 'src/common/const/classname.enum';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 @ApiTags('structure')
 @ApiBearerAuth('JWT-auth')

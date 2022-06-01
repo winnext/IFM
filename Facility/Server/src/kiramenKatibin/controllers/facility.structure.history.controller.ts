@@ -18,9 +18,9 @@ export class FacilityStructureHistoryController {
     return await this.facilityStructureHistoryService.findAll(query);
   }
 
-  @Get(':id')
+  @Get(':labelclass')
   @NoCache()
-  async getFacilityHistory(@Param('id') _id: string): Promise<FacilityStructureHistory[]> {
+  async getFacilityHistory(@Param('labelclass') _id: string): Promise<FacilityStructureHistory[]> {
     return await this.facilityStructureHistoryService.findOne(_id);
   }
 }
