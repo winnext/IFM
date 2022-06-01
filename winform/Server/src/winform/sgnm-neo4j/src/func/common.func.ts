@@ -21,7 +21,7 @@ export function assignDtoPropToEntity(entity, dto) {
       =  createDynamicCyperCreateQuery(entity); is equalent
 
 */
-export function createDynamicCyperCreateQuery(entity: object) {
+export function createDynamicCyperCreateQuery(entity: object) {   //DİKKAT
 
   let dynamicQueryParameter = `CREATE (node: ${entity["labelclass"]} {`;
   if (entity['__label']) {
@@ -155,7 +155,6 @@ export function createDynamicCyperObject(entity) {
 export function updateNodeQuery(id, dto) {
   id = int(id);
   let dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
-
   let counter = 0;
   Object.keys(dto).forEach((element, index) => {
    
@@ -163,27 +162,27 @@ export function updateNodeQuery(id, dto) {
       if (!element.startsWith('__')) {
         if (counter == 0) {
           dynamicQueryParameter +=
-          ` ${element}` + `: $` + `${element} }) return node`;
+          ` node.${element}` + `= $` + `${element}  return node`;
           counter = counter + 1;
         }
         else {
           dynamicQueryParameter +=
-          `,${element}` + `: $` + `${element} }) return node`;
+          `,node.${element}` + `= $` + `${element}  return node`;
           counter = counter + 1;
         }
         
       }
       else {
         dynamicQueryParameter +=
-        ` }) return node`;
+        `  return node`;
       }
     } else {
       if (!element.startsWith('__')) {
         if (counter == 0) {
-          dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
+          dynamicQueryParameter += ` node.${element}` + `= $` + `${element}`;
           counter = counter + 1;
          } else {
-          dynamicQueryParameter += `,${element}` + `: $` + `${element}`;
+          dynamicQueryParameter += `,node.${element}` + `= $` + `${element}`;
           counter = counter + 1;
          }
        

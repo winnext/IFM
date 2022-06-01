@@ -92,6 +92,7 @@ export class TypeRepository implements GeciciTypeInterface {
      if (_label == 'ChildNode:Type') {
       this.neo4jService.updateHasTypeProp(createTypeDto.parent_id.toString(), _parentHasLabeledNode)
      }
+   
     const createdNode = await this.neo4jService.createNodeWithLabel(type);
     return createdNode;
     }
@@ -362,54 +363,56 @@ export class TypeRepository implements GeciciTypeInterface {
   }
 
   async findOneNodeByKey(key: string) {
-    
-    const result = await this.neo4jService.read('match (n {isDeleted: false, key:$key})  return n', { key: key });
-
-    const x = result['records'][0]['_fields'][0];
+    const result = this.neo4jService.findOneNodeByKey(key) 
     if (!result) {
       throw new TypeNotFountException(key);
     } else {
-      return x;
+      return result;
     }
-    
-
   }
   async updateNode(id: string, updateTypeDto: UpdateTypeDto) {
-    const checkNodeisExist = await this.findOneByIdAndLabels(id,'ChildNode','ChildNode');
+    const checkNodeisExist = await this.neo4jService.findNodeByIdAndLabel(id,"ChildNode");
     const { name, code, tag, isActive } = updateTypeDto;
+    let  label=  code + ' - ' + name;
+    let dto = {"name":name, "code": code, "tag":tag, "isActive": isActive, "label": label};
 
-    if (checkNodeisExist.hasOwnProperty('root')) {
-      const updatedNode = await this.neo4jService.write(
-        'MATCH (c:ChildNode {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag, c.label = $label, c.isActive = $isActive ',
-        {
-          name: name,
-          code: code,
-          tag: tag,
-          label: code + ' - ' + name,
-          id: int(id),
-          isActive: isActive
-        },
-      );
+    if (checkNodeisExist[0]) {
+      const updatedNode = await this.neo4jService.updateById(id,dto);
+       
+      // const  updatedNode = await this.neo4jService.write(
+      //   'MATCH (c:ChildNode {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name , c.tag= $tag, c.label = $label, c.isActive = $isActive ',
+      //   {
+      //     name: name,
+      //     code: code,
+      //     tag: tag,
+      //     label: code + ' - ' + name,
+      //     id: int(id),
+      //     isActive: isActive
+      //   },
+      // );
 
-
-      const hasTypeChild = await this.neo4jService.read(
-        'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
-        {
-          id: int(id)
-        }
-      );
-     
-      if (hasTypeChild['records'][0]) {
-
-        await this.neo4jService.write(
-          'MATCH (c:Type {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name, c.label=$label',
-          {
-            id: hasTypeChild['records'][0]['_fields'][0]['identity']['low'],  
-            name: name,
-            code: code,
-            label: code+' - '+name
-          }
-        );
+      const hasTypeChild = await this.neo4jService.findByIdAndLabelsWithChildNodes(id, "ChildNode", "Type");
+      // const hasTypeChild = await this.neo4jService.read(
+      //   'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
+      //   {
+      //     id: int(id)
+      //   }
+      // );
+      
+      if (hasTypeChild && hasTypeChild[0]) {  //update yapılan node'un type cinsinden çocuğu varsa o da update edilir. 
+        let childNodeId = hasTypeChild[0]['_fields'][0]['identity']['low']; 
+        delete dto["isActive"];
+        delete dto["tag"]; 
+        await this.neo4jService.updateById(childNodeId, dto);
+        // await this.neo4jService.write(
+        //   'MATCH (c:Type {isDeleted: false}) where id(c)=$id set c.code= $code, c.name= $name, c.label=$label',
+        //   {
+        //     id: hasTypeChild['records'][0]['_fields'][0]['identity']['low'],  
+        //     name: name,
+        //     code: code,
+        //     label: code+' - '+name
+        //   }
+        // );
 
       }
 
@@ -423,29 +426,24 @@ export class TypeRepository implements GeciciTypeInterface {
   }
 
   async findTypePropertiesByNodeId(id: string) {
+    const nodeType = await this.neo4jService.findByIdAndLabelsWithChildNodes(id, "ChildNode" , "Type"); 
     
-    const nodeType = await this.neo4jService.read(
-      'MATCH (c:ChildNode {isDeleted: false})-[:CHILDREN]->(n:Type {isDeleted: false}) where id(c)=$id return n',
-      {
-        id: int(id)
-      }
-    );
+    if (nodeType && nodeType[0]) {
+       const type_node_id = nodeType[0]['_fields'][0]["identity"]["low"];
+       const childrenList = await this.neo4jService.findByIdAndLabelsWithChildNodes(type_node_id, "Type" , "TypeProperty","index","asc") as Array<any>; 
 
-    if (nodeType['records'][0]) {
-
-       const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
-       const childrenList = await this.neo4jService.read(
-      'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by n.index asc',
-      {
-        id: type_node_id
-      } 
-    );
+      //  const childrenList = await this.neo4jService.read(
+    //   'MATCH (c:Type {isDeleted: false})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false}) where id(c)=$id return n order by n.index asc',
+    //   {
+    //     id: type_node_id
+    //   } 
+    // );
     
 
-    if (childrenList['records'][0]) {
+    if (childrenList && childrenList[0]) {
       let propertyList = [];
-       for (let i=0; i<childrenList['records'].length; i++ ) {
-        let property = childrenList['records'][i];
+       for (let i=0; i<childrenList.length; i++ ) {
+        let property = childrenList[i];
        property["_fields"][0]["properties"]._id = property["_fields"][0]["identity"]["low"];
        propertyList.push(property["_fields"][0]["properties"]); 
       }
@@ -458,78 +456,107 @@ export class TypeRepository implements GeciciTypeInterface {
 
   async delete(_id: string) {
     try {
-      let nodeChildCount = await this.neo4jService.read(
-        'MATCH (c {isDeleted: false})  -[r:CHILDREN]->(p {isDeleted: false}) where id(c)= $id return count(p)',
-        {
-          id: parseInt(_id),
-        },
-      );
-       
-      let nodeChildCountNumber = parseInt(JSON.stringify(nodeChildCount.records[0]['_fields'][0]['low']));
+      
+      let nodeChildCount = await this.neo4jService.getChildrenCount(_id);
+      // let nodeChildCount = await this.neo4jService.read(
+      //   'MATCH (c {isDeleted: false})  -[r:CHILDREN]->(p {isDeleted: false}) where id(c)= $id return count(p)',
+      //   {
+      //     id: parseInt(_id),
+      //   },
+      // );
+      
+      let nodeChildCountNumber = parseInt(nodeChildCount);
       if (nodeChildCountNumber > 0) {
-        if (nodeChildCountNumber == 1) {
-          let nodeChildIsTypeCount = 
-          await this.neo4jService.read(
-            'MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false}) '+ 
-            'where id(c)= $id and p:Type and not p:TypeProperty return count(p)',
-            {
-              id: parseInt(_id),
-            },
-          );
-          let nodeChildIsTypeCountNumber = parseInt(JSON.stringify(nodeChildIsTypeCount.records[0]['_fields'][0]['low']));
-          if (nodeChildIsTypeCountNumber > 0) {
-            let nodeChildIsTypeWithoutPropertyCount = 
-            await this.neo4jService.read(
-              'MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false})-[r2:CHILDREN]-(s {isDeleted: false}) '+ 
-              'where id(c)= $id and p:Type and not p:TypeProperty and s:TypeProperty return count(s)',
-              {
-                id: parseInt(_id),
-              },
-            );
-            let nodeChildIsTypeWithoutPropertyCountNumber =  parseInt(JSON.stringify(nodeChildIsTypeWithoutPropertyCount.records[0]['_fields'][0]['low']));  
-            if (nodeChildIsTypeWithoutPropertyCountNumber == 0) {
-              let deleteNode = await this.neo4jService.write('MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false}) '+ 
-              'where id(c)= $id and p:Type and not p:TypeProperty set c.isDeleted= true, p.isDeleted = true',
-              {
-                id: parseInt(_id),
-              },
-              );
-            }
-            else {
-              let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
-                id: parseInt(_id),
-              });
-              throw new HttpException({ message: 'Type (form tipinde) ancak property içeren çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
-              // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
-            }
-          }
-          else {
-            let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
-              id: parseInt(_id),
-            });
-            throw new HttpException({ message: 'Type (form tipinde) dışında Çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
-            // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
-          }
-        }
-        else {
-          let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
-            id: parseInt(_id),
-          });
-          throw new HttpException({ message: 'Birden çok çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
-          // nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
-        }
+
+       if (nodeChildCountNumber == 1) {
+           let nodeChildIsTypeCount = await this.neo4jService.getChildrenCountByIdAndLabels(_id, "Type", "TypeProperty");
+           let nodeChildIsTypeCountNumber = parseInt(nodeChildIsTypeCount);
+           if (nodeChildIsTypeCountNumber > 0) {
+             let nodeChildIsTypeWithoutPropertyCount = 
+                  await this.neo4jService.getChildrensChildrenCountByIdAndLabels(_id, "Type", "TypeProperty", "TypeProperty"); 
+
+             let nodeChildIsTypeWithoutPropertyCountNumber =  parseInt(nodeChildIsTypeWithoutPropertyCount); 
+             console.log("***********************************************************************************************")
+             console.log(nodeChildIsTypeWithoutPropertyCountNumber)
+             console.log("***********************************************************************************************") 
+             if (nodeChildIsTypeWithoutPropertyCountNumber == 0) {
+               let deleteNode = this.neo4jService.setDeletedTrueToNodeAndChildByIdAndLabels(_id, "Type","TypeProperty");
+               return deleteNode; 
+             }
+             else {
+               throw new HttpException({ message: 'Type (form tipinde) ancak property içeren çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
+             }
+           }
+           else {
+             throw new HttpException({ message: 'Type (form tipinde) dışında Çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
+           }
+         }
+         else {
+           throw new HttpException({ message: 'Birden çok çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
+         }
+
+        // if (nodeChildCountNumber == 1) {
+        //   let nodeChildIsTypeCount = 
+        //   await this.neo4jService.read(
+        //     'MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false}) '+ 
+        //     'where id(c)= $id and p:Type and not p:TypeProperty return count(p)',
+        //     {
+        //       id: parseInt(_id),
+        //     },
+        //   );
+        //   let nodeChildIsTypeCountNumber = parseInt(JSON.stringify(nodeChildIsTypeCount.records[0]['_fields'][0]['low']));
+        //   if (nodeChildIsTypeCountNumber > 0) {
+        //     let nodeChildIsTypeWithoutPropertyCount = 
+        //     await this.neo4jService.read(
+        //       'MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false})-[r2:CHILDREN]-(s {isDeleted: false}) '+ 
+        //       'where id(c)= $id and p:Type and not p:TypeProperty and s:TypeProperty return count(s)',
+        //       {
+        //         id: parseInt(_id),
+        //       },
+        //     );
+        //     let nodeChildIsTypeWithoutPropertyCountNumber =  parseInt(JSON.stringify(nodeChildIsTypeWithoutPropertyCount.records[0]['_fields'][0]['low']));  
+        //     if (nodeChildIsTypeWithoutPropertyCountNumber == 0) {
+        //       let deleteNode = await this.neo4jService.write('MATCH (c {isDeleted: false}) -[r1:CHILDREN]->(p {isDeleted: false}) '+ 
+        //       'where id(c)= $id and p:Type and not p:TypeProperty set c.isDeleted= true, p.isDeleted = true',
+        //       {
+        //         id: parseInt(_id),
+        //       },
+        //       );
+        //     }
+        //     else {
+        //       let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
+        //         id: parseInt(_id),
+        //       });
+        //       throw new HttpException({ message: 'Type (form tipinde) ancak property içeren çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
+        //       //// nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name); 
+        //     }
+        //   }
+        //   else {
+        //     let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
+        //       id: parseInt(_id),
+        //     });
+        //     throw new HttpException({ message: 'Type (form tipinde) dışında Çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
+        //     //// nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
+        //   }
+        // }
+        // else {
+        //   let node = await this.neo4jService.read('MATCH (c {isDeleted: false}) where id(c)= $id return c', {
+        //     id: parseInt(_id),
+        //   });
+        //   throw new HttpException({ message: 'Birden çok çocuğu olan node silinemez' }, HttpStatus.NOT_FOUND);
+        //   //// nodeHasChildException(node['records'][0]['_fields'][0]['properties'].name);
+        // }
 
       } else {
        
-        let deleteNode = await this.neo4jService.write(
-          'MATCH (c {isDeleted: false}) where id(c)= $id set c.isDeleted = true',
-          {
-            id: parseInt(_id),
-          },
-        );
-       
-        console.log('Node deleted ................... ');
-        return 'successfully deleted';
+        // let deleteNode = await this.neo4jService.write(
+        //   'MATCH (c {isDeleted: false}) where id(c)= $id set c.isDeleted = true',
+        //   {
+        //     id: parseInt(_id),
+        //   },
+        // );
+        let deleteNode = this.neo4jService.updateIsDeletedProp(_id, true);
+        return deleteNode;
       }
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -539,34 +566,22 @@ export class TypeRepository implements GeciciTypeInterface {
 
   async findTypeActivePropertiesByNodeId(id: string) {
     
-    const nodeType = await this.neo4jService.read(
-      'MATCH (c:ChildNode {isDeleted: false, isActive: true})-[:CHILDREN]->(n:Type {isDeleted: false, isActive: true}) where id(c)=$id return n',
-      {
-        id: int(id)
-      }
-    );
-
-    if (nodeType['records'][0]) {
-
-       const type_node_id = nodeType['records'][0]['_fields'][0]["identity"]["low"];
-       const childrenList = await this.neo4jService.read(
-      'MATCH (c:Type {isDeleted: false, isActive: true})-[:CHILDREN]->(n:TypeProperty  {isDeleted: false, isActive: true}) where id(c)=$id return n order by n.index asc',
-      {
-        id: type_node_id
-      } 
-    );
+    const nodeType = await this.neo4jService.findByIdAndLabelsWithActiveChildNodes(id, "ChildNode" , "Type"); 
     
+    if (nodeType && nodeType[0]) {
+       const type_node_id = nodeType[0]['_fields'][0]["identity"]["low"];
+       const childrenList = await this.neo4jService.findByIdAndLabelsWithActiveChildNodes(type_node_id, "Type" , "TypeProperty","index","asc") as Array<any>; 
 
-    if (childrenList['records'][0]) {
-      let propertyList = [];
-       for (let i=0; i<childrenList['records'].length; i++ ) {
-        let property = childrenList['records'][i];
-       property["_fields"][0]["properties"]._id = property["_fields"][0]["identity"]["low"];
-       propertyList.push(property["_fields"][0]["properties"]); 
-      }
-      return propertyList;
-     }
-   
+
+      if (childrenList && childrenList[0]) {
+        let propertyList = [];
+        for (let i=0; i<childrenList.length; i++ ) {
+          let property = childrenList[i];
+        property["_fields"][0]["properties"]._id = property["_fields"][0]["identity"]["low"];
+         propertyList.push(property["_fields"][0]["properties"]); 
+        }
+        return propertyList;
+       }
     }
     return [];
   } 
