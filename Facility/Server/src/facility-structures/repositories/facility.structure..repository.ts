@@ -34,7 +34,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
 
     facilityStructure = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
 
-    const value = await this.neo4jService.create(facilityStructure);
+    const value = await this.neo4jService.create(facilityStructure, 'FacilityStructure');
 
     return value;
   }

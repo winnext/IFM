@@ -32,7 +32,7 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     let classification = new Classification();
     classification = assignDtoPropToEntity(classification, createClassificationDto);
 
-    const createdNode = await this.neo4jService.create(classification);
+    const createdNode = await this.neo4jService.create(classification, 'Classification');
 
     return createdNode;
   }
