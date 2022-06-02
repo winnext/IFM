@@ -28,6 +28,7 @@ export class TypeRepository implements GeciciTypeInterface {
     const tree = await this.neo4jService.findByIdAndLabelsWithTreeStructure(id, label1, label2);
 
     if (!tree) {
+      
       throw new TypeNotFountException(id);
     }
 
