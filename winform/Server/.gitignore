@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /documentation
-winform/server/src/winform/sgnm-neo4j
+/src/winform/sgnm-neo4j
 
 # Logs
 logs
