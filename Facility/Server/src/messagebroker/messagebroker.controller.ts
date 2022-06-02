@@ -37,21 +37,18 @@ export class MessagebrokerController {
     switch (message.key) {
       case PathEnums.FACILITY:
         console.log('facility history topic');
-        //const span = this.traceService.startSpan("create a history of the facility by queue");
         const facilityHistory = {
           facility: responseBody,
           user,
           requestInformation,
         };
+        // console.log(facilityHistory);
         await this.facilityHistoryService.create(facilityHistory);
-        //span.end();
         break;
       case PathEnums.CLASSIFICATION:
         console.log('Classification history topic');
-        //const span2 = this.traceService.startSpan("create a history of the classification by queue");
         const classificationHistory = { classification: responseBody, user, requestInformation };
         await this.classificationHistoryService.create(classificationHistory);
-        //span2.end()
         break;
       case PathEnums.STRUCTURE:
         console.log('facility structure history topic');

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateFacilityDto } from './dtos/create.facility.dto';
 import { UpdateFacilityDto } from './dtos/update.facility.dto';
@@ -19,7 +19,6 @@ export class FacilityController {
     description:
       'If you want to get all facilities in your organization use this route. It takes no path or query params',
   })
-  //@LoggerInter()
   @ApiOperation({
     summary: 'Gets facility with realm ',
     description:
@@ -27,7 +26,6 @@ export class FacilityController {
   })
   @Get('/:realm')
   @NoCache()
-  @HttpCode(200)
   @Roles({ roles: [UserRoles.ADMIN] })
   getFacilityByRealm(@Param('realm') realm: string): Promise<Facility> {
     return this.facilityService.findOneByRealm(realm);
@@ -38,14 +36,6 @@ export class FacilityController {
     description:
       'If you want to get specific facility in your organization use this route. It takes  query params which is  id',
   })
-  @Get('/:_id')
-  @NoCache()
-  @HttpCode(200)
-  @Roles({ roles: [UserRoles.ADMIN] })
-  getFacilityById(@Param('_id') id: string): Promise<Facility> {
-    console.log(id);
-    return this.facilityService.findOneById(id);
-  }
   @ApiBody({
     type: CreateFacilityDto,
     description: 'Store product structure',
