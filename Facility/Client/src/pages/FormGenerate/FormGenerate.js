@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -12,7 +12,9 @@ import { Toast } from "primereact/toast";
 import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
 import "./FormGenerate.css";
-
+//**********
+import deneme from "../../services/deneme";
+//*************
 const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
 const Input = ({ value, onChange, type, ...rest }) => {
   const options2 = rest?.options?.map((item) => {
@@ -87,13 +89,15 @@ const Input = ({ value, onChange, type, ...rest }) => {
       );
 
     case "date":
+      console.log(value);
+      const date1=(new Date(value));
       return (
         <div>
           <Calendar
             className="mt-1"
-            label={rest?.checkboxLabel}
+            dateFormat="dd/mm/yy"
             onChange={onChange}
-            value={value}
+            value={date1}
             placeholder={rest?.placeholder}
             showIcon
             style={{ width: "100%" }}
@@ -107,31 +111,44 @@ const Input = ({ value, onChange, type, ...rest }) => {
 };
 
 const Dynamic = () => {
-
   const [items, setItems] = useState([]);
   const toast = React.useRef(null);
 
-  const params = useLocation();
-  console.log(params);
+  const location = useLocation();
+  const params = useParams();
+  const searchParameters = new URLSearchParams(location.search);
+  const nodeId = params.id;
+  const typeId = searchParameters.get("typeId");
 
   const history = useNavigate();
 
   useEffect(() => {
-    if (params.state) {
-      localStorage.setItem("nodeId", params.state.data._id.low);
-      localStorage.setItem("typeId", params.state.data.typeId);
-      localStorage.setItem("rootId", params.state.data.rootId);
-    }
-    FormTypeService.nodeInfo(localStorage.getItem("typeId"))
-      .then((res) => {
-        console.log(res.data);
-        FormBuilderService.getProperties(res.data.identity.low)
-          .then((res) => {
-            console.log(res.data);
+    // if (params.state) {
+    //   localStorage.setItem("nodeId", params.state.data._id.low);
+    //   localStorage.setItem("typeId", params.state.data.typeId);
+    //   localStorage.setItem("rootId", params.state.data.rootId);
+    // }
+    FormTypeService.nodeInfo(typeId)
+      .then(async (responsenodeInfo) => {
+        console.log(responsenodeInfo.data);
+        // const responsegetData = await deneme.getData(nodeId);
+        // console.log(responsegetData);
+        FormBuilderService.getProperties(responsenodeInfo.data.identity.low)
+          .then((responsegetProperties) => {
+            console.log(responsegetProperties.data);
 
-            const convertedData = res.data.map(function (item) {
+            const convertedData = responsegetProperties.data.map(function (
+              item
+            ) {
+              // console.log(formData[`'${item.label}'`]);
               return {
                 ...item,
+                // defaultValue:
+                //   responsegetData.data.length > 0
+                //     ? responsegetData.data[0].data[item.label]
+                //       ? responsegetData.data[0].data[item.label]
+                //       : item.defaultValue
+                //     : item.defaultValue,
                 rules: { required: item.rules[0] },
                 options: item.options.map(function (option) {
                   return { optionsName: option };
@@ -144,7 +161,9 @@ const Dynamic = () => {
             toast.current.show({
               severity: "error",
               summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
+              detail: err.responsegetProperties
+                ? err.responsegetProperties.data.message
+                : err.message,
               life: 2000,
             });
           });
@@ -157,7 +176,6 @@ const Dynamic = () => {
           life: 2000,
         });
       });
-
   }, []);
 
   const {
@@ -171,20 +189,40 @@ const Dynamic = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    const formData={
-      nodeId:localStorage.getItem("nodeId"),
-      data:data
-    }
-    console.log(formData);
-    history(`/facilitystructure/${params.state.rootId}`);
+    const formData = {
+      nodeId: nodeId,
+      data: data,
+    };
+    // console.log(formData);
+
+    // deneme
+    //   .create(formData)
+    //   .then((res) => {
+    //     toast.current.show({
+    //       severity: "success",
+    //       summary: "Successful",
+    //       detail: "Form Data Created",
+    //       life: 3000,
+    //     });
+    //     history(`/facilitystructure`);
+    //   })
+    //   .catch((err) => {
+    //     toast.current.show({
+    //       severity: "error",
+    //       summary: "Error",
+    //       detail: err.response ? err.response.data.message : err.message,
+    //       life: 2000,
+    //     });
+    //   });
   };
 
   const backPage = () => {
-    history(`/facilitystructure/${params.state.rootId}`);
+    history(`/facilitystructure`);
   };
 
   return (
     <div>
+      <Toast ref={toast} position="top-right" />
       {items && (
         <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
           {items &&
