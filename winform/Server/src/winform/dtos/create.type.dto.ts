@@ -29,6 +29,7 @@ export class CreateTypeDto {
   @IsOptional()
   parent_id?: number; //not in entity
 
+  
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

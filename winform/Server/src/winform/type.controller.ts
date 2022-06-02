@@ -67,6 +67,13 @@ export class TypeController {
   findTypeActivePropertiesByNodeId(@Param('id') id: string)  {
     return this.typeService.findTypeActivePropertiesByNodeId(id);
   }
+
+  @Unprotected()
+  @Get('/:id/:label1/:label2')
+  @NoCache()
+  getTypeByIdAndLabels(@Param('id') id: string, @Param('label1') label1: string, @Param('label2') label2: string, ) {
+    return this.typeService.findOneAndLabels(id, label1, label2);
+  }
   /*
       @Unprotected()
       @NoCache()

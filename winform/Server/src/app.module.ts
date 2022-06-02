@@ -15,8 +15,9 @@ import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.option
 import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloack/keycloak.module';
 import { TestModule } from './test/test.module';
-import { Neo4jModule ,} from 'nest-neo4j/dist';
 import { TypeModule } from './winform/type.module';
+import { Neo4jModule } from 'sgnm-neo4j/dist';
+
 
 @Module({
   imports: [
