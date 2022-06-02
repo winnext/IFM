@@ -16,9 +16,8 @@ import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloack/keycloak.module';
 import { TestModule } from './test/test.module';
 import { TypeModule } from './winform/type.module';
+import { Neo4jModule } from 'sgnm-neo4j/dist';
 
-//import { Neo4jModule ,} from 'nest-neo4j/dist';
-import { Neo4jModule } from './winform/sgnm-neo4j/src';
 
 @Module({
   imports: [

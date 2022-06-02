@@ -21,11 +21,11 @@ export function assignDtoPropToEntity(entity, dto) {
       =  createDynamicCyperCreateQuery(entity); is equalent
 
 */
-export function createDynamicCyperCreateQuery(entity: object) {   //DİKKAT
+export function createDynamicCyperCreateQuery(entity: object, label) {
 
-  let dynamicQueryParameter = `CREATE (node: ${entity["labelclass"]} {`;
+  let dynamicQueryParameter = `CREATE (node:${label}:${entity["labelclass"]} {`;
   if (entity['__label']) {
-    dynamicQueryParameter = `CREATE (node: ${entity["__label"]} {`;
+    dynamicQueryParameter = `CREATE (node:${label}:${entity["__label"]} {`;
   }
   let counter = 0;
   Object.keys(entity).forEach((element, index) => {
@@ -75,10 +75,10 @@ export function createDynamicCyperCreateQuery(entity: object) {   //DİKKAT
       const x =  createDynamiCyperParam(entity); is equalent
 
 */
-export function createDynamiCyperParam(entity: object) {
-  let dynamicQueryParameter = `(node: ${entity['labelclass']} {`;
+export function createDynamiCyperParam(entity: object, label) {
+  let dynamicQueryParameter = `(node:${label}:${entity['labelclass']} {`;
   if (entity["__label"]) {
-    dynamicQueryParameter = `(node: ${entity['__label']} {`;
+    dynamicQueryParameter = `(node:${label}:${entity['__label']} {`;
   }
   
   let counter = 0;

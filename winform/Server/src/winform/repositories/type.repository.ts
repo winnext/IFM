@@ -1,5 +1,5 @@
-//import { Neo4jService } from 'nest-neo4j/dist';
-import { Neo4jService} from '../sgnm-neo4j/src';
+
+
 
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { Type } from '../entities/type.entity';
@@ -12,6 +12,7 @@ import { TypeProperty } from '../entities/type.property.entity';
 import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
 import { UpdateTypeDto } from '../dtos/update.type.dto';
 import { assignDtoPropToEntity } from '../sgnm-neo4j/src/func/common.func';
+import { Neo4jService } from 'sgnm-neo4j/dist';
 
 
 @Injectable()
@@ -93,7 +94,7 @@ export class TypeRepository implements GeciciTypeInterface {
       this.neo4jService.updateHasTypeProp(createTypeDto.parent_id.toString(), _parentHasLabeledNode)
      }
    
-    const createdNode = await this.neo4jService.createNodeWithLabel(type);
+    const createdNode = await this.neo4jService.createNodeWithLabel(type, "TypeTree");
     return createdNode;
     }
     else {
@@ -101,7 +102,7 @@ export class TypeRepository implements GeciciTypeInterface {
              throw new HttpException( 'Bir düğüme bağlı olmayan tip düğümü eklememez.' , HttpStatus.BAD_REQUEST);
            }
       type.hasParent=false;       
-      let typeResult = this.neo4jService.createNode(type);
+      let typeResult = this.neo4jService.createNode(type, "TypeTree");
       return typeResult;
     }
 
@@ -258,7 +259,7 @@ export class TypeRepository implements GeciciTypeInterface {
       type["__labelParent"] = _labelParent;
       type["parent_id"] = type_node_id;
       type["name"] = type["label"]; //Neo4j arayüzünde isim gözüksün diye 
-      const createdNode = await this.neo4jService.createNodeWithLabel(type);
+      const createdNode = await this.neo4jService.createNodeWithLabel(type,"TypeTree");
       typePropertiesArray.push(createdNode);
       
       // let createTypeDto = createTypeProperties[i]

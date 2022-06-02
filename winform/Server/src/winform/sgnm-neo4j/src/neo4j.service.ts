@@ -183,6 +183,7 @@ export class Neo4jService implements OnApplicationShutdown {
       else {
         cypher = `MATCH (c: ${label1} {isDeleted: false})-[:CHILDREN]->(n: ${label2} {isDeleted: false}) where id(c)=$idNum return n`;
       } 
+
       const result = await this.read(cypher, { idNum });
    
       if (!result["records"][0]) {
@@ -252,7 +253,7 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async findNodeCountWithoutChildrenByClassName(    //DİKKAT1  winformda kullaılmadı
+  async findNodeCountByClassName(    //DİKKAT1   önceki isminde ilave olarak withoutChildren vardı.
     class_name: string,
     databaseOrTransaction?: string | Transaction
   ) {
@@ -282,12 +283,13 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async createNode(     //DİKKAT
+  async createNode(     //DİKKAT 
     params: object,
+    label: string,
     databaseOrTransaction?: string | Transaction
     ) {
     try {
-      const cyperQuery = createDynamicCyperCreateQuery(params);
+      const cyperQuery = createDynamicCyperCreateQuery(params,label);
 
       if (databaseOrTransaction instanceof TransactionImpl) {
         return (<Transaction>databaseOrTransaction).run(cyperQuery, params);
@@ -472,14 +474,15 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async createChildrenByLabelClass(entity: object) {   //DİKKAT
+  async createChildrenByLabelClass(entity: object, label: string) {   //DİKKAT
     try {
-      const dynamicCyperParameter = createDynamiCyperParam(entity);
+      delete entity["realm"]
+      const dynamicCyperParameter = createDynamiCyperParam(entity,label);
       let query =
-      ` match (y: ${entity["labelclass"]} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
+      ` match (y:${label}:${entity["labelclass"]} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
       if (entity["__label"]) {
         query =
-        ` match (y: ${entity["__labelParent"]} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
+        ` match (y:${label}:${entity["__labelParent"]} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
       }
       query = query +  dynamicCyperParameter;  
 
@@ -491,14 +494,14 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async addParentByLabelClass(entity) {  //DİKKAT
+  async addParentByLabelClass(entity, label: string) {  //DİKKAT
     
-    let query = `match (x: ${entity.labelclass} {isDeleted: false, key: $key}) \
+    let query = `match (x:${label}:${entity.labelclass} {isDeleted: false, key: $key}) \
     match (y: ${entity.labelclass} {isDeleted: false}) where id(y)= $parent_id \
     create (x)-[:CHILD_OF]->(y)`;
 
     if (entity['__label']) {
-      query = `match (x: ${entity.__label} {isDeleted: false, key: $key}) \
+      query = `match (x:${label}:${entity.__label} {isDeleted: false, key: $key}) \
       match (y: ${entity.__labelParent} {isDeleted: false}) where id(y)= $parent_id \
       create (x)-[:CHILD_OF]->(y)`;
 
@@ -596,7 +599,7 @@ export class Neo4jService implements OnApplicationShutdown {
     if (orderByColumn == "undefined") {
       orderByColumn = "name";
     }
-    const res = await this.findNodeCountWithoutChildrenByClassName(class_name);
+    const res = await this.findNodeCountByClassName(class_name);
     const count = res.result;
 
     const pagecount = Math.ceil(count / limit);
@@ -633,18 +636,18 @@ export class Neo4jService implements OnApplicationShutdown {
     return nodes;
   }
 
-  async create(entity) {          //DİKKAT
+  async create(entity, label: string) {          //DİKKAT
     if (entity["parent_id"]) {
-      const createdNode = await this.createChildrenByLabelClass(entity);
+      const createdNode = await this.createChildrenByLabelClass(entity, label);
 
       await this.write(
-        `match (x: ${entity["labelclass"]} {isDeleted: false, key: $key}) set x.self_id = id(x)`,
+        `match (x:${label}:${entity["labelclass"]} {isDeleted: false, key: $key}) set x.self_id = id(x)`,
         {
           key: entity.key,
         }
       );
       //Add relation between parent and created node by CHILD_OF relation
-      await this.addParentByLabelClass(entity);
+      await this.addParentByLabelClass(entity, label);
 
       //set parent node selectable prop false
       await this.updateSelectableProp(entity["parent_id"], false);
@@ -653,7 +656,7 @@ export class Neo4jService implements OnApplicationShutdown {
     } else {
       entity["hasParent"] = false;
 
-      const createdNode = await this.createNode(entity);
+      const createdNode = await this.createNode(entity, label);
 
       await this.write(
         `match (x:${entity["labelclass"]}  {isDeleted: false,  key: $key}) set x.self_id = id(x)`,
@@ -680,12 +683,12 @@ export class Neo4jService implements OnApplicationShutdown {
       throw newError(failedResponse(error), "400");
     }
   }
-  async createNodeWithLabel(entity) {
+  async createNodeWithLabel(entity, label) {
       
    
-      const createdNode = await this.createChildrenByLabelClass(entity);
+      const createdNode = await this.createChildrenByLabelClass(entity, label);
  
-      await this.addParentByLabelClass(entity);
+      await this.addParentByLabelClass(entity, label);
 
       return createdNode.result["records"][0]["_fields"][0];
 
