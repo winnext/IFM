@@ -15,25 +15,19 @@ export class FacilityService {
 
   @Span('find a facility by realm')
   @OtelMethodCounter()
-  async findOneByRealm(realm: string): Promise<Facility> {
+  findOneByRealm(realm: string): Promise<Facility> {
     return this.facilityRepository.findOneByRealm(realm);
-  }
-
-  @Span('find a facility by id')
-  @OtelMethodCounter()
-  async findOneById(id: string): Promise<Facility> {
-    return this.facilityRepository.findOneById(id);
   }
 
   @Span('create a facility')
   @OtelMethodCounter()
-  async create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
+  create(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     return this.facilityRepository.create(createFacilityDto);
   }
 
   @Span('update a facility')
   @OtelMethodCounter()
-  async update(id: string, updateFacilityDto: UpdateFacilityDto) {
+  update(id: string, updateFacilityDto: UpdateFacilityDto) {
     return this.facilityRepository.update(id, updateFacilityDto);
   }
 }
