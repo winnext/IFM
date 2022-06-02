@@ -653,7 +653,7 @@ const SetClassification = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data, options) => <span className="flex align-items-center font-bold">{data.label} {
+          nodeTemplate={(data:FormNode, options) => <span className="flex align-items-center font-bold">{data.label} {
             <>
               <span className="ml-4 ">
                 <Button
@@ -700,12 +700,16 @@ const SetClassification = () => {
                 />
                 <Button
                   icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
-                  onClick={(e) => navigate(`/formgenerate/${data.key}`, {
-                    state: {
-                      data: data,
-                      rootId: structure.root._id.low,
-                    }
-                  })} />
+                  // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
+                  // {
+                  //   state: {
+                  //     data: data,
+                  //     rootId: structure.root._id.low,
+                  //   }
+                  // }
+                  // )} 
+                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}`)} 
+                  />
               </span>
             </>
           }

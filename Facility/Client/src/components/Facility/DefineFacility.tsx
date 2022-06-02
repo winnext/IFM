@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
-// eslint-disable-next-line import/named
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Chips } from "primereact/chips";
-// import { TreeSelect } from 'primereact/treeselect';
 import { Dropdown } from "primereact/dropdown";
-import FacilityService from "../../services/facility";
-import Addresses from "../Address/Addresses";
 import { TreeSelect } from "primereact/treeselect";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
+import FacilityService from "../../services/facility";
 import ClassificationsService from "../../services/classifications";
 import FacilityStructureService from "../../services/facilitystructure";
+import Addresses from "../Address/Addresses";
 import { useAppSelector } from "../../app/hook";
 
 interface Node {
-  _id?: string;
   key: string;
   label: string;
   name: string;
   code: string;
   selectable: boolean;
   children: Node[];
-  __v?: number;
 }
 
 interface Params {
@@ -134,7 +130,7 @@ const DefineFacility = ({
   const [realm, setRealm] = useState(auth.auth.realm);
 
   useEffect(() => {
-    ClassificationsService.findOne("0")
+    ClassificationsService.findOne("130")
       .then((res) => {
         console.log(res.data.root);
 
