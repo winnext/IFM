@@ -420,6 +420,8 @@ const SetFormTree = () => {
           tag: tag,
           labelclass: res.data.properties.labelclass,
         };
+        console.log(newNode);
+        
         FacilityTreeService.create(newNode)
           .then((res) => {
             toast.current.show({
