@@ -11,8 +11,8 @@ import { GeciciTypeInterface } from '../type.service';
 import { TypeProperty } from '../entities/type.property.entity';
 import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
 import { UpdateTypeDto } from '../dtos/update.type.dto';
-import { assignDtoPropToEntity } from '../sgnm-neo4j/src/func/common.func';
-import { Neo4jService } from 'sgnm-neo4j/dist';
+
+import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
 
 
 @Injectable()
