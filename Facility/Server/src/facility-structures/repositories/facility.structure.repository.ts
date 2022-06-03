@@ -4,13 +4,17 @@ import { FacilityStructureNotFountException } from '../../common/notFoundExcepti
 import { CreateFacilityStructureDto } from '../dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto';
 import { FacilityStructure } from '../entities/facility-structure.entity';
-import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
-import { int } from 'neo4j-driver';
 
+//import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
+import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+
+import { int } from 'neo4j-driver';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
 import { assignDtoPropToEntity, createDynamicCyperObject } from 'src/common/func/neo4js.func';
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
+
+
 
 @Injectable()
 export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure> {
@@ -18,6 +22,7 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
 
   async findOneById(id: string) {
     const node = await this.neo4jService.findByRealmWithTreeStructure(id);
+    
     if (!node) {
       throw new FacilityStructureNotFountException(id);
     }
