@@ -159,7 +159,7 @@ const SetFormTree = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    FacilityTreeService.findOne('269').then((res) => {
+    FacilityTreeService.findOne('244').then((res) => {
 
 
       let temp;
@@ -420,6 +420,8 @@ const SetFormTree = () => {
           tag: tag,
           labelclass: res.data.properties.labelclass,
         };
+        console.log(newNode);
+        
         FacilityTreeService.create(newNode)
           .then((res) => {
             toast.current.show({

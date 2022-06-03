@@ -119,7 +119,7 @@ const SetClassification = () => {
   const [realm, setRealm] = useState(auth.auth.realm);
 
   const getForms = async () => {
-    await FormTypeService.findOne('269').then((res) => {
+    await FormTypeService.findOne('244').then((res) => {
       console.log(res.data.root[0]);
       let temp = JSON.parse(JSON.stringify([res.data.root[0]] || []));
       const iconFormNodes = (nodes: FormNode[]) => {

@@ -39,7 +39,7 @@ const findAll = async (query: PaginationParams) => {
 };
 
 const findOne = async (id: string) => {
-    return axios.get(url + "/" + id);
+    return axios.get(url + "/" + id + "/ChildNode/ChildNode");
 };
 
 const create = async (classification: StructureInterface) => {
