@@ -163,16 +163,16 @@ const SetFormTree = () => {
 
 
       let temp;
-      console.log(res.data.root[0]);
+      console.log(res.data.root);
 
       setStructure(res.data);
-      if (!res.data.root[0].children) {
-        setData([res.data.root[0].properties] || []);
-        temp = [res.data.root[0].properties] || []
+      if (!res.data.root.children) {
+        setData([res.data.root.properties] || []);
+        temp = [res.data.root.properties] || []
       }
-      else if (res.data.root[0].children) {
-        setData([res.data.root[0]] || []);
-        temp = [res.data.root[0]] || []
+      else if (res.data.root.children) {
+        setData([res.data.root] || []);
+        temp = [res.data.root] || []
       }
 
       temp = JSON.parse(JSON.stringify(temp));
@@ -421,7 +421,7 @@ const SetFormTree = () => {
           labelclass: res.data.properties.labelclass,
         };
         console.log(newNode);
-        
+
         FacilityTreeService.create(newNode)
           .then((res) => {
             toast.current.show({
