@@ -11,8 +11,8 @@ import { GeciciTypeInterface } from '../type.service';
 import { TypeProperty } from '../entities/type.property.entity';
 import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
 import { UpdateTypeDto } from '../dtos/update.type.dto';
-
-import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
+import { assignDtoPropToEntity, Neo4jService } from 'src/sgnm-neo4j/src';
+//import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
 
 
 @Injectable()
@@ -26,12 +26,10 @@ export class TypeRepository implements GeciciTypeInterface {
   async findOneByIdAndLabels(id: string, label1: string, label2: string) {
 
     const tree = await this.neo4jService.findByIdAndLabelsWithTreeStructure(id, label1, label2);
-
     if (!tree) {
       
       throw new TypeNotFountException(id);
     }
-
     return tree;
 
     // const idNum = parseInt(id);

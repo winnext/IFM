@@ -1,0 +1,38 @@
+{
+  "name": "sgnm-neo4j",
+  "version": "0.0.94",
+  "description": "neo4j module for nestJs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgnm-haydar/SgnmNeo4jDriver.git"
+  },
+  "keywords": [
+    "neo4j",
+    "sgnm-neo4j-driver",
+    "nest-neo4j",
+    "nest-neo4j-driver"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sgnm-haydar/SgnmNeo4jDriver/issues"
+  },
+  "homepage": "https://github.com/sgnm-haydar/SgnmNeo4jDriver#readme",
+  "dependencies": {
+    "@nestjs/common": "^8.4.5",
+    "@nestjs/config": "^2.0.0",
+    "@nestjs/core": "^8.4.5",
+    "express": "^4.18.1",
+    "neo4j-driver": "^4.4.5"
+  },
+  "devDependencies": {
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
+}
