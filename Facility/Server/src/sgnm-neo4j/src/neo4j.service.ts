@@ -150,7 +150,7 @@ export class Neo4jService implements OnApplicationShutdown {
       if (!result["records"][0]) {
         return null;
       }
-      return result["records"][0]["_fields"];
+      return result["records"][0]["_fields"][0];
     } catch (error) {
       throw newError(error, "500");
     }
@@ -158,9 +158,10 @@ export class Neo4jService implements OnApplicationShutdown {
   async findByIdAndLabelsWithTreeStructure(id: string, label1: string, label2: string) {
     let tree = await this.findWithChildrenByIdAndLabelsAsTree(id, label1, label2);
 
+
     if (!tree) {
       return null;
-    } else if (Object.keys(tree[0]).length === 0) {
+    } else if (Object.keys(tree).length === 0) {
       tree = await this.findById(id);
       const rootNodeObject = { root: tree };
       return rootNodeObject;
@@ -564,7 +565,7 @@ export class Neo4jService implements OnApplicationShutdown {
       }
 
       const childrenCount = await this.getChildrenCount(id);
-
+      
       if (childrenCount > 0) {
         throw new HttpException(has_children_error, 400);
       } else {
@@ -577,7 +578,7 @@ export class Neo4jService implements OnApplicationShutdown {
             this.updateSelectableProp(parent_id, true);
           }
         }
-        //////
+        
         return deletedNode;
       }
     } catch (error) {
