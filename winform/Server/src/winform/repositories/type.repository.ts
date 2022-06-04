@@ -80,11 +80,11 @@ export class TypeRepository implements GeciciTypeInterface {
 
     let parent =  await this.neo4jService.findById(createTypeDto.parent_id.toString());
   
-    if (type.labelclass == 'Type' && parent[0]["properties"]["hasType"]) {
+    if (type.labelclass == 'Type' && parent["properties"]["hasType"]) {
       
             throw new HttpException(  'Tip düğümüne sahip bir düğüme başka tip eklenemez.', HttpStatus.NOT_FOUND);
         }
-    else if (parent[0]["properties"]["labelclass"] != 'ChildNode') {
+    else if (parent["properties"]["labelclass"] != 'ChildNode') {
 
       throw new HttpException(  'Tip düğümüne  yeni düğüm eklenemez.', HttpStatus.NOT_FOUND);
       }
@@ -241,7 +241,6 @@ export class TypeRepository implements GeciciTypeInterface {
       // );
   
     const nodeType = await this.neo4jService.findByIdAndLabelsWithChildNodes(createTypeProperties[0].parent_id.toString() , "ChildNode", "Type");
-    
      if (nodeType[0]) {
          const type_node_id = nodeType[0]['_fields'][0]["identity"]["low"];
          const childrenList = await this.neo4jService.deleteChildrenNodesByIdAndLabels(type_node_id, "Type", "TypeProperty");
