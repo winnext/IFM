@@ -569,7 +569,7 @@ export class Neo4jService implements OnApplicationShutdown {
         throw new HttpException(has_children_error, 400);
       } else {
         const parent = await this.getParentById(id);
-
+        const deletedNode = await this.updateIsDeletedProp(id, true);
         if (parent) {
           const parent_id = parent["_fields"][0]["properties"].self_id;
           const childrenCount = await this.getChildrenCount(parent_id);
@@ -577,7 +577,7 @@ export class Neo4jService implements OnApplicationShutdown {
             this.updateSelectableProp(parent_id, true);
           }
         }
-        const deletedNode = await this.updateIsDeletedProp(id, true);
+        //////
         return deletedNode;
       }
     } catch (error) {
