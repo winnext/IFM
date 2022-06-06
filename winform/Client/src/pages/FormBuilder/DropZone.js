@@ -44,13 +44,13 @@ const InputComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => onHide(name)}
           autoFocus
@@ -204,13 +204,13 @@ const InputTextareaComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => onHide(name)}
           autoFocus
@@ -376,13 +376,13 @@ const DropDownComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => onHide(name)}
           autoFocus
@@ -395,13 +395,13 @@ const DropDownComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide2(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => {
             props.setItems((prevValue) => {
@@ -451,7 +451,7 @@ const DropDownComponent = (props) => {
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm  p-button-info"
+            className="p-button-rounded p-button-sm p-button-info"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -553,14 +553,14 @@ const DropDownComponent = (props) => {
           </label>
         </div>
         <Button
-          className="ml-3"
+          className="mt-3 p-button-rounded p-button-secondary"
           label="Options"
-          icon="pi pi-external-link"
+          // icon="pi pi-external-link"
           onClick={() => onClick2('displayResponsive2')}
         />
       </Dialog>
       <Dialog
-        header="Details"
+        header="Options"
         visible={displayResponsive2}
         onHide={() => onHide2('displayResponsive2')}
         breakpoints={{ '960px': '75vw' }}
@@ -578,20 +578,24 @@ const DropDownComponent = (props) => {
               />
               <div className="btn-box">
                 {inputList.length !== 1 && (
-                  <Button className="my-2" onClick={() => handleRemoveClick(i)}>
-                    Remove
-                  </Button>
+                  <Button
+                    className="my-2 p-button-rounded p-button-danger"
+                    icon="pi pi-trash"
+                    onClick={() => handleRemoveClick(i)}
+                  ></Button>
                 )}
                 {inputList.length - 1 === i && (
-                  <Button className="my-2 ml-2" onClick={handleAddClick}>
-                    Add
-                  </Button>
+                  <Button
+                    className="my-2 ml-2 p-button-rounded p-button-success"
+                    icon="pi pi-plus"
+                    onClick={handleAddClick}
+                  ></Button>
                 )}
               </div>
             </div>
           );
         })}
-        <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div>
+        {/* <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div> */}
       </Dialog>
     </div>
   );
@@ -642,13 +646,13 @@ const RadioComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => onHide(name)}
           autoFocus
@@ -661,13 +665,13 @@ const RadioComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide2(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => {
             props.setItems((prevValue) => {
@@ -792,14 +796,14 @@ const RadioComponent = (props) => {
           </label>
         </div>
         <Button
-          className="ml-3"
+          className="mt-3 p-button-rounded p-button-secondary"
           label="Options"
-          icon="pi pi-external-link"
+          // icon="pi pi-external-link"
           onClick={() => onClick2('displayResponsive2')}
         />
       </Dialog>
       <Dialog
-        header="Details"
+        header="Options"
         visible={displayResponsive2}
         onHide={() => onHide2('displayResponsive2')}
         breakpoints={{ '960px': '75vw' }}
@@ -817,20 +821,24 @@ const RadioComponent = (props) => {
               />
               <div className="btn-box">
                 {inputList.length !== 1 && (
-                  <Button className="my-2" onClick={() => handleRemoveClick(i)}>
-                    Remove
-                  </Button>
+                  <Button
+                    className="my-2 p-button-rounded p-button-danger"
+                    icon="pi pi-trash"
+                    onClick={() => handleRemoveClick(i)}
+                  ></Button>
                 )}
                 {inputList.length - 1 === i && (
-                  <Button className="my-2 ml-2" onClick={handleAddClick}>
-                    Add
-                  </Button>
+                  <Button
+                    className="my-2 ml-2 p-button-rounded p-button-success"
+                    icon="pi pi-plus"
+                    onClick={handleAddClick}
+                  ></Button>
                 )}
               </div>
             </div>
           );
         })}
-        <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div>
+        {/* <div style={{ marginTop: 20 }}>{JSON.stringify(inputList)}</div> */}
       </Dialog>
     </div>
   );
@@ -868,13 +876,13 @@ const CheckBoxComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => onHide(name)}
           autoFocus
@@ -1015,13 +1023,13 @@ const DateComponent = (props) => {
     return (
       <div>
         <Button
-          label="No"
+          label="Cancel"
           icon="pi pi-times"
           onClick={() => onHide(name)}
           className="p-button-text"
         />
         <Button
-          label="Yes"
+          label="Save"
           icon="pi pi-check"
           onClick={() => onHide(name)}
           autoFocus

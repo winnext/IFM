@@ -9,14 +9,12 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from 'primereact/dropdown';
-import { Checkbox } from 'primereact/checkbox';
 import FormType from "../../components/Form/FormType";
 import { useForm, Controller } from "react-hook-form";
 
-import FacilityTreeService from "../../services/formTree";
+import FormTreeService from "../../services/formTree";
 
-interface StructureInterface {
+interface FormTreeInterface {
   root:
   {
     code: string;
@@ -71,7 +69,7 @@ const SetFormTree = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [selectedNodeId, setSelectedNodeId] = useState<any>("");
   const [loading, setLoading] = useState(true);
-  const [structure, setStructure] = useState<StructureInterface>({
+  const [formTree, setFormTree] = useState<FormTreeInterface>({
     root: [
       {
         code: "",
@@ -129,7 +127,7 @@ const SetFormTree = () => {
       icon: "pi pi-pencil",
       command: () => {
 
-        FacilityTreeService.nodeInfo(selectedNodeKey)
+        FormTreeService.nodeInfo(selectedNodeKey)
           .then((res) => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
@@ -157,15 +155,15 @@ const SetFormTree = () => {
     },
   ];
 
-  const getClassification = () => {
+  const getFormTree = () => {
     const id = params.id || "";
-    FacilityTreeService.findOne('221').then((res) => {
+    FormTreeService.findOne('221').then((res) => {
 
 
       let temp;
       console.log(res.data.root);
 
-      setStructure(res.data);
+      setFormTree(res.data);
       if (!res.data.root.children) {
         setData([res.data.root.properties] || []);
         temp = [res.data.root.properties] || []
@@ -189,109 +187,16 @@ const SetFormTree = () => {
         life: 20000,
       });
       setTimeout(() => {
-        navigate("/facilitystructure")
+        navigate("/formtree")
       }, 2000)
     })
   }
 
   useEffect(() => {
-    getClassification();
+    getFormTree();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const findNodeAndAddItem = (
-    search: string,
-    nodes: Node[]
-  ): Node | undefined => {
-    if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
-      if (node.key === search) {
-        console.log(node);
-
-        const newNode = {
-          key: uuidv4(),
-          parent_id: node._id.low,
-          name: name,
-          code: code,
-          tag: tag,
-          labelclass: node.labelclass,
-        };
-        // node.children = node.children ? [...node.children, newNode] : [newNode];
-
-        FacilityTreeService.create(newNode)
-          .then((res) => {
-            toast.current.show({
-              severity: "success",
-              summary: "Successful",
-              detail: "Form  Created",
-              life: 3000,
-            });
-            getClassification();
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 20000,
-            });
-          });
-
-        return node;
-      }
-      return findNodeAndAddItem(search, node.children ? node.children : []);
-    })[0];
-  };
-
-  const findNodeAndAddForm = (
-    search: string,
-    nodes: Node[]
-  ): Node | undefined => {
-    if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
-
-
-      if (node.key === search) {
-        console.log(node);
-        if (node.hasType === true) {
-          navigate("/formbuilder/" + node._id.low);
-        }
-        const newNode = {
-          key: uuidv4(),
-          parent_id: node._id.low,
-          name: node.name,
-          code: node.code,
-          tag: node.tag,
-          labelclass: 'Type',
-        };
-        // node.children = node.children ? [...node.children, newNode] : [newNode];
-
-        FacilityTreeService.create(newNode)
-          .then((res) => {
-            toast.current.show({
-              severity: "success",
-              summary: "Successful",
-              detail: "Form  Created",
-              life: 3000,
-            });
-            getClassification();
-            navigate("/formbuilder/" + newNode.key);
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 20000,
-            });
-          });
-
-        return node;
-
-      }
-      return findNodeAndAddForm(search, node.children ? node.children : []);
-    })[0];
-  };
 
   const findNodeAndChangeItem = (
     search: string,
@@ -312,10 +217,10 @@ const SetFormTree = () => {
           isActive: true
         };
 
-        FacilityTreeService.update(node._id.low, updateNode)
+        FormTreeService.update(node._id.low, updateNode)
           .then((res) => {
             showSuccess("Saved!");
-            getClassification();
+            getFormTree();
           })
           .catch((err) => {
             toast.current.show({
@@ -329,65 +234,6 @@ const SetFormTree = () => {
         return node;
       }
       return findNodeAndChangeItem(search, node.children ? node.children : []);
-    })[0];
-  };
-
-  const findNodeAndDelete = (
-    search: string,
-    nodes: Node[]
-  ): Node | undefined => {
-    if (nodes.length === 0) return undefined;
-    return nodes.map((node) => {
-      // node.children = node.children
-      //   ? node.children.filter((child) => child.key !== search)
-      //   : [];
-
-      if (node.key === search) {
-        if (node.hasParent === false) {
-          FacilityTreeService.remove(node.self_id.low)
-            .then(() => {
-              toast.current.show({
-                severity: "success",
-                summary: "Success",
-                detail: "Form Deleted",
-                life: 2000,
-              });
-              navigate("/facilitystructure");
-            })
-            .catch((err) => {
-              toast.current.show({
-                severity: "error",
-                summary: "Error",
-                detail: err.response ? err.response.data.message : err.message,
-                life: 2000,
-              });
-            });
-        }
-        else {
-          FacilityTreeService.remove(node.self_id.low)
-            .then(() => {
-              toast.current.show({
-                severity: "success",
-                summary: "Success",
-                detail: "Form Deleted",
-                life: 2000,
-              });
-              getClassification();
-
-            })
-            .catch((err) => {
-              toast.current.show({
-                severity: "error",
-                summary: "Error",
-                detail: err.response ? err.response.data.message : err.message,
-                life: 2000,
-              });
-            });
-          return node;
-        }
-      }
-      findNodeAndDelete(search, node.children ? node.children : []);
-
     })[0];
   };
 
@@ -407,9 +253,7 @@ const SetFormTree = () => {
   };
 
   const addItem = (key: string) => {
-    // const temp = JSON.parse(JSON.stringify(data));
-    // findNodeAndAddItem(key, temp);
-    FacilityTreeService.nodeInfo(key)
+    FormTreeService.nodeInfo(key)
       .then((res) => {
         console.log(res.data);
         const newNode = {
@@ -422,15 +266,15 @@ const SetFormTree = () => {
         };
         console.log(newNode);
 
-        FacilityTreeService.create(newNode)
+        FormTreeService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Form  Created",
+              detail: "Form Created",
               life: 3000,
             });
-            getClassification();
+            getFormTree();
           })
       })
       .catch((err) => {
@@ -441,7 +285,6 @@ const SetFormTree = () => {
           life: 2000,
         });
       });
-    // setData(temp);
     setName("");
     setCode("");
     setTag([]);
@@ -450,7 +293,7 @@ const SetFormTree = () => {
   };
 
   const addForm = (key: string) => {
-    FacilityTreeService.nodeInfo(key)
+    FormTreeService.nodeInfo(key)
       .then((res) => {
         console.log(res.data);
         setSelectedNodeId(res.data.identity.low)
@@ -462,7 +305,7 @@ const SetFormTree = () => {
           tag: res.data.properties.tag,
           labelclass: 'Type',
         };
-        FacilityTreeService.create(newNode)
+        FormTreeService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
@@ -470,7 +313,7 @@ const SetFormTree = () => {
               detail: "Form Created",
               life: 3000,
             });
-            getClassification();
+            getFormTree();
           })
       })
       .catch((err) => {
@@ -506,13 +349,11 @@ const SetFormTree = () => {
   }
 
   const deleteItem = (key: string) => {
-    // const temp = JSON.parse(JSON.stringify(data));
-    // findNodeAndDelete(key, temp);
-    FacilityTreeService.nodeInfo(key)
+    FormTreeService.nodeInfo(key)
       .then((res) => {
         console.log(res.data);
         if (res.data.properties.hasParent === false) {
-          FacilityTreeService.remove(res.data.identity.low)
+          FormTreeService.remove(res.data.identity.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -532,7 +373,7 @@ const SetFormTree = () => {
             });
         }
         else {
-          FacilityTreeService.remove(res.data.identity.low)
+          FormTreeService.remove(res.data.identity.low)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -540,7 +381,7 @@ const SetFormTree = () => {
                 detail: "Node Deleted",
                 life: 2000,
               });
-              getClassification();
+              getFormTree();
 
             })
             .catch((err) => {
@@ -565,10 +406,10 @@ const SetFormTree = () => {
   };
 
   const dragDropUpdate = (dragId: string, dropId: string) => {
-    FacilityTreeService.relation(dragId, dropId)
+    FormTreeService.relation(dragId, dropId)
       .then((res) => {
         showSuccess("Structure Updated");
-        getClassification();
+        getFormTree();
       })
       .catch((err) => {
         toast.current.show({
@@ -586,7 +427,7 @@ const SetFormTree = () => {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => { setLoading(true); dragDropUpdate(dragId, dropId) },
-      reject: () => { setLoading(true); getClassification() }
+      reject: () => { setLoading(true); getFormTree() }
     });
   }
 
@@ -820,7 +661,7 @@ const SetFormTree = () => {
                     setSelectedNodeKey(data.key);
                     let dataKey: any = data.key
 
-                    FacilityTreeService.nodeInfo(dataKey)
+                    FormTreeService.nodeInfo(dataKey)
                       .then((res) => {
                         console.log(res.data);
                         setSelectedNodeId(res.data.identity.low)
@@ -852,9 +693,6 @@ const SetFormTree = () => {
                   }
                   }
                 />
-
-
-
               }
             </>
           }

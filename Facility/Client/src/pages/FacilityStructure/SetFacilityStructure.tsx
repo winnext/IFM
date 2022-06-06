@@ -119,9 +119,9 @@ const SetClassification = () => {
   const [realm, setRealm] = useState(auth.auth.realm);
 
   const getForms = async () => {
-    await FormTypeService.findOne('244').then((res) => {
-      console.log(res.data.root[0]);
-      let temp = JSON.parse(JSON.stringify([res.data.root[0]] || []));
+    await FormTypeService.findOne('221').then((res) => {
+      console.log(res.data.root);
+      let temp = JSON.parse(JSON.stringify([res.data.root] || []));
       const iconFormNodes = (nodes: FormNode[]) => {
         if (!nodes || nodes.length === 0) {
           return;
@@ -653,7 +653,7 @@ const SetClassification = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data:FormNode, options) => <span className="flex align-items-center font-bold">{data.label} {
+          nodeTemplate={(data: FormNode, options) => <span className="flex align-items-center font-bold">{data.label} {
             <>
               <span className="ml-4 ">
                 <Button
@@ -698,22 +698,26 @@ const SetClassification = () => {
                     setDelDia(true)
                   }}
                 />
-                <Button
-                  icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
-                  // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
-                  // {
-                  //   state: {
-                  //     data: data,
-                  //     rootId: structure.root._id.low,
-                  //   }
-                  // }
-                  // )} 
-                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}`)} 
+                {
+                  data.typeId && <Button
+                    icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
+                    // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
+                    // {
+                    //   state: {
+                    //     data: data,
+                    //     rootId: structure.root._id.low,
+                    //   }
+                    // }
+                    // )} 
+                    onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}`)}
                   />
+                }
               </span>
             </>
           }
           </span>}
+          // style={{backgroundColor:'green'}}
+          // contentStyle={{backgroundColor:'green'}}
         />
       </div>
       <div className="field">

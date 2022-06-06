@@ -212,7 +212,7 @@ const SetClassification = () => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Form  Created",
+              detail: "Classification Updated",
               life: 3000,
             });
             getClassification();
