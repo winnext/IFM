@@ -32,6 +32,7 @@ const Facility2 = () => {
   };
 
   const [facilities, setFacilities] = useState([]);
+  const [facilityShow, setFacilityShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [facilityDialog, setFacilityDialog] = useState(false);
   const [facility, setFacility] = useState(emptyFacility);
@@ -54,9 +55,11 @@ const Facility2 = () => {
     setLoading(true);
     FacilityService.findOne(realm)
       .then((response) => {
-        console.log(response);
         setFacilities([response.data] || []);
         // setCountFacilities(response.data[1].count);
+        if (response.status !== 200) {
+          setFacilityShow(true);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -95,7 +98,17 @@ const Facility2 = () => {
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
-        {facilities.length < 1 && (
+        {/* {facilities.length < 1 && (
+          <div className="my-2">
+            <Button
+              label="New"
+              icon="pi pi-plus"
+              className="p-button-success mr-2"
+              onClick={openNew}
+            />
+          </div>
+        )} */}
+        {facilityShow === false ? null : (
           <div className="my-2">
             <Button
               label="New"

@@ -43,24 +43,24 @@ const Input = ({ value, onChange, type, ...rest }) => {
         />
       );
     case "radio":
-      return merged?.map((e) => {
-        console.log(e);
+    case "gender":
+      return merged?.map((e, index) => {
+        console.log(e, index);
         return (
-          <div key={e} className="flex">
-            <div className="field-radiobutton">
-              <RadioButton
-                className="mt-1"
-                key={e}
-                value={e}
-                onChange={onChange}
-                checked={value === e}
-              />
-              <label className="ml-2">{e}</label>
-            </div>
-          </div>
+          <span key={e} className={index === 0 ? "mt-3" : "mt-3 ml-3"}>
+            <RadioButton
+              className="mt-2"
+              key={e}
+              value={e}
+              onChange={onChange}
+              checked={value === e}
+            />
+            <label className="ml-2">{e}</label>
+          </span>
         );
       });
     case "dropdown":
+    case 'cities':
       return (
         <div>
           <Dropdown
@@ -90,7 +90,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
 
     case "date":
       console.log(value);
-      const date1=(new Date(value));
+      const date1 = new Date(value);
       return (
         <div>
           <Calendar
@@ -255,12 +255,14 @@ const Dynamic = () => {
           <div>
             {items && (
               <>
-                <Button className="ml-3" type="submit">
-                  Submit
-                </Button>
-                <Button className="ml-4" onClick={() => backPage()}>
-                  Back
-                </Button>
+                <div className="mt-4">
+                  <Button className="ml-3" type="submit">
+                    Submit
+                  </Button>
+                  <Button className="ml-4" onClick={() => backPage()}>
+                    Back
+                  </Button>
+                </div>
               </>
             )}
           </div>

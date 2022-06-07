@@ -39,24 +39,24 @@ const Input = ({ value, onChange, type, ...rest }) => {
         />
       );
     case 'radio':
-      return merged?.map((e) => {
-        console.log(e);
+    case 'gender':
+      return merged?.map((e, index) => {
+        console.log(e,index);
         return (
-          <div key={e} className="flex">
-            <div className="field-radiobutton">
-              <RadioButton
-                className="mt-1"
-                key={e}
-                value={e}
-                onChange={onChange}
-                checked={value === e}
-              />
-              <label className="ml-2">{e}</label>
-            </div>
-          </div>
+          <span key={e} className={index === 0 ? "mt-3" : "mt-3 ml-3" }>
+            <RadioButton
+              className="mt-2"
+              key={e}
+              value={e}
+              onChange={onChange}
+              checked={value === e}
+            />
+            <label className="ml-2">{e}</label>
+          </span>
         );
       });
     case 'dropdown':
+    case 'cities':
       return (
         <div>
           <Dropdown
@@ -111,10 +111,10 @@ const Dynamic = (props) => {
   const toast = React.useRef(null);
 
   useEffect(() => {
-    const newData = props.items.filter((item) => {
+    const activeData = props.items.filter((item) => {
       return item.isActive === true;
     });
-    setItems(newData);
+    setItems(activeData);
   }, []);
 
   const {
@@ -127,7 +127,6 @@ const Dynamic = (props) => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
   };
 
   return (

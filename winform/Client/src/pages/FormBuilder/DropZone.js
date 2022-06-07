@@ -10,6 +10,9 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
+import CitiesComponent from './FormComponents/CitiesComponent';
+import GenderComponent from './FormComponents/GenderComponent';
+
 const InputComponent = (props) => {
   console.log(props);
   console.log(props.item.rules.required);
@@ -126,12 +129,13 @@ const InputComponent = (props) => {
         </div>
       </Dialog>
 
+      {/* <InputText disabled placeholder={props.item.label ? props.item.label :"Text"} style={{ width: 250 }} /> */}
       <InputText disabled placeholder="Text" style={{ width: 250 }} />
 
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm  p-button-info"
+            className="p-button-rounded p-button-sm  p-button-secondary"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -291,7 +295,7 @@ const InputTextareaComponent = (props) => {
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm  p-button-info"
+            className="p-button-rounded p-button-sm  p-button-secondary"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -451,7 +455,7 @@ const DropDownComponent = (props) => {
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm p-button-info"
+            className="p-button-rounded p-button-sm p-button-secondary"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -719,7 +723,7 @@ const RadioComponent = (props) => {
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm  p-button-info"
+            className="p-button-rounded p-button-sm  p-button-secondary"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -951,7 +955,7 @@ const CheckBoxComponent = (props) => {
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm  p-button-info"
+            className="p-button-rounded p-button-sm  p-button-secondary"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -1097,7 +1101,7 @@ const DateComponent = (props) => {
       <div className="flex justify-content-between mt-2">
         <div>
           <Button
-            className="p-button-rounded p-button-sm  p-button-info"
+            className="p-button-rounded p-button-sm  p-button-secondary"
             label="Details"
             onClick={() => onClick('displayResponsive')}
           />
@@ -1190,6 +1194,24 @@ const DropZone = (props) => {
       case 'date':
         return (
           <DateComponent
+            item={item}
+            index={index}
+            setItems={props.setItems}
+            items={props.items}
+          />
+        );
+      case 'cities':
+        return (
+          <CitiesComponent
+            item={item}
+            index={index}
+            setItems={props.setItems}
+            items={props.items}
+          />
+        );
+      case 'gender':
+        return (
+          <GenderComponent
             item={item}
             index={index}
             setItems={props.setItems}

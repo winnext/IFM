@@ -8,8 +8,10 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 import Toolbox from './ToolBox';
+import Toolbox2 from './ToolBox2';
 import DropZone from './DropZone';
 import ITEMS from './Items';
+import ITEMS2 from './Items2';
 import FormGenerate from '../FormGenerate/FormGenerate';
 import FormBuilderService from '../../services/formBuilder';
 
@@ -137,6 +139,9 @@ function FormBuilderCreate() {
       case 'Toolbox':
         setItems(copy(ITEMS, items, source, destination, true));
         break;
+      case 'Toolbox2':
+        setItems(copy(ITEMS2, items, source, destination, true));
+        break;
       default:
         break;
     }
@@ -149,100 +154,110 @@ function FormBuilderCreate() {
         <div className="col-2">
           <Toolbox />
         </div>
-        <div className="col-8">
+        <div className="col-7">
           <div className="field">
             <h5 className="block">Form Name : {formName} </h5>
-            <Button
-              label="Form Show"
-              icon="pi pi-book"
-              onClick={() => onClick('displayResponsive')}
-            />
+            <div className="flex justify-content-between">
+              <div>
+                <Button
+                  className="p-button-warning"
+                  label="Form Show"
+                  icon="pi pi-book"
+                  onClick={() => onClick('displayResponsive')}
+                />
+              </div>
+              <div>
+                <Button
+                  onClick={() => {
+                    const data = items;
+                    console.log(data);
+                    // console.log(dataNeo4j);
+                    const dataNeo4j = data.map((item) => {
+                      return {
+                        key: item.key,
+                        type: item.type,
+                        typeId: item.typeId,
+                        label: item.label,
+                        tag: item.tag,
+                        defaultValue: item.defaultValue,
+                        labelclass: item.labelclass,
+                        rules: [item.rules.required],
+                        // parent_id: item.parent_id || parentId,
+                        parent_id: parentId,
+                        options: item.options?.map(
+                          (option) => option.optionsName,
+                        ),
+                        isActive: item.isActive,
+                        placeholder: item.placeholder,
+                        label2: item.label2,
+                        index: item.index,
+                      };
+                    });
+                    console.log(dataNeo4j);
+                    //array'de tekrar eden elaman varsa true dönüyor
+                    function hasDuplicates(array) {
+                      return new Set(array).size !== array.length;
+                    }
+                    //property label girili değilse uyarı ver
+                    if (dataNeo4j.map((item) => item.label).includes('')) {
+                      toast.current.show({
+                        severity: 'error',
+                        summary: 'Error Message',
+                        detail: 'Please fill all the property labels',
+                        life: 4000,
+                      });
+                    } else {
+                      //aynı isimde property label varsa uyarı ver
+                      if (
+                        hasDuplicates(dataNeo4j.map((item) => item.label)) ===
+                        true
+                      ) {
+                        toast.current.show({
+                          severity: 'error',
+                          summary: 'Error Message',
+                          detail: 'Please fill different property labels',
+                          life: 4000,
+                        });
+                      } else {
+                        if (dataNeo4j.length > 0) {
+                          FormBuilderService.create(dataNeo4j)
+                            .then((res) => {
+                              navigate('/formtree');
+                            })
+                            .catch((err) => {
+                              toast.current.show({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: err.response
+                                  ? err.response.data.message
+                                  : err.message,
+                                life: 2000,
+                              });
+                            });
+                        }
+                      }
+                    }
+                  }}
+                >
+                  Save
+                </Button>
+                <Button
+                  className="p-button-danger ml-2"
+                  onClick={() => {
+                    navigate('/formtree');
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
           </div>
           <Card>
             <DropZone droppableId="form" items={items} setItems={setItems} />
           </Card>
         </div>
         <div className="col-2">
-          <Button
-            onClick={() => {
-              const data = items;
-              console.log(data);
-              // console.log(dataNeo4j);
-              const dataNeo4j = data.map((item) => {
-                return {
-                  key: item.key,
-                  type: item.type,
-                  typeId: item.typeId,
-                  label: item.label,
-                  tag: item.tag,
-                  defaultValue: item.defaultValue,
-                  labelclass: item.labelclass,
-                  rules: [item.rules.required],
-                  // parent_id: item.parent_id || parentId,
-                  parent_id: parentId,
-                  options: item.options?.map((option) => option.optionsName),
-                  isActive: item.isActive,
-                  placeholder: item.placeholder,
-                  label2: item.label2,
-                  index: item.index,
-                };
-              });
-              console.log(dataNeo4j);
-              //array'de tekrar eden elaman varsa true dönüyor
-              function hasDuplicates(array) {
-                return new Set(array).size !== array.length;
-              }
-              //property label girili değilse uyarı ver
-              if (dataNeo4j.map((item) => item.label).includes('')) {
-                toast.current.show({
-                  severity: 'error',
-                  summary: 'Error Message',
-                  detail: 'Please fill all the property labels',
-                  life: 4000,
-                });
-              } else {
-                //aynı isimde property label varsa uyarı ver
-                if (
-                  hasDuplicates(dataNeo4j.map((item) => item.label)) === true
-                ) {
-                  toast.current.show({
-                    severity: 'error',
-                    summary: 'Error Message',
-                    detail: 'Please fill different property labels',
-                    life: 4000,
-                  });
-                } else {
-                  if (dataNeo4j.length > 0) {
-                    FormBuilderService.create(dataNeo4j)
-                      .then((res) => {
-                        navigate('/formtree');
-                      })
-                      .catch((err) => {
-                        toast.current.show({
-                          severity: 'error',
-                          summary: 'Error',
-                          detail: err.response
-                            ? err.response.data.message
-                            : err.message,
-                          life: 2000,
-                        });
-                      });
-                  }
-                }
-              }
-            }}
-          >
-            Save
-          </Button>
-          <Button
-            className="p-button-danger ml-2"
-            onClick={() => {
-              navigate('/formtree');
-            }}
-          >
-            Cancel
-          </Button>
-
+          <Toolbox2 />
           <Dialog
             header={formName}
             visible={displayResponsive}
