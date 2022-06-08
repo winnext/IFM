@@ -54,7 +54,7 @@
     "nestjs-i18n": "^9.0.10",
     "nestjs-otel": "^3.0.0",
     "nestjs-pino": "^2.4.0",
-    "npm": "^8.7.0",
+    "npm": "^8.11.0",
     "opentelemetry-instrumentation-kafkajs": "^0.27.0",
     "pino": "^7.6.2",
     "pino-http": "^6.5.0",
