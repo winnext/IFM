@@ -475,7 +475,7 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async createChildrenByLabelClass(entity: object, label: string) {   //DİKKAT
+  async createChildrenByLabelClass(entity: object, label: string) {
     try {
       delete entity["realm"]
       const dynamicCyperParameter = createDynamiCyperParam(entity,label);
@@ -494,8 +494,25 @@ export class Neo4jService implements OnApplicationShutdown {
       throw newError(failedResponse(error), "400");
     }
   }
+  ///////////////////////// 8 Haz 2022 //////////////////////////////////////
+  async createChildrenByOptionalLabels(entity: object, label: string) {
+    try {
+      delete entity["realm"];
+      const dynamicCyperParameter = createDynamiCyperParam(entity,label);
+      let query =
+      ` match (y {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
+      query = query +  dynamicCyperParameter;  
 
-  async addParentByLabelClass(entity, label: string) {  //DİKKAT
+      const res = await this.write(query, entity);
+
+      return successResponse(res);
+    } catch (error) {
+      throw newError(failedResponse(error), "400");
+    }
+  }
+  ///////////////////////////////////////////////////////////////////////////
+
+  async addParentByLabelClass(entity, label: string) {
     
     let query = `match (x:${label}:${entity.labelclass} {isDeleted: false, key: $key}) \
     match (y: ${entity.labelclass} {isDeleted: false}) where id(y)= $parent_id \
@@ -637,10 +654,15 @@ export class Neo4jService implements OnApplicationShutdown {
     return nodes;
   }
 
-  async create(entity, label: string) {          //DİKKAT
-    if (entity["parent_id"]) {
-      const createdNode = await this.createChildrenByLabelClass(entity, label);
-
+  async create(entity, label: string) {
+    if (entity["parent_id"]) { 
+    ////////////// 8 Haz 2022 /////////////////
+    let createdNode = await this.createChildrenByLabelClass(entity, label);
+     if (entity.optionalLabels) {
+      createdNode = await this.createChildrenByOptionalLabels(entity, label);
+     }
+    
+    ///////////////////////////////////////////
       await this.write(
         `match (x:${label}:${entity["labelclass"]} {isDeleted: false, key: $key}) set x.self_id = id(x)`,
         {
