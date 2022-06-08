@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-// import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
+import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
+//import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
 
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
@@ -11,7 +12,7 @@ import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifm
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { assignDtoPropToEntity, createDynamicCyperObject } from 'src/common/func/neo4js.func';
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
-import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+
 
 @Injectable()
 export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification> {

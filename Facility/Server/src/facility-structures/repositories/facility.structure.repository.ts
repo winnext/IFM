@@ -5,8 +5,8 @@ import { CreateFacilityStructureDto } from '../dto/create-facility-structure.dto
 import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto';
 import { FacilityStructure } from '../entities/facility-structure.entity';
 
-//import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
-import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
+//import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
 
 import { int } from 'neo4j-driver';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';

@@ -17,8 +17,8 @@ import { KeycloakModule } from './common/keycloack/keycloak.module';
 import { TestModule } from './test/test.module';
 import { TypeModule } from './winform/type.module';
 
-import { Neo4jModule } from './sgnm-neo4j/src';
-//import { Neo4jModule } from 'sgnm-neo4j/dist';
+//import { Neo4jModule } from './sgnm-neo4j/src';
+import { Neo4jModule } from 'sgnm-neo4j/dist';
 
 
 @Module({
