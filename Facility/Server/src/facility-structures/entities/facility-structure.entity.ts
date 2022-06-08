@@ -13,6 +13,7 @@ export class FacilityStructure extends BaseGraphObject {
   self_id: number; // not in dtos
   typeId: string;
   realm: string;
+  optionalLabels: string[]
 }
 
 export const FaciliyStructureSchema = SchemaFactory.createForClass(FacilityStructure);

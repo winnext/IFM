@@ -59,4 +59,8 @@ export class CreateFacilityStructureDto {
   @ApiProperty()
   @IsOptional()
   realm: string;
+  
+  @ApiProperty()
+  @IsOptional()
+  optionalLabels: string[];
 }
