@@ -202,7 +202,7 @@ const DefineFacility = ({
           name: 'IFM',
           key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
           tag: ['test'],
-          labelclass: 'test',
+          labelclass: realm,
           type: '',
           typeId: '',
           description: '',

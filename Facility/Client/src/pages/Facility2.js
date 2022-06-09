@@ -57,12 +57,10 @@ const Facility2 = () => {
       .then((response) => {
         setFacilities([response.data] || []);
         // setCountFacilities(response.data[1].count);
-        if (response.status !== 200) {
-          setFacilityShow(true);
-        }
         setLoading(false);
       })
       .catch((err) => {
+        setFacilityShow(true);
         if (err.response.status !== 404) {
           toast.current.show({
             severity: "error",

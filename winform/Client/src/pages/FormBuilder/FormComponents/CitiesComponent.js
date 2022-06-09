@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Droppable } from 'react-beautiful-dnd';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { Checkbox } from 'primereact/checkbox';
-import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
-import { RadioButton } from 'primereact/radiobutton';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
@@ -172,7 +168,7 @@ function CitiesComponent(props) {
         </div>
         <div className="my-2">
           <Checkbox
-            inputId="cb1"
+            inputId="cbcities"
             onChange={(e) => {
               props.setItems((prevValue) => {
                 const temp = [...prevValue];
@@ -183,7 +179,7 @@ function CitiesComponent(props) {
             }}
             checked={props.item.rules.required}
           ></Checkbox>
-          <label htmlFor="cb1" className="p-checkbox-label ml-2">
+          <label htmlFor="cbcities" className="p-checkbox-label ml-2">
             isRequired
           </label>
         </div>

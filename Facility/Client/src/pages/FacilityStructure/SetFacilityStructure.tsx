@@ -8,6 +8,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from 'primereact/checkbox';
+import { Dropdown } from 'primereact/dropdown';
 import { useForm, Controller } from "react-hook-form";
 import { TreeSelect } from "primereact/treeselect";
 import { useNavigate, useParams } from "react-router-dom";
@@ -55,6 +56,7 @@ interface Node {
   description: string;
   icon?: string;
   label: string;
+  optionalLabels?: string[];
 }
 
 interface FormNode {
@@ -104,6 +106,7 @@ const SetClassification = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [typeId, setTypeId] = useState<any>(undefined);
+  const [optionalLabels, setOptionalLabels] = useState<string[]|undefined>(undefined);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
@@ -117,6 +120,18 @@ const SetClassification = () => {
   const [selectedForm, setSelectedForm] = useState<any>(undefined);
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
+
+  const facilityTypes = [
+    { name: 'Facility' },
+    { name: 'Building' },
+    { name: 'Block' },
+    { name: 'Floor' },
+    { name: 'Room' },
+    { name: 'Open Area' },
+    { name: 'Park Area' },
+    { name: 'Garden' },
+    { name: 'Other' },
+  ];
 
   const getForms = async () => {
     await FormTypeService.findOne('221').then((res) => {
@@ -272,7 +287,10 @@ const SetClassification = () => {
           type: type,
           typeId: typeId,
           description: "",
+          optionalLabels:optionalLabels,
         };
+        console.log(newNode);
+        
         FacilityStructureService.create(newNode)
           .then((res) => {
             toast.current.show({
@@ -558,7 +576,17 @@ const SetClassification = () => {
           />
         </div> */}
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
+          <Dropdown
+            value={optionalLabels}
+            options={facilityTypes}
+            onChange={(e) => { setOptionalLabels([e.value.name]) }}
+            optionLabel="name"
+            placeholder="Select a Facility Type"
+            style={{ width: '50%' }} />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
           <TreeSelect
             value={typeId}
             options={formData}
@@ -605,7 +633,17 @@ const SetClassification = () => {
           />
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
+          <Dropdown
+            value={optionalLabels}
+            options={facilityTypes}
+            onChange={(e) => { setOptionalLabels(e.value) }}
+            optionLabel="name"
+            placeholder="Select a Facility Type"
+            style={{ width: '50%' }} />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
           <TreeSelect
             value={typeId}
             options={formData}
@@ -716,8 +754,8 @@ const SetClassification = () => {
             </>
           }
           </span>}
-          // style={{backgroundColor:'gray'}}
-          // contentStyle={{backgroundColor:'green'}}
+        // style={{backgroundColor:'gray'}}
+        // contentStyle={{backgroundColor:'green'}}
         />
       </div>
       <div className="field">

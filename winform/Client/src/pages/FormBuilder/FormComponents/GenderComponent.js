@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Droppable } from 'react-beautiful-dnd';
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { Checkbox } from 'primereact/checkbox';
-import { Calendar } from 'primereact/calendar';
-import { Dropdown } from 'primereact/dropdown';
 import { RadioButton } from 'primereact/radiobutton';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -78,9 +74,9 @@ function GenderComponent(props) {
   
   return (
     <div key={props.index} className="field">
-      <RadioButton disabled placeholder="RadioButton" />
+      <RadioButton disabled placeholder="Gender" />
       <span className="ml-2" style={{ color: '#a3a9af' }}>
-        RadioButton
+        Gender
       </span>
       <div className="flex justify-content-between mt-2">
         <div>
@@ -146,7 +142,7 @@ function GenderComponent(props) {
         </div>
         <div className="my-2">
           <Checkbox
-            inputId="cb4"
+            inputId="cbgender"
             onChange={(e) => {
               props.setItems((prevValue) => {
                 const temp = [...prevValue];
@@ -157,7 +153,7 @@ function GenderComponent(props) {
             }}
             checked={props.item.rules.required}
           ></Checkbox>
-          <label htmlFor="cb4" className="p-checkbox-label ml-2">
+          <label htmlFor="cbgender" className="p-checkbox-label ml-2">
             isRequired
           </label>
         </div>
