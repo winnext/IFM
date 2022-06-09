@@ -3,6 +3,7 @@ import { InputText } from "primereact/inputtext";
 import { Chips } from "primereact/chips";
 import { Dropdown } from "primereact/dropdown";
 import { TreeSelect } from "primereact/treeselect";
+import { v4 as uuidv4 } from "uuid";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
 import FacilityService from "../../services/facility";
@@ -158,15 +159,15 @@ const DefineFacility = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
 
-  useEffect(() => {
-    FacilityStructureService.findOne(realm).then((res) => {
-      if (!res.data.root.children) {
-        setStructure([res.data.root.properties] || []);
-      } else if (res.data.root.children) {
-        setStructure([res.data.root] || []);
-      }
-    });
-  }, [])
+  // useEffect(() => {
+  //   FacilityStructureService.findOne(realm).then((res) => {
+  //     if (!res.data.root.children) {
+  //       setStructure([res.data.root.properties] || []);
+  //     } else if (res.data.root.children) {
+  //       setStructure([res.data.root] || []);
+  //     }
+  //   });
+  // }, [])
 
   // const findNode = (
   //   search: string,
@@ -198,15 +199,15 @@ const DefineFacility = ({
         },
         realm: realm,
         structure: {
-          code: 'test',
-          name: 'IFM',
-          key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
-          tag: ['test'],
+          code: '00-00-00-00',
+          name: data.facility_name,
+          key: uuidv4(),
+          tag: [],
           labelclass: realm,
           type: '',
           typeId: '',
           description: '',
-          label: 'IFM',
+          label: data.facility_name,
           realm: realm
         }
       })

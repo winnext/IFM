@@ -121,7 +121,7 @@ const SetClassification = () => {
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
 
-  const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
+  const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "OpenArea", "ParkArea", "Garden", "Other"];
 
   const getForms = async () => {
     await FormTypeService.findOne('221').then((res) => {
@@ -177,7 +177,7 @@ const SetClassification = () => {
 
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            console.log(res.data);
+            console.log(res.data.properties.optionalLabel);
 
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
@@ -185,6 +185,7 @@ const SetClassification = () => {
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
             setTypeId(res.data.properties.typeId);
+            setOptionalLabels([res.data.properties.optionalLabel] || []);
           })
           .catch((err) => {
             toast.current.show({
@@ -313,6 +314,7 @@ const SetClassification = () => {
     setTag([]);
     setTypeId(undefined);
     setAddDia(false);
+    setOptionalLabels([]);
   };
 
   const editItem = (key: string) => {
@@ -361,6 +363,7 @@ const SetClassification = () => {
     setCode("");
     setTag([]);
     setTypeId(undefined);
+    setOptionalLabels([]);
     setEditDia(false);
   }
 
@@ -465,6 +468,7 @@ const SetClassification = () => {
             setName("");
             setCode("");
             setTypeId(undefined);
+            setOptionalLabels([]);
             setTag([]);
           }}
           className="p-button-text"
@@ -490,6 +494,7 @@ const SetClassification = () => {
             setName("");
             setCode("");
             setTag([]);
+            setOptionalLabels([]);
             setTypeId(undefined);
           }}
           className="p-button-text"
@@ -526,6 +531,7 @@ const SetClassification = () => {
           setCode("");
           setTag([]);
           setTypeId(undefined);
+          setOptionalLabels([]);
           setAddDia(false);
         }}
       >
@@ -602,6 +608,7 @@ const SetClassification = () => {
           setCode("");
           setTag([]);
           setTypeId(undefined);
+          setOptionalLabels([]);
           setEditDia(false);
         }}
       >
@@ -701,9 +708,10 @@ const SetClassification = () => {
                         setName(res.data.properties.name || "");
                         setCode(res.data.properties.code || "");
                         setTag(res.data.properties.tag || []);
-                        setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+                        setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
                         setIsActive(res.data.properties.isActive);
                         setTypeId(res.data.properties.typeId);
+                        setOptionalLabels([res.data.properties.optionalLabel] || []);
                       })
                       .catch((err) => {
                         toast.current.show({
