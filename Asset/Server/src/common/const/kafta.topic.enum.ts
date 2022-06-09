@@ -1,0 +1,9 @@
+/**
+ * Kafka Topic Enum
+ */
+export enum AssetTopics {
+  ASSET_LOGGER = 'ASSET_LOGGER',
+  ASSET_EXCEPTIONS = 'ASSET_EXCEPTIONS',
+  ASSET_ERROR = 'ASSET_ERROR',
+  ASSET_OPERATION = 'ASSET_OPERATION',
+}
