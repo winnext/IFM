@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="520px" viewBox="0 0 1440 520" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>bg-header</title>
+    <defs>
+        <linearGradient x1="74.3489499%" y1="43.4799383%" x2="-5.50167633%" y2="60.0654048%" id="linearGradient-1">
+            <stop stop-color="#1F8CE3" offset="0%"></stop>
+            <stop stop-color="#105DA1" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="page-landing">
+            <g id="landing-header" transform="translate(0.000000, -1.000000)">
+                <g id="bg-header" transform="translate(0.000000, 1.000000)">
+                    <polygon id="Path" fill="#008EFF" opacity="0.30452474" points="1439.73539 333 1439.73539 518 397 496.481272"></polygon>
+                    <polygon id="Path-2" fill="url(#linearGradient-1)" points="2.49800181e-15 462.795591 165 520 696.270076 471.952133 1440 404.689476 1440 0 0 0"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,32 @@
+.layout-footer {
+    background: $footerBg;
+    height: 4rem;
+    border-top: $footerBorder;
+    border-bottom: $footerBorder;
+    padding: 0 2rem;
+    @include flex();
+    @include flex-align-center();
+    @include flex-justify-between();
+
+    .footer-logo-container {
+        @include flex();
+        @include flex-align-center();
+
+        img {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    
+        .app-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: .2px;
+            margin-left: .5rem;
+        }
+    }
+    
+    .copyright {
+        font-size: .875rem;
+        color: $textSecondaryColor;
+    }
+}
