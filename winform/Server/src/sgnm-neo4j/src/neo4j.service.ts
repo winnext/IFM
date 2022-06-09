@@ -428,7 +428,23 @@ export class Neo4jService implements OnApplicationShutdown {
       throw newError(failedResponse(error), "400");
     }
   }
+  /////////////////////////////// 9 haz 2022 ////////////////////////////////////////////////////////////
+  async updateOptionalLabel(id: string, label: string) {
+    try {
+      const res = await this.write(
+        "MATCH (node {isDeleted: false}) where id(node)= $id set node.optionalLabel=$label return node",
+        {
+          id: parseInt(id),
+          label,
+        }
+      );
 
+      return successResponse(res["records"][0]["_fields"][0]);
+    } catch (error) {
+      throw newError(failedResponse(error), "400");
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
   async addRelationWithRelationName(
     first_node_id: string,
     second_node_id: string,
@@ -658,7 +674,7 @@ export class Neo4jService implements OnApplicationShutdown {
     if (entity["parent_id"]) { 
     ////////////// 8 Haz 2022 /////////////////
     let createdNode:any = "";
-    if (entity.optionalLabels && entity["optionalLabels"].length > 0) {
+     if (entity.optionalLabels && entity["optionalLabels"].length >0) {
       createdNode = await this.createChildrenByOptionalLabels(entity, label);
      }
      else {
