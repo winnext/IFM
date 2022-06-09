@@ -106,7 +106,7 @@ const SetClassification = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [typeId, setTypeId] = useState<any>(undefined);
-  const [optionalLabels, setOptionalLabels] = useState<string[]|undefined>(undefined);
+  const [optionalLabels, setOptionalLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
@@ -121,17 +121,7 @@ const SetClassification = () => {
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
 
-  const facilityTypes = [
-    { name: 'Facility' },
-    { name: 'Building' },
-    { name: 'Block' },
-    { name: 'Floor' },
-    { name: 'Room' },
-    { name: 'Open Area' },
-    { name: 'Park Area' },
-    { name: 'Garden' },
-    { name: 'Other' },
-  ];
+  const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
   const getForms = async () => {
     await FormTypeService.findOne('221').then((res) => {
@@ -192,7 +182,7 @@ const SetClassification = () => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
-            setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+            setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
             setTypeId(res.data.properties.typeId);
           })
@@ -287,10 +277,10 @@ const SetClassification = () => {
           type: type,
           typeId: typeId,
           description: "",
-          optionalLabels:optionalLabels,
+          optionalLabels: optionalLabels,
         };
         console.log(newNode);
-        
+
         FacilityStructureService.create(newNode)
           .then((res) => {
             toast.current.show({
@@ -578,10 +568,9 @@ const SetClassification = () => {
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <Dropdown
-            value={optionalLabels}
+            value={`${optionalLabels[0]}`}
             options={facilityTypes}
-            onChange={(e) => { setOptionalLabels([e.value.name]) }}
-            optionLabel="name"
+            onChange={(e) => { setOptionalLabels([e.value]) }}
             placeholder="Select a Facility Type"
             style={{ width: '50%' }} />
         </div>
@@ -635,10 +624,9 @@ const SetClassification = () => {
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <Dropdown
-            value={optionalLabels}
+            value={`${optionalLabels[0]}`}
             options={facilityTypes}
-            onChange={(e) => { setOptionalLabels(e.value) }}
-            optionLabel="name"
+            onChange={(e) => { setOptionalLabels([e.value]) }}
             placeholder="Select a Facility Type"
             style={{ width: '50%' }} />
         </div>
