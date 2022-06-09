@@ -41,7 +41,9 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     facilityStructure = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
 
     const value = await this.neo4jService.create(facilityStructure, Neo4jLabelEnum.FACILITY_STRUCTURE);
-    console.log(value)
+    if (createFacilityStructureDto.optionalLabels && createFacilityStructureDto["optionalLabels"].length > 0) {
+      this.neo4jService.updateOptionalLabel(value["identity"].low, createFacilityStructureDto["optionalLabels"][0]);
+    }
 
     return value;
   }
