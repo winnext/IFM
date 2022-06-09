@@ -658,7 +658,7 @@ export class Neo4jService implements OnApplicationShutdown {
     if (entity["parent_id"]) { 
     ////////////// 8 Haz 2022 /////////////////
     let createdNode:any = "";
-     if (entity.optionalLabels) {
+    if (entity.optionalLabels && entity["optionalLabels"].length > 0) {
       createdNode = await this.createChildrenByOptionalLabels(entity, label);
      }
      else {
