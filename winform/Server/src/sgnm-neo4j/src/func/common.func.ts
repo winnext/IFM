@@ -77,7 +77,9 @@ export function createDynamicCyperCreateQuery(entity: object, label) {
 */
 export function createDynamiCyperParam(entity: object, label) {
   let optionalLabels = "";
-  entity["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //8 haz 2022 değiştirildi
+  if ( entity["optionalLabels"] &&  entity["optionalLabels"].length > 0) {
+    entity["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //10 haz 2022 değiştirildi
+  }
  
   let dynamicQueryParameter = `(node:${label}:${entity['labelclass']}${optionalLabels} {`;
   if (entity["__label"]) {
