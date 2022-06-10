@@ -20,7 +20,9 @@ export class TypeProperty {
   placeholder:string;
   label2:string;
   index:number;
+  optionalLabels: string[]
 }
+
 function generateUuid() {
   return uuidv4()
 }

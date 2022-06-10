@@ -94,6 +94,11 @@ export class TypeRepository implements GeciciTypeInterface {
      }
    
     const createdNode = await this.neo4jService.createNodeWithLabel(type, "TypeTree");
+
+    if (createTypeDto.optionalLabels && createTypeDto["optionalLabels"].length > 0) {
+      this.neo4jService.updateOptionalLabel(createdNode["identity"].low, createTypeDto["optionalLabels"][0]);
+    }
+
     return createdNode;
     }
     else {
@@ -257,7 +262,12 @@ export class TypeRepository implements GeciciTypeInterface {
       type["__labelParent"] = _labelParent;
       type["parent_id"] = type_node_id;
       type["name"] = type["label"]; //Neo4j arayüzünde isim gözüksün diye 
-      const createdNode = await this.neo4jService.createNodeWithLabel(type,"TypeTree");
+      let createdNode = await this.neo4jService.createNodeWithLabel(type,"TypeTree");
+
+      if (createTypeDto.optionalLabels && createTypeDto["optionalLabels"].length > 0) {
+        createdNode = this.neo4jService.updateOptionalLabel(createdNode["identity"].low, createTypeDto["optionalLabels"][0]);
+      }
+
       typePropertiesArray.push(createdNode);
       
       // let createTypeDto = createTypeProperties[i]

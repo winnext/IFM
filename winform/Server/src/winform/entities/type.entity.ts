@@ -15,7 +15,9 @@ export class Type {
   hasParent: Boolean = true; // not in dtos
   labelclass: string;
   hasType: boolean = false; // not in dtos
+  optionalLabels: string[];
 }
+
 function generateUuid() {
   return uuidv4();
 }

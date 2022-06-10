@@ -76,5 +76,8 @@ export class CreateTypePropertyDto {
   @IsNumber()
   @IsNotEmpty()  
   index: number;
-    
+  
+  @ApiProperty()
+  @IsOptional()
+  optionalLabels: string[];
 }
