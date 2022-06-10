@@ -37,7 +37,9 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     classification = assignDtoPropToEntity(classification, createClassificationDto);
 
     const createdNode = await this.neo4jService.create(classification, Neo4jLabelEnum.CLASSIFICATION);
-
+    if (createClassificationDto.optionalLabels && createClassificationDto["optionalLabels"].length > 0) {
+      this.neo4jService.updateOptionalLabel(createdNode["identity"].low, createClassificationDto["optionalLabels"][0]);
+    }
     return createdNode;
   }
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {

@@ -7,4 +7,5 @@ export class Classification extends BaseGraphObject {
   labelclass: string;
   self_id: number;
   class_name: string = Classification.name; // not in dtos
+  optionalLabels: string[]
 }
