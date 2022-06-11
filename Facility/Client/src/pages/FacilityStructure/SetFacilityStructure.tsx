@@ -121,7 +121,7 @@ const SetClassification = () => {
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
 
-  const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "OpenArea", "ParkArea", "Garden", "Other"];
+  const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
   const getForms = async () => {
     await FormTypeService.findOne('221').then((res) => {
@@ -177,7 +177,7 @@ const SetClassification = () => {
 
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            console.log(res.data.properties.optionalLabel);
+            console.log(res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2'));
 
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
@@ -185,7 +185,7 @@ const SetClassification = () => {
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
             setTypeId(res.data.properties.typeId);
-            setOptionalLabels([res.data.properties.optionalLabel] || []);
+            setOptionalLabels([res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
           })
           .catch((err) => {
             toast.current.show({
@@ -278,7 +278,7 @@ const SetClassification = () => {
           type: type,
           typeId: typeId,
           description: "",
-          optionalLabels: optionalLabels,
+          optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
         };
         console.log(newNode);
 
@@ -331,6 +331,7 @@ const SetClassification = () => {
           typeId: typeId,
           isActive: isActive,
           description: "",
+          optionalLabels: optionalLabels,
         };
         FacilityStructureService.update(res.data.identity.low, updateNode)
           .then((res) => {
