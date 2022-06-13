@@ -3492,7 +3492,7 @@
     "parse5-htmlparser2-tree-adapter" "^6.0.1"
     "tslib" "^2.2.0"
 
-"chokidar@^3.4.2", "chokidar@^3.5.1", "chokidar@^3.5.2", "chokidar@^3.5.3", "chokidar@3.5.3":
+"chokidar@^3.4.2", "chokidar@^3.5.2", "chokidar@^3.5.3", "chokidar@3.5.3":
   "integrity" "sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw=="
   "resolved" "https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz"
   "version" "3.5.3"
@@ -5528,10 +5528,10 @@
   "resolved" "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   "version" "1.2.1"
 
-"ifmcommon@^0.0.25":
-  "integrity" "sha512-t3/ax2otNjX3NSrR+5OCed3RqTziS4Anmdv3tuBWOvZJToNM3wiLlIeYbAzPPTPsyISEu0qXwFEDpics8QKzvg=="
-  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.25.tgz"
-  "version" "0.0.25"
+"ifmcommon@^0.0.36":
+  "integrity" "sha512-kCxRtAeN0BPgf24izZ2Io1VQeIXWOXGnbXT41YF/HE9lrGxOqmzKo02/yD1d+MzBH4QECTYgRlNgK6JJeBIayQ=="
+  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.36.tgz"
+  "version" "0.0.36"
   dependencies:
     "@nestjs/common" "^8.0.0"
     "@nestjs/core" "^8.0.0"
@@ -5858,15 +5858,15 @@
     "html-escaper" "^2.0.0"
     "istanbul-lib-report" "^3.0.0"
 
+"iterare@^1.2.1", "iterare@1.2.1":
+  "integrity" "sha512-RKYVTCjAnRthyJes037NX/IiqeidgN1xc3j1RjFfECFp28A1GVwK9nA+i0rJPaHqSZwygLzRnFlzUuHFoWWy+Q=="
+  "resolved" "https://registry.npmjs.org/iterare/-/iterare-1.2.1.tgz"
+  "version" "1.2.1"
+
 "iterare@0.0.8":
   "integrity" "sha1-qWmoCh+/9rePKHdllNe8K9+raq0="
   "resolved" "https://registry.npmjs.org/iterare/-/iterare-0.0.8.tgz"
   "version" "0.0.8"
-
-"iterare@1.2.1":
-  "integrity" "sha512-RKYVTCjAnRthyJes037NX/IiqeidgN1xc3j1RjFfECFp28A1GVwK9nA+i0rJPaHqSZwygLzRnFlzUuHFoWWy+Q=="
-  "resolved" "https://registry.npmjs.org/iterare/-/iterare-1.2.1.tgz"
-  "version" "1.2.1"
 
 "jaeger-client@^3.15.0":
   "integrity" "sha512-M0c7cKHmdyEUtjemnJyx/y9uX16XHocL46yQvyqDlPdvAcwPDbHrIbKjQdBqtiE4apQ/9dmr+ZLJYYPGnurgpw=="
@@ -6948,24 +6948,15 @@
     "neo4j-driver" "^4.4.1"
     "reflect-metadata" "^0.1.13"
 
-"nestjs-i18n@^8.2.2":
-  "integrity" "sha512-xjmr9wFnDDJqEOPRjLxDCpKpHHvFY+pLk4UQch2lj9VqXXA507u250C5eYVNLQM6T3sbuj6i2cKH+JqGB3AvNQ=="
-  "resolved" "https://registry.npmjs.org/nestjs-i18n/-/nestjs-i18n-8.2.2.tgz"
-  "version" "8.2.2"
-  dependencies:
-    "accept-language-parser" "^1.5.0"
-    "chokidar" "^3.5.1"
-    "cookie" "^0.4.1"
-    "string-format" "^2.0.0"
-
-"nestjs-i18n@^9.0.10":
-  "integrity" "sha512-Niqk166yvTsWtRV4Ku/tgCXi7lXkMKgK6aQJjEa6ihAjCWBAeXOqq0H73UYArMCiNH/EIXMSKSdWyRz6oxlgGw=="
-  "resolved" "https://registry.npmjs.org/nestjs-i18n/-/nestjs-i18n-9.0.10.tgz"
-  "version" "9.0.10"
+"nestjs-i18n@^9.0.10", "nestjs-i18n@^9.1.1":
+  "integrity" "sha512-u9HRnRjaxlqOXzj+l5ExLL82wBNYd7sNIIqBzty7jgnqNT2R2uCNFMPKIC64EyTPmIc8smWS5Jm8YyImZdGMzA=="
+  "resolved" "https://registry.npmjs.org/nestjs-i18n/-/nestjs-i18n-9.1.1.tgz"
+  "version" "9.1.1"
   dependencies:
     "accept-language-parser" "^1.5.0"
     "chokidar" "^3.5.3"
     "cookie" "^0.4.1"
+    "iterare" "^1.2.1"
     "js-yaml" "^4.1.0"
     "string-format" "^2.0.0"
 

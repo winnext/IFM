@@ -370,3 +370,12 @@ export const delete__must_entered_error: errorObject = {
   message: "id must be entered",
   code: CustomNeo4jError.DELETE__MUST_ENTERED_ERROR,
 };
+ 
+export const remove_label__must_entered_error: errorObject = {
+  message: "id and label must be entered",
+  code: CustomNeo4jError.REMOVE_LABEL__MUST_ENTERED_ERROR,
+};
+export const update_label__must_entered_error: errorObject = {
+  message: "id and label must be entered",
+  code: CustomNeo4jError.UPDATE_LABEL__MUST_ENTERED_ERROR,
+};

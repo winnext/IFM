@@ -2,33 +2,25 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { LoggingInterceptor } from 'ifmcommon';
-import { MongoExceptionFilter } from 'ifmcommon';
 import { kafkaOptions } from './common/configs/message.broker.options';
+import { Topics, LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter, MongoExceptionFilter } from 'ifmcommon';
 import trial from './tracing';
-import { I18nService } from 'nestjs-i18n';
-import { HttpExceptionFilter } from 'ifmcommon';
+import { i18nValidationErrorFactory, I18nValidationExceptionFilter } from 'nestjs-i18n';
 import { kafkaConf } from './common/const/kafka.conf';
-import { WinformTopics } from './common/const/kafta.topic.enum';
+import { Neo4jErrorFilter } from 'sgnm-neo4j';
 
-/**
- * Bootstrap the application
- */
 async function bootstrap() {
   try {
     await trial.start();
     const app = await NestFactory.create(AppModule, { abortOnError: false });
 
-    //to get i18nService from app module
-    const i18NService = app.get<I18nService>(I18nService);
-
     app.connectMicroservice(kafkaOptions);
 
     const config = new DocumentBuilder()
-      .setTitle('User Microservice Endpoints')
-      .setDescription('User Transactions')
+      .setTitle('Facility Microservice Endpoints')
+      .setDescription('Facility Transactions')
       .setVersion('1.0')
-      .addTag('user')
+      .addTag('facility')
       .addBearerAuth(
         {
           type: 'http',
@@ -38,19 +30,22 @@ async function bootstrap() {
           description: 'Enter JWT token',
           in: 'header',
         },
-        'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in controller!!!
+        'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
       )
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-    app.useGlobalInterceptors(
-      new LoggingInterceptor(kafkaConf, WinformTopics.WINFORM_LOGGER, WinformTopics.WINFORM_OPERATION),
-    );
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, exceptionFactory: i18nValidationErrorFactory }));
     app.useGlobalFilters(
-      new MongoExceptionFilter(i18NService, kafkaConf, WinformTopics.WINFORM_EXCEPTIONS),
-      new HttpExceptionFilter(i18NService, kafkaConf, WinformTopics.WINFORM_EXCEPTIONS),
+      new HttpExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new MongoExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new Neo4jErrorFilter(),
+      new I18nValidationExceptionFilter(),
+    );
+    app.useGlobalInterceptors(
+      new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),
+      //new TimeoutInterceptor(),
     );
     app.enableCors();
     await app.startAllMicroservices();
