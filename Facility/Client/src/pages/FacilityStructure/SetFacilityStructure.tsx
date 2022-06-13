@@ -124,7 +124,7 @@ const SetClassification = () => {
   const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
   const getForms = async () => {
-    await FormTypeService.findOne('221').then((res) => {
+    await FormTypeService.findOne('115').then((res) => {
       console.log(res.data.root);
       let temp = JSON.parse(JSON.stringify([res.data.root] || []));
       const iconFormNodes = (nodes: FormNode[]) => {
@@ -331,7 +331,7 @@ const SetClassification = () => {
           typeId: typeId,
           isActive: isActive,
           description: "",
-          optionalLabels: optionalLabels,
+          optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
         };
         FacilityStructureService.update(res.data.identity.low, updateNode)
           .then((res) => {
