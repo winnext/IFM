@@ -162,13 +162,30 @@ export function createDynamicCyperObject(entity) {
 
 //create dynamic cyper updateNode query
 export function updateNodeQuery(id, dto) {
+   let optionalLabels = "";
+   if ( dto["optionalLabels"] &&  dto["optionalLabels"].length > 0) {
+     if (optionalLabels == "") {
+       dto["optionalLabels"].map(item => {optionalLabels = item;}) //13 haz 2022 değiştirildi
+     }
+     else {
+       dto["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //13 haz 2022 değiştirildi
+     }          
+   }
+    
   id = int(id);
-  let dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
+  let dynamicQueryParameter = "";
+  if (optionalLabels != "") {
+    dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set node.optionalLabel= '${optionalLabels}',`;
+  }
+  else {
+    dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
+   }
+
   let counter = 0;
   Object.keys(dto).forEach((element, index) => {
    
     if (Object.keys(dto).length === index + 1) {
-      if (!element.startsWith('__')) {
+      if (!element.startsWith('__')  && element != 'optionalLabels') {
         if (counter == 0) {
           dynamicQueryParameter +=
           ` node.${element}` + `= $` + `${element}  return node`;
@@ -186,7 +203,7 @@ export function updateNodeQuery(id, dto) {
         `  return node`;
       }
     } else {
-      if (!element.startsWith('__')) {
+      if (!element.startsWith('__')  && element != 'optionalLabels') {
         if (counter == 0) {
           dynamicQueryParameter += ` node.${element}` + `= $` + `${element}`;
           counter = counter + 1;
