@@ -109,6 +109,7 @@ const SetClassification = () => {
   const [optionalLabels, setOptionalLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [isAllType, setIsAllType] = useState<boolean>(false);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
@@ -279,6 +280,7 @@ const SetClassification = () => {
           typeId: typeId,
           description: "",
           optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
+          isAllType:isAllType,
         };
         console.log(newNode);
 
@@ -332,6 +334,7 @@ const SetClassification = () => {
           isActive: isActive,
           description: "",
           optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
+          isAllType:isAllType,
         };
         FacilityStructureService.update(res.data.identity.low, updateNode)
           .then((res) => {
@@ -593,6 +596,10 @@ const SetClassification = () => {
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
+          <div className="field flex mt-3">
+            <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
+            <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
+          </div>
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
@@ -650,6 +657,10 @@ const SetClassification = () => {
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
+          <div className="field flex mt-3">
+            <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
+            <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
+          </div>
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
@@ -712,7 +723,7 @@ const SetClassification = () => {
                         setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
                         setIsActive(res.data.properties.isActive);
                         setTypeId(res.data.properties.typeId);
-                        setOptionalLabels([res.data.properties.optionalLabel] || []);
+                        setOptionalLabels([res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
                       })
                       .catch((err) => {
                         toast.current.show({
