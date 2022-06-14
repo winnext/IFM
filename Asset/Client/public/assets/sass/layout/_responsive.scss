@@ -1,0 +1,207 @@
+@media screen and (min-width: $tabletBreakpoint + 1) {
+    .layout-wrapper {
+        &.layout-static {
+            .layout-topbar {
+                width: calc(100% - 16rem);
+                margin-left: $sidebarWidth;
+            }
+
+            .layout-content-wrapper {
+                margin-left: $sidebarWidth;
+            }
+        }
+
+        &.layout-static-inactive {
+            .layout-topbar {
+                .menu-button {
+                    i:before {
+                        content: "\e901";
+                    }
+                }
+            }
+
+            .layout-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .layout-topbar {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .layout-content-wrapper {
+                margin-left: 0;
+            }
+        }
+
+        &.layout-overlay {
+            .layout-topbar {
+                .menu-button {
+                    i:before {
+                        content: "\e901";
+                    }
+                }
+            }
+
+            .layout-topbar {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .layout-content-wrapper {
+                margin-left: 0;
+            }
+
+            .layout-sidebar {
+                z-index: 999;
+                transform: translateX(-100%);
+                box-shadow: none;
+            }
+
+            &.layout-overlay-active {
+                .layout-sidebar {
+                    transform: translateX(0);
+                    box-shadow: $overlayShadow;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: $tabletBreakpoint) {
+    .blocked-scroll {
+        overflow: hidden;
+    }
+
+    .layout-wrapper {
+        .layout-topbar {
+            height: 7.125rem;
+            @include flex-wrap(wrap);
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+
+            .topbar-left {
+                width: 100%;
+                padding: .5rem 0;
+                @include flex-justify-between();
+                border-bottom: 1px solid $dividerColor;
+
+                .horizontal-logo {
+                    display: none;
+                }
+
+                .topbar-separator {
+                    display: none;
+                }
+            }
+
+            .topbar-right {
+                width: 100%;
+                padding: .5rem 0;
+            }
+
+            .menu-button {
+                i:before {
+                    content: "\e91d";
+                }
+            }
+
+            .mobile-logo {
+                display: block;
+                width: 2rem;
+                height: 2rem;
+            }
+
+            .viewname {
+                font-size: 1rem;
+            }
+
+            .topbar-menu {
+                @include flex-justify-between();
+
+                > li {
+                    margin-left: 0;
+
+                    &.profile-item {
+                        border-left: 0;
+                        border-right: 0;
+                        padding: 0;
+
+                        > a,
+                        > .p-link {
+                            padding: 0;
+                        }
+
+                        .profile-image {
+                            width: 2rem;
+                            height: 2rem;
+                            margin: 0;
+                        }
+
+                        .profile-name {
+                            display: none;
+                        }
+                    }
+
+                    > ul {
+                        top: 2.75rem;
+                    }
+                }
+            }
+        }
+
+        .layout-content-wrapper {
+            margin-left: 0;
+            padding-top: 7.125rem;
+
+            .layout-content {
+                padding-top: 2rem;
+            }
+        }
+
+        .layout-sidebar {
+            z-index: 999;
+            box-shadow: 0 0 1rem rgba(0,0,0,.15);
+            transform: translateX(-100%);
+        }
+
+        &.layout-mobile-active {
+            .layout-sidebar {
+                transform: translateX(0);
+            }
+
+            .layout-mask {
+                display: block;
+            }
+        }
+
+        .layout-search {
+            .search-container {
+                width: 75vw;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: $phoneBreakpoint) {
+    .layout-wrapper {
+        .layout-topbar {
+            .topbar-menu {
+                > li {
+                    position: static;
+
+                    > ul {
+                        position: fixed;
+                        top: 7.125rem;
+                        left: 0;
+                        width: 100%;
+                        right: auto;
+                    }
+                }
+            }
+        }
+    }
+}

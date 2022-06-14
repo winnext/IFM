@@ -1,0 +1,162 @@
+.login-body {
+    background: $bodyBg;
+    color: $textColor;
+
+    .login-wrapper {
+        @include flex();
+        height: 100vh;
+
+        .login-panel {
+            width: 30%;
+            height: 100%;
+            text-align: center;
+            padding: 40px 20px;
+            @include flex();
+            @include flex-align-center();
+            @include flex-justify-between();
+            @include flex-direction-column();
+
+            .logo {
+                height: 50px;
+            }
+
+            .login-form {
+                @include flex();
+                @include flex-align-center();
+                @include flex-direction-column();
+                > p {
+                    font-weight: 600;
+                    margin: 0;
+                    color:$textSecondaryColor;
+                    margin-bottom: 32px;
+
+                    > a {
+                        color: $linkColor;
+                        cursor: pointer;
+                    }
+                }
+
+                > .p-password {
+                    width: 85%;
+                    max-width: 310px;
+                    margin-bottom: 20px;
+
+                    .p-password-input {
+                        width: 100%;
+                    }
+                }
+
+                > input {
+                    width: 85%;
+                    max-width: 310px;
+                    margin-bottom: 20px;
+                }
+
+                > button {
+                    width: 85%;
+                    max-width: 310px;
+                }
+            }
+
+            p {
+                font-weight: 600;
+                margin: 0;
+                color:$textSecondaryColor;
+
+                > a {
+                    color: $linkColor;
+                }
+            }
+        }
+
+        .login-image {
+            width: 70%;
+            height: 100%;
+            @include flex();
+            @include flex-align-center();
+            @include flex-justify-between();
+            @include flex-direction-column();
+            padding: 40px 20px;
+
+            .login-image-content {
+                > h1 {
+                    font-size: 60px;
+                    margin: 0;
+                    color: #ffffff;
+                }
+
+                h3 {
+                    font-size: 24px;
+                    color: #ffffff;
+                    margin: 0;
+                    font-weight: 600;
+                    margin-top: 32px;
+                }
+            }
+
+            .image-footer {
+                @include flex();
+                @include flex-align-center();
+
+                > p {
+                    font-weight: 600;
+                    margin: 0;
+                    color: #ffffff;
+                    margin-right: 20px;
+                }
+
+                .icons {
+                    @include flex();
+                    @include flex-align-center();
+
+                    i {
+                        font-size: 22px;
+                        color:#2196F3;
+                        margin-right: 20px;
+                        cursor: pointer;
+                        height: 32px;
+                        width: 32px;
+                        border-radius: 50%;
+                        @include flex();
+                        @include flex-align-center();
+                        @include flex-justify-center();
+                        transition: opacity $transitionDuration;
+                        background: #ffffff;
+                        opacity: .7;
+
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media(min-width:993px) {
+    .login-body {
+        .login-wrapper {
+            .login-image {
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-image: url("../../layout/images/pages/bg-login.jpg");
+            }
+        }
+    }
+}
+
+@media(max-width:992px) {
+    .login-body {
+        .login-wrapper {
+            .login-panel {
+                width: 100%;
+                z-index: 2;
+            }
+
+            .login-image {
+                display: none;
+            }
+        }
+    }
+}

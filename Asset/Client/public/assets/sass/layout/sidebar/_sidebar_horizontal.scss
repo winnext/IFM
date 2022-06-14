@@ -1,0 +1,155 @@
+@media screen and (min-width: $tabletBreakpoint + 1) {
+    .layout-wrapper {
+        &.layout-horizontal {
+            .layout-topbar {
+                .topbar-left {
+                    .horizontal-logo {
+                        display: block;
+                        height: 2rem;
+                        cursor: pointer;
+                    }
+
+                    .menu-button {
+                        display: none;
+                    }
+
+                    .viewname {
+                        display: none;
+                    }
+
+                    .topbar-separator {
+                        display: block;
+                    }
+                }
+
+                .topbar-right {
+                    display: flex;
+                    justify-content: flex-end;
+                    flex-grow: 1;
+
+                    .topbar-menu {
+                        .profile-item {
+                            > button {
+                                padding: 0;
+
+                                img {
+                                    margin: 0;
+                                }
+                            }
+                            .profile-name {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .layout-sidebar {
+                width: 100%;
+                top: 0;
+                z-index: 999;
+                overflow: visible;
+                flex-direction: row;
+                position: relative;
+                box-shadow: none;
+                border: 0 none;
+                transition: none;
+
+                .logo {
+                    display: none;
+                }
+
+                .app-name {
+                    display: none;
+                }
+
+                .layout-menu-container {
+                    overflow: visible;
+                    padding: 0;
+                }
+            }
+
+            .layout-content-wrapper {
+                margin-left: 0;
+
+                .viewname {
+                    padding-bottom: 1.5rem;
+                    display: block;
+                    font-weight: 600;
+                }
+            }
+
+            .layout-menu {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                height: 100%;
+
+                ul {
+                    display: none;
+                }
+
+                li.active-menuitem {
+                    > ul {
+                        display: block;
+                    }
+
+                    > a, > button {
+                        .layout-submenu-toggler {
+                            transform: rotate(-180deg);
+                        }
+                    }
+                }
+
+                .layout-root-menuitem {
+                    position: relative;
+                    border-radius: $borderRadius;
+
+                    > .layout-menuitem-root-text {
+                        display: none;
+                    }
+
+                    > a, > button {
+                        display: flex;
+                        align-items: center;
+                        padding: .75rem;
+                        border-radius: $borderRadius;
+                        cursor: pointer;
+                        outline: none;
+                        transition: background-color $transitionDuration;
+
+                        .layout-submenu-toggler {
+                            display: block;
+                            margin-left: auto;
+                            transition: transform 0.2s;
+                        }
+
+                        .layout-menuitem-icon {
+                            font-size: 1.25rem;
+                        }
+
+                        .layout-menuitem-text {
+                            font-size: 0.875rem;
+                            display: block;
+                            margin-left: .75rem;
+                            margin-right: .75rem;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    > ul {
+                        position: absolute;
+                        left: 0;
+                        top: 3rem;
+                        height: auto;
+                        min-width: 15rem;
+                        border: $overlayBorder;
+                        box-shadow: $overlayShadow;
+                        padding: 1rem;
+                        border-radius: $borderRadius;
+                    }
+                }
+            }
+        }
+    }
+}

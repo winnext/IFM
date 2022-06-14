@@ -106,9 +106,10 @@ const SetClassification = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [typeId, setTypeId] = useState<any>(undefined);
-  const [optionalLabels, setOptionalLabels] = useState<string[]|undefined>(undefined);
+  const [optionalLabels, setOptionalLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
+  const [isAllType, setIsAllType] = useState<boolean>(false);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
@@ -121,20 +122,10 @@ const SetClassification = () => {
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
 
-  const facilityTypes = [
-    { name: 'Facility' },
-    { name: 'Building' },
-    { name: 'Block' },
-    { name: 'Floor' },
-    { name: 'Room' },
-    { name: 'Open Area' },
-    { name: 'Park Area' },
-    { name: 'Garden' },
-    { name: 'Other' },
-  ];
+  const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
   const getForms = async () => {
-    await FormTypeService.findOne('221').then((res) => {
+    await FormTypeService.findOne('115').then((res) => {
       console.log(res.data.root);
       let temp = JSON.parse(JSON.stringify([res.data.root] || []));
       const iconFormNodes = (nodes: FormNode[]) => {
@@ -187,14 +178,15 @@ const SetClassification = () => {
 
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            console.log(res.data);
+            console.log(res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2'));
 
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
-            setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+            setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
             setTypeId(res.data.properties.typeId);
+            setOptionalLabels([res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
           })
           .catch((err) => {
             toast.current.show({
@@ -287,10 +279,11 @@ const SetClassification = () => {
           type: type,
           typeId: typeId,
           description: "",
-          optionalLabels:optionalLabels,
+          optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
+          isAllType:isAllType,
         };
         console.log(newNode);
-        
+
         FacilityStructureService.create(newNode)
           .then((res) => {
             toast.current.show({
@@ -323,6 +316,7 @@ const SetClassification = () => {
     setTag([]);
     setTypeId(undefined);
     setAddDia(false);
+    setOptionalLabels([]);
   };
 
   const editItem = (key: string) => {
@@ -339,6 +333,8 @@ const SetClassification = () => {
           typeId: typeId,
           isActive: isActive,
           description: "",
+          optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
+          isAllType:isAllType,
         };
         FacilityStructureService.update(res.data.identity.low, updateNode)
           .then((res) => {
@@ -371,6 +367,7 @@ const SetClassification = () => {
     setCode("");
     setTag([]);
     setTypeId(undefined);
+    setOptionalLabels([]);
     setEditDia(false);
   }
 
@@ -475,6 +472,7 @@ const SetClassification = () => {
             setName("");
             setCode("");
             setTypeId(undefined);
+            setOptionalLabels([]);
             setTag([]);
           }}
           className="p-button-text"
@@ -500,6 +498,7 @@ const SetClassification = () => {
             setName("");
             setCode("");
             setTag([]);
+            setOptionalLabels([]);
             setTypeId(undefined);
           }}
           className="p-button-text"
@@ -536,6 +535,7 @@ const SetClassification = () => {
           setCode("");
           setTag([]);
           setTypeId(undefined);
+          setOptionalLabels([]);
           setAddDia(false);
         }}
       >
@@ -578,10 +578,9 @@ const SetClassification = () => {
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <Dropdown
-            value={optionalLabels}
+            value={`${optionalLabels[0]}`}
             options={facilityTypes}
-            onChange={(e) => { setOptionalLabels([e.value.name]) }}
-            optionLabel="name"
+            onChange={(e) => { setOptionalLabels([e.value]) }}
             placeholder="Select a Facility Type"
             style={{ width: '50%' }} />
         </div>
@@ -597,6 +596,10 @@ const SetClassification = () => {
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
+          <div className="field flex mt-3">
+            <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
+            <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
+          </div>
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
@@ -613,6 +616,7 @@ const SetClassification = () => {
           setCode("");
           setTag([]);
           setTypeId(undefined);
+          setOptionalLabels([]);
           setEditDia(false);
         }}
       >
@@ -635,10 +639,9 @@ const SetClassification = () => {
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <Dropdown
-            value={optionalLabels}
+            value={`${optionalLabels[0]}`}
             options={facilityTypes}
-            onChange={(e) => { setOptionalLabels(e.value) }}
-            optionLabel="name"
+            onChange={(e) => { setOptionalLabels([e.value]) }}
             placeholder="Select a Facility Type"
             style={{ width: '50%' }} />
         </div>
@@ -654,6 +657,10 @@ const SetClassification = () => {
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
+          <div className="field flex mt-3">
+            <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
+            <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
+          </div>
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
@@ -713,9 +720,10 @@ const SetClassification = () => {
                         setName(res.data.properties.name || "");
                         setCode(res.data.properties.code || "");
                         setTag(res.data.properties.tag || []);
-                        setSelectedForm(formData.find(item => item.name === res.data.properties.type));
+                        setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
                         setIsActive(res.data.properties.isActive);
                         setTypeId(res.data.properties.typeId);
+                        setOptionalLabels([res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
                       })
                       .catch((err) => {
                         toast.current.show({

@@ -1,0 +1,42 @@
+@import '_common';
+
+$bodyBg: #121212 !default;
+$textColor:rgba(255,255,255,.87) !default;
+$textSecondaryColor: rgba(255,255,255,.60) !default;
+$dividerColor:#383838 !default;
+$itemHoverBg:rgba(255,255,255,.03) !default;
+$focusShadow:0 0 0 1px #BBDEFB !default;
+$linkColor: #90CAF9 !default;
+$overlayBorder:1px solid $dividerColor !default;
+$overlayShadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12) !default;
+
+//card
+$cardBg: #1e1e1e !default;
+$cardBorder: 0 none !default;
+
+//topbar
+$topbarBg: #1e1e1e !default;
+$topbarBottomBorder: 1px solid transparent !default;
+$topbarTextColor: $textColor !default;
+$topbarIconBg: transparent !default;
+$topbarIconHoverBg: $itemHoverBg !default;
+
+//accent
+$accentColor: #90CAF9 !default;
+$accentTextColor: #121212 !default;
+
+//sidebar
+$sidebarWidth: 16rem !default;
+$slimSidebarWidth: 6rem !default;
+
+//search
+$searchBg:#121212 !default;
+$searchBorder: 1px solid $dividerColor !default;
+
+//footer
+$footerBg: #1e1e1e !default;
+$footerBorder: 1px solid transparent !default;
+
+//sidebar right
+$rightSidebarWidth: 16rem !default;
+$rightSidebarBg: #1e1e1e !default;

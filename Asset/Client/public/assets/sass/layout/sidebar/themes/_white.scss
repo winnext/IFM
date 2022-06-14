@@ -1,0 +1,15 @@
+.layout-sidebar-white {
+    $sidebarBgColor:#ffffff;
+    $sidebarBgColorAlt:#ffffff;
+    $sidebarBorder:0 none;
+    $appNameColor:#495057;
+    $menuSeparatorBorder: 1px solid #dee2e6;
+    $menuitemRootTextColor: #6c757d;
+    $menuitemTextColor: #495057;
+    $menuitemHoverBg: #e9ecef;
+    $menuitemActiveBg: #ffffff;
+    $menuitemTextActiveColor:#495057;
+    $menuitemFocusShadow: 0 0 0 0.2rem rgba(255,255,255,0.1);
+
+    @import '../_sidebar_theme_core';
+}

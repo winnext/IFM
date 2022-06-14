@@ -1,0 +1,4 @@
+facility_name,locations,brand_name,type_of_facility,classifications,label,adress,updatedAt
+ifm,istanbul,ifm,finans merkezi,123456789012345678901234;623439639d4e8c11c4b8d845,a;x;g,Ifm;Turkey;Ankara; Menekşe sokak no1;AFM;Turkey;Istanbul;Kasımpaşa pazarı  ,23.11.2021
+afm,ankara,afm,finans merkezi,623439639d4e8c11c4b8d845,Cs;11,RFM;Turkey;Istanbul; Name Sokak No:7,24.11.2021
+izfm,izmir,izfm,finans merkezi,623439639d4e8c11c4b8d845,r233,ALFM;Turkey;Ankara; Weit no:3;TFM;Turkey;Istanbul; Kadıköy dereağzı,30.11.2021

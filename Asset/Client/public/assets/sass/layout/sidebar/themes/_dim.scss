@@ -1,0 +1,15 @@
+.layout-sidebar-dim {
+    $sidebarBgColor:#1f2d40;
+    $sidebarBgColorAlt:#1f2d40;
+    $sidebarBorder:1px solid #304562;
+    $appNameColor:$textColor;
+    $menuSeparatorBorder: 1px solid #304562;
+    $menuitemRootTextColor: $textSecondaryColor;
+    $menuitemTextColor: $textColor;
+    $menuitemHoverBg: rgba(255,255,255,.03);
+    $menuitemActiveBg: #283951;
+    $menuitemTextActiveColor: #ffffff;
+    $menuitemFocusShadow: 0 0 0 1px #BBDEFB;
+
+    @import '../_sidebar_theme_core';
+}

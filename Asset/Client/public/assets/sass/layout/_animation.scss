@@ -1,0 +1,144 @@
+@-webkit-keyframes fade-in-up {
+	from {
+		opacity: 0;
+		-webkit-transform: translateY(20px);
+		transform: translateY(20px);
+	}
+
+	to {
+		opacity: 1;
+		-webkit-transform: none;
+		transform: none;
+	}
+}
+
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@-webkit-keyframes fade-out-down {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+		-webkit-transform: translateY(20px);
+		transform: translateY(0, 20px);
+	}
+}
+
+@keyframes fade-out-down {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+		-webkit-transform: translateY(20px);
+		transform: translateY(20px);
+	}
+}
+
+.fade-in-up {
+	-webkit-animation-name: fade-in-up;
+	animation-name: fade-in-up;
+}
+
+.fade-out-down {
+	-webkit-animation-name: fade-out-down;
+	animation-name: fade-out-down;
+}
+
+@-webkit-keyframes fade-in-right {
+	from {
+		opacity: 0;
+		-webkit-transform: translateX(20px);
+		transform: translateX(20px);
+	}
+
+	to {
+		opacity: 1;
+		-webkit-transform: none;
+		transform: none;
+	}
+}
+
+@keyframes fade-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@-webkit-keyframes fade-out-right {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+		-webkit-transform: translateX(20px);
+		transform: translateX(0, 20px);
+	}
+}
+
+@keyframes fade-out-right {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+		-webkit-transform: translateX(20px);
+		transform: translateX(20px);
+	}
+}
+
+.fade-in-right {
+	-webkit-animation-name: fade-in-right;
+	animation-name: fade-in-right;
+}
+
+.fade-out-right {
+	-webkit-animation-name: fade-out-right;
+	animation-name: fade-out-right;
+}
+
+@-webkit-keyframes modal-in {
+	from {
+		background-color: transparent;
+	}
+
+	to {
+		background-color: rgba(0, 0, 0, 0.6);
+	}
+}
+
+@keyframes modal-in {
+	from {
+		background-color: transparent;
+	}
+
+	to {
+		background-color: rgba(0, 0, 0, 0.6);
+	}
+}
+
+.modal-in {
+	-webkit-animation-name: modal-in;
+	animation-name: modal-in;
+}

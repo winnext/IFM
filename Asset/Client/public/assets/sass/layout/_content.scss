@@ -1,0 +1,18 @@
+.layout-content-wrapper {
+    @include flex();
+    @include flex-direction-column();
+    @include flex-justify-between();
+    min-height: 100vh;
+    transition: margin-left $animationDuration $animationTimingFunction;
+}
+
+.layout-content {
+    padding: 2rem;
+    padding-top: 6rem;
+    flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+
+    .viewname {
+        display: none;
+    }
+}

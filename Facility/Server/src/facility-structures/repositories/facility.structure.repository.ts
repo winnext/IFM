@@ -41,18 +41,30 @@ export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRe
     facilityStructure = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
 
     const value = await this.neo4jService.create(facilityStructure, Neo4jLabelEnum.FACILITY_STRUCTURE);
+    if (createFacilityStructureDto.optionalLabels && createFacilityStructureDto["optionalLabels"].length > 0) {
+      this.neo4jService.updateOptionalLabel(value["identity"].low, createFacilityStructureDto["optionalLabels"][0]);
+    }
 
     return value;
   }
 
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
+    const node_old = await this.neo4jService.findById(_id);
     const dynamicObject = createDynamicCyperObject(updateFacilityStructureDto);
     dynamicObject['id'] = int(_id);
-
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
     if (!updatedNode) {
       throw new FacilityStructureNotFountException(_id);
     }
+    
+    if ( node_old["properties"]["optionalLabel"]) {
+      await this.neo4jService.removeLabel(_id,node_old["properties"]["optionalLabel"]);
+    }
+
+    if (updatedNode["properties"]["optionalLabel"]) {
+      await this.neo4jService.updateLabel(_id,updatedNode["properties"]["optionalLabel"]);
+    }
+    
     return updatedNode;
   }
 

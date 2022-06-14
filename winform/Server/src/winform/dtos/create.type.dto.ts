@@ -35,4 +35,8 @@ export class CreateTypeDto {
   @IsString()
   @Length(1, 50)
   labelclass: string;
+
+  @ApiProperty()
+  @IsOptional()
+  optionalLabels: string[];
 }

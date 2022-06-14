@@ -40,4 +40,8 @@ export class CreateClassificationDto {
   @IsString()
   @Length(1, 50)
   label: string;
+
+  @ApiProperty()
+  @IsOptional()
+  optionalLabels: string[];
 }

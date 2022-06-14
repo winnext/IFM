@@ -22,16 +22,20 @@ export function assignDtoPropToEntity(entity, dto) {
 
 */
 export function createDynamicCyperCreateQuery(entity: object, label) {
+  let optionalLabels = "";
+  if ( entity["optionalLabels"] &&  entity["optionalLabels"].length > 0) {
+    entity["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //12 haz 2022 değiştirildi
+  }
 
-  let dynamicQueryParameter = `CREATE (node:${label}:${entity["labelclass"]} {`;
+  let dynamicQueryParameter = `CREATE (node:${label}:${entity["labelclass"]}${optionalLabels} {`;
   if (entity['__label']) {
-    dynamicQueryParameter = `CREATE (node:${label}:${entity["__label"]} {`;
+    dynamicQueryParameter = `CREATE (node:${label}:${entity["__label"]}${optionalLabels} {`;
   }
   let counter = 0;
   Object.keys(entity).forEach((element, index) => {
    
     if (Object.keys(entity).length === index + 1) {
-      if (!element.startsWith('__')) {
+      if (!element.startsWith('__')  && element != 'optionalLabels') {
         if (counter == 0) {
           dynamicQueryParameter +=
           ` ${element}` + `: $` + `${element} }) return node`;
@@ -49,7 +53,7 @@ export function createDynamicCyperCreateQuery(entity: object, label) {
         ` }) return node`;
       }
     } else {
-      if (!element.startsWith('__')) {
+      if (!element.startsWith('__')  && element != 'optionalLabels') {
         if (counter == 0) {
           dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
           counter = counter + 1;
@@ -77,7 +81,9 @@ export function createDynamicCyperCreateQuery(entity: object, label) {
 */
 export function createDynamiCyperParam(entity: object, label) {
   let optionalLabels = "";
-  entity["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //8 haz 2022 değiştirildi
+  if ( entity["optionalLabels"] &&  entity["optionalLabels"].length > 0) {
+    entity["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //10 haz 2022 değiştirildi
+  }
  
   let dynamicQueryParameter = `(node:${label}:${entity['labelclass']}${optionalLabels} {`;
   if (entity["__label"]) {
@@ -156,13 +162,32 @@ export function createDynamicCyperObject(entity) {
 
 //create dynamic cyper updateNode query
 export function updateNodeQuery(id, dto) {
+   let optionalLabels = "";
+   if ( dto["optionalLabels"] &&  dto["optionalLabels"].length > 0) {
+     for (let i=0; i < dto["optionalLabels"].length; i++) {  //14 haz 2022 değiştirildi
+       if (i == 0) {
+        optionalLabels = dto["optionalLabels"][i];
+       }
+       else {
+        optionalLabels = optionalLabels + ':' + dto["optionalLabels"][i];
+       }
+     }        
+   }
+    
   id = int(id);
-  let dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
+  let dynamicQueryParameter = "";
+  if (optionalLabels != "") {
+    dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set node.optionalLabel= '${optionalLabels}',`;
+  }
+  else {
+    dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
+   }
+
   let counter = 0;
   Object.keys(dto).forEach((element, index) => {
    
     if (Object.keys(dto).length === index + 1) {
-      if (!element.startsWith('__')) {
+      if (!element.startsWith('__')  && element != 'optionalLabels') {
         if (counter == 0) {
           dynamicQueryParameter +=
           ` node.${element}` + `= $` + `${element}  return node`;
@@ -180,7 +205,7 @@ export function updateNodeQuery(id, dto) {
         `  return node`;
       }
     } else {
-      if (!element.startsWith('__')) {
+      if (!element.startsWith('__')  && element != 'optionalLabels') {
         if (counter == 0) {
           dynamicQueryParameter += ` node.${element}` + `= $` + `${element}`;
           counter = counter + 1;
