@@ -164,12 +164,14 @@ export function createDynamicCyperObject(entity) {
 export function updateNodeQuery(id, dto) {
    let optionalLabels = "";
    if ( dto["optionalLabels"] &&  dto["optionalLabels"].length > 0) {
-     if (optionalLabels == "") {
-       dto["optionalLabels"].map(item => {optionalLabels = item;}) //13 haz 2022 değiştirildi
-     }
-     else {
-       dto["optionalLabels"].map(item => {optionalLabels = optionalLabels + ':' + item;}) //13 haz 2022 değiştirildi
-     }          
+     for (let i=0; i < dto["optionalLabels"].length; i++) {  //14 haz 2022 değiştirildi
+       if (i == 0) {
+        optionalLabels = dto["optionalLabels"][i];
+       }
+       else {
+        optionalLabels = optionalLabels + ':' + dto["optionalLabels"][i];
+       }
+     }        
    }
     
   id = int(id);
