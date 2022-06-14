@@ -178,7 +178,7 @@ const SetClassification = () => {
 
         FacilityStructureService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            console.log(res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2'));
+            console.log(res.data.properties);
 
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
@@ -186,7 +186,7 @@ const SetClassification = () => {
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
             setTypeId(res.data.properties.typeId);
-            setOptionalLabels([res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
+            setOptionalLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
           })
           .catch((err) => {
             toast.current.show({
@@ -279,8 +279,8 @@ const SetClassification = () => {
           type: type,
           typeId: typeId,
           description: "",
-          optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
-          isAllType:isAllType,
+          optionalLabels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
+          isAllType: isAllType,
         };
         console.log(newNode);
 
@@ -334,7 +334,7 @@ const SetClassification = () => {
           isActive: isActive,
           description: "",
           optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
-          isAllType:isAllType,
+          isAllType: isAllType,
         };
         FacilityStructureService.update(res.data.identity.low, updateNode)
           .then((res) => {
@@ -723,7 +723,7 @@ const SetClassification = () => {
                         setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
                         setIsActive(res.data.properties.isActive);
                         setTypeId(res.data.properties.typeId);
-                        setOptionalLabels([res.data.properties.optionalLabel.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
+                        setOptionalLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
                       })
                       .catch((err) => {
                         toast.current.show({
