@@ -74,6 +74,12 @@ export class TypeService {
   async findOneAndLabels(id: string, label1: string, label2: string) {
     return await this.typeRepository.findOneByIdAndLabels(id, label1, label2);
   }
+
+  @Span('find type active properties by node name')
+  @OtelMethodCounter()
+  async findTypeActivePropertiesByNodeName(name: string) {
+    return await this.typeRepository.findTypeActivePropertiesByNodeName(name);
+  }
 }
 
 export interface GeciciTypeInterface {
@@ -86,5 +92,6 @@ export interface GeciciTypeInterface {
   findTypePropertiesByNodeId(id: string);
   delete(id: string);
   findTypeActivePropertiesByNodeId(id: string);
-  findOneByIdAndLabels(id: string, label1: string, label2: string);   
+  findOneByIdAndLabels(id: string, label1: string, label2: string);
+  findTypeActivePropertiesByNodeName(name: string);   
 }

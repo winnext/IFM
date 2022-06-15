@@ -74,17 +74,12 @@ export class TypeController {
   getTypeByIdAndLabels(@Param('id') id: string, @Param('label1') label1: string, @Param('label2') label2: string, ) {
     return this.typeService.findOneAndLabels(id, label1, label2);
   }
-  /*
-      @Unprotected()
-      @NoCache()
-      @Get()
-      async getAllTypes() {
-        return this.typeService.findAll();
-      }
-      @Delete('/:_id')
-      deleteType(@Param('_id') id: string) {
-        return this.typeService.remove(id);
-      }
+  
+  @Unprotected()
+  @Get('/properties/active/name/:id')
+  @NoCache()
+  findTypeActivePropertiesByNodeName(@Param('name') name: string)  {
+    return this.typeService.findTypeActivePropertiesByNodeName(name);
+  }
 
-      */
 }
