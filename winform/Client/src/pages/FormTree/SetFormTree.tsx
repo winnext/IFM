@@ -31,6 +31,7 @@ interface FormTreeInterface {
     selectable?: boolean;
     icon?: string;
     hasType?: boolean;
+    label: string;
   }[];
 }
 
@@ -57,6 +58,7 @@ interface Node {
     low: string;
     high: string;
   },
+  label: string;
 }
 
 interface Type {
@@ -81,7 +83,8 @@ const SetFormTree = () => {
           high: ""
         },
         key: "",
-        hasParent: false
+        hasParent: false,
+        label: "",
       }
     ]
   });
@@ -89,6 +92,7 @@ const SetFormTree = () => {
   const [data, setData] = useState<Node[]>([]);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [label, setLabel] = useState("");
   const [type, setType] = useState("");
   const [typeId, setTypeId] = useState("");
   const [tag, setTag] = useState<string[]>([]);
@@ -539,6 +543,14 @@ const SetFormTree = () => {
             style={{ width: '50%' }}
           />
         </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Label</h5>
+          <InputText
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            style={{ width: '50%' }}
+          />
+        </div>
         {/* <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
           <Dropdown
@@ -590,6 +602,14 @@ const SetFormTree = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
+          />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Label</h5>
+          <InputText
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
             style={{ width: '50%' }}
           />
         </div>

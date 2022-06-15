@@ -57,6 +57,7 @@ interface Node {
   icon?: string;
   label: string;
   optionalLabels?: string[];
+  hasType?: boolean;
 }
 
 interface FormNode {
@@ -81,7 +82,7 @@ interface FormNode {
   icon?: string;
 }
 
-const SetClassification = () => {
+const SetFacilityStructure = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
   const [structure, setStructure] = useState<StructureInterface>({
@@ -136,11 +137,11 @@ const SetClassification = () => {
           iconFormNodes(i.children)
           if (i.hasType === true) {
             i.icon = "pi pi-fw pi-book";
-            i.selectable = true;
+            // i.selectable = true;
           }
-          else {
-            i.selectable = false;
-          }
+          // else {
+          //   i.selectable = false;
+          // }
         }
       };
       iconFormNodes(temp);
@@ -262,6 +263,27 @@ const SetClassification = () => {
     for (let i of nodes) {
       fixNodes(i.children)
       i.icon = "pi pi-fw pi-building";
+      // console.log(i);
+      
+      // if (i.typeId) {
+      //   let nodeKey: any = i.typeId;
+      //   FormTypeService.nodeInfo(nodeKey)
+      //     .then((res) => {
+      //       console.log(res.data);
+      //       if(res.data.properties.hasType===true){
+      //         i.hasType = true;
+      //       }
+            
+      //     })
+      //     .catch((err) => {
+      //       toast.current.show({
+      //         severity: "error",
+      //         summary: "Error",
+      //         detail: err.response ? err.response.data.message : err.message,
+      //         life: 2000,
+      //       });
+      //     });
+      // }
     }
   };
 
@@ -575,7 +597,7 @@ const SetClassification = () => {
             style={{ width: '50%' }}
           />
         </div> */}
-        <div className="field">
+        {/* <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <Dropdown
             value={`${optionalLabels[0]}`}
@@ -583,23 +605,38 @@ const SetClassification = () => {
             onChange={(e) => { setOptionalLabels([e.value]) }}
             placeholder="Select a Facility Type"
             style={{ width: '50%' }} />
-        </div>
+        </div> */}
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <TreeSelect
             value={typeId}
             options={formData}
             onChange={(e) => {
-              setTypeId(e.value)
+              setTypeId(e.value);
+              console.log(e);
+              let nodeKey: any = e.value;
+              FormTypeService.nodeInfo(nodeKey)
+                .then((res) => {
+                  console.log(res.data);
+                  setOptionalLabels([res.data.properties.name])
+                })
+                .catch((err) => {
+                  toast.current.show({
+                    severity: "error",
+                    summary: "Error",
+                    detail: err.response ? err.response.data.message : err.message,
+                    life: 2000,
+                  });
+                });
             }}
             filter
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
-          <div className="field flex mt-3">
+          {/* <div className="field flex mt-3">
             <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
             <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
-          </div>
+          </div> */}
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
@@ -636,7 +673,7 @@ const SetClassification = () => {
             style={{ width: '50%' }}
           />
         </div>
-        <div className="field">
+        {/* <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <Dropdown
             value={`${optionalLabels[0]}`}
@@ -644,7 +681,7 @@ const SetClassification = () => {
             onChange={(e) => { setOptionalLabels([e.value]) }}
             placeholder="Select a Facility Type"
             style={{ width: '50%' }} />
-        </div>
+        </div> */}
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
           <TreeSelect
@@ -652,15 +689,29 @@ const SetClassification = () => {
             options={formData}
             onChange={(e) => {
               setTypeId(e.value);
+              let nodeKey: any = e.value;
+              FormTypeService.nodeInfo(nodeKey)
+                .then((res) => {
+                  console.log(res.data);
+                  setOptionalLabels([res.data.properties.name])
+                })
+                .catch((err) => {
+                  toast.current.show({
+                    severity: "error",
+                    summary: "Error",
+                    detail: err.response ? err.response.data.message : err.message,
+                    life: 2000,
+                  });
+                });
             }}
             filter
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
-          <div className="field flex mt-3">
+          {/* <div className="field flex mt-3">
             <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
             <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
-          </div>
+          </div> */}
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
@@ -744,8 +795,9 @@ const SetClassification = () => {
                     setDelDia(true)
                   }}
                 />
-                {
-                  data.typeId && <Button
+                {/* {
+                  data.hasType &&  */}
+                  <Button
                     icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
                     // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
                     // {
@@ -757,7 +809,15 @@ const SetClassification = () => {
                     // )} 
                     onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}`)}
                   />
-                }
+                {/* } */}
+
+                 {/* <Button
+                  icon="pi pi-plus" className="p-button-rounded p-button-secondary p-button-text" aria-label="Delete"
+                  onClick={() => {
+                    console.log(data);
+                    
+                  }}
+                /> */}
               </span>
             </>
           }
@@ -773,4 +833,4 @@ const SetClassification = () => {
   );
 };
 
-export default SetClassification;
+export default SetFacilityStructure;
