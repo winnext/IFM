@@ -60,7 +60,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
         );
       });
     case "dropdown":
-    case 'cities':
+    case "cities":
       return (
         <div>
           <Dropdown
@@ -112,6 +112,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
 
 const Dynamic = () => {
   const [items, setItems] = useState([]);
+  const [hasForm, setHasForm] = useState(true);
   const toast = React.useRef(null);
 
   const location = useLocation();
@@ -128,6 +129,10 @@ const Dynamic = () => {
     //   localStorage.setItem("typeId", params.state.data.typeId);
     //   localStorage.setItem("rootId", params.state.data.rootId);
     // }
+    if (typeId === "undefined"||typeId === null||typeId === "") {
+      // console.log("typeId undefined");
+      return setHasForm(false);
+    }
     FormTypeService.nodeInfo(typeId)
       .then(async (responsenodeInfo) => {
         console.log(responsenodeInfo.data);
@@ -220,10 +225,21 @@ const Dynamic = () => {
     history(`/facilitystructure`);
   };
 
+  const formNotFound = () => {
+    return (
+      <>
+        <h1>test</h1>
+      </>
+    );
+  };
+
+  formNotFound();
+
   return (
     <div>
       <Toast ref={toast} position="top-right" />
-      {items && (
+
+      {hasForm ? (
         <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
           {items &&
             Object.keys(items).map((e) => {
@@ -253,7 +269,7 @@ const Dynamic = () => {
               );
             })}
           <div>
-            {items && (
+            {items.length > 0 && (
               <>
                 <div className="mt-4">
                   <Button className="ml-3" type="submit">
@@ -267,6 +283,13 @@ const Dynamic = () => {
             )}
           </div>
         </form>
+      ) : (
+        <div>
+          <h4>There is no form for this structure.</h4>
+          <Button className="" onClick={() => backPage()}>
+            Back
+          </Button>
+        </div>
       )}
     </div>
   );
