@@ -7,7 +7,7 @@ export class FacilityStructure extends BaseGraphObject {
   code: string;
   name: string;
   description: string;
-  label: string; // not in dtos
+  label: string;
   class_name: string = FacilityStructure.name; // not in dtos
   labelclass: string;
   self_id: number; // not in dtos

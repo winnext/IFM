@@ -63,7 +63,7 @@ export class TypeRepository implements GeciciTypeInterface {
     
     let type = new Type();
     type = assignDtoPropToEntity(type, createTypeDto);
-    type.label = createTypeDto.code + ' . ' + createTypeDto.name;
+    //type.label = createTypeDto.code + ' . ' + createTypeDto.name;
     let _label = 'ChildNode';
     let _labelParent = 'ChildNode';
     let _parentHasLabeledNode = false;
@@ -381,8 +381,7 @@ export class TypeRepository implements GeciciTypeInterface {
   }
   async updateNode(id: string, updateTypeDto: UpdateTypeDto) {
     const checkNodeisExist = await this.neo4jService.findNodeByIdAndLabel(id,"ChildNode");
-    const { name, code, tag, isActive } = updateTypeDto;
-    let  label=  code + ' - ' + name;
+    const { name, code, tag, isActive, label } = updateTypeDto;
     let dto = {"name":name, "code": code, "tag":tag, "isActive": isActive, "label": label};
 
     if (checkNodeisExist[0]) {

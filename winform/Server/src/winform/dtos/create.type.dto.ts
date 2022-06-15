@@ -39,4 +39,10 @@ export class CreateTypeDto {
   @ApiProperty()
   @IsOptional()
   optionalLabels: string[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @Length(1, 50)
+  label: string;
 }
