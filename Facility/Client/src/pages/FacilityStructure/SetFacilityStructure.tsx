@@ -78,6 +78,10 @@ interface FormNode {
     low: string;
     high: string;
   },
+  self_id: {
+    low: string;
+    high: string;
+  },
   labelclass: string;
   icon?: string;
 }
@@ -264,7 +268,7 @@ const SetFacilityStructure = () => {
       fixNodes(i.children)
       i.icon = "pi pi-fw pi-building";
       // console.log(i);
-      
+
       // if (i.typeId) {
       //   let nodeKey: any = i.typeId;
       //   FormTypeService.nodeInfo(nodeKey)
@@ -273,7 +277,7 @@ const SetFacilityStructure = () => {
       //       if(res.data.properties.hasType===true){
       //         i.hasType = true;
       //       }
-            
+
       //     })
       //     .catch((err) => {
       //       toast.current.show({
@@ -797,27 +801,27 @@ const SetFacilityStructure = () => {
                 />
                 {/* {
                   data.hasType &&  */}
-                  <Button
-                    icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
-                    // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
-                    // {
-                    //   state: {
-                    //     data: data,
-                    //     rootId: structure.root._id.low,
-                    //   }
-                    // }
-                    // )} 
-                    onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}&typeName=${data.name}`)}
-                  />
+                <Button
+                  icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
+                  // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
+                  // {
+                  //   state: {
+                  //     data: data,
+                  //     rootId: structure.root._id.low,
+                  //   }
+                  // }
+                  // )} 
+                  onClick={(e) => navigate(`/formgenerate/${data.self_id.low}?typeId=${data.typeId}`)}
+                />
                 {/* } */}
 
-                 {/* <Button
+                <Button
                   icon="pi pi-plus" className="p-button-rounded p-button-secondary p-button-text" aria-label="Delete"
                   onClick={() => {
                     console.log(data);
-                    
+
                   }}
-                /> */}
+                />
               </span>
             </>
           }
