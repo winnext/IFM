@@ -120,9 +120,9 @@ const Dynamic = () => {
   const searchParameters = new URLSearchParams(location.search);
   const nodeId = params.id;
   const typeId = searchParameters.get("typeId");
-  const typeName =searchParameters.get("typeName");
+  // const typeName =searchParameters.get("typeName");
 
-  console.log(typeId, typeName);
+  // console.log(typeId, typeName);
 
   const history = useNavigate();
 

@@ -13,7 +13,7 @@ const getProperties = async (id: string) => {
 };
 
 const getPropertiesWithName = async (name: string) => {
-  return axios.get(url + "/name/" + name);
+  return axios.get(url + "name/" + name);
 };
 
 const create = async (form: any) => {
