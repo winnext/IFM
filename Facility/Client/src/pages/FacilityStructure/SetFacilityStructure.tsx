@@ -815,13 +815,13 @@ const SetFacilityStructure = () => {
                 />
                 {/* } */}
 
-                <Button
+                {/* <Button
                   icon="pi pi-plus" className="p-button-rounded p-button-secondary p-button-text" aria-label="Delete"
                   onClick={() => {
                     console.log(data);
 
                   }}
-                />
+                /> */}
               </span>
             </>
           }
