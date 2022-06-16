@@ -29,6 +29,7 @@ interface ClassificationInterface {
   type: string;
   typeId: string;
   description: string;
+  label: string;
 }
 
 
@@ -99,8 +100,8 @@ const FormTree = () => {
       labelclass: labelClass,
       type:"",
       typeId:"",
-      description:""
-
+      description:"",
+      label:"",
     };
 
     FacilityStructureService.create(_classification)
