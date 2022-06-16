@@ -807,7 +807,7 @@ const SetFacilityStructure = () => {
                     //   }
                     // }
                     // )} 
-                    onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}`)}
+                    onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.typeId}&typeName=${data.name}`)}
                   />
                 {/* } */}
 

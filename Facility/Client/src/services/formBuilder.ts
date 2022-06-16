@@ -12,6 +12,10 @@ const getProperties = async (id: string) => {
   return axios.get(url + id);
 };
 
+const getPropertiesWithName = async (name: string) => {
+  return axios.get(url + "/name/" + name);
+};
+
 const create = async (form: any) => {
   return axios.post(url, form);
 };
@@ -27,7 +31,7 @@ const remove = async (id: string) => {
 
 
 
-const service = { findAll, getProperties, create, remove, update };
+const service = { findAll, getProperties, getPropertiesWithName, create, remove, update };
 
 export default service;
 

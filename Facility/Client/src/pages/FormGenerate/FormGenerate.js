@@ -120,6 +120,9 @@ const Dynamic = () => {
   const searchParameters = new URLSearchParams(location.search);
   const nodeId = params.id;
   const typeId = searchParameters.get("typeId");
+  const typeName =searchParameters.get("typeName");
+
+  console.log(typeId, typeName);
 
   const history = useNavigate();
 
@@ -138,7 +141,7 @@ const Dynamic = () => {
         console.log(responsenodeInfo.data);
         // const responsegetData = await deneme.getData(nodeId);
         // console.log(responsegetData);
-        FormBuilderService.getProperties(responsenodeInfo.data.identity.low)
+        FormBuilderService.getPropertiesWithName(responsenodeInfo.data.properties.name)
           .then((responsegetProperties) => {
             console.log(responsegetProperties.data);
 
@@ -163,6 +166,7 @@ const Dynamic = () => {
             setItems(convertedData);
           })
           .catch((err) => {
+            return setHasForm(false);
             toast.current.show({
               severity: "error",
               summary: "Error",
