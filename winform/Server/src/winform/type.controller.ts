@@ -76,7 +76,7 @@ export class TypeController {
   }
   
   @Unprotected()
-  @Get('/properties/active/name/:id')
+  @Get('/properties/active/name/:name')
   @NoCache()
   findTypeActivePropertiesByNodeName(@Param('name') name: string)  {
     return this.typeService.findTypeActivePropertiesByNodeName(name);
