@@ -708,6 +708,7 @@ const SetFormTree = () => {
 
                   }
                   }
+                  title="Edit Form"
                 />
                 :
 
@@ -722,6 +723,7 @@ const SetFormTree = () => {
                     setAddFormDia(true)
                   }
                   }
+                  title="Add Form"
                 />
               }
             </>

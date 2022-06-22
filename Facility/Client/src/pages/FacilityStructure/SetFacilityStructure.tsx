@@ -763,6 +763,7 @@ const SetFacilityStructure = () => {
                     setAddDia(true)
                   }
                   }
+                  title="Add Item"
                 />
                 <Button
                   icon="pi pi-pencil" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Item"
@@ -791,6 +792,7 @@ const SetFacilityStructure = () => {
                     setEditDia(true);
                   }
                   }
+                  title="Edit Item"
                 />
                 <Button
                   icon="pi pi-trash" className="p-button-rounded p-button-secondary p-button-text" aria-label="Delete"
@@ -798,6 +800,7 @@ const SetFacilityStructure = () => {
                     setSelectedNodeKey(data.key);
                     setDelDia(true)
                   }}
+                  title="Delete Item"
                 />
                 {/* {
                   data.hasType &&  */}
@@ -812,6 +815,7 @@ const SetFacilityStructure = () => {
                   // }
                   // )} 
                   onClick={(e) => navigate(`/formgenerate/${data.self_id.low}?typeId=${data.typeId}`)}
+                  title="Edit Form"
                 />
                 {/* } */}
 
