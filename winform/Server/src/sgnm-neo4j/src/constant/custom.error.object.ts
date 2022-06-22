@@ -118,7 +118,7 @@ export const delete_relation_by_relation_name__not_deleted_error: errorObject = 
 
 
 export const add_parent_relation_by_id__not_created_error: errorObject = {
-  message: "This relation can not created because node id's maybe wrong or not found in database",
+  message: "This relation can not created because node id's maybe wrong or not found in database or this relationship is already exists",
   code: CustomNeo4jError.ADD_PARENT_RELATION_BY_ID__NOT_CREATED_ERROR,
 };
 
@@ -161,7 +161,7 @@ export const add_relation_with_relation_name__must_entered_error: errorObject = 
 
 
 export const add_relation_with_relation_name__create_relation_error: errorObject = {
-  message: "This relation already exists between those two nodes",
+  message: "This relation already exists between those two nodes or wrong node id's",
   code: CustomNeo4jError.ADD_RELATION_WITH_RELATION_NAME__CREATE_RELATION_ERROR,
 };
 
@@ -380,6 +380,11 @@ export const update_label__must_entered_error: errorObject = {
   code: CustomNeo4jError.UPDATE_LABEL__MUST_ENTERED_ERROR,
 };
 
+export const add_children_relation_by_id__relationship_not_created: errorObject = {
+  message: "This relationship is already exists or wrong child_id and targer_parent_id", 
+  code: CustomNeo4jError.ADD_CHILDREN_REALTION_BY_ID__RELATIONSHIP_NOT_CREATED
+};
+
 export const find_by_name__must_entered_error: errorObject = {
   message: "name must be entered",
   code: CustomNeo4jError.FIND_BY_NAME__MUST_ENTERED_ERROR,
@@ -395,3 +400,4 @@ export const find_by_name_and_labels_with_active_child_nodes__not_found_error: e
   message: "This node not found in database maybe entered id value wrong",
   code: CustomNeo4jError.FIND_BY_NAME_AND_LABELS_WITH_ACTIVE_CHILD_NODES__NOT_FOUND_ERROR,
 };
+
