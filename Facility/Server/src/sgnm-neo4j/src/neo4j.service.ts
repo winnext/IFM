@@ -20,7 +20,11 @@ import {
 import { successResponse } from "./constant/success.response.object";
 import { failedResponse } from "./constant/failed.response.object";
 import { PaginationNeo4jParamsWithClassName } from "./constant/pagination.param";
+<<<<<<< HEAD
+import { add_children_relation_by_id_error, add_parent_relation_by_id__not_created_error, add_parent_relation_by_id__must_entered_error, add_relation_with_relation_name__create_relation_error, add_relation_with_relation_name__must_entered_error, create_node_with_label_add_parent_by_labelclass_error, create_node_with_label__must_entered_error, create_node_with_label__node_not_created_error, create_node__must_entered_error, create_node__node_not_created_error, create__must_entered_error, deleteParentRelationError, delete_children_nodes_by_id_and_labels__not_deleted_error, delete_children_nodes_by_id_and_labels__must_entered_error, delete_children_relation_error, delete_relation_by_relation_name__not_deleted_error, delete_relation_with_relation_name__must_entered_error, delete__get_parent_by_id_error, find_all_by_classname__find_node_count_by_classname_error, find_by_id_and_labels_with_active_child_nodes__must_entered_error, find_by_id_and_labels_with_active_child_nodes__not_found_error, find_by_id_and_labels_with_active_child_node__not_found_error, find_by_id_and_labels_with_tree_structure__must_entered_error, find_by_id_and_labels_with_tree_structure__not_found_error, find_by_id_with_tree_structure__must_entered_error, find_by_id__must_entered_error, find_by_realm__not_found_error, find_by_realm_with_tree_structure__not_entered_error, find_by_realm__not_entered_error, find_node_by_id_and_label__must_entered_error, find_node_by_id_and_label__not_found_error, find_node_count_by_classname_error, find_node_count_by_classname__must_entered_error, find_root_node_by_classname__must_entered_error, find_with_children_by_id_and_labels_as_tree__has_not_children_error, find_with_children_by_id_and_labels_as_tree__must_entered_error, find_with_children_by_id_as_tree_error, find_with_children_by_id_as_tree__must_entered_error, find_with_children_by_realm_as_tree_error, find_with_children_by_realm_as_tree__find_by_realm_error, find_with_children_by_realm_as_tree__not_entered_error, get_childrens_children_count_by_id_and_labels__not_found_error, get_childrens_children_count_by_id_and_labels__must_entered_error, get_children_count_by_id_and_labels__must_entered_error, get_children_count_by_id_and_labels__not_found_error, get_children_count__must_entered_error, get_node_without_parent, get_parent_by_id__must_entered_error, has_children_error, invalid_label_error, node_not_created, node_not_found, parent_has_not_children, parent_of_child_not_found, root_node_not_found, set_deleted_true_to_node_and_child_by_id_and_labels__must_entered_error, set_deleted_true_to_node_and_child_by_id_and_labels_not_updated_error, tree_not_found, tree_structure_not_found_by_realm_name_error, update_by_id__must_entered_error, update_by_id__node_not_found, update_by_id__update_error, update_has_type_prop_error, update_has_type_prop__must_entered_error, update_selectable_prop__must_entered_error, update_selectable_prop__not_updated_error, add_parent_by_label_class_must_entered_error, delete_relation_must_entered_error, add_relation_must_entered_error, find_one_node_by_key_must_entered_error, delete__must_entered_error, remove_label__must_entered_error, update_label__must_entered_error, add_children_relation_by_id__relationship_not_created, find_by_name_and_labels_with_active_child_nodes__must_entered_error, find_by_name_and_labels_with_active_child_nodes__not_found_error, find_by_name__must_entered_error } from "./constant/custom.error.object";
+=======
 import { add_children_relation_by_id_error, add_parent_relation_by_id__not_created_error, add_parent_relation_by_id__must_entered_error, add_relation_with_relation_name__create_relation_error, add_relation_with_relation_name__must_entered_error, create_node_with_label_add_parent_by_labelclass_error, create_node_with_label__must_entered_error, create_node_with_label__node_not_created_error, create_node__must_entered_error, create_node__node_not_created_error, create__must_entered_error, deleteParentRelationError, delete_children_nodes_by_id_and_labels__not_deleted_error, delete_children_nodes_by_id_and_labels__must_entered_error, delete_children_relation_error, delete_relation_by_relation_name__not_deleted_error, delete_relation_with_relation_name__must_entered_error, delete__get_parent_by_id_error, find_all_by_classname__find_node_count_by_classname_error, find_by_id_and_labels_with_active_child_nodes__must_entered_error, find_by_id_and_labels_with_active_child_nodes__not_found_error, find_by_id_and_labels_with_active_child_node__not_found_error, find_by_id_and_labels_with_tree_structure__must_entered_error, find_by_id_and_labels_with_tree_structure__not_found_error, find_by_id_with_tree_structure__must_entered_error, find_by_id__must_entered_error, find_by_realm__not_found_error, find_by_realm_with_tree_structure__not_entered_error, find_by_realm__not_entered_error, find_node_by_id_and_label__must_entered_error, find_node_by_id_and_label__not_found_error, find_node_count_by_classname_error, find_node_count_by_classname__must_entered_error, find_root_node_by_classname__must_entered_error, find_with_children_by_id_and_labels_as_tree__has_not_children_error, find_with_children_by_id_and_labels_as_tree__must_entered_error, find_with_children_by_id_as_tree_error, find_with_children_by_id_as_tree__must_entered_error, find_with_children_by_realm_as_tree_error, find_with_children_by_realm_as_tree__find_by_realm_error, find_with_children_by_realm_as_tree__not_entered_error, get_childrens_children_count_by_id_and_labels__not_found_error, get_childrens_children_count_by_id_and_labels__must_entered_error, get_children_count_by_id_and_labels__must_entered_error, get_children_count_by_id_and_labels__not_found_error, get_children_count__must_entered_error, get_node_without_parent, get_parent_by_id__must_entered_error, has_children_error, invalid_label_error, node_not_created, node_not_found, parent_has_not_children, parent_of_child_not_found, root_node_not_found, set_deleted_true_to_node_and_child_by_id_and_labels__must_entered_error, set_deleted_true_to_node_and_child_by_id_and_labels_not_updated_error, tree_not_found, tree_structure_not_found_by_realm_name_error, update_by_id__must_entered_error, update_by_id__node_not_found, update_by_id__update_error, update_has_type_prop_error, update_has_type_prop__must_entered_error, update_selectable_prop__must_entered_error, update_selectable_prop__not_updated_error, add_parent_by_label_class_must_entered_error, delete_relation_must_entered_error, add_relation_must_entered_error, find_one_node_by_key_must_entered_error, delete__must_entered_error, remove_label__must_entered_error, update_label__must_entered_error, find_by_name__must_entered_error, find_by_name_and_labels_with_active_child_nodes__must_entered_error, find_by_name_and_labels_with_active_child_nodes__not_found_error } from "./constant/custom.error.object";
+>>>>>>> atameratalay_sgnmneo4j
 
 @Injectable()
 export class Neo4jService implements OnApplicationShutdown {
@@ -96,21 +100,32 @@ export class Neo4jService implements OnApplicationShutdown {
   async getAllLabels():Promise<string[]>{
     const cypher = "CALL db.labels();";
     const result = await this.read(cypher);
-    return result["records"][0].map(x=> (x._fields[0]));
+    return result.records.map(x=>(x["_fields"][0]));
     
   }
+
+  async findByIdWithError( id: string): Promise<any> {
+    const idNum = parseInt(id);
+    const cypher = "MATCH (n {isDeleted: false}) where id(n) = $idNum return n";
+    let data=await this.read(cypher,{idNum});
+   
+
+    if(!data["records"].length) return new HttpException(`bu ${idNum} id li node bulunamadı`,404) 
+    else {
+      return data["records"]
+    }
+  }
+
 
   async findWithChildrenByIdAsTree(id: string) {
     try {
       if(!id){
         throw new HttpException(find_with_children_by_id_as_tree__must_entered_error,400);
       }
-      const node = await this.findById(id);
-      // if (!node["records"][0].length) {
-      //   throw new HttpException(node_not_found, 404);
-        
-      // } HATA VERİYOR
+      
       const idNum = parseInt(id);
+      const isExists = await this.findByIdWithError(id);
+      if(isExists instanceof Error) throw new  HttpException(node_not_found,404) 
 
       const cypher =
         "MATCH p=(n)-[:CHILDREN*]->(m) \
@@ -120,7 +135,7 @@ export class Neo4jService implements OnApplicationShutdown {
             RETURN value";
 
       const result = await this.read(cypher, { idNum });
-      if (!result["records"][0].length) {
+      if (!result["records"].length) {
         throw new HttpException(find_with_children_by_id_as_tree_error,404);
       }
       return result["records"][0]["_fields"][0];
@@ -287,7 +302,7 @@ export class Neo4jService implements OnApplicationShutdown {
       } 
       const result = await this.read(cypher, { idNum });
    
-      if (!result["records"][0]) {
+      if (!result["records"].length) {
         throw new HttpException(find_by_id_and_labels_with_active_child_node__not_found_error,404)
       }
       return result["records"];
@@ -312,7 +327,7 @@ export class Neo4jService implements OnApplicationShutdown {
       const cypher = `MATCH (c: ${label} {isDeleted: false}) where id(c)=$idNum return c`;
       const result = await this.read(cypher, { idNum });
    
-      if (!result["records"][0]) {
+      if (!result["records"].length) {
         throw new HttpException(find_node_by_id_and_label__not_found_error,404)
       }
       return result["records"];
@@ -340,7 +355,7 @@ export class Neo4jService implements OnApplicationShutdown {
         "MATCH (n {isDeleted: false}) where id(n) = $idNum return n";
 
       const result = await this.read(cypher, { idNum });
-      if (!result["records"][0].length) {
+      if (!result["records"].length) {
         throw new HttpException(node_not_found,404)
       }
 
@@ -424,10 +439,10 @@ export class Neo4jService implements OnApplicationShutdown {
       if(!params || !label){
         throw new HttpException(create_node__must_entered_error,400);
       }
-      // let labels = await this.getAllLabels();
-      // if(!labels.includes(label)){
-      //   throw new HttpException(invalid_label_error,400)
-      // }  HATA VERİYOR
+      let labels = await this.getAllLabels();
+      if(!labels.includes(label)){
+        throw new HttpException(invalid_label_error,400)
+      }  
 
       const cyperQuery = createDynamicCyperCreateQuery(params,label);
 
@@ -565,7 +580,7 @@ export class Neo4jService implements OnApplicationShutdown {
     } catch (error) {
         if (error.response.code) {
           throw new HttpException(
-            { message: error.response.message, code: error.response.code },
+            { message: error.response.message, code: error.response.code},
             error.status
           );
       }
@@ -681,7 +696,8 @@ export class Neo4jService implements OnApplicationShutdown {
           target_parent_id: parseInt(second_node_id),
         }
       );
-        if(!res){
+      let {relationshipsCreated} = await res.summary.updateStatistics.updates()
+        if(relationshipsCreated===0){
           throw new HttpException(add_relation_with_relation_name__create_relation_error,400);
 
         }
@@ -707,9 +723,10 @@ export class Neo4jService implements OnApplicationShutdown {
         "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:CHILDREN]-> (c)",
         { id: parseInt(child_id), target_parent_id: parseInt(target_parent_id) }
       );
-        if(!res){
+      let {relationshipsCreated} = await res.summary.updateStatistics.updates()
+        if(relationshipsCreated===0){
 
-          throw new HttpException(null,400);
+          throw new HttpException(add_children_relation_by_id__relationship_not_created,400);
         }
       return successResponse(res);
     } catch (error) {
