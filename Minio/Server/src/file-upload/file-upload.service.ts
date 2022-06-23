@@ -6,9 +6,9 @@ import { BufferedFile } from 'src/minio-client/file.model';
 export class FileUploadService {
   constructor(private minioClientService: MinioClientService) {}
 
-  async uploadSingle(image: BufferedFile) {
+  async uploadSingle(image: BufferedFile,folderName?: string) {
     try {
-      let uploaded_image = await this.minioClientService.upload(image);
+      let uploaded_image = await this.minioClientService.upload(image,folderName);
       if(!uploaded_image.url){
         throw new HttpException("Error, Check the file type is jpeg or png or excel",HttpStatus.BAD_REQUEST)
       }
@@ -21,12 +21,12 @@ export class FileUploadService {
     }
   }
 
-  async uploadMany(files: BufferedFile) {
+  async uploadMany(files: BufferedFile,folderName?: string) {
     let image1 = files['image1'][0];
-    let uploaded_image1 = await this.minioClientService.upload(image1);
+    let uploaded_image1 = await this.minioClientService.upload(image1,folderName);
 
     let image2 = files['image2'][0];
-    let uploaded_image2 = await this.minioClientService.upload(image2);
+    let uploaded_image2 = await this.minioClientService.upload(image2,folderName);
 
     return {
       image1_url: uploaded_image1.url,
@@ -40,13 +40,19 @@ export class FileUploadService {
     return res;
   }
 
-  async getAllFiles(){
-    let res= await this.minioClientService.getAllObjects();
+  async getAllFiles(bucketName: string,prefix?:string){
+    if (prefix !=null) {let res=await this.minioClientService.getAllObjectsWithPrefix(bucketName,prefix);return res}
+    let res= await this.minioClientService.getAllObjects(bucketName);
     return res;
   }
 
   async getAFileByFileName(fileName:string){
     let res= await this.minioClientService.getAObject(fileName);
    return res;
+  }
+
+  async createBucket(bucketName:string){
+    let res=await this.minioClientService.createBucket(bucketName);
+    return res;
   }
 }
