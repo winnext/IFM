@@ -30,6 +30,7 @@ export class FileUploadController {
           type: 'string',
           format: 'binary',
         },
+        folderName:{ type: 'string'}
       },
     },
   })
@@ -38,10 +39,10 @@ export class FileUploadController {
     summary: 'Upload a single file or image'
   })
   @ApiConsumes('multipart/form-data')
-  async uploadSingle(@UploadedFile() image: BufferedFile) {
-    const x = await this.postKafka.producerSendMessage('test', 'test', 'user');
+  async uploadSingle(@UploadedFile() image: BufferedFile,@Body("folderName") folderName?:string) {
+    //const x = await this.postKafka.producerSendMessage('test', 'test', 'user');
 
-    return await this.fileUploadService.uploadSingle(image);
+    return await this.fileUploadService.uploadSingle(image,folderName);
   }
 
 
@@ -58,7 +59,8 @@ export class FileUploadController {
         image2:{
           type: 'string',
           format: 'binary',
-        }
+        },
+        folderName:{ type: 'string'}
       },
     },
   })
@@ -70,10 +72,10 @@ export class FileUploadController {
   )
   @ApiConsumes('multipart/form-data')
   @ApiOperation({
-    summary: 'Upload a multiple file or image'
+    summary: 'Upload multiple file or image'
   })
-  async uploadMany(@UploadedFiles() files: BufferedFile) {
-    return this.fileUploadService.uploadMany(files);
+  async uploadMany(@UploadedFiles() files: BufferedFile,@Body("folderName") folderName: string) {
+    return this.fileUploadService.uploadMany(files,folderName);
   }
 
 
@@ -95,31 +97,37 @@ export class FileUploadController {
   }
 
 
-  @Get('getAllFiles')
+  @Get('getAllFiles/:bucketName')
   @ApiOperation({
     summary: 'Get all files'
   })
-  async getAll() {
-    return this.fileUploadService.getAllFiles();
+  async getAll(@Param('bucketName') bucketName: string) {
+    return this.fileUploadService.getAllFiles(bucketName);
   }
 
+  @Get('getAllFilesWithPrefix/:bucketName/:prefix')
+  @ApiOperation({
+    summary: 'Get all files with prefix'
+  })
+  async getAllWithPrefix(@Param('bucketName') bucketName: string,@Param("prefix") prefix: string) {
+    return this.fileUploadService.getAllFiles(bucketName,prefix);
+  }
 
   @Get('getAFile/:fileName')
   @ApiOperation({
     summary: 'Get a file'
   })
-  // @ApiBody({
-  //   schema: {
-  //     properties: {
-  //       fileName: {
-  //         type: 'string'
-  //       },
-  //     },
-  //   },
-  // })
   async findbyFileName(@Param("fileName") fileName: string) {
-   
     return this.fileUploadService.getAFileByFileName(fileName);
-    
+  }
+
+
+  @Post("createBucket/:bucketName")
+  @ApiOperation({
+    summary: 'Enter a bucket name'
+  })
+  async createBucket(@Param("bucketName") bucketName: string) {
+
+    return this.fileUploadService.createBucket(bucketName);
   }
 }
