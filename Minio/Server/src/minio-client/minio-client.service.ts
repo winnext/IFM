@@ -48,7 +48,7 @@ export class MinioClientService {
     //   console.log(res, "RESPONSEEEE");
     // })
     return {
-      url: `http://${process.env.MINIO_ENDPOINT}:9000/${process.env.MINIO_BUCKET}/${fileName}`,
+      url: `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${process.env.MINIO_BUCKET}/${fileName}`,
     };
   }
 
