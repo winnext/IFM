@@ -39,7 +39,7 @@
     "nestjs-minio-client": "^1.2.0",
     "nestjs-otel": "^3.0.4",
     "nestjs-pino": "^2.5.2",
-    "npm": "^8.7.0",
+    "npm": "^8.11.0",
     "pino": "^7.11.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
