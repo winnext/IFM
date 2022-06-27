@@ -7,12 +7,13 @@ export class CreateFacilityStructureDto {
   @ApiProperty()
   @IsOptional()
   @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  type?: string;
+  description: string;
 
   @ApiProperty()
-  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
   @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  code: string;
+  @LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
+  @IsOptional()
+  key?: string;
 
   @ApiProperty()
   @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
@@ -21,46 +22,10 @@ export class CreateFacilityStructureDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  description: string;
-
-  @ApiProperty()
-  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  @LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
-  @IsOptional()
-  key: string;
-
-  @ApiProperty()
-  @IsOptional()
-  tag: string[];
-
-  @ApiProperty()
-  @IsNumber()
-  @IsOptional()
-  parent_id?: number; //not in entity
-
-  @ApiProperty()
-  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
-  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  @LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
-  labelclass: string;
+  tag?: string[];
 
   @ApiProperty()
   @IsOptional()
   @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  typeId?: string;
-
-  @ApiProperty()
-  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
-  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
-  @LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
-  label: string;
-
-  @ApiProperty()
-  @IsOptional()
-  realm: string;
-  
-  @ApiProperty()
-  @IsOptional()
-  optionalLabels: string[];
+  formType?: string;
 }
