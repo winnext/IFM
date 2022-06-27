@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu } from 'primereact/menu';
 import { Chips } from 'primereact/chips';
 
-interface ClassificationInterface {
+interface StructureInterface {
   identity?: {
     low: string;
     high: string;
@@ -36,7 +36,7 @@ interface ClassificationInterface {
 const FacilityStructure = () => {
 
   const navigate = useNavigate();
-  const [data, setData] = useState<ClassificationInterface[]>([]);
+  const [data, setData] = useState<StructureInterface[]>([]);
   const [addDia, setAddDia] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -90,7 +90,7 @@ const FacilityStructure = () => {
   // const dispatch = useAppDispatch();
 
   const addItem = () => {
-    const _classification: ClassificationInterface = {
+    const _classification: StructureInterface = {
 
       code: code,
       name: name,

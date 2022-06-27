@@ -28,6 +28,7 @@ interface StructureInterface {
     typeId?: string;
     description?: string;
     isActive?: boolean;
+    label: string;
 }
 
 

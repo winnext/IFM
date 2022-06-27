@@ -31,6 +31,7 @@ interface FormTreeInterface {
     selectable?: boolean;
     icon?: string;
     hasType?: boolean;
+    label: string;
   }[];
 }
 
@@ -57,6 +58,7 @@ interface Node {
     low: string;
     high: string;
   },
+  label: string;
 }
 
 interface Type {
@@ -81,7 +83,8 @@ const SetFormTree = () => {
           high: ""
         },
         key: "",
-        hasParent: false
+        hasParent: false,
+        label: "",
       }
     ]
   });
@@ -89,6 +92,7 @@ const SetFormTree = () => {
   const [data, setData] = useState<Node[]>([]);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [label, setLabel] = useState("");
   const [type, setType] = useState("");
   const [typeId, setTypeId] = useState("");
   const [tag, setTag] = useState<string[]>([]);
@@ -131,6 +135,7 @@ const SetFormTree = () => {
           .then((res) => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
+            setLabel(res.data.properties.label || "");
             setTag(res.data.properties.tag || []);
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));
             setIsActive(res.data.properties.isActive);
@@ -214,7 +219,8 @@ const SetFormTree = () => {
           code: code,
           tag: tag,
           labelclass: node.labelclass,
-          isActive: true
+          isActive: true,
+          label: label,
         };
 
         FormTreeService.update(node._id.low, updateNode)
@@ -263,6 +269,7 @@ const SetFormTree = () => {
           code: code,
           tag: tag,
           labelclass: res.data.properties.labelclass,
+          label:label
         };
         console.log(newNode);
 
@@ -287,6 +294,7 @@ const SetFormTree = () => {
       });
     setName("");
     setCode("");
+    setLabel("");
     setTag([]);
     setSelectedForm(undefined);
     setAddDia(false);
@@ -304,6 +312,7 @@ const SetFormTree = () => {
           code: res.data.properties.code,
           tag: res.data.properties.tag,
           labelclass: 'Type',
+          label: res.data.properties.label,
         };
         FormTreeService.create(newNode)
           .then((res) => {
@@ -343,6 +352,7 @@ const SetFormTree = () => {
     setData(temp);
     setName("");
     setCode("");
+    setLabel("");
     setTag([]);
     setSelectedForm(undefined);
     setEditDia(false);
@@ -450,6 +460,7 @@ const SetFormTree = () => {
             setAddDia(false);
             setName("");
             setCode("");
+            setLabel("");
             setSelectedForm(undefined);
             setTag([]);
           }}
@@ -475,6 +486,7 @@ const SetFormTree = () => {
             setEditDia(false);
             setName("");
             setCode("");
+            setLabel("");
             setTag([]);
             setSelectedForm(undefined);
           }}
@@ -518,6 +530,7 @@ const SetFormTree = () => {
         onHide={() => {
           setName("");
           setCode("");
+          setLabel("");
           setTag([]);
           setSelectedForm(undefined);
           setAddDia(false);
@@ -536,6 +549,14 @@ const SetFormTree = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
+          />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Label</h5>
+          <InputText
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
             style={{ width: '50%' }}
           />
         </div>
@@ -572,6 +593,7 @@ const SetFormTree = () => {
         onHide={() => {
           setName("");
           setCode("");
+          setLabel("");
           setTag([]);
           setSelectedForm(undefined);
           setEditDia(false);
@@ -590,6 +612,14 @@ const SetFormTree = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
+          />
+        </div>
+        <div className="field">
+          <h5 style={{ marginBottom: "0.5em" }}>Label</h5>
+          <InputText
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
             style={{ width: '50%' }}
           />
         </div>
@@ -678,6 +708,7 @@ const SetFormTree = () => {
 
                   }
                   }
+                  title="Edit Form"
                 />
                 :
 
@@ -692,6 +723,7 @@ const SetFormTree = () => {
                     setAddFormDia(true)
                   }
                   }
+                  title="Add Form"
                 />
               }
             </>

@@ -6,7 +6,7 @@ export class Type {
   code: string;
   name: string;
   tag: string[] = [];
-  label: string; // not in dtos
+  label: string;
   createdAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   updatedAt: string = moment().format('YYYY-MM-DD HH:mm:ss'); // not in dtos
   isActive: boolean = true;
