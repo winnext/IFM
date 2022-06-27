@@ -55,7 +55,8 @@ const Facility2 = () => {
     setLoading(true);
     FacilityService.findOne(realm)
       .then((response) => {
-        setFacilities([response.data] || []);
+        console.log(response.data);
+        setFacilities([response.data.properties] || []);
         // setCountFacilities(response.data[1].count);
         setLoading(false);
       })
@@ -168,7 +169,7 @@ const Facility2 = () => {
     return (
       <>
         <span className="p-column-title">Facility Name</span>
-        {rowData.facility_name}
+        {rowData.name}
       </>
     );
   };
