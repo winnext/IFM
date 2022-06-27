@@ -197,11 +197,12 @@ const Dynamic = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     const formData = {
       nodeId: nodeId,
       data: data,
     };
+    console.log(formData);
     // console.log(formData);
 
     // deneme
