@@ -2,25 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { TestNode } from '../entities/node.entity';
+import { SetupNode } from '../entities/node.entity';
 
 export class CreateFacilityDto {
   @ApiProperty()
   @ValidateNested({ each: true })
-  @Type(() => TestNode)
-  facilityInfo: TestNode;
+  @Type(() => SetupNode)
+  facilityInfo: SetupNode;
 
   @ApiProperty()
   @ValidateNested({ each: true })
-  @Type(() => TestNode)
-  structureInfo: TestNode;
+  @Type(() => SetupNode)
+  structureInfo: SetupNode;
 
   @ApiProperty()
   @ValidateNested({ each: true })
-  @Type(() => TestNode)
-  assetInfo: TestNode;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  realm: string;
+  @Type(() => SetupNode)
+  assetInfo: SetupNode;
 }
