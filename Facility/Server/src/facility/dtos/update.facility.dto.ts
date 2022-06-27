@@ -1,9 +1,9 @@
-import { PartialType } from '@nestjs/swagger';
+import { OmitType } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+import moment from 'moment';
+import { SetupNode } from '../entities/node.entity';
 
-import { CreateFacilityDto } from './create.facility.dto';
-
-export class UpdateFacilityDto extends PartialType(CreateFacilityDto) {
+export class UpdateFacilityDto extends OmitType(SetupNode, ['cantDeleted']) {
   @IsOptional()
-  updatedAt = new Date();
+  updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
 }

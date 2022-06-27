@@ -18,43 +18,27 @@ export function assignDtoPropToEntity(entity, dto) {
       const x = 'CREATE ' + createDynamiCyperParam(facilityStructure); is equalent
 
 */
-export function createDynamicCyperCreateQuery(entity: object, labels: Array<string>) {
+export function createDynamicCyperCreateQuery(entity: object, labels?: Array<string>) {
   let optionalLabels = '';
   console.log(labels);
   if (labels && labels.length > 0) {
     labels.map((item) => {
       optionalLabels = optionalLabels + ':' + item;
-    }); //12 haz 2022 değiştirildi
+    });
   }
 
   let dynamicQueryParameter = `CREATE (node${optionalLabels} {`;
-  if (entity['__label']) {
-    dynamicQueryParameter = `CREATE (node:${optionalLabels} {`;
-  }
-  let counter = 0;
+
   Object.keys(entity).forEach((element, index) => {
-    if (Object.keys(entity).length === index + 1) {
-      if (!element.startsWith('__') && element != 'optionalLabels') {
-        if (counter == 0) {
-          dynamicQueryParameter += ` ${element}` + `: $` + `${element} }) return node`;
-          counter = counter + 1;
-        } else {
-          dynamicQueryParameter += `,${element}` + `: $` + `${element} }) return node`;
-          counter = counter + 1;
-        }
-      } else {
-        dynamicQueryParameter += ` }) return node`;
-      }
+    console.log(Object.keys(entity).length);
+    console.log(index + 1);
+    if (index === 0) {
+      dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
     } else {
-      if (!element.startsWith('__') && element != 'optionalLabels') {
-        if (counter == 0) {
-          dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
-          counter = counter + 1;
-        } else {
-          dynamicQueryParameter += `,${element}` + `: $` + `${element}`;
-          counter = counter + 1;
-        }
-      }
+      dynamicQueryParameter += `,${element}` + `: $` + `${element}`;
+    }
+    if (Object.keys(entity).length === index + 1) {
+      dynamicQueryParameter += ` }) return node`;
     }
   });
 
