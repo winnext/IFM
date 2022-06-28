@@ -9,6 +9,7 @@ import { assignDtoPropToEntity } from 'sgnm-neo4j/dist';
 import { createDynamicCyperCreateQuery } from 'src/common/func/neo4js.func';
 import { Facility } from '../entities/facility.entity';
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
+import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
@@ -16,6 +17,9 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
 
   async findOneByRealm(realm: string): Promise<Facility> {
     const facility = await this.neo4jService.read(`match (n:Root ) where n.realm=$realm return n`, { realm });
+    if (!facility['records'][0]) {
+      throw FacilityNotFountException(realm);
+    }
     return facility['records'][0]['_fields'][0];
   }
 
@@ -28,12 +32,10 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     const { structureInfo, facilityInfo, assetInfo } = createFacilityDto;
 
     const finalFacilityObject = assignDtoPropToEntity(facility, facilityInfo);
-    console.log(finalFacilityObject);
     const finalStructureObject = assignDtoPropToEntity(structure, structureInfo);
     const finalAssetObject = assignDtoPropToEntity(asset, assetInfo);
 
     const facilityQuery = createDynamicCyperCreateQuery(finalFacilityObject, [Neo4jLabelEnum.ROOT]);
-    console.log(facilityQuery);
     const structureQuery = createDynamicCyperCreateQuery(finalStructureObject, [Neo4jLabelEnum.FACILITY_STRUCTURE]);
     const assetQuery = createDynamicCyperCreateQuery(finalAssetObject, [Neo4jLabelEnum.ASSET]);
 
@@ -41,8 +43,8 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     const facilityNode = await this.neo4jService.write(facilityQuery, finalFacilityObject);
     const structureNode = await this.neo4jService.write(structureQuery, finalStructureObject);
     const assetNode = await this.neo4jService.write(assetQuery, finalAssetObject);
-    console.log(structureNode['records'][0]['_fields'][0].identity.low);
-    await this.neo4jService.addRelations(
+
+    await this.addRelations(
       structureNode['records'][0]['_fields'][0].identity.low,
       facilityNode['records'][0]['_fields'][0].identity.low,
     );
@@ -53,7 +55,12 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     return facilityNode['records'][0]['_fields'][0];
   }
   async update(_id: string, updateFacilityDto: UpdateFacilityDto) {
-    return 'updatedFacility';
+    const updatedFacility = await this.neo4jService.updateById(_id, updateFacilityDto);
+
+    if (!updatedFacility) {
+      throw FacilityNotFountException(_id);
+    }
+    return updatedFacility;
   }
 
   async findOneById(id: string): Promise<any> {
