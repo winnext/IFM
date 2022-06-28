@@ -44,7 +44,7 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     const structureNode = await this.neo4jService.write(structureQuery, finalStructureObject);
     const assetNode = await this.neo4jService.write(assetQuery, finalAssetObject);
 
-    await this.addRelations(
+    await this.neo4jService.addRelations(
       structureNode['records'][0]['_fields'][0].identity.low,
       facilityNode['records'][0]['_fields'][0].identity.low,
     );
@@ -68,5 +68,4 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   }
 
   //-------------------------------------------Neo4jFunctions----------------------------------------------
- 
 }

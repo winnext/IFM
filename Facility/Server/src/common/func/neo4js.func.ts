@@ -6,14 +6,14 @@ export function assignDtoPropToEntity(entity, dto) {
       entity[element] = dto[element];
     }
   });
-  let o = {'entity':entity}  
+  const finalEntityObject = { entity: entity };
   if (dto['labels']) {
-    o['labels'] = dto['labels'];
+    finalEntityObject['labels'] = dto['labels'];
   }
   if (dto['parentId']) {
-    o['parentId'] = dto['parentId'];
-  }  
-  return o;
+    finalEntityObject['parentId'] = dto['parentId'];
+  }
+  return finalEntityObject;
 }
 
 /*
@@ -28,7 +28,7 @@ export function assignDtoPropToEntity(entity, dto) {
 */
 export function createDynamicCyperCreateQuery(entity: object, labels?: Array<string>) {
   let optionalLabels = '';
-  console.log(labels);
+
   if (labels && labels.length > 0) {
     labels.map((item) => {
       optionalLabels = optionalLabels + ':' + item;
@@ -38,8 +38,6 @@ export function createDynamicCyperCreateQuery(entity: object, labels?: Array<str
   let dynamicQueryParameter = `CREATE (node${optionalLabels} {`;
 
   Object.keys(entity).forEach((element, index) => {
-    console.log(Object.keys(entity).length);
-    console.log(index + 1);
     if (index === 0) {
       dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
     } else {
