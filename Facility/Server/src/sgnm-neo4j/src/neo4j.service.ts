@@ -531,31 +531,7 @@ export class Neo4jService implements OnApplicationShutdown {
       }
     }
   }
-  async addRelations(_id: string, _target_parent_id: string) {
-    try {
-      if(!_id || !_target_parent_id){
-        throw new HttpException(add_relation_must_entered_error,400)
-      }
-      await this.addChildrenRelationById(_id, _target_parent_id);
 
-      await this.addParentRelationById(_id, _target_parent_id);
-
-      //update 1 property of node
-      await this.updateHasParentProp(_id, true);
-
-      //update 1 property of node
-      await this.updateSelectableProp(_target_parent_id, false);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
   async findOneNodeByKey(key: string) {
     try {
       if(!key){
@@ -710,59 +686,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async addChildrenRelationById(child_id: string, target_parent_id: string) {
-    try {
-      if(! child_id || ! target_parent_id){
-        throw new HttpException(add_children_relation_by_id_error,404);
-      }
-      const res = await this.write(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:CHILDREN]-> (c)",
-        { id: parseInt(child_id), target_parent_id: parseInt(target_parent_id) }
-      );
-      let {relationshipsCreated} = await res.summary.updateStatistics.updates()
-        if(relationshipsCreated===0){
-
-          throw new HttpException(add_children_relation_by_id__relationship_not_created,400);
-        }
-      return successResponse(res);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
-  async addParentRelationById(child_id: string, parent_id: string) {
-    try {
-      if(!child_id || ! parent_id){
-        throw new HttpException(add_parent_relation_by_id__must_entered_error,400)
-      }
-      const res = await this.write(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (c)-[:CHILD_OF]-> (p)",
-        { id: parseInt(child_id), target_parent_id: parseInt(parent_id) }
-      );
-      let {relationshipsCreated}= res.summary.updateStatistics.updates()
-        if(relationshipsCreated===0){
-          throw new HttpException(add_parent_relation_by_id__not_created_error,400);
-        }
-      return successResponse(res);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-         throw newError(error, "500");
-      }
-    }
-  }
-
   async createChildrenByLabelClass(entity: object, label: string) {
     try {
       delete entity["realm"]
@@ -793,21 +716,21 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
   ///////////////////////// 8 Haz 2022 //////////////////////////////////////
-  async createChildrenByOptionalLabels(entity: object, label: string) {
-    try {
-      delete entity["realm"];
-      const dynamicCyperParameter = createDynamiCyperParam(entity,label);
-      let query =
-      ` match (y {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
-      query = query +  dynamicCyperParameter;  
+   async createChildrenByOptionalLabels(entity: object, label: string) {
+     try {
+       delete entity["realm"];
+       const dynamicCyperParameter = createDynamiCyperParam(entity,label);
+       let query =
+       ` match (y {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
+       query = query +  dynamicCyperParameter;  
 
-      const res = await this.write(query, entity);
+       const res = await this.write(query, entity);
 
-      return successResponse(res);
-    } catch (error) {
-      throw newError(failedResponse(error), "400");
-    }
-  }
+       return successResponse(res);
+     } catch (error) {
+       throw newError(failedResponse(error), "400");
+     }
+   }
   ///////////////////////////////////////////////////////////////////////////
 
   async addParentByLabelClass(entity, label: string) {
@@ -1506,6 +1429,73 @@ async findByRealm(
         );
       }else {
          throw newError(error, "500");
+      }
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////// Temiz //////////////////////////////////////////////////////////////
+  async addParentRelationById(child_id: string, target_parent_id: string) {
+    try {
+      if (!child_id || !target_parent_id) {
+        throw new HttpException('id must entered', 404);
+      }
+      const res = await this.write(
+        'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:PARENT_OF]-> (c)',
+        { id: parseInt(child_id), target_parent_id: parseInt(target_parent_id) },
+      );
+      if (!res) {
+        throw new HttpException(null, 400);
+      }
+      return res;
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async addChildrenRelationById(child_id: string, parent_id: string) {
+    try {
+      if(!child_id || ! parent_id){
+        throw new HttpException(add_parent_relation_by_id__must_entered_error,400)
+      }
+      const res = await this.write(
+        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (c)-[:CHILD_OF]-> (p)",
+        { id: parseInt(child_id), target_parent_id: parseInt(parent_id) }
+      );
+      let {relationshipsCreated}= res.summary.updateStatistics.updates()
+        if(relationshipsCreated===0){
+          throw new HttpException(add_parent_relation_by_id__not_created_error,400);
+        }
+      return successResponse(res);
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+         throw newError(error, "500");
+      }
+    }
+  }
+  
+  async addRelations(_id: string, _target_parent_id: string) {
+    try {
+      if (!_id || !_target_parent_id) {
+        throw new HttpException('id must entered', 400);
+      }
+      await this.addParentRelationById(_id, _target_parent_id);
+
+      await this.addChildrenRelationById(_id, _target_parent_id);
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
