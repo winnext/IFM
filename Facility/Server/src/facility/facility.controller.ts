@@ -50,9 +50,9 @@ export class FacilityController {
     type: UpdateFacilityDto,
     description: 'update  facility structure',
   })
-  @Patch('/:_id')
+  @Patch('/:id')
   @Roles({ roles: [UserRoles.ADMIN] })
-  updateFacility(@Param('_id') id: string, @Body() updateFacilityDto: UpdateFacilityDto) {
+  updateFacility(@Param('id') id: string, @Body() updateFacilityDto: UpdateFacilityDto) {
     return this.facilityService.update(id, updateFacilityDto);
   }
 }
