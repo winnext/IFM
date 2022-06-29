@@ -45,7 +45,7 @@ async function bootstrap() {
     );
     app.useGlobalInterceptors(
       new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),
-      new TimeoutInterceptor(),
+      //new TimeoutInterceptor(),
     );
     app.enableCors();
     await app.startAllMicroservices();

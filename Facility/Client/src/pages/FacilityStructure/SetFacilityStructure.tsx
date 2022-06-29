@@ -267,6 +267,7 @@ const SetFacilityStructure = () => {
     for (let i of nodes) {
       fixNodes(i.children)
       i.icon = "pi pi-fw pi-building";
+      i.label=i.name;
       // console.log(i);
 
       // if (i.typeId) {

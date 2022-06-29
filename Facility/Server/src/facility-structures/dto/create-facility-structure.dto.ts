@@ -28,4 +28,12 @@ export class CreateFacilityStructureDto {
   @IsOptional()
   @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
   formType?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  labels?: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  parentId?: string;
 }

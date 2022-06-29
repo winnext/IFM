@@ -23,18 +23,25 @@ export class FacilityStructuresController {
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }
 
-  @Get()
-  @Unprotected()
-  @NoCache()
-  findAll(@Query() queryParams: PaginationNeo4jParams) {
-    return this.facilityStructuresService.findAll(queryParams);
-  }
+  // @Get()
+  // @Unprotected()
+  // @NoCache()
+  // findAll(@Query() queryParams: PaginationNeo4jParams) {
+  //   return this.facilityStructuresService.findAll(queryParams);
+  // }
 
-  @Get(':id')
+  // @Get(':id')
+  // @Unprotected()
+  // @NoCache()
+  // findOne(@Param('id') id: string) {
+  //   return this.facilityStructuresService.findOne(id);
+  // }
+
+  @Get(':label/:realm')
   @Unprotected()
   @NoCache()
-  findOne(@Param('id') id: string) {
-    return this.facilityStructuresService.findOne(id);
+  findOne(@Param('label') label: string, @Param('realm') realm: string) {
+    return this.facilityStructuresService.findOne(label, realm);
   }
 
   @Patch(':id')

@@ -2,10 +2,18 @@ import { int } from 'neo4j-driver';
 //transfer dto(object come from client) properties to specific node entity object
 export function assignDtoPropToEntity(entity, dto) {
   Object.keys(dto).forEach((element) => {
-    entity[element] = dto[element];
+    if (element != 'labels' && element != 'parentId') {
+      entity[element] = dto[element];
+    }
   });
-
-  return entity;
+  const finalEntityObject = { entity: entity };
+  if (dto['labels']) {
+    finalEntityObject['labels'] = dto['labels'];
+  }
+  if (dto['parentId']) {
+    finalEntityObject['parentId'] = dto['parentId'];
+  }
+  return finalEntityObject;
 }
 
 /*
@@ -20,7 +28,7 @@ export function assignDtoPropToEntity(entity, dto) {
 */
 export function createDynamicCyperCreateQuery(entity: object, labels?: Array<string>) {
   let optionalLabels = '';
-  console.log(labels);
+
   if (labels && labels.length > 0) {
     labels.map((item) => {
       optionalLabels = optionalLabels + ':' + item;
@@ -30,8 +38,6 @@ export function createDynamicCyperCreateQuery(entity: object, labels?: Array<str
   let dynamicQueryParameter = `CREATE (node${optionalLabels} {`;
 
   Object.keys(entity).forEach((element, index) => {
-    console.log(Object.keys(entity).length);
-    console.log(index + 1);
     if (index === 0) {
       dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
     } else {

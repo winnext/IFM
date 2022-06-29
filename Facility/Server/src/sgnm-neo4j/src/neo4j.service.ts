@@ -531,31 +531,7 @@ export class Neo4jService implements OnApplicationShutdown {
       }
     }
   }
-  async addRelations(_id: string, _target_parent_id: string) {
-    try {
-      if(!_id || !_target_parent_id){
-        throw new HttpException(add_relation_must_entered_error,400)
-      }
-      await this.addChildrenRelationById(_id, _target_parent_id);
 
-      await this.addParentRelationById(_id, _target_parent_id);
-
-      //update 1 property of node
-      await this.updateHasParentProp(_id, true);
-
-      //update 1 property of node
-      await this.updateSelectableProp(_target_parent_id, false);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
   async findOneNodeByKey(key: string) {
     try {
       if(!key){
@@ -710,59 +686,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async addChildrenRelationById(child_id: string, target_parent_id: string) {
-    try {
-      if(! child_id || ! target_parent_id){
-        throw new HttpException(add_children_relation_by_id_error,404);
-      }
-      const res = await this.write(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:CHILDREN]-> (c)",
-        { id: parseInt(child_id), target_parent_id: parseInt(target_parent_id) }
-      );
-      let {relationshipsCreated} = await res.summary.updateStatistics.updates()
-        if(relationshipsCreated===0){
-
-          throw new HttpException(add_children_relation_by_id__relationship_not_created,400);
-        }
-      return successResponse(res);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
-  async addParentRelationById(child_id: string, parent_id: string) {
-    try {
-      if(!child_id || ! parent_id){
-        throw new HttpException(add_parent_relation_by_id__must_entered_error,400)
-      }
-      const res = await this.write(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (c)-[:CHILD_OF]-> (p)",
-        { id: parseInt(child_id), target_parent_id: parseInt(parent_id) }
-      );
-      let {relationshipsCreated}= res.summary.updateStatistics.updates()
-        if(relationshipsCreated===0){
-          throw new HttpException(add_parent_relation_by_id__not_created_error,400);
-        }
-      return successResponse(res);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-         throw newError(error, "500");
-      }
-    }
-  }
-
   async createChildrenByLabelClass(entity: object, label: string) {
     try {
       delete entity["realm"]
@@ -793,21 +716,21 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
   ///////////////////////// 8 Haz 2022 //////////////////////////////////////
-  async createChildrenByOptionalLabels(entity: object, label: string) {
-    try {
-      delete entity["realm"];
-      const dynamicCyperParameter = createDynamiCyperParam(entity,label);
-      let query =
-      ` match (y {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
-      query = query +  dynamicCyperParameter;  
+   async createChildrenByOptionalLabels(entity: object, label: string) {
+     try {
+       delete entity["realm"];
+       const dynamicCyperParameter = createDynamiCyperParam(entity,label);
+       let query =
+       ` match (y {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
+       query = query +  dynamicCyperParameter;  
 
-      const res = await this.write(query, entity);
+       const res = await this.write(query, entity);
 
-      return successResponse(res);
-    } catch (error) {
-      throw newError(failedResponse(error), "400");
-    }
-  }
+       return successResponse(res);
+     } catch (error) {
+       throw newError(failedResponse(error), "400");
+     }
+   }
   ///////////////////////////////////////////////////////////////////////////
 
   async addParentByLabelClass(entity, label: string) {
@@ -1298,110 +1221,6 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     return this.driver.close();
   }
 
-
-
-async findWithChildrenByRealmAsTree(realm: string) {
-    try {
-      if(!realm){
-        throw new HttpException(find_with_children_by_realm_as_tree__not_entered_error,400);
-      }
-      const node = await this.findByRealm(realm);
-      if (!node) {
-        throw new HttpException(find_with_children_by_realm_as_tree__find_by_realm_error, 404);
-      }
-
-      const cypher =
-        "MATCH p=(n)-[:CHILDREN*]->(m) \
-            WHERE n.realm = $realm and n.isDeleted=false and m.isDeleted=false \
-            WITH COLLECT(p) AS ps \
-            CALL apoc.convert.toTree(ps) yield value \
-            RETURN value";
-
-      const result = await this.read(cypher, { realm });
-      if (!result["records"][0].length) {
-       throw new HttpException(find_with_children_by_realm_as_tree_error,404);
-      }
-      return result["records"][0]["_fields"][0];
-     } 
-     catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-        throw newError(error, "500");
-      }
-     }
-  }
-
-async findByRealmWithTreeStructure(realm: string) {
-
-  try {
-
-    if(!realm){
-      throw new HttpException(find_by_realm_with_tree_structure__not_entered_error,400);
-    }
-
-    let tree = await this.findWithChildrenByRealmAsTree(realm);
-
-    if (!tree) {
-      throw new HttpException(tree_structure_not_found_by_realm_name_error,404);
-
-    } else if (Object.keys(tree).length === 0) {
-      tree = await this.findByRealm(realm);
-      const rootNodeObject = { root: tree };
-      return rootNodeObject;
-    } else {
-      const rootNodeObject = { root: tree };
-      return rootNodeObject;
-    }
-
-  } catch (error) {
-    if (error.response.code) {
-      throw new HttpException(
-        { message: error.response.message, code: error.response.code },
-        error.status
-      );
-    }else {
-      throw newError(error, "500");
-    }
-  }
-
-  }
-
-async findByRealm(
-    realm: string,
-    databaseOrTransaction?: string | Transaction
-  ) {
-    try {
-
-      if(!realm){
-        throw new HttpException(find_by_realm__not_entered_error,400)
-      }
-      const cypher =
-        "MATCH (n {isDeleted: false}) where n.realm = $realm return n";
-
-      const result = await this.read(cypher, { realm });
-
-      if (!result["records"][0].length) {
-        throw new HttpException(find_by_realm__not_found_error,404);
-      }
-
-      return result["records"][0]["_fields"][0];
-    } catch (error) {
-
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-        throw newError(error, "500");
-      }
-
-    }
-  }
   //////////////////////////////// 13 Haz 2022 /////////////////////////////////////////////////////////////////
   async removeLabel(id: string, label: string) {
     try {
@@ -1507,6 +1326,176 @@ async findByRealm(
       }else {
          throw newError(error, "500");
       }
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////// Temiz //////////////////////////////////////////////////////////////
+  async addParentRelationById(child_id: string, target_parent_id: string) {
+    try {
+      if (!child_id || !target_parent_id) {
+        throw new HttpException('id must entered', 404);
+      }
+      const res = await this.write(
+        'MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:PARENT_OF]-> (c)',
+        { id: parseInt(child_id), target_parent_id: parseInt(target_parent_id) },
+      );
+      if (!res) {
+        throw new HttpException(null, 400);
+      }
+      return res;
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async addChildrenRelationById(child_id: string, parent_id: string) {
+    try {
+      if(!child_id || ! parent_id){
+        throw new HttpException(add_parent_relation_by_id__must_entered_error,400)
+      }
+      const res = await this.write(
+        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (c)-[:CHILD_OF]-> (p)",
+        { id: parseInt(child_id), target_parent_id: parseInt(parent_id) }
+      );
+      let {relationshipsCreated}= res.summary.updateStatistics.updates()
+        if(relationshipsCreated===0){
+          throw new HttpException(add_parent_relation_by_id__not_created_error,400);
+        }
+      return successResponse(res);
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+         throw newError(error, "500");
+      }
+    }
+  }
+  
+  async addRelations(_id: string, _target_parent_id: string) {
+    try {
+      if (!_id || !_target_parent_id) {
+        throw new HttpException('id must entered', 400);
+      }
+      await this.addParentRelationById(_id, _target_parent_id);
+
+      await this.addChildrenRelationById(_id, _target_parent_id);
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+  async findWithChildrenByRealmAsTree(label: string, realm: string) {
+    try {
+      if(!label || !realm){
+        throw new HttpException(find_with_children_by_realm_as_tree__not_entered_error,400);
+      }
+      const node = await this.findByRealm(label, realm);
+      if (!node) {
+        throw new HttpException(find_with_children_by_realm_as_tree__find_by_realm_error, 404);
+      }
+
+      const cypher =
+        `MATCH p=(n:${label})<-[:CHILD_OF*]-(m) \
+            WHERE  n.realm = $realm and n.isDeleted=false and m.isDeleted=false \
+            WITH COLLECT(p) AS ps \
+            CALL apoc.convert.toTree(ps) yield value \
+            RETURN value`;
+
+      const result = await this.read(cypher, {realm });
+      if (!result["records"][0].length) {
+       throw new HttpException(find_with_children_by_realm_as_tree_error,404);
+      }
+      return result["records"][0]["_fields"][0];
+     } 
+     catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+        throw newError(error, "500");
+      }
+     }
+  }
+
+async findByRealmWithTreeStructure(label: string, realm: string) {
+
+  try {
+
+    if(!label || !realm){
+      throw new HttpException(find_by_realm_with_tree_structure__not_entered_error,400);
+    }
+
+    let tree = await this.findWithChildrenByRealmAsTree(label, realm);
+
+    if (!tree) {
+      throw new HttpException(tree_structure_not_found_by_realm_name_error,404);
+
+    } else if (Object.keys(tree).length === 0) {
+      tree = await this.findByRealm(label, realm);
+      const rootNodeObject = { root: tree };
+      return rootNodeObject;
+    } else {
+      const rootNodeObject = { root: tree };
+      return rootNodeObject;
+    }
+
+  } catch (error) {
+    if (error.response.code) {
+      throw new HttpException(
+        { message: error.response.message, code: error.response.code },
+        error.status
+      );
+    }else {
+      throw newError(error, "500");
+    }
+  }
+
+  }
+
+async findByRealm(
+    label: string,
+    realm: string,
+    databaseOrTransaction?: string | Transaction
+  ) {
+    try {
+
+      if(!label || !realm){
+        throw new HttpException(find_by_realm__not_entered_error,400)
+      }
+      const cypher =
+        `MATCH (n:${label} {isDeleted: false}) where  n.realm = $realm return n`;
+
+      const result = await this.read(cypher, { realm });
+
+      if (!result["records"][0].length) {
+        throw new HttpException(find_by_realm__not_found_error,404);
+      }
+
+      return result["records"][0]["_fields"][0];
+    } catch (error) {
+
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+        throw newError(error, "500");
+      }
+
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
