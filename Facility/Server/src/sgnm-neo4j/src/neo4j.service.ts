@@ -338,35 +338,7 @@ export class Neo4jService implements OnApplicationShutdown {
       }
     }
 }
-  //////////////////////////////////////////////////////////////////////////////
-  async findById(id: string, databaseOrTransaction?: string | Transaction) {
-    try {
-
-      if(!id){
-        throw new HttpException(find_by_id__must_entered_error,400);
-      }
-      const idNum = parseInt(id);
-
-      const cypher =
-        "MATCH (n {isDeleted: false}) where id(n) = $idNum return n";
-
-      const result = await this.read(cypher, { idNum });
-      if (!result["records"].length) {
-        throw new HttpException(node_not_found,404)
-      }
-
-      return result["records"][0]["_fields"][0];
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-         throw newError(error, "500");
-      }
-    }
-  }
+  
 
   async findNodeCountByClassName(    //DİKKAT1   önceki isminde ilave olarak withoutChildren vardı.
     class_name: string,
@@ -1496,6 +1468,33 @@ async findByRealm(
         throw newError(error, "500");
       }
 
+    }
+  }
+  async findById(id: string, databaseOrTransaction?: string | Transaction) {
+    try {
+
+      if(!id){
+        throw new HttpException(find_by_id__must_entered_error,400);
+      }
+      const idNum = parseInt(id);
+
+      const cypher =
+        "MATCH (n {isDeleted: false}) where id(n) = $idNum return n";
+
+      const result = await this.read(cypher, { idNum });
+      if (!result["records"].length) {
+        throw new HttpException(node_not_found,404)
+      }
+      return result["records"][0]["_fields"][0];
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+         throw newError(error, "500");
+      }
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////

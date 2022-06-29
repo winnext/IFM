@@ -23,20 +23,15 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneByRealm(label: string, realm: string) {
-    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
-    
+    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm); 
     if (!node) {
       throw new FacilityStructureNotFountException(realm);
     }
+    node['root']['children']=node['root']['child_of'];
+    delete node['root']['child_of'];
+
     return node;
   }
-
-  // async findAll(data: PaginationNeo4jParams) {
-  //   const nodes = await this.neo4jService.findAllByClassName(data);
-
-  //   return nodes;
-  // }
-
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     let facilityStructure = new FacilityStructure();
     let facilityStructureObject = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
@@ -54,7 +49,6 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
         result['id'], createFacilityStructureDto["parentId"]
       );
     }
-
     return result;
   }
   ////////////////////////////////// NEO4J DRIVER FUNC ///////////////////////////////////////////////
@@ -84,7 +78,6 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
        }
      }
    }
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
