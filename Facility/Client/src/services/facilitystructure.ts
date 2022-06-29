@@ -38,7 +38,7 @@ const findAll = async (query: PaginationParams) => {
 };
 
 const findOne = async (id: string) => {
-    return axios.get(url + "/" + id);
+    return axios.get(url + "/FacilityStructure/" + id);
 };
 
 const create = async (classification: StructureInterface) => {

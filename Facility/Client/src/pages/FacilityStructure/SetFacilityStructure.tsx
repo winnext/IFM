@@ -38,6 +38,28 @@ interface StructureInterface {
 }
 
 interface Node {
+  cantDeleted: boolean;
+  children: Node[];
+  description: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  key: string;
+  name: string;
+  realm: string;
+  tag: string[];
+  _id: {
+    low: string;
+    high: string;
+  },
+  icon?: string;
+  label?: string;
+  labels?: string[]; // for form type
+  parent_id?: string;
+  formType?: string;
+  child_of:Node[];
+}
+
+interface Node2 {
   code: string;
   name: string;
   tag: string[];
@@ -216,7 +238,10 @@ const SetFacilityStructure = () => {
   const getFacilityStructure = () => {
     const id = params.id || "";
     FacilityStructureService.findOne(realm).then((res) => {
-      console.log(res.data);
+      console.log(res.data.root);
+
+    
+      
 
       // let temp = [res.data.root[0].properties] || [];
 
@@ -268,6 +293,7 @@ const SetFacilityStructure = () => {
       fixNodes(i.children)
       i.icon = "pi pi-fw pi-building";
       i.label=i.name;
+      i.children = i.children || [];
       // console.log(i);
 
       // if (i.typeId) {
