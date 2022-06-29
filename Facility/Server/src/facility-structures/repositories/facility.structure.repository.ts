@@ -15,26 +15,27 @@ import { assignDtoPropToEntity, createDynamicCyperCreateQuery, createDynamicCype
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 import { create_node__must_entered_error, create_node__node_not_created_error, create__must_entered_error } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { newError } from 'neo4j-driver-core';
+import { GeciciInterface } from 'src/common/interface/gecici.interface';
 
 
 @Injectable()
-export class FacilityStructureRepository implements BaseGraphDatabaseInterfaceRepository<FacilityStructure> {
+export class FacilityStructureRepository implements GeciciInterface<FacilityStructure> {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async findOneById(id: string) {
-    const node = await this.neo4jService.findByRealmWithTreeStructure(id);
+  async findOneByRealm(label: string, realm: string) {
+    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
     
     if (!node) {
-      throw new FacilityStructureNotFountException(id);
+      throw new FacilityStructureNotFountException(realm);
     }
     return node;
   }
 
-  async findAll(data: PaginationNeo4jParams) {
-    const nodes = await this.neo4jService.findAllByClassName(data);
+  // async findAll(data: PaginationNeo4jParams) {
+  //   const nodes = await this.neo4jService.findAllByClassName(data);
 
-    return nodes;
-  }
+  //   return nodes;
+  // }
 
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     let facilityStructure = new FacilityStructure();
