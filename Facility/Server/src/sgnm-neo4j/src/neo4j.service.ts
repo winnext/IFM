@@ -398,74 +398,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async createNode(
-    params: object,
-    label: string,
-    databaseOrTransaction?: string | Transaction
-    ) {
-    try {
-      if(!params || !label){
-        throw new HttpException(create_node__must_entered_error,400);
-      }
-      let labels = await this.getAllLabels();
-      if(!labels.includes(label)){
-        throw new HttpException(invalid_label_error,400)
-      }  
-
-      const cyperQuery = createDynamicCyperCreateQuery(params,label);
-
-      if (databaseOrTransaction instanceof TransactionImpl) {
-        return (<Transaction>databaseOrTransaction).run(cyperQuery, params);
-      }
-
-      const res = await this.write(cyperQuery, params);
-
-      if(!res["records"][0].length){
-        throw new HttpException(create_node__node_not_created_error,400);
-      }
-
-      return res["records"][0]["_fields"][0];
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-         throw newError(error, "500");
-      }
-    }
-  }
-
-  async updateById(id: string, params: object) {
-    try {
-      if(!id || !params){
-        throw new HttpException(update_by_id__must_entered_error,400)
-      }
-      const node = await this.findById(id);
-      // if (!node["records"][0].length) {
-      //   throw new HttpException(update_by_id__node_not_found,404);
-      // }  HATA VERİYOR
-      const cyperQuery = updateNodeQuery(id, params);
-      
-      const res = await this.write(cyperQuery, params);
-      if (!res["records"][0].length) {
-        throw new HttpException(update_by_id__update_error,400);
-      }
-
-      return res["records"][0]["_fields"][0];
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-         throw newError(error, "500");
-      }
-    }
-  }
-
   async deleteRelations(id: string) {
     try {
       //parentı getirme querisi
@@ -920,60 +852,60 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     
   }
 
-  async create(entity, label: string) {  
+  // async create(entity, label: string) {  
       
-        try {
-          if(!entity || !label) {
-            throw new HttpException(create__must_entered_error,400);
-          }
-          if (entity["parent_id"]) {
-            ////////////// 8 Haz 2022 /////////////////
-          let createdNode:any = "";
-          if (entity.optionalLabels && entity["optionalLabels"].length >0) {
-            createdNode = await this.createChildrenByOptionalLabels(entity, label);
-          }
-          else {
-            createdNode = await this.createChildrenByLabelClass(entity, label);
-         }
+  //       try {
+  //         if(!entity || !label) {
+  //           throw new HttpException(create__must_entered_error,400);
+  //         }
+  //         if (entity["parent_id"]) {
+  //           ////////////// 8 Haz 2022 /////////////////
+  //         let createdNode:any = "";
+  //         if (entity.optionalLabels && entity["optionalLabels"].length >0) {
+  //           createdNode = await this.createChildrenByOptionalLabels(entity, label);
+  //         }
+  //         else {
+  //           createdNode = await this.createChildrenByLabelClass(entity, label);
+  //        }
       
-            await this.write(
-              `match (x:${label} {isDeleted: false, key: $key}) set x.self_id = id(x)`,
-              {
-                key: entity.key,
-              }
-            );
-            //Add relation between parent and created node by CHILD_OF relation
-            await this.addParentByLabelClass(entity, label);
+  //           await this.write(
+  //             `match (x:${label} {isDeleted: false, key: $key}) set x.self_id = id(x)`,
+  //             {
+  //               key: entity.key,
+  //             }
+  //           );
+  //           //Add relation between parent and created node by CHILD_OF relation
+  //           await this.addParentByLabelClass(entity, label);
       
-            //set parent node selectable prop false
-            await this.updateSelectableProp(entity["parent_id"], false);
+  //           //set parent node selectable prop false
+  //           await this.updateSelectableProp(entity["parent_id"], false);
       
-            return createdNode.result["records"][0]["_fields"][0];
-          } else {
-            entity["hasParent"] = false;
+  //           return createdNode.result["records"][0]["_fields"][0];
+  //         } else {
+  //           entity["hasParent"] = false;
       
-            const createdNode = await this.createNode(entity, label);
+  //           const createdNode = await this.createNode(entity, label);
       
-            await this.write(
-              `match (x:${label}  {isDeleted: false,  key: $key}) set x.self_id = id(x)`,
-              {
-                key: entity["key"],
-              }
-            );
-            return createdNode;
-          }
-        } catch (error) {
-          if (error.response.code) {
-            throw new HttpException(
-              { message: error.response.message, code: error.response.code },
-              error.status
-            );
-          }else {
-          throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-          }
-        }
+  //           await this.write(
+  //             `match (x:${label}  {isDeleted: false,  key: $key}) set x.self_id = id(x)`,
+  //             {
+  //               key: entity["key"],
+  //             }
+  //           );
+  //           return createdNode;
+  //         }
+  //       } catch (error) {
+  //         if (error.response.code) {
+  //           throw new HttpException(
+  //             { message: error.response.message, code: error.response.code },
+  //             error.status
+  //           );
+  //         }else {
+  //         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+  //         }
+  //       }
     
-  }
+  // }
   ///////////////////////////////////////// atamer //////////////////////////////////////////////////////////
   async updateHasTypeProp(id: string, hasLabeledNode: boolean) {
     try {
@@ -1193,51 +1125,6 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     return this.driver.close();
   }
 
-  //////////////////////////////// 13 Haz 2022 /////////////////////////////////////////////////////////////////
-  async removeLabel(id: string, label: string) {
-    try {
-      if(!id || !label){
-        throw new HttpException(remove_label__must_entered_error,400);
-      }
-      const res = await this.write(
-        `MATCH (c {isDeleted: false}) where id(c)= $id remove c:${label}`,
-        { id: parseInt(id) }
-      );
-      return res;
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
-  async updateLabel(id: string, label: string) {
-    try {
-      if(!id || !label){
-        throw new HttpException(update_label__must_entered_error,400);
-      }
-      const res = await this.write(
-        `MATCH (c {isDeleted: false}) where id(c)= $id set c:${label}`,
-        { id: parseInt(id) }
-      );
-      return res;
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////// 15 Haz 2022 a/////////////////////////////////////////////////////////////////
   async findByNameAndLabelsWithActiveChildNodes(name: string, label1: string, label2: string, orderbyprop?: string,  orderbytype?: string) {
     try {
@@ -1494,6 +1381,117 @@ async findByRealm(
         );
       }else {
          throw newError(error, "500");
+      }
+    }
+  }
+  async removeLabel(id: string, label: string[]) {
+    try {
+      if(!id || !label){
+        throw new HttpException(remove_label__must_entered_error,400);
+      }
+      let resArray = [];
+      if (label && label.length > 0) {
+       
+        for (let i=0; i < label.length; i++ ) {
+          const res = await this.write(
+            `MATCH (c {isDeleted: false}) where id(c)= $id remove c:${label[i]}`,
+            { id: parseInt(id) }
+          );
+          resArray.push(res);
+        }
+      }
+      return resArray;
+    }   catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async updateLabel(id: string, label: string[]) {
+    try {
+      if(!id || !label){
+        throw new HttpException(update_label__must_entered_error,400);
+      }
+      let resArray = [];
+      if (label && label.length > 0) {
+       
+        for (let i=0; i < label.length; i++ ) {
+        const res = await this.write(
+        `MATCH (c {isDeleted: false}) where id(c)= $id set c:${label[i]}`,
+        { id: parseInt(id) }
+       );
+       resArray.push(res);
+        }
+      } 
+      return resArray;
+     }
+   catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async updateById(id: string, params: object) {
+    try {
+      const a  = 1;
+      if(!id || !params){
+        throw new HttpException(update_by_id__must_entered_error,400)
+      }
+      const cyperQuery = updateNodeQuery(id, params);
+      
+      const res = await this.write(cyperQuery, params);
+      console.log(res)
+      if (!res["records"][0]) {
+        throw new HttpException(update_by_id__update_error,400);
+      }
+
+      return res["records"][0]["_fields"][0];
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+         throw newError(error, "500");
+      }
+    }
+  }
+
+  async createNode(
+    params: object,
+    labels?: string[],
+    ) {
+    try {
+      if(!params ){
+        throw new HttpException(create_node__must_entered_error,400);
+      }
+      const cyperQuery = createDynamicCyperCreateQuery(params,labels);
+      const res = await this.write(cyperQuery, params);
+      if(!res["records"][0].length){
+        throw new HttpException(create_node__node_not_created_error,400);
+      }
+      return res["records"][0]["_fields"][0];
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+        throw newError(error, "500");
       }
     }
   }
