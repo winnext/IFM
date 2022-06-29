@@ -56,7 +56,6 @@ interface Node {
   labels?: string[]; // for form type
   parent_id?: string;
   formType?: string;
-  child_of:Node[];
 }
 
 interface Node2 {
@@ -129,9 +128,7 @@ const SetFacilityStructure = () => {
   });
 
   const [data, setData] = useState<Node[]>([]);
-  const [code, setCode] = useState("");
   const [name, setName] = useState("");
-  const [type, setType] = useState("");
   const [typeId, setTypeId] = useState<any>(undefined);
   const [optionalLabels, setOptionalLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
@@ -208,7 +205,6 @@ const SetFacilityStructure = () => {
             console.log(res.data.properties);
 
             setName(res.data.properties.name || "");
-            setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
@@ -325,15 +321,10 @@ const SetFacilityStructure = () => {
           key: uuidv4(),
           parent_id: res.data.identity.low,
           name: name,
-          code: code,
           tag: tag,
-          labelclass: res.data.properties.labelclass,
-          label: code + " : " + name,
-          type: type,
-          typeId: typeId,
+          formType:typeId,
           description: "",
-          optionalLabels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
-          isAllType: isAllType,
+          labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
         };
         console.log(newNode);
 
@@ -365,7 +356,6 @@ const SetFacilityStructure = () => {
         });
       });
     setName("");
-    setCode("");
     setTag([]);
     setTypeId(undefined);
     setAddDia(false);
@@ -378,16 +368,11 @@ const SetFacilityStructure = () => {
         const updateNode = {
           key: uuidv4(),
           name: name,
-          code: code,
           tag: tag,
-          labelclass: res.data.properties.labelclass,
-          label: code + " : " + name,
-          type: type,
-          typeId: typeId,
+          formType: typeId,
           isActive: isActive,
           description: "",
-          optionalLabels: optionalLabels[0].replace(/ /g, '').split(","),
-          isAllType: isAllType,
+          labels: optionalLabels[0].replace(/ /g, '').split(","),
         };
         FacilityStructureService.update(res.data.identity.low, updateNode)
           .then((res) => {
@@ -417,7 +402,6 @@ const SetFacilityStructure = () => {
         });
       });
     setName("");
-    setCode("");
     setTag([]);
     setTypeId(undefined);
     setOptionalLabels([]);
@@ -523,7 +507,6 @@ const SetFacilityStructure = () => {
           onClick={() => {
             setAddDia(false);
             setName("");
-            setCode("");
             setTypeId(undefined);
             setOptionalLabels([]);
             setTag([]);
@@ -549,7 +532,6 @@ const SetFacilityStructure = () => {
           onClick={() => {
             setEditDia(false);
             setName("");
-            setCode("");
             setTag([]);
             setOptionalLabels([]);
             setTypeId(undefined);
@@ -585,21 +567,12 @@ const SetFacilityStructure = () => {
         footer={renderFooterAdd}
         onHide={() => {
           setName("");
-          setCode("");
           setTag([]);
           setTypeId(undefined);
           setOptionalLabels([]);
           setAddDia(false);
         }}
       >
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Code</h5>
-          <InputText
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Name</h5>
           <InputText
@@ -670,7 +643,7 @@ const SetFacilityStructure = () => {
           </div> */}
         </div>
         <div className="field structureChips">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
           <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "50%" }} />
         </div>
       </Dialog>
@@ -681,21 +654,12 @@ const SetFacilityStructure = () => {
         footer={renderFooterEdit}
         onHide={() => {
           setName("");
-          setCode("");
           setTag([]);
           setTypeId(undefined);
           setOptionalLabels([]);
           setEditDia(false);
         }}
       >
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Code</h5>
-          <InputText
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Name</h5>
           <InputText
@@ -745,7 +709,7 @@ const SetFacilityStructure = () => {
           </div> */}
         </div>
         <div className="field structureChips">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
           <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
         </div>
         <div className="field flex">
@@ -766,6 +730,7 @@ const SetFacilityStructure = () => {
           }
           onContextMenu={(event) => cm.current.show(event.originalEvent)}
           onDragDrop={(event: any) => {
+            console.log(event);
             if (event.value.length > 1) {
               toast.current.show({
                 severity: "error",
@@ -775,7 +740,7 @@ const SetFacilityStructure = () => {
               });
               return
             }
-            dragConfirm(event.dragNode.self_id.low, event.dropNode.self_id.low)
+            dragConfirm(event.dragNode._id.low, event.dropNode._id.low)
           }}
           filter
           filterBy="name,code"
@@ -801,7 +766,6 @@ const SetFacilityStructure = () => {
                     FacilityStructureService.nodeInfo(dataKey)
                       .then((res) => {
                         setName(res.data.properties.name || "");
-                        setCode(res.data.properties.code || "");
                         setTag(res.data.properties.tag || []);
                         setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
                         setIsActive(res.data.properties.isActive);
