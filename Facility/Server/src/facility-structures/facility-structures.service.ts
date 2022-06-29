@@ -1,26 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
+import { GeciciInterface } from 'src/common/interface/gecici.interface';
 
 import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
 import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
+
 
 @Injectable()
 export class FacilityStructuresService {
   constructor(
     @Inject(RepositoryEnums.FACILITY_STRUCTURE)
-    private readonly facilityStructureRepository: BaseGraphDatabaseInterfaceRepository<any>,
+    private readonly facilityStructureRepository: GeciciInterface<any>,
   ) {}
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     return await this.facilityStructureRepository.create(createFacilityStructureDto);
   }
 
-  async findAll(queryParams) {
-    return await this.facilityStructureRepository.findAll(queryParams);
-  }
-
-  findOne(id: string) {
-    return this.facilityStructureRepository.findOneById(id);
+  findOne(label: string, realm: string) {
+    return this.facilityStructureRepository.findOneByRealm(label,realm);
   }
 
   update(id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {

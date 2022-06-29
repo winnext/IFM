@@ -1221,110 +1221,6 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     return this.driver.close();
   }
 
-
-
-async findWithChildrenByRealmAsTree(realm: string) {
-    try {
-      if(!realm){
-        throw new HttpException(find_with_children_by_realm_as_tree__not_entered_error,400);
-      }
-      const node = await this.findByRealm(realm);
-      if (!node) {
-        throw new HttpException(find_with_children_by_realm_as_tree__find_by_realm_error, 404);
-      }
-
-      const cypher =
-        "MATCH p=(n)-[:CHILDREN*]->(m) \
-            WHERE n.realm = $realm and n.isDeleted=false and m.isDeleted=false \
-            WITH COLLECT(p) AS ps \
-            CALL apoc.convert.toTree(ps) yield value \
-            RETURN value";
-
-      const result = await this.read(cypher, { realm });
-      if (!result["records"][0].length) {
-       throw new HttpException(find_with_children_by_realm_as_tree_error,404);
-      }
-      return result["records"][0]["_fields"][0];
-     } 
-     catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-        throw newError(error, "500");
-      }
-     }
-  }
-
-async findByRealmWithTreeStructure(realm: string) {
-
-  try {
-
-    if(!realm){
-      throw new HttpException(find_by_realm_with_tree_structure__not_entered_error,400);
-    }
-
-    let tree = await this.findWithChildrenByRealmAsTree(realm);
-
-    if (!tree) {
-      throw new HttpException(tree_structure_not_found_by_realm_name_error,404);
-
-    } else if (Object.keys(tree).length === 0) {
-      tree = await this.findByRealm(realm);
-      const rootNodeObject = { root: tree };
-      return rootNodeObject;
-    } else {
-      const rootNodeObject = { root: tree };
-      return rootNodeObject;
-    }
-
-  } catch (error) {
-    if (error.response.code) {
-      throw new HttpException(
-        { message: error.response.message, code: error.response.code },
-        error.status
-      );
-    }else {
-      throw newError(error, "500");
-    }
-  }
-
-  }
-
-async findByRealm(
-    realm: string,
-    databaseOrTransaction?: string | Transaction
-  ) {
-    try {
-
-      if(!realm){
-        throw new HttpException(find_by_realm__not_entered_error,400)
-      }
-      const cypher =
-        "MATCH (n {isDeleted: false}) where n.realm = $realm return n";
-
-      const result = await this.read(cypher, { realm });
-
-      if (!result["records"][0].length) {
-        throw new HttpException(find_by_realm__not_found_error,404);
-      }
-
-      return result["records"][0]["_fields"][0];
-    } catch (error) {
-
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-        throw newError(error, "500");
-      }
-
-    }
-  }
   //////////////////////////////// 13 Haz 2022 /////////////////////////////////////////////////////////////////
   async removeLabel(id: string, label: string) {
     try {
@@ -1497,6 +1393,109 @@ async findByRealm(
       } else {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
+    }
+  }
+  async findWithChildrenByRealmAsTree(label: string, realm: string) {
+    try {
+      if(!label || !realm){
+        throw new HttpException(find_with_children_by_realm_as_tree__not_entered_error,400);
+      }
+      const node = await this.findByRealm(label, realm);
+      if (!node) {
+        throw new HttpException(find_with_children_by_realm_as_tree__find_by_realm_error, 404);
+      }
+
+      const cypher =
+        `MATCH p=(n:${label})<-[:CHILD_OF*]-(m) \
+            WHERE  n.realm = $realm and n.isDeleted=false and m.isDeleted=false \
+            WITH COLLECT(p) AS ps \
+            CALL apoc.convert.toTree(ps) yield value \
+            RETURN value`;
+
+      const result = await this.read(cypher, {realm });
+      if (!result["records"][0].length) {
+       throw new HttpException(find_with_children_by_realm_as_tree_error,404);
+      }
+      return result["records"][0]["_fields"][0];
+     } 
+     catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+        throw newError(error, "500");
+      }
+     }
+  }
+
+async findByRealmWithTreeStructure(label: string, realm: string) {
+
+  try {
+
+    if(!label || !realm){
+      throw new HttpException(find_by_realm_with_tree_structure__not_entered_error,400);
+    }
+
+    let tree = await this.findWithChildrenByRealmAsTree(label, realm);
+
+    if (!tree) {
+      throw new HttpException(tree_structure_not_found_by_realm_name_error,404);
+
+    } else if (Object.keys(tree).length === 0) {
+      tree = await this.findByRealm(label, realm);
+      const rootNodeObject = { root: tree };
+      return rootNodeObject;
+    } else {
+      const rootNodeObject = { root: tree };
+      return rootNodeObject;
+    }
+
+  } catch (error) {
+    if (error.response.code) {
+      throw new HttpException(
+        { message: error.response.message, code: error.response.code },
+        error.status
+      );
+    }else {
+      throw newError(error, "500");
+    }
+  }
+
+  }
+
+async findByRealm(
+    label: string,
+    realm: string,
+    databaseOrTransaction?: string | Transaction
+  ) {
+    try {
+
+      if(!label || !realm){
+        throw new HttpException(find_by_realm__not_entered_error,400)
+      }
+      const cypher =
+        `MATCH (n:${label} {isDeleted: false}) where  n.realm = $realm return n`;
+
+      const result = await this.read(cypher, { realm });
+
+      if (!result["records"][0].length) {
+        throw new HttpException(find_by_realm__not_found_error,404);
+      }
+
+      return result["records"][0]["_fields"][0];
+    } catch (error) {
+
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+        throw newError(error, "500");
+      }
+
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
