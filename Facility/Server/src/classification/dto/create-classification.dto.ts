@@ -31,12 +31,6 @@ export class CreateClassificationDto {
   description?: string;
 
   @ApiProperty()
-  @IsString()
-  @IsOptional()
-  @Length(1, 50)
-  formType?: string;
-
-  @ApiProperty()
   @IsOptional()
   labels: string[];
 
