@@ -26,10 +26,11 @@ export class ClassificationController {
     return this.classificationService.findAll(paramDto);
   }
   @Unprotected()
-  @Get(':id')
+  @Get(':label/:realm')
   @NoCache()
-  findOne(@Param('id') id: string) {
-    return this.classificationService.findOne(id);
+  findOne(@Param('label') label: string, @Param('realm') realm: string) {
+    
+    return this.classificationService.findOne(label, realm);
   }
   @Unprotected()
   @Patch(':id')

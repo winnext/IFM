@@ -9,10 +9,11 @@ import { int } from 'neo4j-driver';
 import { Classification } from '../entities/classification.entity';
 import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
-import { assignDtoPropToEntity, createDynamicCyperObject } from 'src/common/func/neo4js.func';
-import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
-import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+import { assignDtoPropToEntity, createDynamicCyperCreateQuery, createDynamicCyperObject } from 'src/common/func/neo4js.func';
 
+import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+import { newError } from 'neo4j-driver-core';
+import { create_node__must_entered_error, create_node__node_not_created_error, find_by_realm_with_tree_structure__not_entered_error, find_by_realm__not_entered_error, find_by_realm__not_found_error, find_with_children_by_realm_as_tree_error, find_with_children_by_realm_as_tree__find_by_realm_error, find_with_children_by_realm_as_tree__not_entered_error, tree_structure_not_found_by_realm_name_error } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 @Injectable()
 export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepository<Classification> {
   constructor(private readonly neo4jService: Neo4jService) {}
@@ -32,19 +33,109 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
     return nodes;
   }
 
+  async findOneByRealm(label: string, realm: string) {
+    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
+    
+    if (!node) {
+      throw new ClassificationNotFountException(realm);
+    }
+    return node;
+  }
+//yenilenecek
+  // async findAllByClassName(data: PaginationNeo4jParamsWithClassName) {
+  //   try {
+  //     let { page = 0, orderByColumn = "name" } = data;
+  //   const { limit = 10, className, orderBy = "DESC" } = data;
+
+  //   if (orderByColumn == "undefined") {
+  //     orderByColumn = "name";
+  //   }
+  //   const res = await this.neo4jService.findNodeCountByClassName(className);
+  //   if(!res){
+  //     throw new Error("hata")
+  //   }
+  //   const count = res.result;
+
+  //   const pagecount = Math.ceil(count / limit);
+
+  //   if (page > pagecount) {
+  //     page = pagecount;
+  //   }
+  //   let skip = page * limit;
+  //   if (skip >= count) {
+  //     skip = count - limit;
+  //     if (skip < 0) {
+  //       skip = 0;
+  //     }
+  //   }
+  //   const getNodeWithoutParent =
+  //     "MATCH (x {isDeleted: false}) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x." +
+  //     orderByColumn +
+  //     " " +
+  //     orderBy +
+  //     " SKIP $skip LIMIT $limit";
+  //   const result = await this.neo4jService.read(getNodeWithoutParent, {
+  //     className,
+  //     skip: int(skip),
+  //     limit: int(limit),
+  //   });
+  //   if(!result){
+  //     throw new HttpException("hata var",404);
+
+  //   }
+  //   const arr = [];
+  //   for (let i = 0; i < result["records"].length; i++) {
+  //     arr.push(result["records"][i]["_fields"][0]);
+  //   }
+  //   const pagination = { count, page, limit };
+  //   const nodes = [];
+  //   nodes.push(arr);
+  //   nodes.push(pagination);
+  //   return nodes;
+
+  //   } catch (error) {
+    
+  //     if (error.response.code) {
+  //       throw new HttpException(
+  //         { message: error.response.message, code: error.response.code },
+  //         error.status
+  //       );
+  //     }
+  //     throw Error(error.message);
+  //   }
+    
+  // }
+
+
+
+    
+    
+  
+
   async create(createClassificationDto: CreateClassificationDto) {
     let classification = new Classification();
-    //classification = assignDtoPropToEntity(classification, createClassificationDto);
-
-    const createdNode = ""; //= await this.neo4jService.create(classification, Neo4jLabelEnum.CLASSIFICATION);
-    if (createClassificationDto.optionalLabels && createClassificationDto["optionalLabels"].length > 0) {
-      this.neo4jService.updateOptionalLabel(createdNode["identity"].low, createClassificationDto["optionalLabels"][0]);
+    let classificationObject = assignDtoPropToEntity(classification, createClassificationDto);
+    let value;
+    if (classificationObject['labels'].length > 0) {
+      value = await this.createNode(classificationObject['entity'], classificationObject['labels']);
     }
-    return createdNode;
+    else {
+      value = await this.createNode(classificationObject['entity']);
+    }
+    value['properties']['id'] = value['identity'].low;
+    const result = {id:value['identity'].low, labels: value['labels'], properties: value['properties']}
+    if (classificationObject['parentId']) {
+      await this.neo4jService.addRelations(
+        result['id'], createClassificationDto["parentId"]
+      );
+    }
+
+    return result;
   }
+
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {
     const dynamicObject = createDynamicCyperObject(updateClassificationto);
-    dynamicObject['id'] = int(_id);
+    //dynamicObject['id'] = int(_id);
 
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
     if (!updatedNode) {
@@ -98,4 +189,34 @@ export class ClassificationRepository implements BaseGraphDatabaseInterfaceRepos
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+//////////neo4j
+async createNode(
+  params: object,
+  labels?: string[],
+  ) {
+  try {
+    if(!params ){
+      throw new HttpException(create_node__must_entered_error,400);
+    }
+    const cyperQuery = createDynamicCyperCreateQuery(params,labels);
+    const res = await this.neo4jService.write(cyperQuery, params);
+    if(!res["records"][0].length){
+      throw new HttpException(create_node__node_not_created_error,400);
+    }
+    return res["records"][0]["_fields"][0];
+  } catch (error) {
+    if (error.response.code) {
+      throw new HttpException(
+        { message: error.response.message, code: error.response.code },
+        error.status
+      );
+    }else {
+      throw newError(error, "500");
+    }
+  }
 }
+
+}
+
+
