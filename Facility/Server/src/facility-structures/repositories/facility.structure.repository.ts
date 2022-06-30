@@ -77,7 +77,7 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   async delete(_id: string) {
     try {
      
-      let hasParent = await this.neo4jService.findParentById(_id);
+      let hasParent = await this.neo4jService.getParentById(_id);
       let deletedNode;
       if (hasParent['records'].length > 0) {
          let hasChildren =  await this.neo4jService.findChildrenById(_id);       
