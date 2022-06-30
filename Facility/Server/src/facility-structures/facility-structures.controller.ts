@@ -23,20 +23,6 @@ export class FacilityStructuresController {
     return this.facilityStructuresService.create(createFacilityStructureDto);
   }
 
-  // @Get()
-  // @Unprotected()
-  // @NoCache()
-  // findAll(@Query() queryParams: PaginationNeo4jParams) {
-  //   return this.facilityStructuresService.findAll(queryParams);
-  // }
-
-  // @Get(':id')
-  // @Unprotected()
-  // @NoCache()
-  // findOne(@Param('id') id: string) {
-  //   return this.facilityStructuresService.findOne(id);
-  // }
-
   @Get(':label/:realm')
   @Unprotected()
   @NoCache()

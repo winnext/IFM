@@ -398,44 +398,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async deleteRelations(id: string) {
-    try {
-      //parentı getirme querisi
-      if(!id){
-        throw new HttpException(delete_relation_must_entered_error,400)
-      }
-      await this.findById(id);
-      const parentNode = await this.getParentById(id);
-      const parent_id = parentNode["_fields"][0]["properties"].self_id.low;
-      //delete relation query
-      if (parentNode) {
-        await this.deleteChildrenRelation(id);
-        await this.deleteParentRelation(id);
-        //-------------------------------------------------
-
-        //nodun bir propertisini güncelleme
-        await this.updateHasParentProp(id, false);
-
-        //nodun bir relationınında kaç node olduğunu bulma
-        const parentChildCount = await this.getChildrenCount(parent_id);
-
-        if (parentChildCount === 0) {
-          //nodun bir propertisini güncelleme
-          this.updateSelectableProp(parent_id, true);
-        }
-      }
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
   async updateHasParentProp(id: string, hasParent: boolean) {
     try {
       const res = await this.write(
@@ -671,7 +633,7 @@ export class Neo4jService implements OnApplicationShutdown {
   async deleteChildrenRelation(id: string) {
     try {
       const res = await this.write(
-        "MATCH (node {isDeleted: false})<-[r:CHILDREN]-(p {isDeleted: false}) where id(node)= $id delete r",
+        "MATCH (node {isDeleted: false})-[r:PARENT_OF]->(p {isDeleted: false}) where id(node)= $id delete r",
         { id: parseInt(id) }
       );
 let {relationshipsDeleted}=res.summary.updateStatistics.updates()
@@ -1002,29 +964,7 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     }
   }
   
-  async getParentById(id: string) {
-    try {
-      if(!id){
-        throw new HttpException(get_parent_by_id__must_entered_error,400);
-      }
-      const res = await this.read(
-        "MATCH (c {isDeleted: false}) where id(c)= $id match(k {isDeleted: false}) match (c)-[:CHILD_OF]->(k) return k",
-        { id: parseInt(id) }
-      );
-      if(!res["records"][0].length){
-      throw new HttpException(parent_of_child_not_found,404)
-      }
-      return res["records"][0];
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }
-      throw newError(failedResponse(error), "400");
-    }
-  }
+  
 
   onApplicationShutdown() {
     return this.driver.close();
@@ -1142,7 +1082,29 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
       }
     }
   }
-  
+  async deleteRelations(id: string) {
+    try {
+      if(!id){
+        throw new HttpException(delete_relation_must_entered_error,400)
+      }
+      const parentNode = await this.getParentById(id);
+      const parent_id = parentNode["_fields"][0]["properties"].self_id.low;
+      //delete relation query
+      if (parentNode) {
+        await this.deleteChildrenRelation(id);
+        await this.deleteParentRelation(id);
+      }
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
   async addRelations(_id: string, _target_parent_id: string) {
     try {
       if (!_id || !_target_parent_id) {
@@ -1429,33 +1391,55 @@ async findByRealm(
     }
   }
 
-  async findParentById(id: string) {
+  // async findParentById(id: string) {
+  //   try {
+  //     if(!id){
+  //       throw new HttpException(find_parent_by_id__must_entered_error,400);
+  //     }
+      
+  //     const idNum = parseInt(id);
+  //     const isExists = await this.findByIdWithError(id);
+  //     if(isExists instanceof Error) throw new  HttpException(node_not_found,404) 
+
+  //     const cypher =
+  //     "match (n {isDeleted: false})<-[:PARENT_OF]-(p {isDeleted: false}) where id(n)=$idNum  return n"
+  //     const result = await this.read(cypher, { idNum });
+  //     return result;
+  //   } catch (error) {
+  //     if (error.response.code) {
+  //       throw new HttpException(
+  //         { message: error.response.message, code: error.response.code },
+  //         error.status
+  //       );
+  //     }else {
+  //        throw newError(error, "500");
+  //     }
+     
+  //   }
+  // }
+  async getParentById(id: string) {
     try {
       if(!id){
-        throw new HttpException(find_parent_by_id__must_entered_error,400);
+        throw new HttpException(get_parent_by_id__must_entered_error,400);
       }
-      
-      const idNum = parseInt(id);
-      const isExists = await this.findByIdWithError(id);
-      if(isExists instanceof Error) throw new  HttpException(node_not_found,404) 
-
-      const cypher =
-      "match (n {isDeleted: false})<-[:PARENT_OF]-(p {isDeleted: false}) where id(n)=$idNum  return n"
-      const result = await this.read(cypher, { idNum });
-      return result;
+      const res = await this.read(
+        "MATCH (c {isDeleted: false}) where id(c)= $id match(k {isDeleted: false}) match (c)-[:CHILD_OF]->(k) return k",
+        { id: parseInt(id) }
+      );
+      if(res["records"].length==0){
+      throw new HttpException(parent_of_child_not_found,404)
+      }
+      return res["records"][0];
     } catch (error) {
       if (error.response.code) {
         throw new HttpException(
           { message: error.response.message, code: error.response.code },
           error.status
         );
-      }else {
-         throw newError(error, "500");
       }
-     
+      throw newError(failedResponse(error), "400");
     }
   }
-  
   async findChildrenById(id: string) {
     try {
       if(!id){
