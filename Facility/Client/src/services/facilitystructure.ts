@@ -12,13 +12,11 @@ interface PaginationParams {
 
 interface StructureInterface {
     key: string;
-    parent_id?: string;
+    parentId?: string;
     name: string;
     tag: string[];
-    formType:string;
     description: string;
     labels: string[];
-
 }
 
 const findAll = async (query: PaginationParams) => {
@@ -32,12 +30,12 @@ const findOne = async (id: string) => {
     return axios.get(url + "/FacilityStructure/" + id);
 };
 
-const create = async (classification: StructureInterface) => {
-    return axios.post(url, classification);
+const create = async (structure: StructureInterface) => {
+    return axios.post(url, structure);
 };
 
-const update = async (id: string, classification: StructureInterface) => {
-    return axios.patch(url + "/" + id, classification);
+const update = async (id: string, structure: StructureInterface) => {
+    return axios.patch(url + "/" + id, structure);
 };
 
 const remove = async (id: string) => {
@@ -49,7 +47,7 @@ const relation = async (id1: string, id2: string) => {
 };
 
 const nodeInfo = async (key: string) => {
-    return axios.get(`${url}/nodeinfo/${key}`);
+    return axios.get(`${url}/${key}`);
 };
 
 const service = { findAll, findOne, create, update, remove, relation, nodeInfo };

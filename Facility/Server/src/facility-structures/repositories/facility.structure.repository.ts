@@ -76,14 +76,17 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
 
   async delete(_id: string) {
     try {
-      const node = await this.neo4jService.findById(_id);
-      if (!node.properties.hasParent) {
-        throw new HttpException({ message: 'root node cannot deleted', code: 400 }, HttpStatus.BAD_REQUEST);
-      }
-
-      const deletedNode = await this.neo4jService.delete(_id);
-      if (!deletedNode) {
-        throw new FacilityStructureNotFountException(_id);
+     
+      let hasParent = await this.neo4jService.findParentById(_id);
+      let deletedNode;
+      if (hasParent['records'].length > 0) {
+         let hasChildren =  await this.neo4jService.findChildrenById(_id);       
+         if (hasChildren['records'].length == 0) {
+           deletedNode = await this.neo4jService.delete(_id);
+           if (!deletedNode) {
+             throw new FacilityStructureNotFountException(_id);
+          }
+         }
       }
       return deletedNode;
     } catch (error) {

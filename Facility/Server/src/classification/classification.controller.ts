@@ -25,13 +25,13 @@ export class ClassificationController {
   findAll(@Query() paramDto: PaginationNeo4jParams) {
     return this.classificationService.findAll(paramDto);
   }
-  @Unprotected()
-  @Get(':label/:realm')
-  @NoCache()
-  findOne(@Param('label') label: string, @Param('realm') realm: string) {
+  // @Unprotected()
+  // @Get(':label/:realm')
+  // @NoCache()
+  // findOne(@Param('label') label: string, @Param('realm') realm: string) {
     
-    return this.classificationService.findOne(label, realm);
-  }
+  //   return this.classificationService.findOne(label, realm);
+  // }
   @Unprotected()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClassificationDto: UpdateClassificationDto) {
