@@ -54,8 +54,7 @@ interface Node {
   icon?: string;
   label?: string;
   labels?: string[]; // for form type
-  parent_id?: string;
-  formType?: string;
+  parentId?: string;
 }
 
 interface Node2 {
@@ -320,17 +319,18 @@ const SetFacilityStructure = () => {
         console.log(res.data);
         const newNode = {
           key: uuidv4(),
-          parent_id: res.data.id,
+          parentId: res.data.id,
           name: name,
           tag: tag,
-          formType:typeId,
           description: "",
           labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
         };
         console.log(newNode);
 
         FacilityStructureService.create(newNode)
-          .then((res) => {
+          .then((result) => {
+            console.log(result);
+            
             toast.current.show({
               severity: "success",
               summary: "Successful",
@@ -370,7 +370,6 @@ const SetFacilityStructure = () => {
           key: uuidv4(),
           name: name,
           tag: tag,
-          formType: typeId,
           isActive: isActive,
           description: "",
           labels: optionalLabels[0]?.replace(/ /g, '').split(",")|| [],
@@ -419,7 +418,7 @@ const SetFacilityStructure = () => {
     FacilityStructureService.nodeInfo(key)
       .then((res) => {
         if (res.data.properties.hasParent === false) {
-          FacilityStructureService.remove(res.data.identity.low)
+          FacilityStructureService.remove(res.data.id)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -438,7 +437,7 @@ const SetFacilityStructure = () => {
               });
             });
         } else {
-          FacilityStructureService.remove(res.data.identity.low)
+          FacilityStructureService.remove(res.data.id)
             .then(() => {
               toast.current.show({
                 severity: "success",
