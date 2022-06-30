@@ -715,50 +715,7 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     }
   }
 
-  async delete(id: string) {
-    try {
-      if(!id){
-        throw new HttpException(delete__must_entered_error,400)
-      }
-      //children count query
-      const node = await this.findById(id);
 
-      if (!node) {
-       throw new HttpException(node_not_found, 404);
-      }
-
-      const childrenCount = await this.getChildrenCount(id);
-      
-      if (childrenCount > 0) {
-        throw new HttpException(has_children_error, 400);
-      } else {
-        const parent = await this.getParentById(id);
-
-        if(!parent){
-          throw new HttpException(delete__get_parent_by_id_error,404)
-        }
-        const deletedNode = await this.updateIsDeletedProp(id, true);
-        if (parent) {
-          const parent_id = parent["_fields"][0]["properties"].self_id;
-          const childrenCount = await this.getChildrenCount(parent_id);
-          if (childrenCount === 0) {
-            this.updateSelectableProp(parent_id, true);
-          }
-        }
-        
-        return deletedNode;
-      }
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      } else {
-        throw new HttpException(error, HttpStatus.NOT_ACCEPTABLE);
-      }
-    }
-  }
 
   async findAllByClassName(data: PaginationNeo4jParamsWithClassName) {
     try {
@@ -1058,30 +1015,6 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
       throw new HttpException(parent_of_child_not_found,404)
       }
       return res["records"][0];
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }
-      throw newError(failedResponse(error), "400");
-    }
-  }
-
-  async getChildrenCount(id: string) {
-    try {
-      if(!id){
-        throw new HttpException(get_children_count__must_entered_error,400);
-      }
-      const res = await this.read(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (d {isDeleted: false}) MATCH (c)-[:CHILDREN]->(d) return count(d)",
-        { id: parseInt(id) }
-      );
-        // if(res["records"][0]["_fields"][0].low===0){
-        //   throw new HttpException(parent_has_not_children,400)
-        // } HATA Değil
-      return res["records"][0]["_fields"][0].low;
     } catch (error) {
       if (error.response.code) {
         throw new HttpException(
@@ -1507,7 +1440,7 @@ async findByRealm(
       if(isExists instanceof Error) throw new  HttpException(node_not_found,404) 
 
       const cypher =
-      "match (n {isDeleted: false})-[:PARENT_OF]->(p) where id(n)=$idNum  return p"
+      "match (n {isDeleted: false})<-[:PARENT_OF]-(p {isDeleted: false}) where id(n)=$idNum  return n"
       const result = await this.read(cypher, { idNum });
       return result;
     } catch (error) {
@@ -1534,7 +1467,7 @@ async findByRealm(
       if(isExists instanceof Error) throw new  HttpException(node_not_found,404) 
 
       const cypher =
-      "match (n {isDeleted: false})-[:CHILD_OF]->(p) where id(n)=$idNum  return p"
+      "match (n {isDeleted: false})<-[:CHILD_OF]-(p {isDeleted: false}) where id(n)=$idNum  return p"
       const result = await this.read(cypher, { idNum });
       return result;
     } catch (error) {
@@ -1546,7 +1479,62 @@ async findByRealm(
       }else {
          throw newError(error, "500");
       }
-     
+    }
+  }
+  async getChildrenCount(id: string) {
+    try {
+      if(!id){
+        throw new HttpException(get_children_count__must_entered_error,400);
+      }
+      const res = await this.read(
+        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (d {isDeleted: false}) MATCH (c)<-[:CHILD_OF]-(d) return count(d)",
+        { id: parseInt(id) }
+      );
+      return res["records"][0]["_fields"][0].low;
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }
+      throw newError(failedResponse(error), "400");
+    }
+  }
+  async delete(id: string) {
+    try {
+      if(!id){
+        throw new HttpException(delete__must_entered_error,400)
+      }
+      //children count query
+      const node = await this.findById(id);
+
+      if (!node) {
+       throw new HttpException(node_not_found, 404);
+      }
+
+      const childrenCount = await this.getChildrenCount(id);
+      
+      if (childrenCount > 0) {
+        throw new HttpException(has_children_error, 400);
+      } else {
+        const parent = await this.getParentById(id);
+
+        if(!parent){
+          throw new HttpException(delete__get_parent_by_id_error,404)
+        }
+        const deletedNode = await this.updateIsDeletedProp(id, true);
+        return deletedNode;
+      }
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      } else {
+        throw new HttpException(error, HttpStatus.NOT_ACCEPTABLE);
+      }
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////

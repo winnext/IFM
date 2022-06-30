@@ -24,13 +24,13 @@ export class ClassificationService {
     return await this.classificationRepository.findAll(query);
   }
 
-  @Span('find a classification by id')
-  @OtelMethodCounter()
-  async findOne(label: string, realm: string) {
-    //checkObjectIddİsValid(id);
+  // @Span('find a classification by id')
+  // @OtelMethodCounter()
+  // async findOne(label: string, realm: string) {
+  //   //checkObjectIddİsValid(id);
     
-    return await this.classificationRepository.findOneByRealm(label, realm);
-  }
+  //   return await this.classificationRepository.findOneByRealm(label, realm);
+  // }
 
   @Span('update a classification')
   @OtelMethodCounter()
