@@ -1408,7 +1408,7 @@ async findByRealm(
       }
       //find node by key
       const result = await this.read(
-        "match (n {isDeleted: false, key:$key})  return n",
+        "match (n {isDeleted: false}) where n.key=$key return n",
         { key: key }
       );
 
