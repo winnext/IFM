@@ -11,23 +11,14 @@ interface PaginationParams {
 }
 
 interface StructureInterface {
-    identity?: {
-        low: string;
-        high: string;
-    };
-    tag?: string[];
-    label: string;
-    name: string;
-    code: string;
     key: string;
-    hasParent?: boolean;
-    labelclass?: string;
-    selectable?: boolean;
     parent_id?: string;
-    type?: string;
-    typeId?: string;
-    description?: string;
-    isActive?: boolean;
+    name: string;
+    tag: string[];
+    formType:string;
+    description: string;
+    labels: string[];
+
 }
 
 const findAll = async (query: PaginationParams) => {
@@ -38,7 +29,7 @@ const findAll = async (query: PaginationParams) => {
 };
 
 const findOne = async (id: string) => {
-    return axios.get(url + "/" + id);
+    return axios.get(url + "/FacilityStructure/" + id);
 };
 
 const create = async (classification: StructureInterface) => {

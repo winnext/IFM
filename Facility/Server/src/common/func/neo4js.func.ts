@@ -95,5 +95,6 @@ export function updateNodeQuery(id, dto) {
       dynamicQueryParameter += `node.${element}` + `= $` + `${element} ,`;
     }
   });
+  dynamicQueryParameter += `  return node`;
   return dynamicQueryParameter;
 }

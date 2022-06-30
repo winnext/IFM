@@ -23,29 +23,24 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneByRealm(label: string, realm: string) {
-    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
-    
+    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm); 
     if (!node) {
       throw new FacilityStructureNotFountException(realm);
     }
+    node['root']['children']=node['root']['child_of'];
+    delete node['root']['child_of'];
+
     return node;
   }
-
-  // async findAll(data: PaginationNeo4jParams) {
-  //   const nodes = await this.neo4jService.findAllByClassName(data);
-
-  //   return nodes;
-  // }
-
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     let facilityStructure = new FacilityStructure();
     let facilityStructureObject = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
     let value;
     if (facilityStructureObject['labels']) {
-      value = await this.createNode(facilityStructureObject['entity'], facilityStructureObject['labels']);
+      value = await this.neo4jService.createNode(facilityStructureObject['entity'], facilityStructureObject['labels']);
     }
     else {
-      value = await this.createNode(facilityStructureObject['entity']);
+      value = await this.neo4jService.createNode(facilityStructureObject['entity']);
     }
     value['properties']['id'] = value['identity'].low;
     const result = {id:value['identity'].low, labels: value['labels'], properties: value['properties']}
@@ -54,57 +49,29 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
         result['id'], createFacilityStructureDto["parentId"]
       );
     }
-
     return result;
   }
-  ////////////////////////////////// NEO4J DRIVER FUNC ///////////////////////////////////////////////
   
-  async createNode(
-     params: object,
-     labels?: string[],
-     ) {
-     try {
-       if(!params ){
-         throw new HttpException(create_node__must_entered_error,400);
-       }
-       const cyperQuery = createDynamicCyperCreateQuery(params,labels);
-       const res = await this.neo4jService.write(cyperQuery, params);
-       if(!res["records"][0].length){
-         throw new HttpException(create_node__node_not_created_error,400);
-       }
-       return res["records"][0]["_fields"][0];
-     } catch (error) {
-       if (error.response.code) {
-         throw new HttpException(
-           { message: error.response.message, code: error.response.code },
-           error.status
-         );
-       }else {
-         throw newError(error, "500");
-       }
-     }
-   }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   async update(_id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
-    const node_old = await this.neo4jService.findById(_id);
-    const dynamicObject = createDynamicCyperObject(updateFacilityStructureDto);
-    dynamicObject['id'] = int(_id);
+    let updateFacilityStructureDtoWithoutLabelsAndParentId = {};
+    Object.keys(updateFacilityStructureDto).forEach((element) => {
+      if (element != 'labels' && element != 'parentId' ) {
+        updateFacilityStructureDtoWithoutLabelsAndParentId[element] = updateFacilityStructureDto[element];
+      }
+    });
+    const dynamicObject = createDynamicCyperObject(updateFacilityStructureDtoWithoutLabelsAndParentId);
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
+
     if (!updatedNode) {
       throw new FacilityStructureNotFountException(_id);
     }
-    
-    if ( node_old["properties"]["optionalLabel"]) {
-      await this.neo4jService.removeLabel(_id,node_old["properties"]["optionalLabel"]);
+    const result = {id:updatedNode['identity'].low, labels: updatedNode['labels'], properties: updatedNode['properties']} 
+    if (updateFacilityStructureDto['labels'] && updateFacilityStructureDto['labels'].length > 0) {   
+      await this.neo4jService.removeLabel(_id,result["labels"]);
+      await this.neo4jService.updateLabel(_id,updateFacilityStructureDto['labels']);
     }
-
-    if (updatedNode["properties"]["optionalLabel"]) {
-      await this.neo4jService.updateLabel(_id,updatedNode["properties"]["optionalLabel"]);
-    }
-    
-    return updatedNode;
+    return result;
   }
 
   async delete(_id: string) {
@@ -156,7 +123,8 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
       if (!node) {
         throw new FacilityStructureNotFountException(key);
       }
-      return node;
+      const result = {id:node['identity'].low, labels: node['labels'], properties: node['properties']} 
+      return result;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

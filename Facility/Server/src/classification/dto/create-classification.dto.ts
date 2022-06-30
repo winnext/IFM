@@ -18,30 +18,30 @@ export class CreateClassificationDto {
   @IsString()
   @Length(1, 200)
   @IsOptional()
-  key: string;
+  key?: string;
 
   @ApiProperty()
   @IsOptional()
-  tag: string[];
+  tag?: string[];
 
   @ApiProperty()
-  @IsNumber()
-  @IsOptional()
-  parent_id: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
-  @Length(1, 50)
-  labelclass: string;
+  @IsOptional()
+  @Length(1, 200)
+  description?: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
+  @IsOptional()
   @Length(1, 50)
-  label: string;
+  formType?: string;
 
   @ApiProperty()
   @IsOptional()
-  optionalLabels: string[];
+  labels: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  parentId?: string;
+
 }

@@ -161,61 +161,79 @@ export function createDynamicCyperObject(entity) {
 }
 
 //create dynamic cyper updateNode query
-export function updateNodeQuery(id, dto) {
-   let optionalLabels = "";
-   if ( dto["optionalLabels"] &&  dto["optionalLabels"].length > 0) {
-     for (let i=0; i < dto["optionalLabels"].length; i++) {  //14 haz 2022 değiştirildi
-       if (i == 0) {
-        optionalLabels = dto["optionalLabels"][i];
-       }
-       else {
-        optionalLabels = optionalLabels + ':' + dto["optionalLabels"][i];
-       }
-     }        
-   }
+// export function updateNodeQuery(id, dto) {
+//    let optionalLabels = "";
+//    if ( dto["optionalLabels"] &&  dto["optionalLabels"].length > 0) {
+//      for (let i=0; i < dto["optionalLabels"].length; i++) {  //14 haz 2022 değiştirildi
+//        if (i == 0) {
+//         optionalLabels = dto["optionalLabels"][i];
+//        }
+//        else {
+//         optionalLabels = optionalLabels + ':' + dto["optionalLabels"][i];
+//        }
+//      }        
+//    }
     
-  id = int(id);
-  let dynamicQueryParameter = "";
-  if (optionalLabels != "") {
-    dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set node.optionalLabel= '${optionalLabels}',`;
-  }
-  else {
-    dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
-   }
+//   id = int(id);
+//   let dynamicQueryParameter = "";
+//   if (optionalLabels != "") {
+//     dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set node.optionalLabel= '${optionalLabels}',`;
+//   }
+//   else {
+//     dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
+//    }
 
-  let counter = 0;
-  Object.keys(dto).forEach((element, index) => {
+//   let counter = 0;
+//   Object.keys(dto).forEach((element, index) => {
    
-    if (Object.keys(dto).length === index + 1) {
-      if (!element.startsWith('__')  && element != 'optionalLabels') {
-        if (counter == 0) {
-          dynamicQueryParameter +=
-          ` node.${element}` + `= $` + `${element}  return node`;
-          counter = counter + 1;
-        }
-        else {
-          dynamicQueryParameter +=
-          `,node.${element}` + `= $` + `${element}  return node`;
-          counter = counter + 1;
-        }
+//     if (Object.keys(dto).length === index + 1) {
+//       if (!element.startsWith('__')  && element != 'optionalLabels') {
+//         if (counter == 0) {
+//           dynamicQueryParameter +=
+//           ` node.${element}` + `= $` + `${element}  return node`;
+//           counter = counter + 1;
+//         }
+//         else {
+//           dynamicQueryParameter +=
+//           `,node.${element}` + `= $` + `${element}  return node`;
+//           counter = counter + 1;
+//         }
         
-      }
-      else {
-        dynamicQueryParameter +=
-        `  return node`;
-      }
-    } else {
-      if (!element.startsWith('__')  && element != 'optionalLabels') {
-        if (counter == 0) {
-          dynamicQueryParameter += ` node.${element}` + `= $` + `${element}`;
-          counter = counter + 1;
-         } else {
-          dynamicQueryParameter += `,node.${element}` + `= $` + `${element}`;
-          counter = counter + 1;
-         }
+//       }
+//       else {
+//         dynamicQueryParameter +=
+//         `  return node`;
+//       }
+//     } else {
+//       if (!element.startsWith('__')  && element != 'optionalLabels') {
+//         if (counter == 0) {
+//           dynamicQueryParameter += ` node.${element}` + `= $` + `${element}`;
+//           counter = counter + 1;
+//          } else {
+//           dynamicQueryParameter += `,node.${element}` + `= $` + `${element}`;
+//           counter = counter + 1;
+//          }
        
-      }
+//       }
+//     }
+//   });
+//   return dynamicQueryParameter;
+// }
+//create dynamic cyper updateNode query
+
+/////////////////// Temiz ///////////////////////////////////////////////////////////////
+export function updateNodeQuery(id, dto) {
+  id = int(id);
+  let dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
+
+  Object.keys(dto).forEach((element, index) => {
+    if (Object.keys(dto).length === index + 1) {
+      dynamicQueryParameter += `node.${element}` + `= $` + `${element}`;
+    } else {
+      dynamicQueryParameter += `node.${element}` + `= $` + `${element} ,`;
     }
   });
+  dynamicQueryParameter += `  return node`;
   return dynamicQueryParameter;
 }
+///////////////////////////////////////////////////////////////////////////////////////////
