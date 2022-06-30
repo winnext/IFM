@@ -436,34 +436,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async findOneNodeByKey(key: string) {
-    try {
-      if(!key){
-        throw new HttpException(find_one_node_by_key_must_entered_error,400)
-      }
-      //find node by key
-      const result = await this.read(
-        "match (n {isDeleted: false, key:$key})  return n",
-        { key: key }
-      );
-
-      if (!result["records"].length) {
-        throw new HttpException(node_not_found, 404);
-      }
-      var node = result["records"][0]["_fields"][0];
-
-      return node;
-    } catch (error) {
-        if (error.response.code) {
-          throw new HttpException(
-            { message: error.response.message, code: error.response.code},
-            error.status
-          );
-      }
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
   async updateHasParentProp(id: string, hasParent: boolean) {
     try {
       const res = await this.write(
@@ -1493,6 +1465,34 @@ async findByRealm(
       }else {
         throw newError(error, "500");
       }
+    }
+  }
+
+  async findOneNodeByKey(key: string) {
+    try {
+      if(!key){
+        throw new HttpException(find_one_node_by_key_must_entered_error,400)
+      }
+      //find node by key
+      const result = await this.read(
+        "match (n {isDeleted: false, key:$key})  return n",
+        { key: key }
+      );
+
+      if (!result["records"].length) {
+        throw new HttpException(node_not_found, 404);
+      }
+      var node = result["records"][0]["_fields"][0];
+
+      return node;
+    } catch (error) {
+        if (error.response.code) {
+          throw new HttpException(
+            { message: error.response.message, code: error.response.code},
+            error.status
+          );
+      }
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////

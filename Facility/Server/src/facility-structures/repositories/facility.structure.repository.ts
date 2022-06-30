@@ -61,7 +61,6 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
       }
     });
     const dynamicObject = createDynamicCyperObject(updateFacilityStructureDtoWithoutLabelsAndParentId);
-    //dynamicObject['id'] = int(_id);
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
 
     if (!updatedNode) {
@@ -124,7 +123,8 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
       if (!node) {
         throw new FacilityStructureNotFountException(key);
       }
-      return node;
+      const result = {id:node['identity'].low, labels: node['labels'], properties: node['properties']} 
+      return result;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
