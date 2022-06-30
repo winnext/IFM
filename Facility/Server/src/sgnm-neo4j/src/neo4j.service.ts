@@ -633,7 +633,7 @@ export class Neo4jService implements OnApplicationShutdown {
   async deleteChildrenRelation(id: string) {
     try {
       const res = await this.write(
-        "MATCH (node {isDeleted: false})-[r:PARENT_OF]->(p {isDeleted: false}) where id(node)= $id delete r",
+        "MATCH (node {isDeleted: false})-[r:CHILD_OF]->(p {isDeleted: false}) where id(node)= $id delete r",
         { id: parseInt(id) }
       );
 let {relationshipsDeleted}=res.summary.updateStatistics.updates()
@@ -656,7 +656,7 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
   async deleteParentRelation(id: string) {
     try {
       const res = await this.write(
-        "MATCH (c {isDeleted: false})-[r:CHILD_OF]->(p {isDeleted: false}) where id(c)= $id delete r",
+        "MATCH (c {isDeleted: false})<-[r:PARENT_OF]-(p {isDeleted: false}) where id(c)= $id delete r",
         { id: parseInt(id) }
       );
       if(!res){
@@ -1083,12 +1083,13 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
     }
   }
   async deleteRelations(id: string) {
+    const a = 1;
     try {
       if(!id){
         throw new HttpException(delete_relation_must_entered_error,400)
       }
       const parentNode = await this.getParentById(id);
-      const parent_id = parentNode["_fields"][0]["properties"].self_id.low;
+      const parent_id = parentNode["_fields"][0]["identity"].low;
       //delete relation query
       if (parentNode) {
         await this.deleteChildrenRelation(id);

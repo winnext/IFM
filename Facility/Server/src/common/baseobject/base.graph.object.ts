@@ -10,6 +10,7 @@ export abstract class BaseGraphObject {
   isDeleted = false;
   name: string;
   tag: string[] = [];
+  formTypeId: string;
 }
 
 function generateUuid() {

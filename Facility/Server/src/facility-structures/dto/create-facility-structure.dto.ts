@@ -26,9 +26,15 @@ export class CreateFacilityStructureDto {
 
   @ApiProperty()
   @IsOptional()
+  formTypeId?: string;
+
+  @ApiProperty()
+  @IsOptional()
   labels?: string[];
 
   @ApiProperty()
   @IsOptional()
   parentId?: string;
+
+
 }
