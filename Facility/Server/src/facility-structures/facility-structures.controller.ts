@@ -62,7 +62,7 @@ export class FacilityStructuresController {
   }
 
   @Unprotected()
-  @Get('/nodeinfo/:key')
+  @Get('/:key')
   @NoCache()
   findOneNode(@Param('key') key: string) {
     return this.facilityStructuresService.findOneNode(key);
