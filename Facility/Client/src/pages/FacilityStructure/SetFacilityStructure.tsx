@@ -323,7 +323,8 @@ const SetFacilityStructure = () => {
           name: name,
           tag: tag,
           description: "",
-          labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
+          // labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
+          labels: [optionalLabels[0]] ,
         };
         console.log(newNode);
 
@@ -372,7 +373,7 @@ const SetFacilityStructure = () => {
           tag: tag,
           isActive: isActive,
           description: "",
-          labels: optionalLabels[0]?.replace(/ /g, '').split(",")|| [],
+          labels: [optionalLabels[0]],
         };
         console.log(updateNode);
         
