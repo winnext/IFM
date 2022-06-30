@@ -147,7 +147,7 @@ export class ClassificationRepository implements GeciciInterface<Classification>
   async delete(_id: string) {
     try {
      
-      let hasParent = await this.neo4jService.findParentById(_id);
+      let hasParent = await this.neo4jService.getParentById(_id);
       let deletedNode;
       if (hasParent['records'].length > 0) {
          let hasChildren =  await this.neo4jService.findChildrenById(_id);       
