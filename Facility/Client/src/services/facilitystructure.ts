@@ -49,7 +49,7 @@ const relation = async (id1: string, id2: string) => {
 };
 
 const nodeInfo = async (key: string) => {
-    return axios.get(`${url}/nodeinfo/${key}`);
+    return axios.get(`${url}/${key}`);
 };
 
 const service = { findAll, findOne, create, update, remove, relation, nodeInfo };

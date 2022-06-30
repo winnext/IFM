@@ -317,9 +317,10 @@ const SetFacilityStructure = () => {
   const addItem = (key: string) => {
     FacilityStructureService.nodeInfo(key)
       .then((res) => {
+        console.log(res.data);
         const newNode = {
           key: uuidv4(),
-          parent_id: res.data.identity.low,
+          parent_id: res.data.id,
           name: name,
           tag: tag,
           formType:typeId,
@@ -372,10 +373,14 @@ const SetFacilityStructure = () => {
           formType: typeId,
           isActive: isActive,
           description: "",
-          labels: optionalLabels[0].replace(/ /g, '').split(","),
+          labels: optionalLabels[0]?.replace(/ /g, '').split(",")|| [],
         };
-        FacilityStructureService.update(res.data.identity.low, updateNode)
+        console.log(updateNode);
+        
+        FacilityStructureService.update(res.data.id, updateNode)
           .then((res) => {
+            console.log(res.data);
+            
             toast.current.show({
               severity: "success",
               summary: "Successful",
