@@ -19,12 +19,12 @@ export class ClassificationController {
   create(@Body() createClassificationDto: CreateClassificationDto) {
     return this.classificationService.create(createClassificationDto);
   }
-  @Unprotected()
-  @Get()
-  @NoCache()
-  findAll(@Query() paramDto: PaginationNeo4jParams) {
-    return this.classificationService.findAll(paramDto);
-  }
+  // @Unprotected()
+  // @Get()
+  // @NoCache()
+  // findAll(@Query() paramDto: PaginationNeo4jParams) {
+  //   return this.classificationService.findAll(paramDto);
+  // }
   @Unprotected()
   @Get(':label/:realm')
   @NoCache()

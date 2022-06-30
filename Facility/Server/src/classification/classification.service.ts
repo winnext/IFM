@@ -4,12 +4,13 @@ import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
+import { GeciciInterface } from 'src/common/interface/gecici.interface';
 
 @Injectable()
 export class ClassificationService {
   constructor(
     @Inject(RepositoryEnums.CLASSIFICATION)
-    private readonly classificationRepository: BaseGraphDatabaseInterfaceRepository<any>,
+    private readonly classificationRepository: GeciciInterface<any>,
   ) {}
 
   @Span('create a classification')
@@ -18,11 +19,11 @@ export class ClassificationService {
     return await this.classificationRepository.create(createClassificationDto);
   }
 
-  @Span('find all classifications')
-  @OtelMethodCounter()
-  async findAll(query) {
-    return await this.classificationRepository.findAll(query);
-  }
+  // @Span('find all classifications')
+  // @OtelMethodCounter()
+  // async findAll(query) {
+  //   return await this.classificationRepository.findAll(query);
+  // }
 
   @Span('find a classification by id')
   @OtelMethodCounter()
