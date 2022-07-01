@@ -29,6 +29,26 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     }
     node['root']['children']=node['root']['child_of'];
     delete node['root']['child_of'];
+    if (node['root']['children']) {
+    for (let i=0; i<node['root']['children'].length; i++) {
+      node['root']['children'][i]["children"]=node['root']['children'][i]['child_of'];
+      delete node['root']['children'][i]['child_of'];
+      if (node['root']['children'][i]["children"]) {
+      for (let j=0; j<node['root']['children'][i]["children"].length; j++) {
+        node['root']['children'][i]["children"][j]["children"]=node['root']['children'][i]['children'][j]['child_of'];
+        delete node['root']['children'][i]['children'][j]['child_of'];
+        if (node['root']['children'][i]["children"][j]['children']) {
+        for (let k=0; k<node['root']['children'][i]["children"][j]['children'].length; k++) {
+          node['root']['children'][i]["children"][j]["children"][k]['children']=
+                                  node['root']['children'][i]['children'][j]['children'][k]['child_of'];
+          delete node['root']['children'][i]['children'][j]['children'][k]['child_of'];
+        }
+        }
+      }
+      }
+    }
+    }
+  
 
     return node;
   }
