@@ -42,74 +42,7 @@ export class ClassificationRepository implements GeciciInterface<Classification>
     }
     return node;
   }
-//yenilenecek
-  // async findAllByClassName(data: PaginationNeo4jParamsWithClassName) {
-  //   try {
-  //     let { page = 0, orderByColumn = "name" } = data;
-  //   const { limit = 10, className, orderBy = "DESC" } = data;
 
-  //   if (orderByColumn == "undefined") {
-  //     orderByColumn = "name";
-  //   }
-  //   const res = await this.neo4jService.findNodeCountByClassName(className);
-  //   if(!res){
-  //     throw new Error("hata")
-  //   }
-  //   const count = res.result;
-
-  //   const pagecount = Math.ceil(count / limit);
-
-  //   if (page > pagecount) {
-  //     page = pagecount;
-  //   }
-  //   let skip = page * limit;
-  //   if (skip >= count) {
-  //     skip = count - limit;
-  //     if (skip < 0) {
-  //       skip = 0;
-  //     }
-  //   }
-  //   const getNodeWithoutParent =
-  //     "MATCH (x {isDeleted: false}) where x.hasParent = false and x.class_name=$class_name return x ORDER BY x." +
-  //     orderByColumn +
-  //     " " +
-  //     orderBy +
-  //     " SKIP $skip LIMIT $limit";
-  //   const result = await this.neo4jService.read(getNodeWithoutParent, {
-  //     className,
-  //     skip: int(skip),
-  //     limit: int(limit),
-  //   });
-  //   if(!result){
-  //     throw new HttpException("hata var",404);
-
-  //   }
-  //   const arr = [];
-  //   for (let i = 0; i < result["records"].length; i++) {
-  //     arr.push(result["records"][i]["_fields"][0]);
-  //   }
-  //   const pagination = { count, page, limit };
-  //   const nodes = [];
-  //   nodes.push(arr);
-  //   nodes.push(pagination);
-  //   return nodes;
-
-  //   } catch (error) {
-    
-  //     if (error.response.code) {
-  //       throw new HttpException(
-  //         { message: error.response.message, code: error.response.code },
-  //         error.status
-  //       );
-  //     }
-  //     throw Error(error.message);
-  //   }
-    
-  // }
-
-
-
-    
     
   
 
@@ -135,21 +68,32 @@ export class ClassificationRepository implements GeciciInterface<Classification>
   }
 
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {
+    let updateClassificationDtoWithoutLabelsAndParentId={};
+    
+    Object.keys(updateClassificationto).forEach((element) => {
+      if (element != 'labels' && element != 'parentId' ) {
+        updateClassificationDtoWithoutLabelsAndParentId[element] = updateClassificationto[element];
+      }
+    });
+    
     const dynamicObject = createDynamicCyperObject(updateClassificationto);
-    //dynamicObject['id'] = int(_id);
 
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
     if (!updatedNode) {
       throw new ClassificationNotFountException(_id);
     }
-    return updatedNode;
+    const result = {id:updatedNode['identity'].low, labels: updatedNode['labels'], properties: updatedNode['properties']} 
+    if (updateClassificationto['labels'] && updateClassificationto['labels'].length > 0) {   
+      await this.neo4jService.removeLabel(_id,result["labels"]);
+      await this.neo4jService.updateLabel(_id,updateClassificationto['labels']);
+    }
+    return result;
   }
   async delete(_id: string) {
     try {
      
-      let hasParent = await this.neo4jService.getParentById(_id);
+      //let hasParent = await this.neo4jService.getParentById(_id);
       let deletedNode;
-      //if (hasParent['records'].length > 0) { bu if hem gereksiz hem hatalı zaten bize records[0] dönüyor
          let hasChildren =  await this.neo4jService.findChildrenById(_id);       
          if (hasChildren['records'].length == 0) {
            deletedNode = await this.neo4jService.delete(_id);

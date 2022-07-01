@@ -38,4 +38,7 @@ export class CreateClassificationDto {
   @IsOptional()
   parentId?: string;
 
+  @ApiProperty()
+  @IsOptional()
+  formTypeId?: string;
 }
