@@ -79,14 +79,13 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
      
       let hasParent = await this.neo4jService.getParentById(_id);
       let deletedNode;
-      if (hasParent['records'].length > 0) {
-         let hasChildren =  await this.neo4jService.findChildrenById(_id);       
-         if (hasChildren['records'].length == 0) {
-           deletedNode = await this.neo4jService.delete(_id);
-           if (!deletedNode) {
-             throw new FacilityStructureNotFountException(_id);
-          }
-         }
+
+      let hasChildren =  await this.neo4jService.findChildrenById(_id);       
+      if (hasChildren['records'].length == 0) {
+        deletedNode = await this.neo4jService.delete(_id);
+        if (!deletedNode) {
+            throw new FacilityStructureNotFountException(_id);
+        }
       }
       return deletedNode;
     } catch (error) {
