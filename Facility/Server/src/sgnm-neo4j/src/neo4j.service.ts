@@ -14,7 +14,6 @@ import { newError } from "neo4j-driver-core";
 import { findNodeCountByClassNameDto } from "./dtos/dtos";
 import {
   createDynamicCyperCreateQuery,
-  createDynamiCyperParam,
   updateNodeQuery,
 } from "./func/common.func";
 import { successResponse } from "./constant/success.response.object";
@@ -524,53 +523,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async createChildrenByLabelClass(entity: object, label: string) {
-    try {
-      delete entity["realm"]
-      const dynamicCyperParameter = createDynamiCyperParam(entity,label);
-      let query =
-      ` match (y:${label}:${entity["labelclass"]} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
-      if (entity["__label"]) {
-        query =
-        ` match (y:${label}:${entity["__labelParent"]} {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
-      }
-      query = query +  dynamicCyperParameter;  
-
-      const res = await this.write(query, entity);
-
-      if(!res){
-        return null // yazılacak
-      }
-      return successResponse(res);
-    } catch (error) {
-      if (error.response.code) {
-        throw new HttpException(
-          { message: error.response.message, code: error.response.code },
-          error.status
-        );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-  ///////////////////////// 8 Haz 2022 //////////////////////////////////////
-   async createChildrenByOptionalLabels(entity: object, label: string) {
-     try {
-       delete entity["realm"];
-       const dynamicCyperParameter = createDynamiCyperParam(entity,label);
-       let query =
-       ` match (y {isDeleted: false}) where id(y)= $parent_id  create (y)-[:CHILDREN]->`;
-       query = query +  dynamicCyperParameter;  
-
-       const res = await this.write(query, entity);
-
-       return successResponse(res);
-     } catch (error) {
-       throw newError(failedResponse(error), "400");
-     }
-   }
-  ///////////////////////////////////////////////////////////////////////////
-
   async addParentByLabelClass(entity, label: string) {
     try{
       if(!entity || !label) {
@@ -826,36 +778,7 @@ let {relationshipsDeleted}=res.summary.updateStatistics.updates()
       }
     }
   }
-  async createNodeWithLabel(entity, label) {
-      try {
-        if(!entity || !label){
-          throw new HttpException(create_node_with_label__must_entered_error,400)
-        }
-        const createdNode = await this.createChildrenByLabelClass(entity, label);
- 
-        if(!createdNode){
-          throw new HttpException(create_node_with_label__node_not_created_error,400)
-        
-        }
-        
-        const addParentBylabelClass =await this.addParentByLabelClass(entity, label);
-        if(!addParentBylabelClass){
-          throw new HttpException(create_node_with_label_add_parent_by_labelclass_error,400)
-        }
-      return createdNode.result["records"][0]["_fields"][0];
 
-      } catch (error) {
-        if (error.response.code) {
-          throw new HttpException(
-            { message: error.response.message, code: error.response.code },
-            error.status
-          );
-        }
-        throw newError(failedResponse(error), "400");
-      }
-   
-    
-  }
   async createNodeForParentWithLabel(entity) {
        entity.hasParent = false;
 
