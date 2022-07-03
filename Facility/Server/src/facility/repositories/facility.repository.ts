@@ -4,9 +4,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateFacilityDto } from '../dtos/create.facility.dto';
 import { UpdateFacilityDto } from '../dtos/update.facility.dto';
 import { BaseInterfaceRepository } from 'src/common/interface/base.facility.interface';
-import { Neo4jService } from 'src/sgnm-neo4j/src';
-import { assignDtoPropToEntity } from 'sgnm-neo4j/dist';
-import { createDynamicCyperCreateQuery } from 'src/common/func/neo4js.func';
+import { assignDtoPropToEntity, createDynamicCyperCreateQuery, Neo4jService } from 'src/sgnm-neo4j/src';
+
+
 import { Facility } from '../entities/facility.entity';
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
@@ -67,5 +67,4 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     return 'facility';
   }
 
-  //-------------------------------------------Neo4jFunctions----------------------------------------------
 }

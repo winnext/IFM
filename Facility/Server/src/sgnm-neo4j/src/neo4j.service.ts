@@ -1522,5 +1522,67 @@ async findByRealm(
       }
     }
   }
+  async changeObjectChildOfPropToChildren(node:any) {
+
+    node['root']['children']=node['root']['child_of'];
+    delete node['root']['child_of'];
+    if (node['root']['children']) {
+    for (let i=0; i<node['root']['children'].length; i++) {
+      node['root']['children'][i]["children"]=node['root']['children'][i]['child_of'];
+      delete node['root']['children'][i]['child_of'];
+      if (node['root']['children'][i]["children"]) {
+      for (let j=0; j<node['root']['children'][i]["children"].length; j++) {
+        node['root']['children'][i]["children"][j]["children"]=node['root']['children'][i]['children'][j]['child_of'];
+        delete node['root']['children'][i]['children'][j]['child_of'];
+        if (node['root']['children'][i]["children"][j]['children']) {
+        for (let k=0; k<node['root']['children'][i]["children"][j]['children'].length; k++) {
+          node['root']['children'][i]["children"][j]["children"][k]['children']=
+                                  node['root']['children'][i]['children'][j]['children'][k]['child_of'];
+          delete node['root']['children'][i]['children'][j]['children'][k]['child_of'];
+          if (node['root']['children'][i]["children"][j]['children'][k]['children']) {
+            for (let l=0; l<node['root']['children'][i]["children"][j]['children'][k]['children'].length; l++) {
+              node['root']['children'][i]["children"][j]["children"][k]['children'][l]['children']=
+                                      node['root']['children'][i]['children'][j]['children'][k]['children'][l]['child_of'];
+              delete node['root']['children'][i]['children'][j]['children'][k]['children'][l]['child_of'];
+              if (node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children']) {
+                for (let m=0; m<node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'].length; m++) {
+                  node['root']['children'][i]["children"][j]["children"][k]['children'][l]['children'][m]['children']=
+                                          node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['child_of'];
+                  delete node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['child_of'];
+                  if (node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'][m]['children']) {
+                    for (let n=0; n<node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'][m]['children'].length; n++) {
+                      node['root']['children'][i]["children"][j]["children"][k]['children'][l]['children'][m]['children'][n]['children']=
+                                              node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['children'][n]['child_of'];
+                      delete node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['children'][n]['child_of'];
+                      if (node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'][m]['children'][n]['children']) {
+                        for (let o=0; o<node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'].length; o++) {
+                          node['root']['children'][i]["children"][j]["children"][k]['children'][l]['children'][m]['children'][n]['children'][o]['children']=
+                                                  node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'][o]['child_of'];
+                          delete node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'][o]['child_of'];
+                          if (node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'][o]['children']) {
+                            for (let p=0; p<node['root']['children'][i]["children"][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'][o]['children'].length; p++) {
+                              node['root']['children'][i]["children"][j]["children"][k]['children'][l]['children'][m]['children'][n]['children'][o]['children'][p]['children']=
+                                            node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'][o]['children'][p]['child_of'];
+                              delete node['root']['children'][i]['children'][j]['children'][k]['children'][l]['children'][m]['children'][n]['children'][o]['children'][p]['child_of'];
+                              
+                            }
+                            }
+                        }
+                        }
+                    }
+                    }
+                }
+                }
+            }
+            }
+
+        }
+        }
+      }
+      }
+    }
+    }
+    return node;
+  }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

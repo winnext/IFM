@@ -6,16 +6,12 @@ import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto
 import { FacilityStructure } from '../entities/facility-structure.entity';
 
 //import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
-import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
 
-import { int, RxTransaction } from 'neo4j-driver';
-import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
+
 import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
-import { assignDtoPropToEntity, createDynamicCyperCreateQuery, createDynamicCyperObject } from 'src/common/func/neo4js.func';
-import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
-import { create_node__must_entered_error, create_node__node_not_created_error, create__must_entered_error } from 'src/sgnm-neo4j/src/constant/custom.error.object';
-import { newError } from 'neo4j-driver-core';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
+
 
 
 @Injectable()
@@ -23,33 +19,12 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneByRealm(label: string, realm: string) {
-    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm); 
+    let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm); 
     if (!node) {
       throw new FacilityStructureNotFountException(realm);
     }
-    node['root']['children']=node['root']['child_of'];
-    delete node['root']['child_of'];
-    if (node['root']['children']) {
-    for (let i=0; i<node['root']['children'].length; i++) {
-      node['root']['children'][i]["children"]=node['root']['children'][i]['child_of'];
-      delete node['root']['children'][i]['child_of'];
-      if (node['root']['children'][i]["children"]) {
-      for (let j=0; j<node['root']['children'][i]["children"].length; j++) {
-        node['root']['children'][i]["children"][j]["children"]=node['root']['children'][i]['children'][j]['child_of'];
-        delete node['root']['children'][i]['children'][j]['child_of'];
-        if (node['root']['children'][i]["children"][j]['children']) {
-        for (let k=0; k<node['root']['children'][i]["children"][j]['children'].length; k++) {
-          node['root']['children'][i]["children"][j]["children"][k]['children']=
-                                  node['root']['children'][i]['children'][j]['children'][k]['child_of'];
-          delete node['root']['children'][i]['children'][j]['children'][k]['child_of'];
-        }
-        }
-      }
-      }
-    }
-    }
-  
-
+    node = await this.neo4jService.changeObjectChildOfPropToChildren(node);
+    
     return node;
   }
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {

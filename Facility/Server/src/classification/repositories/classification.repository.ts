@@ -5,16 +5,16 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
-import { int } from 'neo4j-driver';
 import { Classification } from '../entities/classification.entity';
 import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
-import { assignDtoPropToEntity, createDynamicCyperCreateQuery, createDynamicCyperObject } from 'src/common/func/neo4js.func';
 
-import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+
+import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
 
 import { create_node__must_entered_error, create_node__node_not_created_error, find_by_realm_with_tree_structure__not_entered_error, find_by_realm__not_entered_error, find_by_realm__not_found_error, find_with_children_by_realm_as_tree_error, find_with_children_by_realm_as_tree__find_by_realm_error, find_with_children_by_realm_as_tree__not_entered_error, tree_structure_not_found_by_realm_name_error } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
+
 @Injectable()
 export class ClassificationRepository implements GeciciInterface<Classification> {
   constructor(private readonly neo4jService: Neo4jService) {}
@@ -35,11 +35,13 @@ export class ClassificationRepository implements GeciciInterface<Classification>
   }
 
   async findOneByRealm(label: string, realm: string) {
-    const node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
+    let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
     
     if (!node) {
       throw new ClassificationNotFountException(realm);
     }
+    node = await this.neo4jService.changeObjectChildOfPropToChildren(node);
+
     return node;
   }
 

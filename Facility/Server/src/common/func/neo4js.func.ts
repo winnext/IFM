@@ -1,100 +1,68 @@
-import { int } from 'neo4j-driver';
-//transfer dto(object come from client) properties to specific node entity object
-export function assignDtoPropToEntity(entity, dto) {
-  Object.keys(dto).forEach((element) => {
-    if (element != 'labels' && element != 'parentId') {
-      entity[element] = dto[element];
-    }
-  });
-  const finalEntityObject = { entity: entity };
-  if (dto['labels']) {
-    finalEntityObject['labels'] = dto['labels'];
-  }
-  if (dto['parentId']) {
-    finalEntityObject['parentId'] = dto['parentId'];
-  }
-  return finalEntityObject;
-}
+// import { int } from 'neo4j-driver';
+// //transfer dto(object come from client) properties to specific node entity object
+// export function assignDtoPropToEntity(entity, dto) {
+//   Object.keys(dto).forEach((element) => {
+//     if (element != 'labels' && element != 'parentId') {
+//       entity[element] = dto[element];
+//     }
+//   });
+//   const finalEntityObject = { entity: entity };
+//   if (dto['labels']) {
+//     finalEntityObject['labels'] = dto['labels'];
+//   }
+//   if (dto['parentId']) {
+//     finalEntityObject['parentId'] = dto['parentId'];
+//   }
+//   return finalEntityObject;
+// }
 
-/*
- // const createNode = `CREATE (x:${createFacilityStructureDto.labelclass} {name: \
-      //   $name, code:$code,key:$key, hasParent: $hasParent \
-      //   ,tag: $tag , label: $label, labelclass:$labelclass \
-      //   , createdAt: $createdAt, updatedAt: $updatedAt, type: $type, typeId: $typeId,description: $description,isActive :$isActive\
-      //   , isDeleted: $isDeleted, class_name: $class_name, selectable: $selectable })`;
+// export function createDynamicCyperCreateQuery(entity: object, labels?: Array<string>) {
+//   let optionalLabels = '';
 
-      const x = 'CREATE ' + createDynamiCyperParam(facilityStructure); is equalent
+//   if (labels && labels.length > 0) {
+//     labels.map((item) => {
+//       optionalLabels = optionalLabels + ':' + item;
+//     });
+//   }
 
-*/
-export function createDynamicCyperCreateQuery(entity: object, labels?: Array<string>) {
-  let optionalLabels = '';
+//   let dynamicQueryParameter = `CREATE (node${optionalLabels} {`;
 
-  if (labels && labels.length > 0) {
-    labels.map((item) => {
-      optionalLabels = optionalLabels + ':' + item;
-    });
-  }
+//   Object.keys(entity).forEach((element, index) => {
+//     if (index === 0) {
+//       dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
+//     } else {
+//       dynamicQueryParameter += `,${element}` + `: $` + `${element}`;
+//     }
+//     if (Object.keys(entity).length === index + 1) {
+//       dynamicQueryParameter += ` }) return node`;
+//     }
+//   });
 
-  let dynamicQueryParameter = `CREATE (node${optionalLabels} {`;
+//   return dynamicQueryParameter;
+// }
 
-  Object.keys(entity).forEach((element, index) => {
-    if (index === 0) {
-      dynamicQueryParameter += ` ${element}` + `: $` + `${element}`;
-    } else {
-      dynamicQueryParameter += `,${element}` + `: $` + `${element}`;
-    }
-    if (Object.keys(entity).length === index + 1) {
-      dynamicQueryParameter += ` }) return node`;
-    }
-  });
 
-  return dynamicQueryParameter;
-}
+// export function createDynamicCyperObject(entity) {
+//   const dynamicObject = {};
+//   Object.keys(entity).forEach((element) => {
+//     dynamicObject[element] = entity[element];
+//   });
 
-/*
-await this.neo4jService.write(makeNodeConnectParent, {
-        labelclass: facilityStructure.labelclass,
-        name: facilityStructure.name,
-        code: facilityStructure.code,
-        key: facilityStructure.key,
-        hasParent: facilityStructure.hasParent,
-        tag: facilityStructure.tag,
-        label: facilityStructure.label,
-        createdAt: facilityStructure.createdAt,
-        updatedAt: facilityStructure.updatedAt,
-        selectable: facilityStructure.selectable,
-        type: facilityStructure.type,
-        typeId: facilityStructure.typeId,
-        description: facilityStructure.description,
-        isActive: facilityStructure.isActive,
-        isDeleted: facilityStructure.isDeleted,
-        className: facilityStructure.class_name,
-        parent_id: createFacilityStructureDto.parent_id,
-      });
+//   return dynamicObject;
+// }
 
-      this method create second paramater of method(object) which is parameter of cyper query
-*/
-export function createDynamicCyperObject(entity) {
-  const dynamicObject = {};
-  Object.keys(entity).forEach((element) => {
-    dynamicObject[element] = entity[element];
-  });
+// //create dynamic cyper updateNode query
+// export function updateNodeQuery(id, dto) {
+//   id = int(id);
+//   let dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
 
-  return dynamicObject;
-}
-
-//create dynamic cyper updateNode query
-export function updateNodeQuery(id, dto) {
-  id = int(id);
-  let dynamicQueryParameter = ` match (node {isDeleted: false}) where id(node) = ${id} set `;
-
-  Object.keys(dto).forEach((element, index) => {
-    if (Object.keys(dto).length === index + 1) {
-      dynamicQueryParameter += `node.${element}` + `= $` + `${element}`;
-    } else {
-      dynamicQueryParameter += `node.${element}` + `= $` + `${element} ,`;
-    }
-  });
-  dynamicQueryParameter += `  return node`;
-  return dynamicQueryParameter;
-}
+//   Object.keys(dto).forEach((element, index) => {
+//     if (Object.keys(dto).length === index + 1) {
+//       dynamicQueryParameter += `node.${element}` + `= $` + `${element}`;
+//     } else {
+//       dynamicQueryParameter += `node.${element}` + `= $` + `${element} ,`;
+//     }
+//   });
+//   dynamicQueryParameter += `  return node`;
+//   return dynamicQueryParameter;
+// }
