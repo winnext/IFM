@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-// import { classNames } from 'primereact/utils';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
@@ -24,7 +23,6 @@ const Facility2 = () => {
     address: [],
     classifications: [
       {
-        classificationId: "",
         rootKey: "",
         leafKey: "",
       },
@@ -34,6 +32,7 @@ const Facility2 = () => {
   };
 
   const [facilities, setFacilities] = useState([]);
+  const [facilityShow, setFacilityShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [facilityDialog, setFacilityDialog] = useState(false);
   const [facility, setFacility] = useState(emptyFacility);
@@ -56,13 +55,13 @@ const Facility2 = () => {
     setLoading(true);
     FacilityService.findOne(realm)
       .then((response) => {
-        console.log(response);
-        setFacilities([response.data] || []);
+        console.log(response.data);
+        setFacilities([response.data.properties] || []);
         // setCountFacilities(response.data[1].count);
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err.response);
+        setFacilityShow(true);
         if (err.response.status !== 404) {
           toast.current.show({
             severity: "error",
@@ -70,7 +69,6 @@ const Facility2 = () => {
             detail: err.response ? err.response.data.message : err.message,
             life: 2000,
           });
-          
         }
         setLoading(false);
       });
@@ -99,7 +97,17 @@ const Facility2 = () => {
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
-        {facilities.length < 1 && (
+        {/* {facilities.length < 1 && (
+          <div className="my-2">
+            <Button
+              label="New"
+              icon="pi pi-plus"
+              className="p-button-success mr-2"
+              onClick={openNew}
+            />
+          </div>
+        )} */}
+        {facilityShow === false ? null : (
           <div className="my-2">
             <Button
               label="New"
@@ -161,7 +169,7 @@ const Facility2 = () => {
     return (
       <>
         <span className="p-column-title">Facility Name</span>
-        {rowData.facility_name}
+        {rowData.name}
       </>
     );
   };

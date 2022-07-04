@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_URL2 + "type/properties/active/";
+const url = "http://localhost:3005/" + "createdata/";
+const url2 = "http://localhost:3005/" + "getdata/";
 // const url = "http://localhost:3002/";
 
 
@@ -8,12 +9,8 @@ const findAll = async () => {
   return axios.get(url);
 };
 
-const getProperties = async (id: string) => {
-  return axios.get(url + id);
-};
-
-const getPropertiesWithName = async (name: string) => {
-  return axios.get(url + "name/" + name);
+const getData = async (id: string) => {
+  return axios.get(url2 + id);
 };
 
 const create = async (form: any) => {
@@ -31,8 +28,7 @@ const remove = async (id: string) => {
 
 
 
-const service = { findAll, getProperties, getPropertiesWithName, create, remove, update };
+const service = { findAll, getData, create, remove, update };
 
 export default service;
-
 

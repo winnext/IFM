@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -12,7 +12,9 @@ import { Toast } from "primereact/toast";
 import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
 import "./FormGenerate.css";
-
+//**********
+import deneme from "../../services/deneme";
+//*************
 const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
 const Input = ({ value, onChange, type, ...rest }) => {
   const options2 = rest?.options?.map((item) => {
@@ -41,24 +43,24 @@ const Input = ({ value, onChange, type, ...rest }) => {
         />
       );
     case "radio":
-      return merged?.map((e) => {
-        console.log(e);
+    case "gender":
+      return merged?.map((e, index) => {
+        console.log(e, index);
         return (
-          <div key={e} className="flex">
-            <div className="field-radiobutton">
-              <RadioButton
-                className="mt-1"
-                key={e}
-                value={e}
-                onChange={onChange}
-                checked={value === e}
-              />
-              <label className="ml-2">{e}</label>
-            </div>
-          </div>
+          <span key={e} className={index === 0 ? "mt-3" : "mt-3 ml-3"}>
+            <RadioButton
+              className="mt-2"
+              key={e}
+              value={e}
+              onChange={onChange}
+              checked={value === e}
+            />
+            <label className="ml-2">{e}</label>
+          </span>
         );
       });
     case "dropdown":
+    case "cities":
       return (
         <div>
           <Dropdown
@@ -87,13 +89,15 @@ const Input = ({ value, onChange, type, ...rest }) => {
       );
 
     case "date":
+      console.log(value);
+      const date1 = new Date(value);
       return (
         <div>
           <Calendar
             className="mt-1"
-            label={rest?.checkboxLabel}
+            dateFormat="dd/mm/yy"
             onChange={onChange}
-            value={value}
+            value={date1}
             placeholder={rest?.placeholder}
             showIcon
             style={{ width: "100%" }}
@@ -107,31 +111,52 @@ const Input = ({ value, onChange, type, ...rest }) => {
 };
 
 const Dynamic = () => {
-
   const [items, setItems] = useState([]);
+  const [hasForm, setHasForm] = useState(true);
   const toast = React.useRef(null);
 
-  const params = useLocation();
-  console.log(params);
+  const location = useLocation();
+  const params = useParams();
+  const searchParameters = new URLSearchParams(location.search);
+  const nodeId = params.id;
+  const typeId = searchParameters.get("typeId");
+  // const typeName =searchParameters.get("typeName");
+
+  // console.log(typeId, typeName);
 
   const history = useNavigate();
 
   useEffect(() => {
-    if (params.state) {
-      localStorage.setItem("nodeId", params.state.data._id.low);
-      localStorage.setItem("typeId", params.state.data.typeId);
-      localStorage.setItem("rootId", params.state.data.rootId);
+    // if (params.state) {
+    //   localStorage.setItem("nodeId", params.state.data._id.low);
+    //   localStorage.setItem("typeId", params.state.data.typeId);
+    //   localStorage.setItem("rootId", params.state.data.rootId);
+    // }
+    if (typeId === "undefined"||typeId === null||typeId === "") {
+      // console.log("typeId undefined");
+      return setHasForm(false);
     }
-    FormTypeService.nodeInfo(localStorage.getItem("typeId"))
-      .then((res) => {
-        console.log(res.data);
-        FormBuilderService.getProperties(res.data.identity.low)
-          .then((res) => {
-            console.log(res.data);
+    FormTypeService.nodeInfo(typeId)
+      .then(async (responsenodeInfo) => {
+        console.log(responsenodeInfo.data);
+        // const responsegetData = await deneme.getData(nodeId);
+        // console.log(responsegetData);
+        FormBuilderService.getPropertiesWithName(responsenodeInfo.data.properties.name)
+          .then((responsegetProperties) => {
+            console.log(responsegetProperties.data);
 
-            const convertedData = res.data.map(function (item) {
+            const convertedData = responsegetProperties.data.map(function (
+              item
+            ) {
+              // console.log(formData[`'${item.label}'`]);
               return {
                 ...item,
+                // defaultValue:
+                //   responsegetData.data.length > 0
+                //     ? responsegetData.data[0].data[item.label]
+                //       ? responsegetData.data[0].data[item.label]
+                //       : item.defaultValue
+                //     : item.defaultValue,
                 rules: { required: item.rules[0] },
                 options: item.options.map(function (option) {
                   return { optionsName: option };
@@ -141,10 +166,13 @@ const Dynamic = () => {
             setItems(convertedData);
           })
           .catch((err) => {
+            return setHasForm(false);
             toast.current.show({
               severity: "error",
               summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
+              detail: err.responsegetProperties
+                ? err.responsegetProperties.data.message
+                : err.message,
               life: 2000,
             });
           });
@@ -157,7 +185,6 @@ const Dynamic = () => {
           life: 2000,
         });
       });
-
   }, []);
 
   const {
@@ -170,22 +197,54 @@ const Dynamic = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
-    const formData={
-      nodeId:localStorage.getItem("nodeId"),
-      data:data
-    }
+    // console.log(data);
+    const formData = {
+      nodeId: nodeId,
+      data: data,
+    };
     console.log(formData);
-    history(`/facilitystructure/${params.state.rootId}`);
+    // console.log(formData);
+
+    // deneme
+    //   .create(formData)
+    //   .then((res) => {
+    //     toast.current.show({
+    //       severity: "success",
+    //       summary: "Successful",
+    //       detail: "Form Data Created",
+    //       life: 3000,
+    //     });
+    //     history(`/facilitystructure`);
+    //   })
+    //   .catch((err) => {
+    //     toast.current.show({
+    //       severity: "error",
+    //       summary: "Error",
+    //       detail: err.response ? err.response.data.message : err.message,
+    //       life: 2000,
+    //     });
+    //   });
   };
 
   const backPage = () => {
-    history(`/facilitystructure/${params.state.rootId}`);
+    history(`/facilitystructure`);
   };
+
+  const formNotFound = () => {
+    return (
+      <>
+        <h1>test</h1>
+      </>
+    );
+  };
+
+  formNotFound();
 
   return (
     <div>
-      {items && (
+      <Toast ref={toast} position="top-right" />
+
+      {hasForm ? (
         <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
           {items &&
             Object.keys(items).map((e) => {
@@ -215,18 +274,27 @@ const Dynamic = () => {
               );
             })}
           <div>
-            {items && (
+            {items.length > 0 && (
               <>
-                <Button className="ml-3" type="submit">
-                  Submit
-                </Button>
-                <Button className="ml-4" onClick={() => backPage()}>
-                  Back
-                </Button>
+                <div className="mt-4">
+                  <Button className="ml-3" type="submit">
+                    Submit
+                  </Button>
+                  <Button className="ml-4" onClick={() => backPage()}>
+                    Back
+                  </Button>
+                </div>
               </>
             )}
           </div>
         </form>
+      ) : (
+        <div>
+          <h4>There is no form for this structure.</h4>
+          <Button className="" onClick={() => backPage()}>
+            Back
+          </Button>
+        </div>
       )}
     </div>
   );

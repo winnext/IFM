@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from "react";
-// eslint-disable-next-line import/named
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Chips } from "primereact/chips";
-// import { TreeSelect } from 'primereact/treeselect';
 import { Dropdown } from "primereact/dropdown";
-import FacilityService from "../../services/facility";
-import Addresses from "../Address/Addresses";
 import { TreeSelect } from "primereact/treeselect";
+import { v4 as uuidv4 } from "uuid";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
+import FacilityService from "../../services/facility";
 import ClassificationsService from "../../services/classifications";
 import FacilityStructureService from "../../services/facilitystructure";
+import Addresses from "../Address/Addresses";
 import { useAppSelector } from "../../app/hook";
 
 interface Node {
-  _id?: string;
   key: string;
   label: string;
   name: string;
   code: string;
   selectable: boolean;
   children: Node[];
-  __v?: number;
 }
 
 interface Params {
@@ -134,7 +131,7 @@ const DefineFacility = ({
   const [realm, setRealm] = useState(auth.auth.realm);
 
   useEffect(() => {
-    ClassificationsService.findOne("0")
+    ClassificationsService.findOne("130")
       .then((res) => {
         console.log(res.data.root);
 
@@ -162,15 +159,15 @@ const DefineFacility = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted]);
 
-  useEffect(() => {
-    FacilityStructureService.findOne(realm).then((res) => {
-      if (!res.data.root.children) {
-        setStructure([res.data.root.properties] || []);
-      } else if (res.data.root.children) {
-        setStructure([res.data.root] || []);
-      }
-    });
-  }, [])
+  // useEffect(() => {
+  //   FacilityStructureService.findOne(realm).then((res) => {
+  //     if (!res.data.root.children) {
+  //       setStructure([res.data.root.properties] || []);
+  //     } else if (res.data.root.children) {
+  //       setStructure([res.data.root] || []);
+  //     }
+  //   });
+  // }, [])
 
   // const findNode = (
   //   search: string,
@@ -202,15 +199,15 @@ const DefineFacility = ({
         },
         realm: realm,
         structure: {
-          code: 'test',
-          name: 'IFM',
-          key: '9c1f68b0-1284-4ef4-9108-3ddf500bc6be',
-          tag: ['test'],
-          labelclass: 'test',
+          code: '00-00-00-00',
+          name: data.facility_name,
+          key: uuidv4(),
+          tag: [],
+          labelclass: realm,
           type: '',
           typeId: '',
           description: '',
-          label: 'IFM',
+          label: data.facility_name,
           realm: realm
         }
       })
