@@ -14,6 +14,27 @@ import { v4 as uuidv4 } from "uuid";
 import ClassificationsService from "../../services/classifications";
 
 interface ClassificationInterface {
+  cantDeleted?: boolean;
+  children?: Node[];
+  description: string;
+  isActive?: boolean;
+  isDeleted?: boolean;
+  key: string;
+  name: string;
+  code: string;
+  realm?: string;
+  tag: string[];
+  _id?: {
+    low: string;
+    high: string;
+  },
+  icon?: string;
+  label?: string;
+  labels?: string[]|undefined; // for form type
+  parentId?: string;
+}
+
+interface ClassificationInterface2 {
   identity?: {
     low: string;
     high: string;
@@ -82,42 +103,41 @@ const Classifications = () => {
       });
   };
 
-  const addItem = () => {
-    const _classification: ClassificationInterface = {
+  // const addItem = () => {
+  //   const _classification: ClassificationInterface = {
+  //     code: code,
+  //     name: name,
+  //     key: uuidv4(),
+  //     tag: tag,
+  //     description: "",
+  //     labels: [],
+  //   };
 
-      code: code,
-      name: name,
-      key: uuidv4(),
-      tag: tag,
-      labelclass: labelClass,
-      label: code + " : " + name
-    };
+  //   ClassificationsService.create(_classification)
+  //     .then((res) => {
+  //       toast.current.show({
+  //         severity: "success",
+  //         summary: "Successful",
+  //         detail: "Classification Created",
+  //         life: 3000,
+  //       });
+  //       loadLazyData();
+  //     })
+  //     .catch((err) => {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "Error",
+  //         detail: err.response ? err.response.data.message : err.message,
+  //         life: 20000,
+  //       });
+  //     });
 
-    ClassificationsService.create(_classification)
-      .then((res) => {
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Classification Created",
-          life: 3000,
-        });
-        loadLazyData();
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 20000,
-        });
-      });
-
-    setAddDia(false);
-    setName("");
-    setCode("");
-    setLabelClass("");
-    setTag([]);
-  };
+  //   setAddDia(false);
+  //   setName("");
+  //   setCode("");
+  //   setLabelClass("");
+  //   setTag([]);
+  // };
 
   const onPage = (event: any) => {
     if (globalFilter === "") setLazyParams(event);
@@ -141,27 +161,27 @@ const Classifications = () => {
     </div>
   );
 
-  const renderFooter = () => {
-    return (
-      <div>
-        <Button
-          label="Cancel"
-          icon="pi pi-times"
-          onClick={() => {
-            setAddDia(false);
-            setName("");
-          }}
-          className="p-button-text"
-        />
-        <Button
-          label="Add"
-          icon="pi pi-check"
-          onClick={() => addItem()}
-          autoFocus
-        />
-      </div>
-    );
-  };
+  // const renderFooter = () => {
+  //   return (
+  //     <div>
+  //       <Button
+  //         label="Cancel"
+  //         icon="pi pi-times"
+  //         onClick={() => {
+  //           setAddDia(false);
+  //           setName("");
+  //         }}
+  //         className="p-button-text"
+  //       />
+  //       <Button
+  //         label="Add"
+  //         icon="pi pi-check"
+  //         onClick={() => addItem()}
+  //         autoFocus
+  //       />
+  //     </div>
+  //   );
+  // };
 
   const leftToolbarTemplate = () => {
     return (
@@ -260,7 +280,7 @@ const Classifications = () => {
         header="Add New Classification"
         visible={addDia}
         style={{ width: "40vw" }}
-        footer={renderFooter}
+        // footer={renderFooter}
         onHide={() => {
           setName("");
           setAddDia(false);

@@ -11,6 +11,16 @@ interface PaginationParams {
 }
 
 interface ClassificationInterface {
+  key: string;
+  parentId?: string;
+  name: string;
+  code: string;
+  tag: string[];
+  description: string;
+  labels: string[];
+}
+
+interface ClassificationInterface2 {
   identity?: {
     low: string;
     high: string;
@@ -36,7 +46,7 @@ const findAll = async (query: PaginationParams) => {
 };
 
 const findOne = async (id: string) => {
-  return axios.get(url + "/" + id);
+  return axios.get(url + "/Classification/" + id);
 };
 
 const create = async (classification: ClassificationInterface) => {
@@ -60,7 +70,7 @@ const relation = async (id1: string, id2: string) => {
 };
 
 const nodeInfo = async (key: string) => {
-  return axios.get(url + "/nodeinfo" + "/" + key);
+  return axios.get(url  + "/" + key);
 };
 
 const service = { findAll, findOne, create, update, remove, relation, nodeInfo };
