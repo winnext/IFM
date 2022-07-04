@@ -16,8 +16,9 @@ interface ClassificationInterface {
   name: string;
   code: string;
   tag: string[];
-  description: string;
-  labels: string[];
+  description?: string;
+  labels?: string[];
+  formTypeId?: string;
 }
 
 interface ClassificationInterface2 {

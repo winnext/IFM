@@ -47,6 +47,7 @@ interface Node {
   name: string;
   realm: string;
   tag: string[];
+  formTypeId?: string;
   _id: {
     low: string;
     high: string;
@@ -65,7 +66,7 @@ interface Node2 {
   hasParent?: boolean;
   children: Node[];
   type?: string;
-  typeId?: string;
+  formTypeId?: string;
   parent_id?: string;
   selectable?: boolean;
   self_id: {
@@ -92,7 +93,7 @@ interface FormNode {
   label: string;
   children: FormNode[];
   _type?: string;
-  typeId?: string;
+  formTypeId?: string;
   selectable?: boolean;
   _id: {
     low: string;
@@ -128,8 +129,8 @@ const SetFacilityStructure = () => {
 
   const [data, setData] = useState<Node[]>([]);
   const [name, setName] = useState("");
-  const [typeId, setTypeId] = useState<any>(undefined);
-  const [optionalLabels, setOptionalLabels] = useState<string[]>([]);
+  const [formTypeId, setFormTypeId] = useState<any>(undefined);
+  const [labels, setLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [isAllType, setIsAllType] = useState<boolean>(false);
@@ -207,8 +208,8 @@ const SetFacilityStructure = () => {
             setTag(res.data.properties.tag || []);
             setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
             setIsActive(res.data.properties.isActive);
-            setTypeId(res.data.properties.typeId);
-            setOptionalLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
+            setFormTypeId(res.data.properties.formTypeId);
+            setLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
           })
           .catch((err) => {
             toast.current.show({
@@ -235,8 +236,8 @@ const SetFacilityStructure = () => {
     FacilityStructureService.findOne(realm).then((res) => {
       console.log(res.data.root);
 
-    
-      
+
+
 
       // let temp = [res.data.root[0].properties] || [];
 
@@ -287,12 +288,12 @@ const SetFacilityStructure = () => {
     for (let i of nodes) {
       fixNodes(i.children)
       i.icon = "pi pi-fw pi-building";
-      i.label=i.name;
+      i.label = i.name;
       i.children = i.children || [];
       // console.log(i);
 
-      // if (i.typeId) {
-      //   let nodeKey: any = i.typeId;
+      // if (i.formTypeId) {
+      //   let nodeKey: any = i.formTypeId;
       //   FormTypeService.nodeInfo(nodeKey)
       //     .then((res) => {
       //       console.log(res.data);
@@ -314,24 +315,39 @@ const SetFacilityStructure = () => {
   };
 
   const addItem = (key: string) => {
+    let newNode: any = {};
     FacilityStructureService.nodeInfo(key)
       .then((res) => {
         console.log(res.data);
-        const newNode = {
-          key: uuidv4(),
-          parentId: res.data.id,
-          name: name,
-          tag: tag,
-          description: "",
-          // labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
-          labels: [optionalLabels[0]] ,
-        };
+        if (labels.length > 0) {
+          newNode = {
+            key: uuidv4(),
+            parentId: res.data.id,
+            name: name,
+            tag: tag,
+            description: "",
+            // labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
+            labels: [labels[0]],
+            formTypeId: formTypeId,
+          };
+        } else {
+          newNode = {
+            key: uuidv4(),
+            parentId: res.data.id,
+            name: name,
+            tag: tag,
+            description: "",
+            formTypeId: formTypeId,
+            // labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
+          };
+        }
+
         console.log(newNode);
 
         FacilityStructureService.create(newNode)
           .then((result) => {
             console.log(result);
-            
+
             toast.current.show({
               severity: "success",
               summary: "Successful",
@@ -359,28 +375,42 @@ const SetFacilityStructure = () => {
       });
     setName("");
     setTag([]);
-    setTypeId(undefined);
+    setFormTypeId(undefined);
     setAddDia(false);
-    setOptionalLabels([]);
+    setLabels([]);
   };
 
   const editItem = (key: string) => {
+    let updateNode: any = {};
     FacilityStructureService.nodeInfo(key)
       .then((res) => {
-        const updateNode = {
-          key: uuidv4(),
-          name: name,
-          tag: tag,
-          isActive: isActive,
-          description: "",
-          labels: [optionalLabels[0]],
-        };
+        if (labels.length > 0) {
+          updateNode = {
+            key: uuidv4(),
+            name: name,
+            tag: tag,
+            isActive: isActive,
+            description: "",
+            labels: [labels[0]],
+            formTypeId: formTypeId,
+          };
+        } else {
+          updateNode = {
+            key: uuidv4(),
+            name: name,
+            tag: tag,
+            isActive: isActive,
+            description: "",
+            formTypeId: formTypeId,
+          }
+        }
+
         console.log(updateNode);
-        
+
         FacilityStructureService.update(res.data.id, updateNode)
           .then((res) => {
             console.log(res.data);
-            
+
             toast.current.show({
               severity: "success",
               summary: "Successful",
@@ -408,8 +438,8 @@ const SetFacilityStructure = () => {
       });
     setName("");
     setTag([]);
-    setTypeId(undefined);
-    setOptionalLabels([]);
+    setFormTypeId(undefined);
+    setLabels([]);
     setEditDia(false);
   }
 
@@ -512,8 +542,8 @@ const SetFacilityStructure = () => {
           onClick={() => {
             setAddDia(false);
             setName("");
-            setTypeId(undefined);
-            setOptionalLabels([]);
+            setFormTypeId(undefined);
+            setLabels([]);
             setTag([]);
           }}
           className="p-button-text"
@@ -538,8 +568,8 @@ const SetFacilityStructure = () => {
             setEditDia(false);
             setName("");
             setTag([]);
-            setOptionalLabels([]);
-            setTypeId(undefined);
+            setLabels([]);
+            setFormTypeId(undefined);
           }}
           className="p-button-text"
         />
@@ -573,8 +603,8 @@ const SetFacilityStructure = () => {
         onHide={() => {
           setName("");
           setTag([]);
-          setTypeId(undefined);
-          setOptionalLabels([]);
+          setFormTypeId(undefined);
+          setLabels([]);
           setAddDia(false);
         }}
       >
@@ -600,7 +630,7 @@ const SetFacilityStructure = () => {
               reset();
               setSelectedForm(e.value);
               setType(e.value.name);
-              setTypeId(e.value._id);
+              setFormTypeId(e.value._id);
             }}
             placeholder="Select Type"
             style={{ width: '50%' }}
@@ -618,16 +648,16 @@ const SetFacilityStructure = () => {
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <TreeSelect
-            value={typeId}
+            value={formTypeId}
             options={formData}
             onChange={(e) => {
-              setTypeId(e.value);
+              setFormTypeId(e.value);
               console.log(e);
               let nodeKey: any = e.value;
               FormTypeService.nodeInfo(nodeKey)
                 .then((res) => {
                   console.log(res.data);
-                  setOptionalLabels([res.data.properties.name])
+                  setLabels([res.data.properties.name])
                 })
                 .catch((err) => {
                   toast.current.show({
@@ -660,8 +690,8 @@ const SetFacilityStructure = () => {
         onHide={() => {
           setName("");
           setTag([]);
-          setTypeId(undefined);
-          setOptionalLabels([]);
+          setFormTypeId(undefined);
+          setLabels([]);
           setEditDia(false);
         }}
       >
@@ -685,15 +715,15 @@ const SetFacilityStructure = () => {
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
           <TreeSelect
-            value={typeId}
+            value={formTypeId}
             options={formData}
             onChange={(e) => {
-              setTypeId(e.value);
+              setFormTypeId(e.value);
               let nodeKey: any = e.value;
               FormTypeService.nodeInfo(nodeKey)
                 .then((res) => {
                   console.log(res.data);
-                  setOptionalLabels([res.data.properties.name])
+                  setLabels([res.data.properties.name])
                 })
                 .catch((err) => {
                   toast.current.show({
@@ -774,8 +804,8 @@ const SetFacilityStructure = () => {
                         setTag(res.data.properties.tag || []);
                         setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
                         setIsActive(res.data.properties.isActive);
-                        setTypeId(res.data.properties.typeId);
-                        setOptionalLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
+                        setFormTypeId(res.data.properties.formTypeId);
+                        setLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
                       })
                       .catch((err) => {
                         toast.current.show({
@@ -810,7 +840,7 @@ const SetFacilityStructure = () => {
                   //   }
                   // }
                   // )} 
-                  onClick={(e) => navigate(`/formgenerate/${data.self_id.low}?typeId=${data.typeId}`)}
+                  onClick={(e) => navigate(`/formgenerate/${data.self_id.low}?formTypeId=${data.formTypeId}`)}
                   title="Edit Form"
                 />
                 {/* } */}

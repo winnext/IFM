@@ -47,6 +47,7 @@ interface Node {
     low: string;
     high: string;
   },
+  formTypeId?: string;
   icon?: string;
   label?: string;
   labels?: string[]; // for form type
@@ -104,6 +105,7 @@ const SetClassification = () => {
   const navigate = useNavigate();
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
+  const [labels, setLabels] = useState<string[]>([]);
 
   const menu = [
     {
@@ -186,22 +188,34 @@ const SetClassification = () => {
     }
     for (let i of nodes) {
       fixNodes(i.children)
-      i.label=i.name;;
+      i.label = i.name;;
     }
   };
 
   const addItem = (key: string) => {
+    let newNode: any = {};
     ClassificationsService.nodeInfo(key)
       .then((res) => {
-        const newNode = {
-          key: uuidv4(),
-          parent_id: res.data.id,
-          name: name,
-          code: code,
-          tag: tag,
-          description: "",
-          labels: []
-        };
+        if (labels.length > 0) {
+          newNode = {
+            key: uuidv4(),
+            parent_id: res.data.id,
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+            labels: []
+          }
+        } else {
+          newNode = {
+            key: uuidv4(),
+            parent_id: res.data.id,
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+          }
+        }
         ClassificationsService.create(newNode)
           .then((res) => {
             toast.current.show({
@@ -237,16 +251,28 @@ const SetClassification = () => {
   };
 
   const editItem = (key: string) => {
+    let updateNode: any = {};
     ClassificationsService.nodeInfo(key)
       .then((res) => {
-        const updateNode = {
-          key: uuidv4(),
-          name: name,
-          code: code,
-          tag: tag,
-          description: "",
-          labels: [],
-        };
+        if (labels.length > 0) {
+          updateNode = {
+            key: uuidv4(),
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+            labels: labels,
+          };
+        } else {
+          updateNode = {
+            key: uuidv4(),
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+          };
+        }
+
         ClassificationsService.update(res.data.id, updateNode)
           .then((res) => {
             toast.current.show({
@@ -285,7 +311,7 @@ const SetClassification = () => {
     ClassificationsService.nodeInfo(key)
       .then((res) => {
         if (res.data.properties.hasParent === false) {
-          ClassificationsService.remove(res.data.identity.low)
+          ClassificationsService.remove(res.data.id)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -304,7 +330,7 @@ const SetClassification = () => {
               });
             });
         } else {
-          ClassificationsService.remove(res.data.identity.low)
+          ClassificationsService.remove(res.data.id)
             .then(() => {
               toast.current.show({
                 severity: "success",
