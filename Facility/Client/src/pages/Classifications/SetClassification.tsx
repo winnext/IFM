@@ -202,7 +202,7 @@ const SetClassification = () => {
         if (labels.length > 0) {
           newNode = {
             key: uuidv4(),
-            parent_id: res.data.id,
+            parentId: res.data.id,
             name: name,
             code: code,
             tag: tag,
@@ -212,19 +212,21 @@ const SetClassification = () => {
         } else {
           newNode = {
             key: uuidv4(),
-            parent_id: res.data.id,
+            parentId: res.data.id,
             name: name,
             code: code,
             tag: tag,
             description: "",
           }
         }
+        console.log(newNode);
+        
         ClassificationsService.create(newNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Form  Created",
+              detail: "Classification Created",
               life: 3000,
             });
             getClassification();
@@ -543,7 +545,7 @@ const SetClassification = () => {
               });
               return
             }
-            dragConfirm(event.dragNode.self_id.low, event.dropNode.self_id.low)
+            dragConfirm(event.dragNode._id.low, event.dropNode._id.low)
           }}
           filter
           filterBy="name,code"
