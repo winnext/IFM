@@ -2,6 +2,7 @@
  * User class name Enum
  */
 export enum ClassNames {
-  ASSET = 'Asset',
-  TREE = 'Tree',
+  CL = 'Classification',
+  FS = 'FacilityStructure',
+  FC = 'Facility'
 }

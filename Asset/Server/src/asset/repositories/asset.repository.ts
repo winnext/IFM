@@ -1,102 +1,129 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AssetNotFoundException, FacilityStructureNotFountException } from '../../common/notFoundExceptions/not.found.exception';
 
-import { BaseInterfaceRepository } from 'ifmcommon';
+import { Asset } from '../entities/asset.entity';
 
-import { Asset } from '../entities/room.entity';
-import { CreateAssetDto } from '../dto/create.asset.dto';
-import { UpdateAssetDto } from '../dto/update.room.dto';
+//import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
+import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
 
-/**
- * Room Repository For Database Reactions
- */
+
+import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
+import { GeciciInterface } from 'src/common/interface/gecici.interface';
+import { CreateAssetDto } from '../dto/create-asset.dto';
+import { UpdateAssetDto } from '../dto/update-asset.dto';
+
+
+
 @Injectable()
-export class RoomRepository implements BaseInterfaceRepository<Asset> {
-  /**
-   * Inject Mongoose Room Model
-   */
-  constructor(@InjectModel(Asset.name) private readonly roomModel: Model<Asset>) {}
+export class AssetRepository implements GeciciInterface<Asset> {
+  constructor(private readonly neo4jService: Neo4jService) {}
 
-  /**
-   * Find one Room by id
-   */
-  async findOneById(_id: string): Promise<Asset> {
-    const room = await this.roomModel.findOne({ _id }).exec();
-    if (!room) {
-      // throw new RoomNotFoundException(_id);
+  async findOneByRealm(label: string, realm: string) {
+    let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm); 
+    if (!node) {
+      throw new FacilityStructureNotFountException(realm);
     }
+    node = await this.neo4jService.changeObjectChildOfPropToChildren(node);
+    
+    return node;
+  }
+  async create(createAssetDto: CreateAssetDto) {
+    let asset = new Asset();
+    let assetObject = assignDtoPropToEntity(asset, createAssetDto);
+    let value;
+    if (assetObject['labels']) {
+      value = await this.neo4jService.createNode(assetObject, assetObject['labels']);
+    }
+    else {
+      value = await this.neo4jService.createNode(assetObject);
+    }
+    value['properties']['id'] = value['identity'].low;
+    const result = {id:value['identity'].low, labels: value['labels'], properties: value['properties']}
+    if (assetObject['parentId']) {
+      await this.neo4jService.addRelations(
+        result['id'], CreateAssetDto["parentId"]
+      );
+    }
+    return result;
+  }
+  
 
-    return room;
+  async update(_id: string, updateAssetDto: UpdateAssetDto) {
+    let updateAssetDtoWithoutLabelsAndParentId = {};
+    Object.keys(updateAssetDto).forEach((element) => {
+      if (element != 'labels' && element != 'parentId' ) {
+        updateAssetDtoWithoutLabelsAndParentId[element] = updateAssetDto[element];
+      }
+    });
+    const dynamicObject = createDynamicCyperObject(updateAssetDtoWithoutLabelsAndParentId);
+    const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
+
+    if (!updatedNode) {
+      throw new FacilityStructureNotFountException(_id);
+    }
+    const result = {id:updatedNode['identity'].low, labels: updatedNode['labels'], properties: updatedNode['properties']} 
+    if (updateAssetDto['labels'] && updateAssetDto['labels'].length > 0) {   
+      await this.neo4jService.removeLabel(_id,result["labels"]);
+      await this.neo4jService.updateLabel(_id,updateAssetDto['labels']);
+    }
+    return result;
   }
 
-  /**
-   * Find All Rooms with Pagination
-   */
-  async findAll(data: PaginationParams) {
-    let { page, limit } = data;
-    page = page || 0;
-    limit = limit || 5;
-    const orderBy = data.orderBy || 'ascending';
-    const orderByColumn = data.orderByColumn || 'createdAt';
+  async delete(_id: string) {
+    try {
+     
+      let hasParent = await this.neo4jService.getParentById(_id);
+      let deletedNode;
 
-    const count = parseInt((await this.roomModel.find().count()).toString());
-    const pagecount = Math.ceil(count / limit);
-    let pg = parseInt(page.toString());
-    const lmt = parseInt(limit.toString());
-    if (pg > pagecount) {
-      pg = pagecount;
-    }
-    let skip = pg * lmt;
-    if (skip >= count) {
-      skip = count - lmt;
-      if (skip < 0) {
-        skip = 0;
+      let hasChildren =  await this.neo4jService.findChildrenById(_id);       
+      if (hasChildren['records'].length == 0) {
+        deletedNode = await this.neo4jService.delete(_id);
+        if (!deletedNode) {
+            throw new AssetNotFoundException(_id);
+        }
+      }
+      return deletedNode;
+    } catch (error) {
+      const { code, message } = error.response;
+      if (code === CustomNeo4jError.HAS_CHILDREN) {
+        nodeHasChildException(_id);
+      } else {
+        throw new HttpException(message, code);
       }
     }
-    const result = await this.roomModel
-      .find()
-      .skip(skip)
-      .limit(lmt)
-      .sort([[orderByColumn, orderBy]])
-      .exec();
-    const pagination = { count: count, page: pg, limit: lmt };
-    const room = [];
-    room.push(result);
-    room.push(pagination);
-
-    return room;
   }
 
-  /**
-   * create Room
-   */
-  async create(createRoomDto: CreateAssetDto) {
-    const room = new this.roomModel(createRoomDto);
-
-    return await room.save();
-  }
-
-  /**
-   * Update a Room with id
-   */
-  async update(_id: string, updateRoomDto: UpdateAssetDto) {
-    const updatedRoom = await this.roomModel.findOneAndUpdate({ _id }, { $set: updateRoomDto }, { new: true }).exec();
-
-    if (!updatedRoom) {
-      // throw new RoomNotFoundException(_id);
+  async changeNodeBranch(_id: string, _target_parent_id: string) {
+    try {
+      await this.neo4jService.deleteRelations(_id);
+      await this.neo4jService.addRelations(_id, _target_parent_id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return updatedRoom;
   }
 
-  /**
-   * Delete a Room with id
-   */
-  async delete(_id: string) {
-    const room = await this.findOneById(_id);
-    const deletedRoom = await this.roomModel.findOneAndRemove({ room });
-    return deletedRoom;
+  async deleteRelations(_id: string) {
+    await this.neo4jService.deleteRelations(_id);
+  }
+
+  async addRelations(_id: string, _target_parent_id: string) {
+    try {
+      await this.neo4jService.addRelations(_id, _target_parent_id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async findOneNodeByKey(key: string) {
+    try {
+      const node = await this.neo4jService.findOneNodeByKey(key);
+      if (!node) {
+        throw new AssetNotFoundException(key);
+      }
+      const result = {id:node['identity'].low, labels: node['labels'], properties: node['properties']} 
+      return result;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

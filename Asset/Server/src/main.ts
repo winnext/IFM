@@ -3,12 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { kafkaOptions } from './common/configs/message.broker.options';
-import { LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter, MongoExceptionFilter } from 'ifmcommon';
+import { Topics, LoggingInterceptor, TimeoutInterceptor, HttpExceptionFilter, MongoExceptionFilter } from 'ifmcommon';
 import trial from './tracing';
 import { i18nValidationErrorFactory, I18nValidationExceptionFilter } from 'nestjs-i18n';
 import { kafkaConf } from './common/const/kafka.conf';
 import { Neo4jErrorFilter } from 'sgnm-neo4j';
-import { AssetTopics } from './common/const/kafta.topic.enum';
 
 async function bootstrap() {
   try {
@@ -21,7 +20,7 @@ async function bootstrap() {
       .setTitle('Asset Microservice Endpoints')
       .setDescription('Asset Transactions')
       .setVersion('1.0')
-      .addTag('Asset')
+      .addTag('asset')
       .addBearerAuth(
         {
           type: 'http',
@@ -39,14 +38,14 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, exceptionFactory: i18nValidationErrorFactory }));
     app.useGlobalFilters(
-      new HttpExceptionFilter(kafkaConf, AssetTopics.ASSET_EXCEPTIONS),
-      new MongoExceptionFilter(kafkaConf, AssetTopics.ASSET_EXCEPTIONS),
+      new HttpExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
+      new MongoExceptionFilter(kafkaConf, Topics.FACILITY_EXCEPTIONS),
       new Neo4jErrorFilter(),
       new I18nValidationExceptionFilter(),
     );
     app.useGlobalInterceptors(
-      new LoggingInterceptor(kafkaConf, AssetTopics.ASSET_LOGGER, AssetTopics.ASSET_OPERATION),
-      new TimeoutInterceptor(),
+      new LoggingInterceptor(kafkaConf, Topics.FACILITY_LOGGER, Topics.FACILITY_OPERATION),
+      //new TimeoutInterceptor(),
     );
     app.enableCors();
     await app.startAllMicroservices();

@@ -1,22 +1,22 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ConnectionEnums } from './common/const/connection.enum';
 import { I18nModule } from 'nestjs-i18n';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
-import { HistoryModule } from './kiramenKatibin/history.module';
+
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
-import { Neo4jModule } from 'sgnm-neo4j';
+
+//import { Neo4jModule } from 'sgnm-neo4j';
+import { Neo4jModule } from './sgnm-neo4j/src';
+
 import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { HttpCacheInterceptor } from 'ifmcommon';
 import { AssetModule } from './asset/asset.module';
-import { TreeModule } from './assetTree/tree.module';
 
 @Module({
   imports: [
@@ -42,17 +42,7 @@ import { TreeModule } from './assetTree/tree.module';
     KeycloakModule,
 
     I18nModule.forRoot(i18nOptions(__dirname)),
-
-    MongooseModule.forRootAsync({
-      connectionName: ConnectionEnums.ASSET,
-      useFactory: (config: ConfigService) => ({
-        uri: config.get('DATABASE_LINK'),
-        dbName: config.get('ASSET_DB_NAME'),
-        user: config.get('DB_USER'),
-        pass: config.get('DB_PASS'),
-      }),
-      inject: [ConfigService],
-    }),
+   
     Neo4jModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -62,8 +52,10 @@ import { TreeModule } from './assetTree/tree.module';
         port: configService.get('NEO4J_PORT'),
         scheme: configService.get('NEO4J_SCHEME'),
         username: configService.get('NEO4J_USERNAME'),
+        database:configService.get('NEO4J_DATABASE'),
       }),
     }),
+
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -75,9 +67,9 @@ import { TreeModule } from './assetTree/tree.module';
 
     MessagebrokerModule,
 
+
+
     AssetModule,
-    TreeModule,
-    HistoryModule,
   ],
   providers: [
     //to cache all get request

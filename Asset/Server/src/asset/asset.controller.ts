@@ -1,89 +1,58 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Roles, Unprotected } from 'nest-keycloak-connect';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 
-import { UserRoles } from 'src/common/const/keycloak.role.enum';
+
+import { Unprotected } from 'nest-keycloak-connect';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { NoCache } from 'ifmcommon';
-import { Asset } from './entities/room.entity';
+import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
+import { CreateAssetDto } from './dto/create-asset.dto';
+import { UpdateAssetDto } from './dto/update-asset.dto';
 import { AssetService } from './asset.service';
-import { CreateAssetDto } from './dto/create.asset.dto';
-import { UpdateAssetDto } from './dto/update.room.dto';
-
-/**
- * Room Contoller
- */
-@ApiTags('Asset')
-@Controller('asset')
-//@ApiBearerAuth('JWT-auth')
+@ApiTags('structure')
+@ApiBearerAuth('JWT-auth')
+@Controller('structure')
 export class AssetController {
-  constructor(private readonly roomService: AssetService) {}
+  constructor(private readonly assetService: AssetService) {}
 
-  /**
-   * Get All Rooms with pagination
-   */
-  @ApiOperation({
-    summary: 'Gets all Rooms with pagination',
-    description: 'If you want to get all Room in your organization use this route. It takes no path or query params',
-  })
-  @Get('/')
-  @NoCache()
-  @HttpCode(200)
-  //@Roles({ roles: [UserRoles.ADMIN] })
   @Unprotected()
-  async getAll(@Query() params: PaginationParams): Promise<Asset[]> {
-    return this.roomService.findAll(params);
-  }
-
-  /**
-   * Get Room by id
-   */
-  @ApiOperation({
-    summary: 'Gets Room with id ',
-    description:
-      'If you want to get specific Room in your organization use this route. It takes  query params which is  id',
-  })
-  @Get('/:_id')
   //@Roles({ roles: [UserRoles.ADMIN] })
-  @Unprotected()
-  getById(@Param('_id') id: string): Promise<Asset> {
-    return this.roomService.findOne(id);
-  }
-
-  /**
-   * Create Room
-   */
   @ApiBody({
     type: CreateAssetDto,
-    description: 'Store Room structure',
+    description: 'create  facility structure',
   })
-  @Post('')
-  //@Roles({ roles: [UserRoles.ADMIN] })
-  @Unprotected()
-  create(@Body() createRoomDto: CreateAssetDto): Promise<Asset> {
-    return this.roomService.create(createRoomDto);
-  }
-  /**
-   * Update Room with id
-   */
-  @ApiBody({
-    type: UpdateAssetDto,
-    description: 'update  User structure',
-  })
-  @Patch('/:_id')
-  //@Roles({ roles: [UserRoles.ADMIN] })
-  @Unprotected()
-  update(@Param('_id') id: string, @Body() updateRoomDto: UpdateAssetDto) {
-    return this.roomService.update(id, updateRoomDto);
+  @Post()
+  create(@Body() createAssetDto: CreateAssetDto) {
+    return this.assetService.create(createAssetDto);
   }
 
-  /**
-   * Delete Room with id
-   */
-  @Delete('/:_id')
-  //@Roles({ roles: [UserRoles.ADMIN] })
+  @Get(':label/:realm')
   @Unprotected()
-  deleteFacility(@Param('_id') id: string) {
-    return this.roomService.remove(id);
+  @NoCache()
+  findOne(@Param('label') label: string, @Param('realm') realm: string) {
+    return this.assetService.findOne(label, realm);
+  }
+
+  @Patch(':id')
+  @Unprotected()
+  update(@Param('id') id: string, @Body() updateAssetDto: UpdateAssetDto) {
+    return this.assetService.update(id, updateAssetDto);
+  }
+
+  @Delete(':id')
+  @Unprotected()
+  remove(@Param('id') id: string) {
+    return this.assetService.remove(id);
+  }
+  @Unprotected()
+  @Post('/relation/:id/:target_parent_id')
+  changeNodeBranch(@Param('id') id: string, @Param('target_parent_id') target_parent_id: string) {
+    return this.assetService.changeNodeBranch(id, target_parent_id);
+  }
+
+  @Unprotected()
+  @Get('/:key')
+  @NoCache()
+  findOneNode(@Param('key') key: string) {
+    return this.assetService.findOneNode(key);
   }
 }
