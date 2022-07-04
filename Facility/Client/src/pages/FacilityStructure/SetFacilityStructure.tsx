@@ -261,18 +261,17 @@ const SetFacilityStructure = () => {
 
       setLoading(false);
     }).catch(err => {
-      if (err.response.status !== 404) {
+      if (err.response.status === 500) {
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
+          detail: "Facility Structure not found",
+          life: 3000,
         });
+        setTimeout(() => {
+          navigate("/facility")
+        }, 3000)
       }
-      setLoading(false);
-      // setTimeout(() => {
-      //   navigate("/facilitystructure")
-      // }, 2000)
     })
   }
 
