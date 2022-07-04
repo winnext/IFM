@@ -53,10 +53,10 @@ export class ClassificationRepository implements GeciciInterface<Classification>
     let classificationObject = assignDtoPropToEntity(classification, createClassificationDto);
     let value;
     if (classificationObject['labels']) {
-      value = await this.neo4jService.createNode(classificationObject['entity'], classificationObject['labels']);
+      value = await this.neo4jService.createNode(classificationObject, classificationObject['labels']);
     }
     else {
-      value = await this.neo4jService.createNode(classificationObject['entity']);
+      value = await this.neo4jService.createNode(classificationObject);
     }
     value['properties']['id'] = value['identity'].low;
     const result = {id:value['identity'].low, labels: value['labels'], properties: value['properties']}
