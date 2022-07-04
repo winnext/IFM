@@ -8,7 +8,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
-import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
+import { StructureModule } from './facility-structures/structure.module';
 import { HistoryModule } from './kiramenKatibin/history.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from './trace_logger/trace.logger.module';
@@ -104,7 +104,7 @@ import { HttpCacheInterceptor } from 'ifmcommon';
 
     MessagebrokerModule,
 
-    FacilityStructuresModule,
+    StructureModule,
 
     HistoryModule,
 

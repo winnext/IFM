@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
-
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { FacilityStructuresModule } from 'src/facility-structures/facility-structures.module';
-
+import { StructureModule } from 'src/facility-structures/structure.module';
 import { FacilityController } from './facility.controller';
 import { FacilityService } from './facility.service';
 import { FacilityRepository } from './repositories/facility.repository';
 
 @Module({
-  imports: [FacilityStructuresModule],
+  imports: [StructureModule],
   controllers: [FacilityController],
   providers: [
     FacilityService,

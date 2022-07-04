@@ -3,12 +3,11 @@ import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 
-import { CreateFacilityStructureDto } from './dto/create-facility-structure.dto';
-import { UpdateFacilityStructureDto } from './dto/update-facility-structure.dto';
-
+import { CreateFacilityStructureDto } from '../dto/create-facility-structure.dto';
+import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto';
 
 @Injectable()
-export class FacilityStructuresService {
+export class StructureService {
   constructor(
     @Inject(RepositoryEnums.FACILITY_STRUCTURE)
     private readonly facilityStructureRepository: GeciciInterface<any>,
@@ -18,7 +17,7 @@ export class FacilityStructuresService {
   }
 
   findOne(label: string, realm: string) {
-    return this.facilityStructureRepository.findOneByRealm(label,realm);
+    return this.facilityStructureRepository.findOneByRealm(label, realm);
   }
 
   update(id: string, updateFacilityStructureDto: UpdateFacilityStructureDto) {
