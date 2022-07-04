@@ -147,7 +147,7 @@ const SetClassification = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    ClassificationsService.findOne("Garanti").then((res) => {
+    ClassificationsService.findOne(realm).then((res) => {
 
       setClassification(res.data);
 
@@ -165,15 +165,18 @@ const SetClassification = () => {
       }
       setLoading(false);
     }).catch(err => {
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: err.response ? err.response.data.message : err.message,
-        life: 2000,
-      });
-      setTimeout(() => {
-        navigate("/classifications")
-      }, 2000)
+      console.log(err.response);
+      if (err.response.status ===500) {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Classification not found",
+          life: 3000,
+        });
+        setTimeout(() => {
+          navigate("/facility")
+        }, 3000)
+      }
     })
   }
 
