@@ -15,8 +15,9 @@ interface StructureInterface {
     parentId?: string;
     name: string;
     tag: string[];
-    description: string;
-    labels: string[];
+    description?: string;
+    labels?: string[];
+    formTypeId?: string;
 }
 
 const findAll = async (query: PaginationParams) => {
