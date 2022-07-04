@@ -82,6 +82,9 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
             throw new FacilityStructureNotFountException(_id);
         }
       }
+      else {
+        throw new FacilityStructureNotFountException(_id);   // Uygun exception konulacak
+      }
       return deletedNode;
     } catch (error) {
       const { code, message } = error.response;

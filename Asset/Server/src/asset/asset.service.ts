@@ -1,65 +1,39 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { Inject, Injectable } from '@nestjs/common';
-import { PaginationParams } from 'src/common/commonDto/pagination.dto';
+import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
-import { BaseInterfaceRepository } from 'ifmcommon';
-import { Span, OtelMethodCounter } from 'nestjs-otel';
-import { Asset } from './entities/room.entity';
-import { CreateAssetDto } from './dto/create.asset.dto';
-import { UpdateAssetDto } from './dto/update.room.dto';
+import { GeciciInterface } from 'src/common/interface/gecici.interface';
+import { CreateAssetDto } from './dto/create-asset.dto';
+import { UpdateAssetDto } from './dto/update-asset.dto';
 
-/**
- * Room Service
- */
+
 @Injectable()
 export class AssetService {
-  /**
-   * Get roomRepository instance from BaseInterfaceRepository
-   */
   constructor(
-    @Inject(RepositoryEnums.ASSET)
-    private readonly roomRepository: BaseInterfaceRepository<Asset>,
+    @Inject(RepositoryEnums.FACILITY_STRUCTURE)
+    private readonly assetRepository: GeciciInterface<any>,
   ) {}
+  async create(createAssetDto: CreateAssetDto) {
+    return await this.assetRepository.create(createAssetDto);
+  }
 
-  /**
-   * find All Rooms
-   */
-  @Span('find all Rooms')
-  @OtelMethodCounter()
-  findAll(query: PaginationParams): Promise<Asset[]> {
-    return this.roomRepository.findAll(query);
+  findOne(label: string, realm: string) {
+    return this.assetRepository.findOneByRealm(label,realm);
   }
-  /**
-   * find One room by id
-   */
-  @Span('find a room by id')
-  @OtelMethodCounter()
-  async findOne(id: string): Promise<Asset> {
-    return this.roomRepository.findOneById(id);
+
+  update(id: string, updateAssetDto: UpdateAssetDto) {
+    return this.assetRepository.update(id, updateAssetDto);
   }
-  /**
-   * create room
-   */
-  @Span('create a room')
-  @OtelMethodCounter()
-  create(createRoomDto: CreateAssetDto): Promise<Asset> {
-    return this.roomRepository.create(createRoomDto);
+
+  remove(id: string) {
+    return this.assetRepository.delete(id);
   }
-  /**
-   * update room with id
-   */
-  @Span('update a room')
-  @OtelMethodCounter()
-  async update(id: string, updateRoomDto: UpdateAssetDto) {
-    return this.roomRepository.update(id, updateRoomDto);
+
+  async changeNodeBranch(id: string, target_parent_id: string) {
+    return await this.assetRepository.changeNodeBranch(id, target_parent_id);
   }
-  /**
-   * delete room with id
-   */
-  @Span('remove a room')
-  @OtelMethodCounter()
-  async remove(id: string) {
-    const deletedRoom = await this.roomRepository.delete(id);
-    return deletedRoom;
+
+  async findOneNode(key: string) {
+    //checkObjectIddİsValid(id);
+    return await this.assetRepository.findOneNodeByKey(key);
   }
 }

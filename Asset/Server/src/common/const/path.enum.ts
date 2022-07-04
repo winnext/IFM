@@ -1,4 +1,6 @@
 export enum PathEnums {
-  ASSET = '/asset',
-  TREE = '/tree',
+  FACILITY = '/facility',
+  CLASSIFICATION = '/classification',
+  STRUCTURE = '/structure',
+  ROOM = '/room',
 }

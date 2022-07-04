@@ -5,11 +5,12 @@ export abstract class BaseGraphObject {
   key: string = generateUuid();
   createdAt = moment().format('YYYY-MM-DD HH:mm:ss');
   updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
+  description = '';
   isActive = true;
   isDeleted = false;
-  hasParent = true; // not in dtos
+  name: string;
   tag: string[] = [];
-  selectable = true; // not in dtos
+  formTypeId: string;
 }
 
 function generateUuid() {

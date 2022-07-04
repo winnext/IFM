@@ -14,29 +14,26 @@ import { useNavigate } from "react-router-dom";
 import { Menu } from 'primereact/menu';
 import { Chips } from 'primereact/chips';
 
-interface ClassificationInterface {
-  identity?: {
+interface StructureInterface {
+  _id?: {
     low: string;
     high: string;
   };
   tag: string[];
 
   name: string;
-  code: string;
   key: string;
-  hasParent?: boolean,
-  labelclass: string;
-  type: string;
-  typeId: string;
+  formType?: string;
   description: string;
-  label: string;
+  label?: string;
+  labels: string[];
 }
 
 
 const FacilityStructure = () => {
 
   const navigate = useNavigate();
-  const [data, setData] = useState<ClassificationInterface[]>([]);
+  const [data, setData] = useState<StructureInterface[]>([]);
   const [addDia, setAddDia] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -90,37 +87,33 @@ const FacilityStructure = () => {
   // const dispatch = useAppDispatch();
 
   const addItem = () => {
-    const _classification: ClassificationInterface = {
-
-      code: code,
+    const _classification: StructureInterface = {
       name: name,
       key: uuidv4(),
       tag: tag,
-      labelclass: labelClass,
-      type:"",
-      typeId:"",
+      formType:name,
       description:"",
-      label: code + ":" + name
+      labels: [],
     };
 
-    FacilityStructureService.create(_classification)
-      .then((res) => {
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Classification Created",
-          life: 3000,
-        });
-        loadLazyData();
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 20000,
-        });
-      });
+    // FacilityStructureService.create(_classification)
+    //   .then((res) => {
+    //     toast.current.show({
+    //       severity: "success",
+    //       summary: "Successful",
+    //       detail: "Classification Created",
+    //       life: 3000,
+    //     });
+    //     loadLazyData();
+    //   })
+    //   .catch((err) => {
+    //     toast.current.show({
+    //       severity: "error",
+    //       summary: "Error",
+    //       detail: err.response ? err.response.data.message : err.message,
+    //       life: 20000,
+    //     });
+    //   });
 
     setAddDia(false);
     setName("");

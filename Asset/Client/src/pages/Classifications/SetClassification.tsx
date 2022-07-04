@@ -11,6 +11,7 @@ import { InputText } from "primereact/inputtext";
 import { v4 as uuidv4 } from "uuid";
 
 import ClassificationsService from "../../services/classifications";
+import { useAppSelector } from "../../app/hook";
 
 interface ClassificationInterface {
   root:
@@ -32,6 +33,28 @@ interface ClassificationInterface {
 }
 
 interface Node {
+  cantDeleted: boolean;
+  children: Node[];
+  description: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  key: string;
+  name: string;
+  code: string;
+  realm: string;
+  tag: string[];
+  _id: {
+    low: string;
+    high: string;
+  },
+  formTypeId?: string;
+  icon?: string;
+  label?: string;
+  labels?: string[]; // for form type
+  parentId?: string;
+}
+
+interface Node2 {
   code: string;
   name: string;
   tag: string[];
@@ -78,8 +101,11 @@ const SetClassification = () => {
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
-  const params = useParams()
-  const navigate = useNavigate()
+  const params = useParams();
+  const navigate = useNavigate();
+  const auth = useAppSelector((state) => state.auth);
+  const [realm, setRealm] = useState(auth.auth.realm);
+  const [labels, setLabels] = useState<string[]>([]);
 
   const menu = [
     {
@@ -121,15 +147,21 @@ const SetClassification = () => {
 
   const getClassification = () => {
     const id = params.id || "";
-    ClassificationsService.findOne(id).then((res) => {
+    ClassificationsService.findOne("Garanti").then((res) => {
 
       setClassification(res.data);
-      
+
       if (!res.data.root.children) {
         setData([res.data.root.properties] || []);
+        let temp = JSON.parse(JSON.stringify([res.data.root.properties] || []));
+        fixNodes(temp)
+        setData(temp)
       }
       else if (res.data.root.children) {
         setData([res.data.root] || []);
+        let temp = JSON.parse(JSON.stringify([res.data.root] || []));
+        fixNodes(temp)
+        setData(temp)
       }
       setLoading(false);
     }).catch(err => {
@@ -150,18 +182,40 @@ const SetClassification = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const fixNodes = (nodes: Node[]) => {
+    if (!nodes || nodes.length === 0) {
+      return;
+    }
+    for (let i of nodes) {
+      fixNodes(i.children)
+      i.label = i.name;;
+    }
+  };
+
   const addItem = (key: string) => {
+    let newNode: any = {};
     ClassificationsService.nodeInfo(key)
       .then((res) => {
-        const newNode = {
-          key: uuidv4(),
-          parent_id: res.data.identity.low,
-          name: name,
-          code: code,
-          tag: tag,
-          labelclass: res.data.properties.labelclass,
-          label: code + " : " + name
-        };
+        if (labels.length > 0) {
+          newNode = {
+            key: uuidv4(),
+            parent_id: res.data.id,
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+            labels: []
+          }
+        } else {
+          newNode = {
+            key: uuidv4(),
+            parent_id: res.data.id,
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+          }
+        }
         ClassificationsService.create(newNode)
           .then((res) => {
             toast.current.show({
@@ -197,22 +251,34 @@ const SetClassification = () => {
   };
 
   const editItem = (key: string) => {
+    let updateNode: any = {};
     ClassificationsService.nodeInfo(key)
       .then((res) => {
-        const updateNode = {
-          key: uuidv4(),
-          name: name,
-          code: code,
-          tag: tag,
-          labelclass: res.data.properties.labelclass,
-          label: code + " : " + name
-        };
-        ClassificationsService.update(res.data.identity.low, updateNode)
+        if (labels.length > 0) {
+          updateNode = {
+            key: uuidv4(),
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+            labels: labels,
+          };
+        } else {
+          updateNode = {
+            key: uuidv4(),
+            name: name,
+            code: code,
+            tag: tag,
+            description: "",
+          };
+        }
+
+        ClassificationsService.update(res.data.id, updateNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Form  Created",
+              detail: "Classification Updated",
               life: 3000,
             });
             getClassification();
@@ -245,7 +311,7 @@ const SetClassification = () => {
     ClassificationsService.nodeInfo(key)
       .then((res) => {
         if (res.data.properties.hasParent === false) {
-          ClassificationsService.remove(res.data.identity.low)
+          ClassificationsService.remove(res.data.id)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -264,7 +330,7 @@ const SetClassification = () => {
               });
             });
         } else {
-          ClassificationsService.remove(res.data.identity.low)
+          ClassificationsService.remove(res.data.id)
             .then(() => {
               toast.current.show({
                 severity: "success",
@@ -473,7 +539,7 @@ const SetClassification = () => {
                 life: 1000,
               });
               return
-            }            
+            }
             dragConfirm(event.dragNode.self_id.low, event.dropNode.self_id.low)
           }}
           filter

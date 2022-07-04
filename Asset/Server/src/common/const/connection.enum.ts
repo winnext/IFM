@@ -2,5 +2,7 @@
  * Database Connection Enum
  */
 export enum ConnectionEnums {
-  ASSET = 'asset',
+  FACILITY = 'facility',
+  CLASSIFICATION = 'classification',
+  ROOM = "room"
 }
