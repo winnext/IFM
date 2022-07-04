@@ -28,28 +28,28 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     //for structure there will be structure entity
     const structure = new Facility();
     //for asset there will be asset entity
-    const asset = new Facility();
-    const { structureInfo, facilityInfo, assetInfo } = createFacilityDto;
+    const classification = new Facility();
+    const { structureInfo, facilityInfo, classificationInfo } = createFacilityDto;
 
     const finalFacilityObject = assignDtoPropToEntity(facility, facilityInfo);
     const finalStructureObject = assignDtoPropToEntity(structure, structureInfo);
-    const finalAssetObject = assignDtoPropToEntity(asset, assetInfo);
+    const finalClassificationObject = assignDtoPropToEntity(classification, classificationInfo);
 
     const facilityQuery = createDynamicCyperCreateQuery(finalFacilityObject, [Neo4jLabelEnum.ROOT]);
     const structureQuery = createDynamicCyperCreateQuery(finalStructureObject, [Neo4jLabelEnum.FACILITY_STRUCTURE]);
-    const assetQuery = createDynamicCyperCreateQuery(finalAssetObject, [Neo4jLabelEnum.ASSET]);
+    const classificationQuery = createDynamicCyperCreateQuery(finalClassificationObject, [Neo4jLabelEnum.CLASSIFICATION]);
 
     //create  node with multi or single label cyper query
     const facilityNode = await this.neo4jService.write(facilityQuery, finalFacilityObject);
     const structureNode = await this.neo4jService.write(structureQuery, finalStructureObject);
-    const assetNode = await this.neo4jService.write(assetQuery, finalAssetObject);
+    const classificationNode = await this.neo4jService.write(classificationQuery, finalClassificationObject);
 
     await this.neo4jService.addRelations(
       structureNode['records'][0]['_fields'][0].identity.low,
       facilityNode['records'][0]['_fields'][0].identity.low,
     );
     await this.neo4jService.addRelations(
-      assetNode['records'][0]['_fields'][0].identity.low,
+      classificationNode['records'][0]['_fields'][0].identity.low,
       facilityNode['records'][0]['_fields'][0].identity.low,
     );
     return facilityNode['records'][0]['_fields'][0];
