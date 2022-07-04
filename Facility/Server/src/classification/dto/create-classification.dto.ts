@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+
+import { i18nValidationMessageEnum, IsStringWithI18nMessage, LengthWithI18nMessage } from 'ifmcommon';
+import { IsNotEmptyWithI18nMessage } from 'ifmcommon';
 
 export class CreateClassificationDto {
   @ApiProperty()
@@ -9,14 +12,13 @@ export class CreateClassificationDto {
   code: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  @Length(1, 200)
+  @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
+  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
   name: string;
 
   @ApiProperty()
-  @IsString()
-  @Length(1, 200)
+  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
+  @LengthWithI18nMessage(i18nValidationMessageEnum.LENGTH, 1, 50)
   @IsOptional()
   key?: string;
 
@@ -27,12 +29,12 @@ export class CreateClassificationDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  @Length(1, 200)
+  @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
   description?: string;
 
   @ApiProperty()
   @IsOptional()
-  labels: string[];
+  labels?: string[];
 
   @ApiProperty()
   @IsOptional()
