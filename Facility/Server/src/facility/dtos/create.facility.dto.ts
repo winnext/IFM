@@ -18,5 +18,5 @@ export class CreateFacilityDto {
   @ApiProperty()
   @ValidateNested({ each: true })
   @Type(() => SetupNode)
-  assetInfo: SetupNode;
+  classificationInfo: SetupNode;
 }
