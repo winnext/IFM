@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { FacilityStructureNotFountException } from '../../common/notFoundExceptions/not.found.exception';
 
 import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto';
@@ -12,12 +12,33 @@ import { VirtualNodeInterface } from 'src/common/interface/relation.node.interfa
 import { CreateAssetRelationDto } from '../dto/asset.relation.dto';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom, map } from 'rxjs';
+import { KafkaService } from 'src/kafka/kafka.service';
 
 @Injectable()
 export class StructureRelationsRepository implements VirtualNodeInterface<FacilityStructure> {
-  constructor(private readonly neo4jService: Neo4jService, private readonly httpService: HttpService) {}
+  constructor(
+    private readonly neo4jService: Neo4jService,
+    private readonly kafkaService: KafkaService,
+    private readonly httpService: HttpService,
+  ) {}
 
   async findOneById(id: string) {
+    const node = await this.neo4jService.write(`match(p) where id(p)=$id return p`, {
+      id: parseInt(id),
+    });
+    if (!node.records[0]) {
+      return 'uygun node id si giriniz';
+    }
+
+    const relations = await this.neo4jService.write(
+      `match(p) where id(p)=$id match (c) match (p)-[:HAS]->(c) return c`,
+      {
+        id: parseInt(id),
+      },
+    );
+    if (relations.records.length === 0) {
+      return 'hiç ilişkisi yok';
+    }
     const x = await this.httpService.get('https://reqres.in/api/users/2').pipe(map((response) => response.data));
 
     console.log(await firstValueFrom(x));
@@ -25,6 +46,17 @@ export class StructureRelationsRepository implements VirtualNodeInterface<Facili
   }
   async create(id: string, createAssetRelationDto: CreateAssetRelationDto) {
     try {
+      const relationExist = await this.neo4jService.read(
+        `match(p) where id(p)=$id match (c) where c.id=$assetId match (p)-[:HAS]->(c) return c`,
+        {
+          id: parseInt(id),
+          assetId: createAssetRelationDto.id,
+        },
+      );
+      if (relationExist.records[0] && relationExist.records[0].length > 0) {
+        return 'this relation exist';
+      }
+
       createAssetRelationDto['isDeleted'] = false;
       const url = `http://localhost:3014/${createAssetRelationDto.id}`;
       createAssetRelationDto['url'] = url;
@@ -36,6 +68,7 @@ export class StructureRelationsRepository implements VirtualNodeInterface<Facili
       await this.neo4jService.addRelationWithRelationName(id, String(value['identity'].low), 'HAS');
 
       await this.neo4jService.addRelationWithRelationName(id, String(value['identity'].low), 'HAS_VİRTUAL_RELATION');
+      await this.kafkaService.producerSendMessage('assetRelation', 'test');
 
       return 'succes';
     } catch (error) {

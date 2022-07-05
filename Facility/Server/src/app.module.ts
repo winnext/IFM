@@ -22,6 +22,7 @@ import { RoomModule } from './rooms/room.module';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { ClassificationModule } from './classification/classification.module';
 import { HttpCacheInterceptor } from 'ifmcommon';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -79,6 +80,15 @@ import { HttpCacheInterceptor } from 'ifmcommon';
         port: configService.get('NEO4J_PORT'),
         scheme: configService.get('NEO4J_SCHEME'),
         username: configService.get('NEO4J_USERNAME'),
+      }),
+    }),
+
+    KafkaModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        brokers: [configService.get('KAFKA_BROKER')],
+        clientId: configService.get('KAFKA_CLIENT_ID'),
       }),
     }),
 
