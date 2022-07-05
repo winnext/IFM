@@ -8,8 +8,6 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from 'primereact/checkbox';
-import { Dropdown } from 'primereact/dropdown';
-import { useForm, Controller } from "react-hook-form";
 import { TreeSelect } from "primereact/treeselect";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -17,25 +15,6 @@ import { v4 as uuidv4 } from "uuid";
 import FacilityStructureService from "../../services/facilitystructure";
 import FormTypeService from "../../services/formType";
 import { useAppSelector } from "../../app/hook";
-
-interface StructureInterface {
-  root:
-  {
-    code: string;
-    children: [];
-    _type: string;
-    name: string;
-    _id: {
-      low: string;
-      high: string;
-    },
-    key: string;
-    hasParent: boolean;
-    parent_id?: string;
-    selectable?: boolean;
-    label: string;
-  };
-}
 
 interface Node {
   cantDeleted: boolean;
@@ -56,29 +35,6 @@ interface Node {
   label?: string;
   labels?: string[]; // for form type
   parentId?: string;
-}
-
-interface Node2 {
-  code: string;
-  name: string;
-  tag: string[];
-  key: string;
-  hasParent?: boolean;
-  children: Node[];
-  type?: string;
-  formTypeId?: string;
-  parent_id?: string;
-  selectable?: boolean;
-  self_id: {
-    low: string;
-    high: string;
-  },
-  labelclass: string;
-  description: string;
-  icon?: string;
-  label: string;
-  optionalLabels?: string[];
-  hasType?: boolean;
 }
 
 interface FormNode {
@@ -110,39 +66,19 @@ interface FormNode {
 const SetFacilityStructure = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
-  const [structure, setStructure] = useState<StructureInterface>({
-    root:
-    {
-      code: "",
-      children: [],
-      _type: "",
-      name: "",
-      _id: {
-        low: "",
-        high: ""
-      },
-      key: "",
-      hasParent: false,
-      label: "",
-    }
-  });
-
   const [data, setData] = useState<Node[]>([]);
   const [name, setName] = useState("");
   const [formTypeId, setFormTypeId] = useState<any>(undefined);
   const [labels, setLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
   const [isActive, setIsActive] = useState<boolean>(true);
-  const [isAllType, setIsAllType] = useState<boolean>(false);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
-  const params = useParams()
   const navigate = useNavigate()
   const [formData, setFormData] = useState<FormNode[]>([]);
-  const [selectedForm, setSelectedForm] = useState<any>(undefined);
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
 
@@ -150,7 +86,6 @@ const SetFacilityStructure = () => {
 
   const getForms = async () => {
     await FormTypeService.findOne('245').then((res) => {
-      console.log(res.data.root);
       let temp = JSON.parse(JSON.stringify([res.data.root] || []));
       const iconFormNodes = (nodes: FormNode[]) => {
         if (!nodes || nodes.length === 0) {
@@ -177,15 +112,23 @@ const SetFacilityStructure = () => {
     getForms();
   }, []);
 
-  const {
-    handleSubmit,
-    control,
-    // watch,
-    unregister,
-    reset,
-    formState: { errors },
-  } = useForm();
-
+  const getNodeInfoAndEdit = (selectedNodeKey: string) => {
+    FacilityStructureService.nodeInfo(selectedNodeKey)
+      .then((res) => {
+        setName(res.data.properties.name || "");
+        setTag(res.data.properties.tag || []);
+        setIsActive(res.data.properties.isActive);
+        setFormTypeId(res.data.properties.formTypeId);
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
+  }
 
   const menu = [
     {
@@ -200,25 +143,7 @@ const SetFacilityStructure = () => {
       icon: "pi pi-pencil",
       command: () => {
 
-        FacilityStructureService.nodeInfo(selectedNodeKey)
-          .then((res) => {
-            console.log(res.data.properties);
-
-            setName(res.data.properties.name || "");
-            setTag(res.data.properties.tag || []);
-            setSelectedForm(formData.find(item => item.name === res.data.properties.type));  //??
-            setIsActive(res.data.properties.isActive);
-            setFormTypeId(res.data.properties.formTypeId);
-            setLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
-          })
-          .catch((err) => {
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.response ? err.response.data.message : err.message,
-              life: 2000,
-            });
-          });
+        getNodeInfoAndEdit(selectedNodeKey);
         setEditDia(true);
       },
     },
@@ -232,16 +157,8 @@ const SetFacilityStructure = () => {
   ];
 
   const getFacilityStructure = () => {
-    const id = params.id || "";
     FacilityStructureService.findOne(realm).then((res) => {
-      console.log(res.data.root);
 
-
-
-
-      // let temp = [res.data.root[0].properties] || [];
-
-      setStructure(res.data);
       if (!res.data.root.children) {
         setData([res.data.root.properties] || []);
         let temp = JSON.parse(JSON.stringify([res.data.root.properties] || []));
@@ -254,11 +171,6 @@ const SetFacilityStructure = () => {
         fixNodes(temp)
         setData(temp)
       }
-
-      // temp = JSON.parse(JSON.stringify(temp));
-      // fixNodes(temp)
-      // setData(temp)
-
       setLoading(false);
     }).catch(err => {
       if (err.response.status === 500) {
@@ -277,7 +189,6 @@ const SetFacilityStructure = () => {
 
   useEffect(() => {
     getFacilityStructure();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fixNodes = (nodes: Node[]) => {
@@ -289,27 +200,6 @@ const SetFacilityStructure = () => {
       i.icon = "pi pi-fw pi-building";
       i.label = i.name;
       i.children = i.children || [];
-      // console.log(i);
-
-      // if (i.formTypeId) {
-      //   let nodeKey: any = i.formTypeId;
-      //   FormTypeService.nodeInfo(nodeKey)
-      //     .then((res) => {
-      //       console.log(res.data);
-      //       if(res.data.properties.hasType===true){
-      //         i.hasType = true;
-      //       }
-
-      //     })
-      //     .catch((err) => {
-      //       toast.current.show({
-      //         severity: "error",
-      //         summary: "Error",
-      //         detail: err.response ? err.response.data.message : err.message,
-      //         life: 2000,
-      //       });
-      //     });
-      // }
     }
   };
 
@@ -341,12 +231,8 @@ const SetFacilityStructure = () => {
           };
         }
 
-        console.log(newNode);
-
         FacilityStructureService.create(newNode)
-          .then((result) => {
-            console.log(result);
-
+          .then((res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
@@ -404,12 +290,8 @@ const SetFacilityStructure = () => {
           }
         }
 
-        console.log(updateNode);
-
         FacilityStructureService.update(res.data.id, updateNode)
           .then((res) => {
-            console.log(res.data);
-
             toast.current.show({
               severity: "success",
               summary: "Successful",
@@ -443,8 +325,6 @@ const SetFacilityStructure = () => {
   }
 
   const deleteItem = (key: string) => {
-    // const temp = JSON.parse(JSON.stringify(data));
-    // findNodeAndDelete(key, temp);
     FacilityStructureService.nodeInfo(key)
       .then((res) => {
         if (res.data.properties.hasParent === false) {
@@ -615,35 +495,6 @@ const SetFacilityStructure = () => {
             style={{ width: '50%' }}
           />
         </div>
-        {/* <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <Dropdown
-            optionLabel="name"
-            value={selectedForm}
-            options={formData}
-            onChange={(e) => {
-              const temp = selectedForm ? selectedForm.items : [];
-              for (let item of temp) {
-                unregister(item.label);
-              }
-              reset();
-              setSelectedForm(e.value);
-              setType(e.value.name);
-              setFormTypeId(e.value._id);
-            }}
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div> */}
-        {/* <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
-          <Dropdown
-            value={`${optionalLabels[0]}`}
-            options={facilityTypes}
-            onChange={(e) => { setOptionalLabels([e.value]) }}
-            placeholder="Select a Facility Type"
-            style={{ width: '50%' }} />
-        </div> */}
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <TreeSelect
@@ -671,10 +522,6 @@ const SetFacilityStructure = () => {
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
-          {/* <div className="field flex mt-3">
-            <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
-            <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
-          </div> */}
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
@@ -702,15 +549,6 @@ const SetFacilityStructure = () => {
             style={{ width: '50%' }}
           />
         </div>
-        {/* <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
-          <Dropdown
-            value={`${optionalLabels[0]}`}
-            options={facilityTypes}
-            onChange={(e) => { setOptionalLabels([e.value]) }}
-            placeholder="Select a Facility Type"
-            style={{ width: '50%' }} />
-        </div> */}
         <div className="field">
           <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
           <TreeSelect
@@ -737,10 +575,6 @@ const SetFacilityStructure = () => {
             placeholder="Select Type"
             style={{ width: '50%' }}
           />
-          {/* <div className="field flex mt-3">
-            <h5 style={{ marginBottom: "0.5em" }}>Apply this form to all same facility types</h5>
-            <Checkbox className="ml-3" onChange={e => setIsAllType(e.checked)} checked={isAllType}></Checkbox>
-          </div> */}
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
@@ -752,7 +586,6 @@ const SetFacilityStructure = () => {
         </div>
       </Dialog>
       <h1>Edit Facility Structure</h1>
-      {/* <h3>Code : {classification.root[0].code} </h3> */}
       <div className="field">
         <Tree
           loading={loading}
@@ -797,23 +630,7 @@ const SetFacilityStructure = () => {
                     setSelectedNodeKey(data.key);
                     let dataKey: any = data.key
 
-                    FacilityStructureService.nodeInfo(dataKey)
-                      .then((res) => {
-                        setName(res.data.properties.name || "");
-                        setTag(res.data.properties.tag || []);
-                        setSelectedForm(formData.find(item => item.name === res.data.properties.type)); //??
-                        setIsActive(res.data.properties.isActive);
-                        setFormTypeId(res.data.properties.formTypeId);
-                        setLabels([res.data.properties.optionalLabel?.replace(/([a-z])([A-Z])/g, '$1 $2')] || []);
-                      })
-                      .catch((err) => {
-                        toast.current.show({
-                          severity: "error",
-                          summary: "Error",
-                          detail: err.response ? err.response.data.message : err.message,
-                          life: 2000,
-                        });
-                      });
+                    getNodeInfoAndEdit(dataKey)
                     setEditDia(true);
                   }
                   }
@@ -855,13 +672,9 @@ const SetFacilityStructure = () => {
             </>
           }
           </span>}
-        // style={{backgroundColor:'gray'}}
-        // contentStyle={{backgroundColor:'green'}}
         />
       </div>
-      <div className="field">
 
-      </div>
     </div>
   );
 };
