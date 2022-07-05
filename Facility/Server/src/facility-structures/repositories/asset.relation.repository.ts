@@ -40,28 +40,22 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
       //throw new HttpException('hiç ilişkisi yok', 400);
       throw new RelationNotFountException(id);
     }
-    const test = relations.records[0]['_fields'];
-    const x = [];
+
+    const assetArr = [];
+    relations.records[0]['_fields'].forEach(async (assetNode) => {
+      const y = await this.httpService.get(assetNode.properties.url).pipe(map((response) => response.data));
+      assetArr.push(await firstValueFrom(y));
+    });
+    /*
     for (let index = 0; index < relations.records[0]['_fields'].length; index++) {
       relations.records[0]['_fields'][index];
       const y = await this.httpService
         .get(relations.records[0]['_fields'][index].properties.url)
         .pipe(map((response) => response.data));
-      x.push(await firstValueFrom(y));
+      assetArr.push(await firstValueFrom(y));
     }
-    console.log(x);
-    const assetArr = [];
-    const arr = test.map(async (assetNode) => {
-      const x = await this.httpService.get(assetNode.properties.url).pipe(map((response) => response.data));
-
-      const prop = await firstValueFrom(x);
-      assetArr.push(prop);
-
-      //return prop;
-    });
-    console.log(assetArr);
-
-    return x;
+*/
+    return assetArr;
   }
   async create(id: string, createAssetRelationDto: CreateAssetRelationDto) {
     const relationExist = await this.neo4jService.read(
