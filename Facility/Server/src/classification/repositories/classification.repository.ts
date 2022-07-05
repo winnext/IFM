@@ -14,6 +14,8 @@ import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4
 
 import { create_node__must_entered_error, create_node__node_not_created_error, find_by_realm_with_tree_structure__not_entered_error, find_by_realm__not_entered_error, find_by_realm__not_found_error, find_with_children_by_realm_as_tree_error, find_with_children_by_realm_as_tree__find_by_realm_error, find_with_children_by_realm_as_tree__not_entered_error, tree_structure_not_found_by_realm_name_error } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
+import { has_children_error } from 'src/common/const/custom.error.object';
+import { CustomTreeError } from 'src/common/const/custom.error.enum';
 
 @Injectable()
 export class ClassificationRepository implements GeciciInterface<Classification> {
@@ -51,6 +53,7 @@ export class ClassificationRepository implements GeciciInterface<Classification>
   async create(createClassificationDto: CreateClassificationDto) {
     let classification = new Classification();
     let classificationObject = assignDtoPropToEntity(classification, createClassificationDto);
+    delete classificationObject['parentId'];
     let value;
     if (classificationObject['labels']) {
       value = await this.neo4jService.createNode(classificationObject, classificationObject['labels']);
@@ -94,23 +97,22 @@ export class ClassificationRepository implements GeciciInterface<Classification>
   async delete(_id: string) {
     try {
      
-      //let hasParent = await this.neo4jService.getParentById(_id);
       let deletedNode;
          let hasChildren =  await this.neo4jService.findChildrenById(_id);       
          if (hasChildren['records'].length == 0) {
            deletedNode = await this.neo4jService.delete(_id);
-           if (!deletedNode) {
-             throw new ClassificationNotFountException(_id);
-          }
          }
-     // }
+         else {
+          throw new HttpException(has_children_error, 400);
+        }
+ 
       return deletedNode;
     } catch (error) {
-      const { code, message } = error.response;
-      if (code === CustomNeo4jError.HAS_CHILDREN) {
-        nodeHasChildException(_id);
-      } else {
-        throw new HttpException(message, code);
+      if (error.response?.code == CustomTreeError.HAS_CHILDREN) {
+        throw new HttpException(has_children_error, 400);
+      }
+      else {
+        throw new HttpException(error.response?.message, error.response?.code);
       }
     }
   }
