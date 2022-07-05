@@ -29,9 +29,9 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     const facilityStructureObject = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
     let value;
     if (facilityStructureObject['labels']) {
-      value = await this.neo4jService.createNode(facilityStructureObject['entity'], facilityStructureObject['labels']);
+      value = await this.neo4jService.createNode(facilityStructureObject, facilityStructureObject['labels']);
     } else {
-      value = await this.neo4jService.createNode(facilityStructureObject['entity']);
+      value = await this.neo4jService.createNode(facilityStructureObject);
     }
     value['properties']['id'] = value['identity'].low;
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
@@ -74,11 +74,11 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
       if (hasChildren['records'].length == 0) {
         deletedNode = await this.neo4jService.delete(_id);
         if (!deletedNode) {
-          throw new HttpException('Çocuğu olan node silinemez', HttpStatus.BAD_REQUEST);
+          throw new HttpException('Node Silinemedi', HttpStatus.BAD_REQUEST);
         }
       } else {
         throw new HttpException('Çocuğu var', HttpStatus.BAD_REQUEST);
-        throw new FacilityStructureNotFountException(_id); // Uygun exception konulacak
+        //throw new FacilityStructureNotFountException(_id); // Uygun exception konulacak
       }
       return deletedNode;
     } catch (error) {
