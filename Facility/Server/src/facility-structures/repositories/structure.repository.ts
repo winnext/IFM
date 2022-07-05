@@ -74,14 +74,18 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
       if (hasChildren['records'].length == 0) {
         deletedNode = await this.neo4jService.delete(_id);
         if (!deletedNode) {
-          throw new HttpException("Çocuğu olan node silinemez", HttpStatus.BAD_REQUEST);
-            
+          throw new HttpException('Çocuğu olan node silinemez', HttpStatus.BAD_REQUEST);
         }
       } else {
+        throw new HttpException('Çocuğu var', HttpStatus.BAD_REQUEST);
         throw new FacilityStructureNotFountException(_id); // Uygun exception konulacak
       }
       return deletedNode;
     } catch (error) {
+      console.log(error.message);
+      if (error.message === 'Çocuğu var') {
+        throw new HttpException('Çocuğu var', 400);
+      }
       const { code, message } = error.response;
       if (code === CustomNeo4jError.HAS_CHILDREN) {
         nodeHasChildException(_id);
