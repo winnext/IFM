@@ -435,10 +435,10 @@ export class Neo4jService implements OnApplicationShutdown {
       if(!params || !label){
         throw new HttpException(create_node__must_entered_error,400);
       }
-      let labels = await this.getAllLabels();
-      if(!labels.includes(label)){
-        throw new HttpException(invalid_label_error,400)
-      }  
+      // let labels = await this.getAllLabels();
+      // if(!labels.includes(label)){
+      //   throw new HttpException(invalid_label_error,400)
+      // }  
 
       const cyperQuery = createDynamicCyperCreateQuery(params,label);
 
