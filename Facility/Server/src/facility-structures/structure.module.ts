@@ -3,24 +3,24 @@ import { StructureService } from './services/structure.service';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { FacilityStructureRepository } from './repositories/structure.repository';
 import { StructureController } from './controllers/structure.controller';
-import { StructureRelationsRepository } from './repositories/structure.relations.repository';
-import { StructureRelationsController } from './controllers/structure.relations.controller';
-import { StructureRelationsService } from './services/structure.relations.service';
+import { AssetRelationRepository } from './repositories/asset.relation.repository';
+import { AssetRelationController } from './controllers/asset.relation.controller';
+import { AssetRelationService } from './services/asset.relation.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [HttpModule],
-  controllers: [StructureController, StructureRelationsController],
+  controllers: [StructureController, AssetRelationController],
   providers: [
     StructureService,
-    StructureRelationsService,
+    AssetRelationService,
     {
       provide: RepositoryEnums.FACILITY_STRUCTURE,
       useClass: FacilityStructureRepository,
     },
     {
-      provide: RepositoryEnums.FACILITY_STRUCTURE_RELATİON,
-      useClass: StructureRelationsRepository,
+      provide: RepositoryEnums.ASSET_STRUCTURE_RELATİON,
+      useClass: AssetRelationRepository,
     },
   ],
   exports: [StructureService],

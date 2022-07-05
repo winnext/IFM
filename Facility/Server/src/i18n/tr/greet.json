@@ -16,5 +16,6 @@
   "NOT_EMPTY": "{property} boş bırakılamaz",
   "IS_STRING": "{property} string bir değer olmalı",
   "LENGTH": "{property}  en az  {constraints.0} en fazla  {constraints.1} karakterli olmalıdır",
-  "DUBLICATE_ERROR": "girilen değerler  #{errorProperties} sistemde zaten mevcut"
+  "DUBLICATE_ERROR": "girilen değerler  #{errorProperties} sistemde zaten mevcut",
+  "RELATİON_NOT_FOUND": "relation bulunamadı"
 }
