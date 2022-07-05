@@ -8,6 +8,7 @@ import { Chips } from 'primereact/chips';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Checkbox } from 'primereact/checkbox';
 import { v4 as uuidv4 } from "uuid";
 
 import ClassificationsService from "../../services/classifications";
@@ -96,6 +97,7 @@ const SetClassification = () => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [tag, setTag] = useState<string[]>([]);
+  const [isActive, setIsActive] = useState<boolean>(true);
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
@@ -166,7 +168,7 @@ const SetClassification = () => {
       setLoading(false);
     }).catch(err => {
       console.log(err.response);
-      if (err.response.status ===500) {
+      if (err.response.status === 500) {
         toast.current.show({
           severity: "error",
           summary: "Error",
@@ -220,7 +222,7 @@ const SetClassification = () => {
           }
         }
         console.log(newNode);
-        
+
         ClassificationsService.create(newNode)
           .then((res) => {
             toast.current.show({
@@ -479,6 +481,7 @@ const SetClassification = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -486,11 +489,12 @@ const SetClassification = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
-        <div className="field">
+        <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} />
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
         </div>
       </Dialog>
       <Dialog
@@ -510,6 +514,7 @@ const SetClassification = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
         <div className="field">
@@ -517,11 +522,16 @@ const SetClassification = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
+            style={{ width: '50%' }}
           />
         </div>
-        <div className="field">
+        <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} />
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }}/>
+        </div>
+        <div className="field flex">
+          <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
+          <Checkbox className="ml-3" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
         </div>
       </Dialog>
       <h1>Edit Classification</h1>
