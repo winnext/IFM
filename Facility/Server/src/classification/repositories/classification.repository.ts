@@ -63,7 +63,7 @@ export class ClassificationRepository implements GeciciInterface<Classification>
     }
     value['properties']['id'] = value['identity'].low;
     const result = {id:value['identity'].low, labels: value['labels'], properties: value['properties']}
-    if (classificationObject['parentId']) {
+    if (createClassificationDto['parentId']) {
       await this.neo4jService.addRelations(
         result['id'], createClassificationDto["parentId"]
       );
