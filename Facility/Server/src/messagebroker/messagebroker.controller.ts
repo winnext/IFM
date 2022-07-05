@@ -71,4 +71,8 @@ export class MessagebrokerController {
         break;
     }
   }
+  @MessagePattern('assetRelation')
+  testListener(@Payload() message): any {
+    console.log(message.value);
+  }
 }

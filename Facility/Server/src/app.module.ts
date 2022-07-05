@@ -8,7 +8,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MessagebrokerModule } from './messagebroker/messagebroker.module';
 import * as Joi from 'joi';
 import { MulterModule } from '@nestjs/platform-express';
-import { FacilityStructuresModule } from './facility-structures/facility-structures.module';
+import { StructureModule } from './facility-structures/structure.module';
 import { HistoryModule } from './kiramenKatibin/history.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from './trace_logger/trace.logger.module';
@@ -22,6 +22,7 @@ import { RoomModule } from './rooms/room.module';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { ClassificationModule } from './classification/classification.module';
 import { HttpCacheInterceptor } from 'ifmcommon';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -82,6 +83,15 @@ import { HttpCacheInterceptor } from 'ifmcommon';
       }),
     }),
 
+    KafkaModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        brokers: [configService.get('KAFKA_BROKER')],
+        clientId: configService.get('KAFKA_CLIENT_ID'),
+      }),
+    }),
+
     MongooseModule.forRootAsync({
       connectionName: ConnectionEnums.ROOM,
       useFactory: (config: ConfigService) => ({
@@ -104,7 +114,7 @@ import { HttpCacheInterceptor } from 'ifmcommon';
 
     MessagebrokerModule,
 
-    FacilityStructuresModule,
+    StructureModule,
 
     HistoryModule,
 
