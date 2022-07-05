@@ -10,6 +10,8 @@ import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4
 
 import { nodeHasChildException } from 'ifmcommon';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
+import { has_children_error } from 'src/common/const/custom.error.object';
+import { CustomTreeError } from 'src/common/const/custom.error.enum';
 
 @Injectable()
 export class FacilityStructureRepository implements GeciciInterface<FacilityStructure> {
@@ -27,6 +29,7 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     const facilityStructure = new FacilityStructure();
     const facilityStructureObject = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
+    delete facilityStructureObject['parentId'];
     let value;
     if (facilityStructureObject['labels']) {
       value = await this.neo4jService.createNode(facilityStructureObject, facilityStructureObject['labels']);
@@ -72,25 +75,17 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
 
       const hasChildren = await this.neo4jService.findChildrenById(_id);
       if (hasChildren['records'].length == 0) {
-        deletedNode = await this.neo4jService.delete(_id);
-        if (!deletedNode) {
-          throw new HttpException('Node Silinemedi', HttpStatus.BAD_REQUEST);
-        }
+        deletedNode = await this.neo4jService.delete(_id); 
       } else {
-        throw new HttpException('Çocuğu var', HttpStatus.BAD_REQUEST);
-        //throw new FacilityStructureNotFountException(_id); // Uygun exception konulacak
+        throw new HttpException(has_children_error, 400);
       }
       return deletedNode;
     } catch (error) {
-      console.log(error.message);
-      if (error.message === 'Çocuğu var') {
-        throw new HttpException('Çocuğu var', 400);
+      if (error.response?.code == CustomTreeError.HAS_CHILDREN) {
+        throw new HttpException(has_children_error, 400);
       }
-      const { code, message } = error.response;
-      if (code === CustomNeo4jError.HAS_CHILDREN) {
-        nodeHasChildException(_id);
-      } else {
-        throw new HttpException(message, code);
+      else {
+        throw new HttpException(error.response?.message, error.response?.code);
       }
     }
   }

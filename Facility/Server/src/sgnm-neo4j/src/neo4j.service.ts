@@ -96,6 +96,7 @@ import {
   find_by_name__must_entered_error,
   find_parent_by_id__must_entered_error,
   find_children_by_id__must_entered_error,
+  delete__update_is_deleted_prop_error,
 } from './constant/custom.error.object';
 
 @Injectable()
@@ -1326,6 +1327,9 @@ export class Neo4jService implements OnApplicationShutdown {
           throw new HttpException(delete__get_parent_by_id_error, 404);
         }
         const deletedNode = await this.updateIsDeletedProp(id, true);
+        if (!deletedNode) {
+          throw new HttpException(delete__update_is_deleted_prop_error, 400);
+        }
         return deletedNode;
       }
     } catch (error) {
