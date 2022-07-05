@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { KafkaConfig } from 'kafkajs';
 import { KAFKA_PRODUCER, KAFKA_OPTIONS } from './kafka.constants';
 import { KafkaService } from './kafka.service';
-import {  createProducer } from './kafka.util';
+import { createProducer } from './kafka.util';
 
 @Module({})
 export class KafkaModule {

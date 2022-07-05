@@ -1,11 +1,9 @@
-import { int } from "neo4j-driver";
-import { startWith } from "rxjs";
+import { int } from 'neo4j-driver';
+
 //transfer dto(object come from client) properties to specific node entity object
 export function assignDtoPropToEntity(entity, dto) {
   Object.keys(dto).forEach((element) => {
-     
-        entity[element] = dto[element];
-     
+    entity[element] = dto[element];
   });
 
   return entity;
@@ -44,7 +42,6 @@ export function createDynamicCyperObject(entity) {
 
   return dynamicObject;
 }
-
 
 export function updateNodeQuery(id, dto) {
   id = int(id);
