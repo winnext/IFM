@@ -38,7 +38,7 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     }
     value['properties']['id'] = value['identity'].low;
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
-    if (facilityStructureObject['parentId']) {
+    if (createFacilityStructureDto['parentId']) {
       await this.neo4jService.addRelations(result['id'], createFacilityStructureDto['parentId']);
     }
     return result;
