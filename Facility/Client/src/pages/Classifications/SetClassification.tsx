@@ -14,25 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 import ClassificationsService from "../../services/classifications";
 import { useAppSelector } from "../../app/hook";
 
-interface ClassificationInterface {
-  root:
-  {
-    code: string;
-    children: [],
-    _type: string;
-    name: string;
-    _id: {
-      low: string;
-      high: string;
-    },
-    key: string;
-    hasParent: boolean;
-    parent_id?: string;
-    selectable?: boolean;
-    label: string;
-  };
-}
-
 interface Node {
   cantDeleted: boolean;
   children: Node[];
@@ -55,44 +36,9 @@ interface Node {
   parentId?: string;
 }
 
-interface Node2 {
-  code: string;
-  name: string;
-  tag: string[];
-  key: string;
-  hasParent?: boolean;
-  children: Node[];
-  type?: string;
-  parent_id?: string;
-  selectable?: boolean;
-  self_id: {
-    low: string;
-    high: string;
-  },
-  labelclass: string;
-}
-
 const SetClassification = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
-  const [classification, setClassification] = useState<ClassificationInterface>({
-    root:
-    {
-      code: "",
-      children: [],
-      _type: "",
-      name: "",
-      _id: {
-        low: "",
-        high: ""
-      },
-      key: "",
-      hasParent: false,
-      label: ""
-    }
-
-  });
-
   const [data, setData] = useState<Node[]>([]);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -103,7 +49,6 @@ const SetClassification = () => {
   const [delDia, setDelDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
-  const params = useParams();
   const navigate = useNavigate();
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
@@ -126,6 +71,7 @@ const SetClassification = () => {
             setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
+            setIsActive(res.data.properties.isActive);
           })
           .catch((err) => {
             toast.current.show({
@@ -148,10 +94,7 @@ const SetClassification = () => {
   ];
 
   const getClassification = () => {
-    const id = params.id || "";
     ClassificationsService.findOne(realm).then((res) => {
-
-      setClassification(res.data);
 
       if (!res.data.root.children) {
         setData([res.data.root.properties] || []);
@@ -184,7 +127,6 @@ const SetClassification = () => {
 
   useEffect(() => {
     getClassification();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fixNodes = (nodes: Node[]) => {
@@ -221,7 +163,6 @@ const SetClassification = () => {
             description: "",
           }
         }
-        console.log(newNode);
 
         ClassificationsService.create(newNode)
           .then((res) => {
@@ -269,6 +210,7 @@ const SetClassification = () => {
             tag: tag,
             description: "",
             labels: labels,
+            isActive: isActive,
           };
         } else {
           updateNode = {
@@ -277,6 +219,7 @@ const SetClassification = () => {
             code: code,
             tag: tag,
             description: "",
+            isActive: isActive,
           };
         }
 
@@ -527,7 +470,7 @@ const SetClassification = () => {
         </div>
         <div className="field structureChips">
           <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }}/>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
         </div>
         <div className="field flex">
           <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
@@ -560,6 +503,7 @@ const SetClassification = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
+          className="font-bold"
         />
       </div>
       <div className="field">
