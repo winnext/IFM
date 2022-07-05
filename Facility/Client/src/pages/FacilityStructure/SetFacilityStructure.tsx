@@ -149,7 +149,7 @@ const SetFacilityStructure = () => {
   const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
   const getForms = async () => {
-    await FormTypeService.findOne('115').then((res) => {
+    await FormTypeService.findOne('245').then((res) => {
       console.log(res.data.root);
       let temp = JSON.parse(JSON.stringify([res.data.root] || []));
       const iconFormNodes = (nodes: FormNode[]) => {
