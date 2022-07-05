@@ -79,7 +79,8 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
       if (hasChildren['records'].length == 0) {
         deletedNode = await this.neo4jService.delete(_id);
         if (!deletedNode) {
-            throw new FacilityStructureNotFountException(_id);
+          throw new HttpException("Çocuğu olan node silinemez", HttpStatus.BAD_REQUEST);
+            
         }
       }
       else {
