@@ -19,7 +19,7 @@ import { HttpModule } from '@nestjs/axios';
       useClass: FacilityStructureRepository,
     },
     {
-      provide: RepositoryEnums.ASSET_STRUCTURE_RELATİON,
+      provide: RepositoryEnums.ASSET_STRUCTURE_RELATION,
       useClass: AssetRelationRepository,
     },
   ],

@@ -6,7 +6,7 @@ import { CreateAssetRelationDto } from '../dto/asset.relation.dto';
 @Injectable()
 export class AssetRelationService {
   constructor(
-    @Inject(RepositoryEnums.ASSET_STRUCTURE_RELATİON)
+    @Inject(RepositoryEnums.ASSET_STRUCTURE_RELATION)
     private readonly AssetRelationsRepository: VirtualNodeInterface<any>,
   ) {}
   async create(id: string, createAssetRelationDto: CreateAssetRelationDto) {
