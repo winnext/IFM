@@ -18,3 +18,7 @@ export function ClassificationNotFountException(id) {
 export function RoomNotFoundException(id) {
   throw new HttpException({ key: I18NEnums.ROOM_NOT_FOUND, args: { id: id } }, HttpStatus.NOT_FOUND);
 }
+
+export function ContactNotFoundException(id) {
+  throw new HttpException({ key: I18NEnums.CONTACT_NOT_FOUND, args: { id: id } }, HttpStatus.NOT_FOUND);
+}

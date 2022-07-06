@@ -11,4 +11,5 @@ export enum I18NEnums {
   CLASSIFICATION = 'classification',
   DUBLICATE_ERROR = 'greet.DUBLICATE_ERROR',
   NODE_HAS_CHILD = 'greet.NODE_HAS_CHILD',
+  CONTACT_NOT_FOUND = 'greet.CONTACT_NOT_FOUND',
 }
