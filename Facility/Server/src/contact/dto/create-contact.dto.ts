@@ -51,13 +51,20 @@ export class CreateContactDto {
   @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)
   @IsStringWithI18nMessage(i18nValidationMessageEnum.IS_STRING)
   phone: string;
+   
+  
 
+  @ApiProperty()
   @IsOptional()
   department?: string;
 
   @ApiProperty()
   @IsOptional()
   organizationCode?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  givenName?: string;
 
   @ApiProperty()
   @IsOptional()
