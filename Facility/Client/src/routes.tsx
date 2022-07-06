@@ -15,6 +15,7 @@ import FacilityStructure from "./pages/FacilityStructure/FacilityStructure";
 import SetFacilityStructure from "./pages/FacilityStructure/SetFacilityStructure";
 import FormGenerate from "./pages/FormGenerate/FormGenerate";
 import Facility2 from "./pages/Facility2";
+import Contact from "./pages/Contact/Contact";
 // import Main from './pages/Main';
 
 export default function Router() {
@@ -31,6 +32,7 @@ export default function Router() {
         // { path: "facilitystructure", element: <FacilityStructure /> },
         { path: "facilitystructure", element: <SetFacilityStructure /> },
         { path: "formgenerate", element: <FormGenerate />},
+        { path: "contact", element: <Contact />},
       ],
     },
     {
