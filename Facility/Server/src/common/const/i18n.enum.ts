@@ -1,6 +1,3 @@
-/**
- * i18n Enum
- */
 export enum I18NEnums {
   USER_NOT_HAVE_PERMISSION = 'greet.USER_NOT_HAVE_PERMISSION',
   FACILITY_NOT_FOUND = 'greet.FACILITY_NOT_FOUND',
@@ -12,4 +9,5 @@ export enum I18NEnums {
   DUBLICATE_ERROR = 'greet.DUBLICATE_ERROR',
   NODE_HAS_CHILD = 'greet.NODE_HAS_CHILD',
   RELATİON_NOT_FOUND = 'greet.RELATİON_NOT_FOUND',
+  CONTACT_NOT_FOUND = 'greet.CONTACT_NOT_FOUND',
 }

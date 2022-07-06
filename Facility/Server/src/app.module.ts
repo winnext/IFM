@@ -23,6 +23,7 @@ import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { ClassificationModule } from './classification/classification.module';
 import { HttpCacheInterceptor } from 'ifmcommon';
 import { KafkaModule } from './kafka/kafka.module';
+import { ContactModule } from './contact/structure.module';
 
 @Module({
   imports: [
@@ -121,6 +122,8 @@ import { KafkaModule } from './kafka/kafka.module';
     RoomModule,
 
     ClassificationModule,
+
+    ContactModule
   ],
   providers: [
     //to cache all get request
