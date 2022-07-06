@@ -27,6 +27,8 @@ export class ContactRepository implements GeciciInterface<Contact> {
     const contact = new Contact();
     const contactObject = assignDtoPropToEntity(contact, createContactDto);
     delete contactObject['parentId'];
+    delete contactObject['createdById'];
+    delete contactObject['classificationId'];
     let value;
     if (contactObject['labels']) {
       value = await this.neo4jService.createNode(contactObject, contactObject['labels']);
@@ -37,6 +39,12 @@ export class ContactRepository implements GeciciInterface<Contact> {
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
     if (createContactDto['parentId']) {
       await this.neo4jService.addRelations(result['id'], createContactDto['parentId']);
+    }
+    if (createContactDto['createdById']) {
+      await this.neo4jService.addRelationWithRelationName(result['id'], createContactDto['createdById'],"CREATED_BY");
+    }
+    if (createContactDto['classificationId']) {
+      await this.neo4jService.addRelationWithRelationName(createContactDto['classificationId'],result['id'], "CLASSIFICATION_OF");
     }
     return result;
   }

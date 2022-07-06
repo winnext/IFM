@@ -31,11 +31,20 @@ export class CreateContactDto {
   @ApiProperty()
   @IsOptional()
   labels?: string[];
-
+  
+  /////////////////// Not in entity and db /////////////// 
   @ApiProperty()
   @IsOptional()
   parentId?: string;
 
+  @ApiProperty()
+  @IsOptional()
+  classificationId?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  createdById?: string;
+  /////////////////////////////////////////////////////////
 
   @ApiProperty()
   @IsNotEmptyWithI18nMessage(i18nValidationMessageEnum.NOT_FOUND)

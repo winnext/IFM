@@ -512,32 +512,7 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  async addRelationWithRelationName(first_node_id: string, second_node_id: string, relationName: string) {
-    try {
-      if (!first_node_id || !second_node_id || !relationName) {
-        throw new HttpException(add_relation_with_relation_name__must_entered_error, 400);
-      }
-
-      const res = await this.write(
-        `MATCH (c {isDeleted: false}) where id(c)= $first_node_id MATCH (p {isDeleted: false}) where id(p)= $second_node_id MERGE (c)-[:${relationName}]-> (p)`,
-        {
-          first_node_id: parseInt(first_node_id),
-          second_node_id: parseInt(second_node_id),
-        },
-      );
-      const { relationshipsCreated } = await res.summary.updateStatistics.updates();
-      if (relationshipsCreated === 0) {
-        throw new HttpException(add_relation_with_relation_name__create_relation_error, 400);
-      }
-      return successResponse(res);
-    } catch (error) {
-      if (error?.response?.code) {
-        throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
-      } else {
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
+  
 
   async addParentByLabelClass(entity, label: string) {
     try {
@@ -1464,6 +1439,33 @@ export class Neo4jService implements OnApplicationShutdown {
       }
     }
     return node;
+  }
+
+  async addRelationWithRelationName(first_node_id: string, second_node_id: string, relationName: string) {
+    try {
+      if (!first_node_id || !second_node_id || !relationName) {
+        throw new HttpException(add_relation_with_relation_name__must_entered_error, 400);
+      }
+
+      const res = await this.write(
+        `MATCH (c {isDeleted: false}) where id(c)= $first_node_id MATCH (p {isDeleted: false}) where id(p)= $second_node_id MERGE (c)-[:${relationName}]-> (p)`,
+        {
+          first_node_id: parseInt(first_node_id),
+          second_node_id: parseInt(second_node_id),
+        },
+      );
+      const { relationshipsCreated } = await res.summary.updateStatistics.updates();
+      if (relationshipsCreated === 0) {
+        throw new HttpException(add_relation_with_relation_name__create_relation_error, 400);
+      }
+      return successResponse(res);
+    } catch (error) {
+      if (error?.response?.code) {
+        throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
