@@ -52,4 +52,11 @@ export class StructureController {
   findOneNode(@Param('key') key: string) {
     return this.facilityStructuresService.findOneNode(key);
   }
+
+  @Unprotected()
+  @Get('/node/:id')
+  @NoCache()
+  findOneNodeById(@Param('id') id: string) {
+    return this.facilityStructuresService.findOneNodeById(id);
+  }
 }

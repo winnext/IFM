@@ -6,9 +6,8 @@ import { UpdateFacilityStructureDto } from '../dto/update-facility-structure.dto
 import { FacilityStructure } from '../entities/facility-structure.entity';
 
 //import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
-import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
+import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'src/sgnm-neo4j/src';
 
-import { nodeHasChildException } from 'ifmcommon';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 import { has_children_error } from 'src/common/const/custom.error.object';
 import { CustomTreeError } from 'src/common/const/custom.error.enum';
@@ -75,7 +74,7 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
 
       const hasChildren = await this.neo4jService.findChildrenById(_id);
       if (hasChildren['records'].length == 0) {
-        deletedNode = await this.neo4jService.delete(_id); 
+        deletedNode = await this.neo4jService.delete(_id);
       } else {
         throw new HttpException(has_children_error, 400);
       }
@@ -83,8 +82,7 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     } catch (error) {
       if (error.response?.code == CustomTreeError.HAS_CHILDREN) {
         throw new HttpException(has_children_error, 400);
-      }
-      else {
+      } else {
         throw new HttpException(error.response?.message, error.response?.code);
       }
     }
@@ -122,5 +120,22 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async findOneNodeById(id: string) {
+    //Virtual node olmayan nodeları id ile bulma querisi
+    const node = await this.neo4jService.read(`match (n) where id(n)= $id and NOT n:Virtual return n`, {
+      id: parseInt(id),
+    });
+
+    if (!node.records[0] || node.records[0].length === 0) {
+      return null;
+    }
+    const result = {
+      id: node.records[0]['_fields'][0]['identity'].low,
+      labels: node.records[0]['_fields'][0]['labels'],
+      properties: node.records[0]['_fields'][0]['properties'],
+    };
+    return result;
   }
 }

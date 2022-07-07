@@ -18,5 +18,6 @@
   "IS_STRING": "{property} must be string",
   "LENGTH": "{property} needs to be at least {constraints.0} and at most  {constraints.1} characters long",
   "DUBLICATE_ERROR": "given properties #{errorProperties} are already exist",
-  "RELATİON_NOT_FOUND": "relation not found"
+  "RELATİON_NOT_FOUND": "relation not found",
+  "HAS_RELATİON": " {id} this node already has relation"
 }

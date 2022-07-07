@@ -12,4 +12,5 @@ export enum I18NEnums {
   DUBLICATE_ERROR = 'greet.DUBLICATE_ERROR',
   NODE_HAS_CHILD = 'greet.NODE_HAS_CHILD',
   RELATİON_NOT_FOUND = 'greet.RELATİON_NOT_FOUND',
+  HAS_RELATİON = 'greet.HAS_RELATİON',
 }

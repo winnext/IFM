@@ -22,3 +22,7 @@ export function RoomNotFoundException(id) {
 export function RelationNotFountException(id) {
   throw new HttpException({ key: I18NEnums.RELATİON_NOT_FOUND, args: { id: id } }, HttpStatus.NOT_FOUND);
 }
+
+export function hasRelationException(id) {
+  throw new HttpException({ key: I18NEnums.HAS_RELATİON, args: { id: id } }, HttpStatus.NOT_FOUND);
+}
