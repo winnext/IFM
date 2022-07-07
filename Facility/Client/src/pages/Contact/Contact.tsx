@@ -677,7 +677,6 @@ const Contact = () => {
                     });
                 }}
                 filter
-                placeholder="Select Type"
                 style={{ width: '100%' }}
               />
             </div>
@@ -730,7 +729,6 @@ const Contact = () => {
                     });
                 }}
                 filter
-                placeholder="Select Type"
                 style={{ width: '100%' }}
               />
             </div>
@@ -866,7 +864,6 @@ const Contact = () => {
                     });
                 }}
                 filter
-                placeholder="Select Type"
                 style={{ width: '100%' }}
               />
             </div>
@@ -937,7 +934,6 @@ const Contact = () => {
                     });
                 }}
                 filter
-                placeholder="Select Type"
                 style={{ width: '100%' }}
               />
             </div>
@@ -990,7 +986,6 @@ const Contact = () => {
                     });
                 }}
                 filter
-                placeholder="Select Type"
                 style={{ width: '100%' }}
               />
             </div>
@@ -1126,7 +1121,6 @@ const Contact = () => {
                     });
                 }}
                 filter
-                placeholder="Select Type"
                 style={{ width: '100%' }}
               />
             </div>
