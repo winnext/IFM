@@ -373,23 +373,59 @@ const Contact = () => {
         if (labels.length > 0) {
           updateNode = {
             key: uuidv4(),
-            name: name,
-            tag: tag,
-            isActive: isActive,
-            description: "",
-            labels: [labels[0]],
+            parentId: res.data.id,
+            email: email,
+            name: email,
+            category: category,
+            company: company,
+            phone: phone,
+            createdBy: createdBy,
             formTypeId: formTypeId,
+            department: department,
+            organizationCode: organizationCode,
+            givenName: givenName,
+            familyName: familyName,
+            street: street,
+            postalBox: postalBox,
+            town: town,
+            stateRegion: stateRegion,
+            postalCode: postalCode,
+            country: country,
+            tag: tag,
+            description: "",
+            createdById: createdByNodeId,
+            classificationId: categoryNodeId
+
           };
         } else {
           updateNode = {
             key: uuidv4(),
-            name: name,
-            tag: tag,
-            isActive: isActive,
-            description: "",
+            parentId: res.data.id,
+            email: email,
+            name: email,
+            category: category,
+            company: company,
+            phone: phone,
+            createdBy: createdBy,
             formTypeId: formTypeId,
+            department: department,
+            organizationCode: organizationCode,
+            givenName: givenName,
+            familyName: familyName,
+            street: street,
+            postalBox: postalBox,
+            town: town,
+            stateRegion: stateRegion,
+            postalCode: postalCode,
+            country: country,
+            tag: tag,
+            description: "",
+            createdById: createdByNodeId,
+            classificationId: categoryNodeId
           }
         }
+        console.log(updateNode);
+        
 
         ContactService.update(res.data.id, updateNode)
           .then((res) => {
@@ -765,6 +801,17 @@ const Contact = () => {
 
           <div className="col-12 md:col-4">
             <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Family Name</h5>
+              <InputText
+                value={familyName}
+                onChange={(event) => setFamilyName(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
               <InputText
                 value={street}
@@ -1014,6 +1061,17 @@ const Contact = () => {
               <InputText
                 value={givenName}
                 onChange={(event) => setGivenName(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Family Name</h5>
+              <InputText
+                value={familyName}
+                onChange={(event) => setFamilyName(event.target.value)}
                 style={{ width: '100%' }}
               />
             </div>
