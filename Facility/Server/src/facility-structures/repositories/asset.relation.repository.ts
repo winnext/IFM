@@ -94,9 +94,12 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     return assetArray;
   }
   async create(key: string, createAssetRelationDto: CreateAssetRelationDto) {
-    const node = await this.neo4jService.read(`match(p) where p.key=$key AND NOT p:Virtual return p`, {
-      key,
-    });
+    const node = await this.neo4jService.read(
+      `match(p) where p.key=$key and p.isDeleted=false AND NOT p:Virtual return p`,
+      {
+        key,
+      },
+    );
     if (!node.records[0]) {
       //throw new HttpException('uygun node id si giriniz', 400);
       throw new FacilityStructureNotFountException(key);
@@ -116,7 +119,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
       return 'asset not found';
     }
     const relationExist = await this.neo4jService.read(
-      `match(p) where p.key=$key match (c) where c.referenceKey=$referenceKey match (p)-[:HAS]->(c) return c`,
+      `match(p) where p.key=$key and p.isDeleted=false match (c) where c.referenceKey=$referenceKey match (p)-[:HAS]->(c) return c`,
       {
         key,
         referenceKey: createAssetRelationDto.referenceKey,

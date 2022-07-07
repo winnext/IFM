@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { AssetController } from './controllers/asset.controller';
@@ -7,12 +8,12 @@ import { AssetRepository } from './repositories/asset.repository';
 import { AssetService } from './services/asset.service';
 
 @Module({
-  imports: [],
+  imports: [HttpModule],
   controllers: [AssetController, AssetListenerController],
   providers: [
     AssetService,
     {
-      provide: RepositoryEnums.FACILITY_STRUCTURE,
+      provide: RepositoryEnums.ASSET,
       useClass: AssetRepository,
     },
   ],

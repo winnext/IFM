@@ -1,6 +1,8 @@
+import { HttpService } from '@nestjs/axios';
 import { Controller, HttpException, HttpStatus } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { Unprotected } from 'nest-keycloak-connect';
+import { catchError, firstValueFrom, map } from 'rxjs';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
 import { assignDtoPropToEntity, Neo4jService } from 'src/sgnm-neo4j/src';
 import {
@@ -12,20 +14,34 @@ import { successResponse } from 'src/sgnm-neo4j/src/constant/success.response.ob
 @Controller('assetListener')
 @Unprotected()
 export class AssetListenerController {
-  constructor(private readonly neo4jService: Neo4jService) {}
+  constructor(private readonly neo4jService: Neo4jService, private readonly httpService: HttpService) {}
 
   @EventPattern('createAssetRelation')
   async createAssetListener(@Payload() message) {
     if (message.value?.referenceKey || message.value?.parentKey) {
       throw new HttpException('key is not available on kafka object', 400);
     }
-    const virtualFacilityStructure = message.value;
 
-    const { parentKey } = virtualFacilityStructure;
+    const structurePromise = await this.httpService
+      .get(`${process.env.STRUCTURE_URL}/${message.value?.referenceKey}`)
+      .pipe(
+        catchError(() => {
+          throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
+        }),
+      )
+      .pipe(map((response) => response.data));
+    const structure = await firstValueFrom(structurePromise);
+    console.log(structure);
+    if (!structure) {
+      return 'structure not found';
+    }
+    const virtualFacilityStructureObject = message.value;
+
+    const { parentKey } = virtualFacilityStructureObject;
 
     let virtualNode = new VirtualNode();
 
-    virtualNode = assignDtoPropToEntity(virtualNode, test);
+    virtualNode = assignDtoPropToEntity(virtualNode, virtualFacilityStructureObject);
 
     const value = await this.neo4jService.createNode(virtualNode, ['Virtual', 'Structure']);
 
