@@ -9,14 +9,15 @@ import { Asset } from '../entities/asset.entity';
 //import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
 import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
 
-import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
+import { nodeHasChildException } from 'ifmcommon';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 import { CreateAssetDto } from '../dto/create-asset.dto';
 import { UpdateAssetDto } from '../dto/update-asset.dto';
+import { KafkaService } from 'src/kafka/kafka.service';
 
 @Injectable()
 export class AssetRepository implements GeciciInterface<Asset> {
-  constructor(private readonly neo4jService: Neo4jService) {}
+  constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: KafkaService) {}
 
   async findOneByRealm(label: string, realm: string) {
     let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
@@ -28,24 +29,28 @@ export class AssetRepository implements GeciciInterface<Asset> {
     return node;
   }
   async create(createAssetDto: CreateAssetDto) {
-    let asset = new Asset();
-    let assetObject = assignDtoPropToEntity(asset, createAssetDto);
+    const asset = new Asset();
+    const assetObject = assignDtoPropToEntity(asset, createAssetDto);
     let value;
+    delete assetObject['parentId'];
     if (assetObject['labels']) {
       value = await this.neo4jService.createNode(assetObject, assetObject['labels']);
     } else {
       value = await this.neo4jService.createNode(assetObject);
     }
+    console.log(value);
     value['properties']['id'] = value['identity'].low;
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
-    if (assetObject['parentId']) {
-      await this.neo4jService.addRelations(result['id'], CreateAssetDto['parentId']);
+    console.log(result.id);
+    console.log(createAssetDto);
+    if (createAssetDto['parentId']) {
+      await this.neo4jService.addRelations(String(result['id']), createAssetDto['parentId']);
     }
     return result;
   }
 
   async update(_id: string, updateAssetDto: UpdateAssetDto) {
-    let updateAssetDtoWithoutLabelsAndParentId = {};
+    const updateAssetDtoWithoutLabelsAndParentId = {};
     Object.keys(updateAssetDto).forEach((element) => {
       if (element != 'labels' && element != 'parentId') {
         updateAssetDtoWithoutLabelsAndParentId[element] = updateAssetDto[element];
@@ -71,16 +76,20 @@ export class AssetRepository implements GeciciInterface<Asset> {
 
   async delete(_id: string) {
     try {
-      let hasParent = await this.neo4jService.getParentById(_id);
+      await this.neo4jService.getParentById(_id);
       let deletedNode;
 
-      let hasChildren = await this.neo4jService.findChildrenById(_id);
+      const hasChildren = await this.neo4jService.findChildrenById(_id);
       if (hasChildren['records'].length == 0) {
         deletedNode = await this.neo4jService.delete(_id);
         if (!deletedNode) {
           throw new AssetNotFoundException(_id);
         }
       }
+      await this.kafkaService.producerSendMessage(
+        'deleteAsset',
+        JSON.stringify({ referenceKey: deletedNode.properties.key }),
+      );
       return deletedNode;
     } catch (error) {
       const { code, message } = error.response;

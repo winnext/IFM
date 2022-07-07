@@ -7,10 +7,11 @@ import { AssetRelationRepository } from './repositories/asset.relation.repositor
 import { AssetRelationController } from './controllers/asset.relation.controller';
 import { AssetRelationService } from './services/asset.relation.service';
 import { HttpModule } from '@nestjs/axios';
+import { StructureListenerController } from './controllers/structure.listener';
 
 @Module({
   imports: [HttpModule],
-  controllers: [StructureController, AssetRelationController],
+  controllers: [StructureController, AssetRelationController, StructureListenerController],
   providers: [
     StructureService,
     AssetRelationService,

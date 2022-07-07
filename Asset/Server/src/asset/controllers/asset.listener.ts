@@ -16,42 +16,25 @@ export class AssetListenerController {
 
   @EventPattern('createAssetRelation')
   async createAssetListener(@Payload() message) {
-    const test = message.value;
+    if (message.value?.referenceKey || message.value?.parentKey) {
+      throw new HttpException('key is not available on kafka object', 400);
+    }
+    const virtualFacilityStructure = message.value;
 
-    const { referencekey, parentKey } = test;
+    const { parentKey } = virtualFacilityStructure;
 
     let virtualNode = new VirtualNode();
 
     virtualNode = assignDtoPropToEntity(virtualNode, test);
 
     const value = await this.neo4jService.createNode(virtualNode, ['Virtual', 'Structure']);
-    console.log(value.properties.key);
+
     await this.addRelationWithRelationNameByKey(value.properties.key, parentKey, 'INSIDE_IN');
 
     await this.addRelationWithRelationNameByKey(value.properties.key, parentKey, 'HAS_VİRTUAL_RELATION');
     console.log(message.value);
   }
-  @EventPattern('deleteAssetRelation')
-  async deleteAssetListener(@Payload() message) {
-    console.log(typeof message);
-    console.log(typeof message.value);
-    const test = message.value;
 
-    const { id, parentId } = test;
-    console.log(typeof test);
-    test['isDeleted'] = false;
-    console.log(test);
-    const value = await this.neo4jService.createNode(test, ['Virtual', 'Structure']);
-    console.log(value);
-    await this.neo4jService.addRelationWithRelationName(String(value['identity'].low), parentId, 'INSIDE_IN');
-
-    await this.neo4jService.addRelationWithRelationName(
-      String(value['identity'].low),
-      parentId,
-      'HAS_VİRTUAL_RELATION',
-    );
-    console.log(message.value);
-  }
   async addRelationWithRelationNameByKey(first_node_key, second_node_key, relationName) {
     try {
       if (!first_node_key || !second_node_key || !relationName) {

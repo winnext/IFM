@@ -29,8 +29,8 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
   ) {}
 
   async findOneById(id: string) {
-    const node = await this.neo4jService.write(`match(p) where id(p)=$id return p`, {
-      id: parseInt(id),
+    const node = await this.neo4jService.write(`match(p) where p.key=$id return p`, {
+      id,
     });
     if (!node.records[0]) {
       //throw new HttpException('uygun node id si giriniz', 400);
@@ -39,9 +39,9 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
 
     //find by id with specific relation name which node has that specific relations
     const relations = await this.neo4jService.write(
-      `match(p) where id(p)=$id match (c) match (p)-[:HAS]->(c) return c`,
+      `match(p) where p.key=$id match (c) match (p)-[:HAS]->(c) return c`,
       {
-        id: parseInt(id),
+        id,
       },
     );
     if (relations.records.length === 0) {
@@ -173,16 +173,34 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
   }
 
   async findOneNodeByKey(key: string) {
-    try {
-      const node = await this.neo4jService.findOneNodeByKey(key);
-      if (!node) {
-        throw new FacilityStructureNotFountException(key);
-      }
-      const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
-      return result;
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    const node = await this.neo4jService.read(`match(p) where p.key=$key and p.isDeleted=false return p`, {
+      key,
+    });
+    if (!node.records[0]) {
+      //throw new HttpException('uygun node id si giriniz', 400);
+      throw new RelationNotFountException(key);
     }
+
+    //find by id with specific relation name which node has that specific relations
+    const relations = await this.neo4jService.read(
+      `match(p) where p.key=$key match (c) where c.isDeleted=false match (p)-[:HAS]->(c) return c`,
+      {
+        key,
+      },
+    );
+    if (relations.records.length === 0) {
+      //throw new HttpException('hiç ilişkisi yok', 400);
+      throw new RelationNotFountException(key);
+    }
+
+    const assetArray = await Promise.all(
+      relations.records.map(async (i) => {
+        const asset = await this.httpService.get(i['_fields'][0].properties.url).pipe(map((response) => response.data));
+        return await firstValueFrom(asset);
+      }),
+    );
+
+    return assetArray;
   }
 
   //---------------------------------------------------------

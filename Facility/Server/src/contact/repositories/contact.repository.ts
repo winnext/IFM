@@ -41,10 +41,14 @@ export class ContactRepository implements GeciciInterface<Contact> {
       await this.neo4jService.addRelations(result['id'], createContactDto['parentId']);
     }
     if (createContactDto['createdById']) {
-      await this.neo4jService.addRelationWithRelationName(result['id'], createContactDto['createdById'],"CREATED_BY");
+      await this.neo4jService.addRelationWithRelationName(result['id'], createContactDto['createdById'], 'CREATED_BY');
     }
     if (createContactDto['classificationId']) {
-      await this.neo4jService.addRelationWithRelationName(createContactDto['classificationId'],result['id'], "CLASSIFICATION_OF");
+      await this.neo4jService.addRelationWithRelationName(
+        createContactDto['classificationId'],
+        result['id'],
+        'CLASSIFICATION_OF',
+      );
     }
     return result;
   }
@@ -102,7 +106,7 @@ export class ContactRepository implements GeciciInterface<Contact> {
 
       const hasChildren = await this.neo4jService.findChildrenById(_id);
       if (hasChildren['records'].length == 0) {
-        deletedNode = await this.neo4jService.delete(_id); 
+        deletedNode = await this.neo4jService.delete(_id);
       } else {
         throw new HttpException(has_children_error, 400);
       }
@@ -110,8 +114,7 @@ export class ContactRepository implements GeciciInterface<Contact> {
     } catch (error) {
       if (error.response?.code == CustomTreeError.HAS_CHILDREN) {
         throw new HttpException(has_children_error, 400);
-      }
-      else {
+      } else {
         throw new HttpException(error.response?.message, error.response?.code);
       }
     }

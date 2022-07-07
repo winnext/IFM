@@ -22,13 +22,6 @@ export class AssetRelationController {
     return this.structureRelationService.create(key, createAssetRelationDto);
   }
 
-  @Get('/:id')
-  @Unprotected()
-  @NoCache()
-  findOne(@Param('id') id: string) {
-    return this.structureRelationService.findOne(id);
-  }
-
   @Delete(':id')
   @Unprotected()
   remove(@Param('id') id: string) {
