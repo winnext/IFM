@@ -660,11 +660,9 @@ const Contact = () => {
                 options={classification}
                 onChange={(e) => {
                   setCategory(e.value);
-                  console.log(e);
                   let nodeKey: any = e.value;
                   ClassificationsService.nodeInfo(nodeKey)
                     .then((res) => {
-                      console.log(res.data);
                       setCategoryNodeId(res.data.id);
                     })
                     .catch((err) => {
@@ -712,11 +710,9 @@ const Contact = () => {
                 options={formData}
                 onChange={(e) => {
                   setFormTypeId(e.value);
-                  console.log(e);
                   let nodeKey: any = e.value;
                   FormTypeService.nodeInfo(nodeKey)
                     .then((res) => {
-                      console.log(res.data);
                       setLabels([res.data.properties.name])
                     })
                     .catch((err) => {
@@ -851,7 +847,6 @@ const Contact = () => {
                   let nodeKey: any = e.value;
                   ContactService.nodeInfo(nodeKey)
                     .then((res) => {
-                      console.log(res.data);
                       setCreatedByNodeId(res.data.id);
                     })
                     .catch((err) => {
