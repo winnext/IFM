@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 
@@ -35,10 +34,5 @@ export class StructureService {
   async findOneNode(key: string) {
     //checkObjectIddİsValid(id);
     return await this.facilityStructureRepository.findOneNodeByKey(key);
-  }
-
-  async findOneNodeById(id: string) {
-    //checkObjectIddİsValid(id);
-    return await this.facilityStructureRepository.findOneNodeById(id);
   }
 }
