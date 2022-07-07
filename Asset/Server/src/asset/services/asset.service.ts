@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { RepositoryEnums } from 'src/common/const/repository.enum';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
-import { CreateAssetDto } from './dto/create-asset.dto';
-import { UpdateAssetDto } from './dto/update-asset.dto';
-
+import { CreateAssetDto } from '../dto/create-asset.dto';
+import { UpdateAssetDto } from '../dto/update-asset.dto';
 
 @Injectable()
 export class AssetService {
@@ -17,7 +15,7 @@ export class AssetService {
   }
 
   findOne(label: string, realm: string) {
-    return this.assetRepository.findOneByRealm(label,realm);
+    return this.assetRepository.findOneByRealm(label, realm);
   }
 
   update(id: string, updateAssetDto: UpdateAssetDto) {
@@ -33,7 +31,6 @@ export class AssetService {
   }
 
   async findOneNode(key: string) {
-    //checkObjectIddİsValid(id);
     return await this.assetRepository.findOneNodeByKey(key);
   }
 }

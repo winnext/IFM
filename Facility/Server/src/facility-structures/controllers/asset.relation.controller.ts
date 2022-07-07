@@ -17,9 +17,9 @@ export class AssetRelationController {
     type: CreateAssetRelationDto,
     description: 'create  structure-asset relation',
   })
-  @Post('/:id')
-  createAssetVirtualRelation(@Param('id') id: string, @Body() createAssetRelationDto: CreateAssetRelationDto) {
-    return this.structureRelationService.create(id, createAssetRelationDto);
+  @Post('/:key')
+  createAssetVirtualRelation(@Param('key') key: string, @Body() createAssetRelationDto: CreateAssetRelationDto) {
+    return this.structureRelationService.create(key, createAssetRelationDto);
   }
 
   @Get('/:id')

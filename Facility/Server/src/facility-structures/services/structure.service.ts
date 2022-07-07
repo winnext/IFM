@@ -36,4 +36,9 @@ export class StructureService {
     //checkObjectIddİsValid(id);
     return await this.facilityStructureRepository.findOneNodeByKey(key);
   }
+
+  async findOneNodeById(id: string) {
+    //checkObjectIddİsValid(id);
+    return await this.facilityStructureRepository.findOneNodeById(id);
+  }
 }

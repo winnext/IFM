@@ -96,7 +96,10 @@ import {
   find_by_name__must_entered_error,
   find_parent_by_id__must_entered_error,
   find_children_by_id__must_entered_error,
+<<<<<<< HEAD
   delete__update_is_deleted_prop_error,
+=======
+>>>>>>> hydr
 } from './constant/custom.error.object';
 
 @Injectable()
@@ -525,14 +528,23 @@ export class Neo4jService implements OnApplicationShutdown {
           second_node_id: parseInt(second_node_id),
         },
       );
+<<<<<<< HEAD
       const { relationshipsCreated } = await res.summary.updateStatistics.updates();
+=======
+      let { relationshipsCreated } = await res.summary.updateStatistics.updates();
+>>>>>>> hydr
       if (relationshipsCreated === 0) {
         throw new HttpException(add_relation_with_relation_name__create_relation_error, 400);
       }
       return successResponse(res);
     } catch (error) {
+<<<<<<< HEAD
       if (error?.response?.code) {
         throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
+=======
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+>>>>>>> hydr
       } else {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
@@ -1040,9 +1052,15 @@ export class Neo4jService implements OnApplicationShutdown {
       if (!label || !realm) {
         throw new HttpException(find_by_realm_with_tree_structure__not_entered_error, 400);
       }
+<<<<<<< HEAD
 
       let tree = await this.findWithChildrenByRealmAsTree(label, realm);
 
+=======
+
+      let tree = await this.findWithChildrenByRealmAsTree(label, realm);
+
+>>>>>>> hydr
       if (!tree) {
         throw new HttpException(tree_structure_not_found_by_realm_name_error, 404);
       } else if (Object.keys(tree).length === 0) {

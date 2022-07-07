@@ -1,16 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 
-
 import { Unprotected } from 'nest-keycloak-connect';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { NoCache } from 'ifmcommon';
 import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto';
-import { CreateAssetDto } from './dto/create-asset.dto';
-import { UpdateAssetDto } from './dto/update-asset.dto';
-import { AssetService } from './asset.service';
-@ApiTags('structure')
+import { CreateAssetDto } from '../dto/create-asset.dto';
+import { UpdateAssetDto } from '../dto/update-asset.dto';
+import { AssetService } from '../services/asset.service';
+
+@ApiTags('asset')
 @ApiBearerAuth('JWT-auth')
-@Controller('structure')
+@Controller('asset')
 export class AssetController {
   constructor(private readonly assetService: AssetService) {}
 

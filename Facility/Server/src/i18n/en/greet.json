@@ -19,5 +19,6 @@
   "LENGTH": "{property} needs to be at least {constraints.0} and at most  {constraints.1} characters long",
   "DUBLICATE_ERROR": "given properties #{errorProperties} are already exist",
   "RELATION_NOT_FOUND": "relation not found",
-  "CONTACT_NOT_FOUND": "contact not found (id=#{id})"
+  "CONTACT_NOT_FOUND": "contact not found (id=#{id})",
+  "HAS_RELATİON": " {id} this node already has relation"
 }
