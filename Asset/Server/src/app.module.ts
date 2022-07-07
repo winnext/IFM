@@ -17,6 +17,7 @@ import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { HttpCacheInterceptor } from 'ifmcommon';
 import { AssetModule } from './asset/asset.module';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -41,8 +42,17 @@ import { AssetModule } from './asset/asset.module';
 
     KeycloakModule,
 
+    KafkaModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        brokers: [configService.get('KAFKA_BROKER')],
+        clientId: configService.get('KAFKA_CLIENT_ID'),
+      }),
+    }),
+
     I18nModule.forRoot(i18nOptions(__dirname)),
-   
+
     Neo4jModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -52,7 +62,7 @@ import { AssetModule } from './asset/asset.module';
         port: configService.get('NEO4J_PORT'),
         scheme: configService.get('NEO4J_SCHEME'),
         username: configService.get('NEO4J_USERNAME'),
-        database:configService.get('NEO4J_DATABASE'),
+        database: configService.get('NEO4J_DATABASE'),
       }),
     }),
 
@@ -66,8 +76,6 @@ import { AssetModule } from './asset/asset.module';
     }),
 
     MessagebrokerModule,
-
-
 
     AssetModule,
   ],
