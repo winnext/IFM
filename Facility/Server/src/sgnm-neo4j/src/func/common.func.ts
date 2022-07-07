@@ -3,7 +3,9 @@ import { int } from 'neo4j-driver';
 //transfer dto(object come from client) properties to specific node entity object
 export function assignDtoPropToEntity(entity, dto) {
   Object.keys(dto).forEach((element) => {
-    entity[element] = dto[element];
+    if (element != "parentId" && element!="labels") {
+      entity[element] = dto[element];
+    }
   });
 
   return entity;

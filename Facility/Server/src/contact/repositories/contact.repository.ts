@@ -52,7 +52,7 @@ export class ContactRepository implements GeciciInterface<Contact> {
   async update(_id: string, updateContactDto: UpdateContactDto) {
     const updateContactDtoWithoutLabelsAndParentId = {};
     Object.keys(updateContactDto).forEach((element) => {
-      if (element != 'labels' && element != 'parentId') {
+      if (element != 'labels' && element != 'parentId' && element != 'createdById' && element != 'classificationId') {
         updateContactDtoWithoutLabelsAndParentId[element] = updateContactDto[element];
       }
     });
@@ -70,6 +70,28 @@ export class ContactRepository implements GeciciInterface<Contact> {
     if (updateContactDto['labels'] && updateContactDto['labels'].length > 0) {
       await this.neo4jService.removeLabel(_id, result['labels']);
       await this.neo4jService.updateLabel(_id, updateContactDto['labels']);
+    }
+    if (updateContactDto['createdById']) {
+        const result = await this.neo4jService.findByRelationWithRelation(_id, 'CREATED_BY','leftToRight');
+        
+    }
+    if (updateContactDto['classificationId']) {
+      const result = await this.neo4jService.findByRelationWithRelation(_id, 'CLASSIFICATION_OF','rightToLeft');
+      console.log('----------------------------------------------------------------------')
+      console.log(result['records'][0]['_fields']);
+      console.log('----------------------------------------------------------------------')
+      //if there is a "CLASSIFICATION_OF" relation 
+      if (result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
+        if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['classificationId']) {
+          await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low );
+          await this.neo4jService.addRelationWithRelationName(updateContactDto['classificationId'],_id, "CLASSIFICATION_OF");
+        }
+      }
+      //if there is not "CLASSIFICATION_OF" relation 
+      else {
+        await this.neo4jService.addRelationWithRelationName(updateContactDto['classificationId'],_id, "CLASSIFICATION_OF");
+      }
+    
     }
     return result;
   }
