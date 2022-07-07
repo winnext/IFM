@@ -49,17 +49,10 @@ export class AssetController {
     return this.assetService.changeNodeBranch(id, target_parent_id);
   }
 
-  // @Unprotected()
-  // @Get('/:key')
-  // @NoCache()
-  // findOneNode(@Param('key') key: string) {
-  //   return this.assetService.findOneNode(key);
-  // }
-
   @Unprotected()
-  @Get('/:id')
+  @Get('/:key')
   @NoCache()
-  findOneNodeById(@Param('id') id: string) {
-    return this.assetService.findOneNodeById(id);
+  findOneNode(@Param('key') key: string) {
+    return this.assetService.findOneNode(key);
   }
 }

@@ -114,32 +114,11 @@ export class AssetRepository implements GeciciInterface<Asset> {
   }
 
   async findOneNodeByKey(key: string) {
-    try {
-      const node = await this.neo4jService.findOneNodeByKey(key);
-      if (!node) {
-        throw new AssetNotFoundException(key);
-      }
-      const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
-      return result;
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    const node = await this.neo4jService.findOneNodeByKey(key);
+    if (!node) {
+      return null;
     }
-  }
-
-  async findOneNodeById(id: string) {
-    try {
-      const node = await this.neo4jService.read(`match (n) where id(n)= $id return n`, { id: parseInt(id) });
-      if (!node) {
-        throw new AssetNotFoundException(id);
-      }
-      const result = {
-        id: node.records[0]['_fields'][0]['identity'].low,
-        labels: node.records[0]['_fields'][0]['labels'],
-        properties: node.records[0]['_fields'][0]['properties'],
-      };
-      return result;
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
+    return result;
   }
 }

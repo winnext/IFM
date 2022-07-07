@@ -30,13 +30,7 @@ export class AssetService {
     return await this.assetRepository.changeNodeBranch(id, target_parent_id);
   }
 
-  // async findOneNode(key: string) {
-  //   //checkObjectIddİsValid(id);
-  //   return await this.assetRepository.findOneNodeByKey(key);
-  // }
-
-  async findOneNodeById(id: string) {
-    //checkObjectIddİsValid(id);
-    return await this.assetRepository.findOneNodeById(id);
+  async findOneNode(key: string) {
+    return await this.assetRepository.findOneNodeByKey(key);
   }
 }
