@@ -7,7 +7,7 @@ import { UpdateAssetDto } from '../dto/update-asset.dto';
 @Injectable()
 export class AssetService {
   constructor(
-    @Inject(RepositoryEnums.FACILITY_STRUCTURE)
+    @Inject(RepositoryEnums.ASSET)
     private readonly assetRepository: GeciciInterface<any>,
   ) {}
   async create(createAssetDto: CreateAssetDto) {
