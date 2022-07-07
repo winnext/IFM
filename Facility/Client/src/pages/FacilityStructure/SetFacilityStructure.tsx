@@ -656,7 +656,7 @@ const SetFacilityStructure = () => {
                   //   }
                   // }
                   // )} 
-                  onClick={(e) => navigate(`/formgenerate/${data.self_id.low}?formTypeId=${data.formTypeId}`)}
+                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?formTypeId=${data.formTypeId}`)}
                   title="Edit Form"
                 />
                 {/* } */}
