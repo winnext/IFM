@@ -512,32 +512,7 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  async addRelationWithRelationName(first_node_id: string, second_node_id: string, relationName: string) {
-    try {
-      if (!first_node_id || !second_node_id || !relationName) {
-        throw new HttpException(add_relation_with_relation_name__must_entered_error, 400);
-      }
-
-      const res = await this.write(
-        `MATCH (c {isDeleted: false}) where id(c)= $first_node_id MATCH (p {isDeleted: false}) where id(p)= $second_node_id MERGE (c)-[:${relationName}]-> (p)`,
-        {
-          first_node_id: parseInt(first_node_id),
-          second_node_id: parseInt(second_node_id),
-        },
-      );
-      const { relationshipsCreated } = await res.summary.updateStatistics.updates();
-      if (relationshipsCreated === 0) {
-        throw new HttpException(add_relation_with_relation_name__create_relation_error, 400);
-      }
-      return successResponse(res);
-    } catch (error) {
-      if (error?.response?.code) {
-        throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
-      } else {
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
+  
 
   async addParentByLabelClass(entity, label: string) {
     try {
@@ -1163,7 +1138,7 @@ export class Neo4jService implements OnApplicationShutdown {
       const cyperQuery = updateNodeQuery(id, params);
 
       const res = await this.write(cyperQuery, params);
-      console.log(res);
+      
       if (!res['records'][0]) {
         throw new HttpException(update_by_id__update_error, 400);
       }
@@ -1464,6 +1439,85 @@ export class Neo4jService implements OnApplicationShutdown {
       }
     }
     return node;
+  }
+
+  async addRelationWithRelationName(first_node_id: string, second_node_id: string, relationName: string) {
+    try {
+      if (!first_node_id || !second_node_id || !relationName) {
+        throw new HttpException(add_relation_with_relation_name__must_entered_error, 400);
+      }
+
+      const res = await this.write(
+        `MATCH (c {isDeleted: false}) where id(c)= $first_node_id MATCH (p {isDeleted: false}) where id(p)= $second_node_id MERGE (c)-[:${relationName}]-> (p)`,
+        {
+          first_node_id: parseInt(first_node_id),
+          second_node_id: parseInt(second_node_id),
+        },
+      );
+      const { relationshipsCreated } = await res.summary.updateStatistics.updates();
+      if (relationshipsCreated === 0) {
+        throw new HttpException(add_relation_with_relation_name__create_relation_error, 400);
+      }
+      return successResponse(res);
+    } catch (error) {
+      if (error?.response?.code) {
+        throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  async findByRelationWithRelation(id: string, relationName: string, direction: string) {
+    try {
+      if (!id || !relationName) {
+        let a=1;
+        //throw new HttpException(find_by_relation__must_entered_error, 400);
+      }
+
+      const idNum = parseInt(id);
+      const isExists = await this.findByIdWithError(id);
+      if (isExists instanceof Error) throw new HttpException(node_not_found, 404);
+      let cypher
+      if (direction == 'rightToLeft') {
+        cypher = `match (n {isDeleted: false})<-[r:${relationName}]-(p {isDeleted: false}) where id(n)=$idNum  return p,r`;
+      }
+      else if (direction == 'leftToRight') {
+        cypher = `match (n {isDeleted: false})-[r:${relationName}]->(p {isDeleted: false}) where id(n)=$idNum  return p,r`;
+      }  
+      const result = await this.read(cypher, { idNum });
+      return result;
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      } else {
+        throw newError(error, '500');
+      }
+    }
+  }
+  async deleteRelationByRelationId(id: string) {
+    try {
+      if (!id) {
+        let a = 1;
+        //throw new HttpException(delete_relation_by_relation_id__must_entered_error, 400);
+      }
+      const res = await this.write(
+        `MATCH (c {isDeleted: false})-[r]-(p {isDeleted: false}) where id(r)= $id delete r`,
+        { id: parseInt(id) },
+      );
+      let { relationshipsDeleted } = await res.summary.updateStatistics.updates();
+      if (relationshipsDeleted === 0) {
+        let a=1;
+        //throw new HttpException(delete_relation_by_relation_id__not_deleted_error, 400);
+      }
+      return successResponse(res);
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      } else {
+        //throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
