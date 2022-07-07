@@ -26,12 +26,10 @@ export class ContactRepository implements GeciciInterface<Contact> {
   async create(createContactDto: CreateContactDto) {
     const contact = new Contact();
     const contactObject = assignDtoPropToEntity(contact, createContactDto);
-    delete contactObject['parentId'];
-    delete contactObject['createdById'];
-    delete contactObject['classificationId'];
+
     let value;
-    if (contactObject['labels']) {
-      value = await this.neo4jService.createNode(contactObject, contactObject['labels']);
+    if (createContactDto['labels']) {
+      value = await this.neo4jService.createNode(contactObject, createContactDto['labels']);
     } else {
       value = await this.neo4jService.createNode(contactObject);
     }
@@ -77,15 +75,22 @@ export class ContactRepository implements GeciciInterface<Contact> {
     }
     if (updateContactDto['createdById']) {
         const result = await this.neo4jService.findByRelationWithRelation(_id, 'CREATED_BY','leftToRight');
-        
+        //if there is a "CREATED_BY" relation 
+        if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
+          if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['createdById']) {
+            await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low );
+            await this.neo4jService.addRelationWithRelationName(_id,updateContactDto['createdById'], "CREATED_BY");
+          }
+        }
+        //if there is not "CREATED_BY" relation 
+        else {
+          await this.neo4jService.addRelationWithRelationName(_id,updateContactDto['createdById'], "CREATED_BY");
+        }
     }
     if (updateContactDto['classificationId']) {
       const result = await this.neo4jService.findByRelationWithRelation(_id, 'CLASSIFICATION_OF','rightToLeft');
-      console.log('----------------------------------------------------------------------')
-      console.log(result['records'][0]['_fields']);
-      console.log('----------------------------------------------------------------------')
       //if there is a "CLASSIFICATION_OF" relation 
-      if (result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
+      if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
         if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['classificationId']) {
           await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low );
           await this.neo4jService.addRelationWithRelationName(updateContactDto['classificationId'],_id, "CLASSIFICATION_OF");
@@ -95,7 +100,6 @@ export class ContactRepository implements GeciciInterface<Contact> {
       else {
         await this.neo4jService.addRelationWithRelationName(updateContactDto['classificationId'],_id, "CLASSIFICATION_OF");
       }
-    
     }
     return result;
   }

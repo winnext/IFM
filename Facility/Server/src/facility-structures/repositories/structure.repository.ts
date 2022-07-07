@@ -28,10 +28,10 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   async create(createFacilityStructureDto: CreateFacilityStructureDto) {
     const facilityStructure = new FacilityStructure();
     const facilityStructureObject = assignDtoPropToEntity(facilityStructure, createFacilityStructureDto);
-    delete facilityStructureObject['parentId'];
+    
     let value;
-    if (facilityStructureObject['labels']) {
-      value = await this.neo4jService.createNode(facilityStructureObject, facilityStructureObject['labels']);
+    if (createFacilityStructureDto['labels']) {
+      value = await this.neo4jService.createNode(facilityStructureObject, createFacilityStructureDto['labels']);
     } else {
       value = await this.neo4jService.createNode(facilityStructureObject);
     }
