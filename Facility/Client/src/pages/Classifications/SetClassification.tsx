@@ -410,7 +410,7 @@ const SetClassification = () => {
       <Dialog
         header="Add New Item"
         visible={addDia}
-        style={{ width: "40vw" }}
+        style={{ width: "25vw" }}
         footer={renderFooterAdd}
         onHide={() => {
           setName("");
@@ -424,7 +424,7 @@ const SetClassification = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            style={{ width: '50%' }}
+            style={{ width: '100%' }}
           />
         </div>
         <div className="field">
@@ -432,18 +432,18 @@ const SetClassification = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
-            style={{ width: '50%' }}
+            style={{ width: '100%' }}
           />
         </div>
         <div className="field structureChips">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
+          <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '100%' }} />
         </div>
       </Dialog>
       <Dialog
         header="Edit Item"
         visible={editDia}
-        style={{ width: "40vw" }}
+        style={{ width: "25vw" }}
         footer={renderFooterEdit}
         onHide={() => {
           setName("");
@@ -457,7 +457,7 @@ const SetClassification = () => {
           <InputText
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            style={{ width: '50%' }}
+            style={{ width: '100%' }}
           />
         </div>
         <div className="field">
@@ -465,12 +465,12 @@ const SetClassification = () => {
           <InputText
             value={name}
             onChange={(event) => setName(event.target.value)}
-            style={{ width: '50%' }}
+            style={{ width: '100%' }}
           />
         </div>
         <div className="field structureChips">
-          <h5 style={{ marginBottom: "0.5em" }}>HashTag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '50%' }} />
+          <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
+          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: '100%' }} />
         </div>
         <div className="field flex">
           <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
