@@ -156,6 +156,7 @@ const Contact = () => {
         console.log(res.data);
 
         setEmail(res.data.properties.email || "");
+        setDepartment(res.data.properties.department || "");
         setCategory(res.data.properties.category || "");
         setCompany(res.data.properties.company || "");
         setPhone(res.data.properties.phone || "");
@@ -264,24 +265,59 @@ const Contact = () => {
           newNode = {
             key: uuidv4(),
             parentId: res.data.id,
-            name: name,
+            email: email,
+            name: email,
+            category: category,
+            company: company,
+            phone: phone,
+            createdBy: createdBy,
+            formTypeId: formTypeId,
+            department: department,
+            organizationCode: organizationCode,
+            givenName: givenName,
+            familyName: familyName,
+            street: street,
+            postalBox: postalBox,
+            town: town,
+            stateRegion: stateRegion,
+            postalCode: postalCode,
+            country: country,
             tag: tag,
             description: "",
             // labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
             labels: [labels[0]],
-            formTypeId: formTypeId,
+            createdById: createdByNodeId,
+            classificationId: categoryNodeId
+
           };
         } else {
           newNode = {
             key: uuidv4(),
             parentId: res.data.id,
-            name: name,
+            email: email,
+            name: email,
+            category: category,
+            company: company,
+            phone: phone,
+            createdBy: createdBy,
+            formTypeId: formTypeId,
+            department: department,
+            organizationCode: organizationCode,
+            givenName: givenName,
+            familyName: familyName,
+            street: street,
+            postalBox: postalBox,
+            town: town,
+            stateRegion: stateRegion,
+            postalCode: postalCode,
+            country: country,
             tag: tag,
             description: "",
-            formTypeId: formTypeId,
-            // labels: optionalLabels[0]?.replace(/ /g, '').split(",") || [],
+            createdById: createdByNodeId,
+            classificationId: categoryNodeId
           };
         }
+        console.log(newNode);
 
         ContactService.create(newNode)
           .then((res) => {
@@ -315,6 +351,7 @@ const Contact = () => {
     setCategory(undefined);
     setCreatedBy(undefined);
     setEmail("");
+    setDepartment("");
     setCompany("");
     setPhone("");
     setOrganizationCode("");
@@ -386,6 +423,7 @@ const Contact = () => {
     setCategory(undefined);
     setCreatedBy(undefined);
     setEmail("");
+    setDepartment("");
     setCompany("");
     setPhone("");
     setOrganizationCode("");
@@ -397,7 +435,7 @@ const Contact = () => {
     setStateRegion("");
     setPostalCode("");
     setCountry("");
-    setAddDia(false);
+    setEditDia(false);
   }
 
   const deleteItem = (key: string) => {
@@ -500,6 +538,7 @@ const Contact = () => {
             setCategory(undefined);
             setCreatedBy(undefined);
             setEmail("");
+            setDepartment("");
             setCompany("");
             setPhone("");
             setOrganizationCode("");
@@ -537,6 +576,7 @@ const Contact = () => {
             setCategory(undefined);
             setCreatedBy(undefined);
             setEmail("");
+            setDepartment("");
             setCompany("");
             setPhone("");
             setOrganizationCode("");
@@ -548,7 +588,7 @@ const Contact = () => {
             setStateRegion("");
             setPostalCode("");
             setCountry("");
-            setAddDia(false);
+            setEditDia(false);
           }}
           className="p-button-text"
         />
@@ -577,7 +617,7 @@ const Contact = () => {
       <Dialog
         header="Add New Item"
         visible={addDia}
-        style={{ width: "40vw" }}
+        style={{ width: "60vw" }}
         footer={renderFooterAdd}
         onHide={() => {
           setTag([]);
@@ -585,6 +625,7 @@ const Contact = () => {
           setCategory(undefined);
           setCreatedBy(undefined);
           setEmail("");
+          setDepartment("");
           setCompany("");
           setPhone("");
           setOrganizationCode("");
@@ -599,202 +640,244 @@ const Contact = () => {
           setAddDia(false);
         }}
       >
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Email</h5>
-          <InputText
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            style={{ width: '50%' }}
-          />
+        <div className="grid p-fluid">
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Email</h5>
+              <InputText
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Category</h5>
+              <TreeSelect
+                value={category}
+                options={classification}
+                onChange={(e) => {
+                  setCategory(e.value);
+                  console.log(e);
+                  let nodeKey: any = e.value;
+                  ClassificationsService.nodeInfo(nodeKey)
+                    .then((res) => {
+                      console.log(res.data);
+                      setCategoryNodeId(res.data.id);
+                    })
+                    .catch((err) => {
+                      toast.current.show({
+                        severity: "error",
+                        summary: "Error",
+                        detail: err.response ? err.response.data.message : err.message,
+                        life: 2000,
+                      });
+                    });
+                }}
+                filter
+                placeholder="Select Type"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
+              <InputText
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
+              <InputText
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+              <TreeSelect
+                value={formTypeId}
+                options={formData}
+                onChange={(e) => {
+                  setFormTypeId(e.value);
+                  console.log(e);
+                  let nodeKey: any = e.value;
+                  FormTypeService.nodeInfo(nodeKey)
+                    .then((res) => {
+                      console.log(res.data);
+                      setLabels([res.data.properties.name])
+                    })
+                    .catch((err) => {
+                      toast.current.show({
+                        severity: "error",
+                        summary: "Error",
+                        detail: err.response ? err.response.data.message : err.message,
+                        life: 2000,
+                      });
+                    });
+                }}
+                filter
+                placeholder="Select Type"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Department</h5>
+              <InputText
+                value={department}
+                onChange={(event) => setDepartment(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Organization Code</h5>
+              <InputText
+                value={organizationCode}
+                onChange={(event) => setOrganizationCode(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Given Name</h5>
+              <InputText
+                value={givenName}
+                onChange={(event) => setGivenName(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
+              <InputText
+                value={street}
+                onChange={(event) => setStreet(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
+              <InputText
+                value={postalBox}
+                onChange={(event) => setPostalBox(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Town</h5>
+              <InputText
+                value={town}
+                onChange={(event) => setTown(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>State Region</h5>
+              <InputText
+                value={stateRegion}
+                onChange={(event) => setStateRegion(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Postal Code</h5>
+              <InputText
+                value={postalCode}
+                onChange={(event) => setPostalCode(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
+              <InputText
+                value={country}
+                onChange={(event) => setCountry(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field structureChips">
+              <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
+              <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "100%" }} />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Created By</h5>
+              <TreeSelect
+                value={createdBy}
+                options={data}
+                onChange={(e) => {
+                  setCreatedBy(e.value);
+                  let nodeKey: any = e.value;
+                  ContactService.nodeInfo(nodeKey)
+                    .then((res) => {
+                      console.log(res.data);
+                      setCreatedByNodeId(res.data.id);
+                    })
+                    .catch((err) => {
+                      toast.current.show({
+                        severity: "error",
+                        summary: "Error",
+                        detail: err.response ? err.response.data.message : err.message,
+                        life: 2000,
+                      });
+                    });
+                }}
+                filter
+                placeholder="Select Type"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
         </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Category</h5>
-          <TreeSelect
-            value={category}
-            options={classification}
-            onChange={(e) => {
-              setCategory(e.value);
-              console.log(e);
-              let nodeKey: any = e.value;
-              ClassificationsService.nodeInfo(nodeKey)
-                .then((res) => {
-                  console.log(res.data);
-                  setCategoryNodeId(res.data.id);
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: err.response ? err.response.data.message : err.message,
-                    life: 2000,
-                  });
-                });
-            }}
-            filter
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
-          <InputText
-            value={company}
-            onChange={(event) => setCompany(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
-          <InputText
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Created By</h5>
-          <TreeSelect
-            value={createdBy}
-            options={data}
-            onChange={(e) => {
-              setCreatedBy(e.value);
-              let nodeKey: any = e.value;
-              ContactService.nodeInfo(nodeKey)
-                .then((res) => {
-                  console.log(res.data);
-                  setCreatedByNodeId(res.data.id);
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: err.response ? err.response.data.message : err.message,
-                    life: 2000,
-                  });
-                });
-            }}
-            filter
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <TreeSelect
-            value={formTypeId}
-            options={formData}
-            onChange={(e) => {
-              setFormTypeId(e.value);
-              console.log(e);
-              let nodeKey: any = e.value;
-              FormTypeService.nodeInfo(nodeKey)
-                .then((res) => {
-                  console.log(res.data);
-                  setLabels([res.data.properties.name])
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: err.response ? err.response.data.message : err.message,
-                    life: 2000,
-                  });
-                });
-            }}
-            filter
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Department</h5>
-          <InputText
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Organization Code</h5>
-          <InputText
-            value={organizationCode}
-            onChange={(event) => setOrganizationCode(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Given Name</h5>
-          <InputText
-            value={givenName}
-            onChange={(event) => setGivenName(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Family Name</h5>
-          <InputText
-            value={familyName}
-            onChange={(event) => setFamilyName(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
-          <InputText
-            value={street}
-            onChange={(event) => setStreet(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
-          <InputText
-            value={postalBox}
-            onChange={(event) => setPostalBox(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Town</h5>
-          <InputText
-            value={town}
-            onChange={(event) => setTown(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>State Region</h5>
-          <InputText
-            value={stateRegion}
-            onChange={(event) => setStateRegion(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Postal Code</h5>
-          <InputText
-            value={postalCode}
-            onChange={(event) => setPostalCode(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
-          <InputText
-            value={country}
-            onChange={(event) => setCountry(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field structureChips">
-          <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "50%" }} />
-        </div>
+
       </Dialog>
       <Dialog
         header="Edit Item"
         visible={editDia}
-        style={{ width: "40vw" }}
+        style={{ width: "60vw" }}
         footer={renderFooterEdit}
         onHide={() => {
           setTag([]);
@@ -802,6 +885,7 @@ const Contact = () => {
           setCategory(undefined);
           setCreatedBy(undefined);
           setEmail("");
+          setDepartment("");
           setCompany("");
           setPhone("");
           setOrganizationCode("");
@@ -813,203 +897,246 @@ const Contact = () => {
           setStateRegion("");
           setPostalCode("");
           setCountry("");
-          setAddDia(false);
+          setEditDia(false);
         }}
       >
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Email</h5>
-          <InputText
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Category</h5>
-          <TreeSelect
-            value={category}
-            options={classification}
-            onChange={(e) => {
-              setCategory(e.value);
-              console.log(e);
-              let nodeKey: any = e.value;
-              ClassificationsService.nodeInfo(nodeKey)
-                .then((res) => {
-                  console.log(res.data);
-                  setCategoryNodeId(res.data.id);
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: err.response ? err.response.data.message : err.message,
-                    life: 2000,
-                  });
-                });
-            }}
-            filter
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
-          <InputText
-            value={company}
-            onChange={(event) => setCompany(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
-          <InputText
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Created By</h5>
-          <TreeSelect
-            value={createdBy}
-            options={data}
-            onChange={(e) => {
-              setCreatedBy(e.value);
-              let nodeKey: any = e.value;
-              ContactService.nodeInfo(nodeKey)
-                .then((res) => {
-                  console.log(res.data);
-                  setCreatedByNodeId(res.data.id);
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: err.response ? err.response.data.message : err.message,
-                    life: 2000,
-                  });
-                });
-            }}
-            filter
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
-          <TreeSelect
-            value={formTypeId}
-            options={formData}
-            onChange={(e) => {
-              setFormTypeId(e.value);
-              console.log(e);
-              let nodeKey: any = e.value;
-              FormTypeService.nodeInfo(nodeKey)
-                .then((res) => {
-                  console.log(res.data);
-                  setLabels([res.data.properties.name])
-                })
-                .catch((err) => {
-                  toast.current.show({
-                    severity: "error",
-                    summary: "Error",
-                    detail: err.response ? err.response.data.message : err.message,
-                    life: 2000,
-                  });
-                });
-            }}
-            filter
-            placeholder="Select Type"
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Department</h5>
-          <InputText
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Organization Code</h5>
-          <InputText
-            value={organizationCode}
-            onChange={(event) => setOrganizationCode(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Given Name</h5>
-          <InputText
-            value={givenName}
-            onChange={(event) => setGivenName(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Family Name</h5>
-          <InputText
-            value={familyName}
-            onChange={(event) => setFamilyName(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
-          <InputText
-            value={street}
-            onChange={(event) => setStreet(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
-          <InputText
-            value={postalBox}
-            onChange={(event) => setPostalBox(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Town</h5>
-          <InputText
-            value={town}
-            onChange={(event) => setTown(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>State Region</h5>
-          <InputText
-            value={stateRegion}
-            onChange={(event) => setStateRegion(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Postal Code</h5>
-          <InputText
-            value={postalCode}
-            onChange={(event) => setPostalCode(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
-          <InputText
-            value={country}
-            onChange={(event) => setCountry(event.target.value)}
-            style={{ width: '50%' }}
-          />
-        </div>
-        <div className="field structureChips">
-          <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
-          <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "50%" }} />
-        </div>
-        <div className="field flex">
-          <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
-          <Checkbox className="ml-3" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
+        <div className="grid p-fluid">
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Email</h5>
+              <InputText
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Category</h5>
+              <TreeSelect
+                value={category}
+                options={classification}
+                onChange={(e) => {
+                  setCategory(e.value);
+                  console.log(e);
+                  let nodeKey: any = e.value;
+                  ClassificationsService.nodeInfo(nodeKey)
+                    .then((res) => {
+                      console.log(res.data);
+                      setCategoryNodeId(res.data.id);
+                    })
+                    .catch((err) => {
+                      toast.current.show({
+                        severity: "error",
+                        summary: "Error",
+                        detail: err.response ? err.response.data.message : err.message,
+                        life: 2000,
+                      });
+                    });
+                }}
+                filter
+                placeholder="Select Type"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
+              <InputText
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
+              <InputText
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
+              <TreeSelect
+                value={formTypeId}
+                options={formData}
+                onChange={(e) => {
+                  setFormTypeId(e.value);
+                  console.log(e);
+                  let nodeKey: any = e.value;
+                  FormTypeService.nodeInfo(nodeKey)
+                    .then((res) => {
+                      console.log(res.data);
+                      setLabels([res.data.properties.name])
+                    })
+                    .catch((err) => {
+                      toast.current.show({
+                        severity: "error",
+                        summary: "Error",
+                        detail: err.response ? err.response.data.message : err.message,
+                        life: 2000,
+                      });
+                    });
+                }}
+                filter
+                placeholder="Select Type"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Department</h5>
+              <InputText
+                value={department}
+                onChange={(event) => setDepartment(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Organization Code</h5>
+              <InputText
+                value={organizationCode}
+                onChange={(event) => setOrganizationCode(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Given Name</h5>
+              <InputText
+                value={givenName}
+                onChange={(event) => setGivenName(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
+              <InputText
+                value={street}
+                onChange={(event) => setStreet(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
+              <InputText
+                value={postalBox}
+                onChange={(event) => setPostalBox(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Town</h5>
+              <InputText
+                value={town}
+                onChange={(event) => setTown(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>State Region</h5>
+              <InputText
+                value={stateRegion}
+                onChange={(event) => setStateRegion(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Postal Code</h5>
+              <InputText
+                value={postalCode}
+                onChange={(event) => setPostalCode(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
+              <InputText
+                value={country}
+                onChange={(event) => setCountry(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field structureChips">
+              <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
+              <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "100%" }} />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-4">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Created By</h5>
+              <TreeSelect
+                value={createdBy}
+                options={data}
+                onChange={(e) => {
+                  setCreatedBy(e.value);
+                  let nodeKey: any = e.value;
+                  ContactService.nodeInfo(nodeKey)
+                    .then((res) => {
+                      console.log(res.data);
+                      setCreatedByNodeId(res.data.id);
+                    })
+                    .catch((err) => {
+                      toast.current.show({
+                        severity: "error",
+                        summary: "Error",
+                        detail: err.response ? err.response.data.message : err.message,
+                        life: 2000,
+                      });
+                    });
+                }}
+                filter
+                placeholder="Select Type"
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+          <div className="col-12">
+            <div className="field flex">
+              <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
+              <Checkbox className="ml-5" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
+            </div>
+          </div>
         </div>
       </Dialog>
       <h1>Edit Contact</h1>
