@@ -157,10 +157,10 @@ const Contact = () => {
 
         setEmail(res.data.properties.email || "");
         setDepartment(res.data.properties.department || "");
-        setCategory(res.data.properties.category || "");
+        setCategory(res.data.properties.classificationId || "");
         setCompany(res.data.properties.company || "");
         setPhone(res.data.properties.phone || "");
-        setCreatedBy(res.data.properties.createdBy || "");
+        setCreatedBy(res.data.properties.createdById || "");
         setFormTypeId(res.data.properties.formTypeId);
         setOrganizationCode(res.data.properties.organizationCode || "");
         setGivenName(res.data.properties.givenName || "");
@@ -173,8 +173,6 @@ const Contact = () => {
         setCountry(res.data.properties.country || "");
         setTag(res.data.properties.tag || []);
         setIsActive(res.data.properties.isActive);
-        setCreatedBy(res.data.properties.createdById || "");
-        setCategory(res.data.properties.classificationId || "");
       })
       .catch((err) => {
         toast.current.show({
