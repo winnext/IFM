@@ -394,8 +394,8 @@ const Contact = () => {
             tag: tag,
             description: "",
             createdById: createdByNodeId,
-            classificationId: categoryNodeId
-
+            classificationId: categoryNodeId,
+            isActive: isActive
           };
         } else {
           updateNode = {
@@ -421,7 +421,8 @@ const Contact = () => {
             tag: tag,
             description: "",
             createdById: createdByNodeId,
-            classificationId: categoryNodeId
+            classificationId: categoryNodeId,
+            isActive: isActive
           }
         }
         console.log(updateNode);
