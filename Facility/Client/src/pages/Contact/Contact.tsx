@@ -173,7 +173,8 @@ const Contact = () => {
         setCountry(res.data.properties.country || "");
         setTag(res.data.properties.tag || []);
         setIsActive(res.data.properties.isActive);
-
+        setCreatedBy(res.data.properties.createdById || "");
+        setCategory(res.data.properties.classificationId || "");
       })
       .catch((err) => {
         toast.current.show({
@@ -395,7 +396,7 @@ const Contact = () => {
             description: "",
             createdById: createdByNodeId,
             classificationId: categoryNodeId,
-            isActive: isActive
+            isActive: isActive,
           };
         } else {
           updateNode = {
@@ -422,11 +423,11 @@ const Contact = () => {
             description: "",
             createdById: createdByNodeId,
             classificationId: categoryNodeId,
-            isActive: isActive
+            isActive: isActive,
           }
         }
         console.log(updateNode);
-        
+
 
         ContactService.update(res.data.id, updateNode)
           .then((res) => {
