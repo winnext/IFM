@@ -26,6 +26,8 @@ export class ContactRepository implements GeciciInterface<Contact> {
   async create(createContactDto: CreateContactDto) {
     const contact = new Contact();
     const contactObject = assignDtoPropToEntity(contact, createContactDto);
+    delete contactObject['createdById'];
+    delete contactObject['classificationId'];
 
     let value;
     if (createContactDto['labels']) {

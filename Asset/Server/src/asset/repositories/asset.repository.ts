@@ -32,13 +32,12 @@ export class AssetRepository implements GeciciInterface<Asset> {
     const asset = new Asset();
     const assetObject = assignDtoPropToEntity(asset, createAssetDto);
     let value;
-    delete assetObject['parentId'];
+
     if (assetObject['labels']) {
       value = await this.neo4jService.createNode(assetObject, assetObject['labels']);
     } else {
       value = await this.neo4jService.createNode(assetObject);
     }
-    console.log(value);
     value['properties']['id'] = value['identity'].low;
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
     console.log(result.id);
