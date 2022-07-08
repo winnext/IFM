@@ -56,7 +56,6 @@ export class ClassificationRepository implements GeciciInterface<Classification>
   async create(createClassificationDto: CreateClassificationDto) {
     let classification = new Classification();
     let classificationObject = assignDtoPropToEntity(classification, createClassificationDto);
-    delete classificationObject['parentId'];
     let value;
     if (classificationObject['labels']) {
       value = await this.neo4jService.createNode(classificationObject, classificationObject['labels']);
