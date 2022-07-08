@@ -973,8 +973,8 @@ export class Neo4jService implements OnApplicationShutdown {
 
       await this.addChildrenRelationById(_id, _target_parent_id);
     } catch (error) {
-      if (error.response?.code) {
-        throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
       } else {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
