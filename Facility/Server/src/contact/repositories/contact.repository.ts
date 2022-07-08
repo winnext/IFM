@@ -154,10 +154,10 @@ export class ContactRepository implements GeciciInterface<Contact> {
       const createdBy = await this.neo4jService.findByRelationWithRelation(node["identity"].low, 'CREATED_BY','leftToRight');
       const classification = await this.neo4jService.findByRelationWithRelation(node["identity"].low, 'CLASSIFICATION_OF','rightToLeft');
       if (createdBy['records'][0] && createdBy['records'][0]['_fields'] && createdBy['records'][0]['_fields'].length > 0) {
-        node['properties']['createdById'] = createdBy['records'][0]['_fields'][0]['identity'].low;
+        node['properties']['createdByKey'] = createdBy['records'][0]['_fields'][0]['properties'].key;
       }
       if (classification['records'][0] && classification['records'][0]['_fields'] && classification['records'][0]['_fields'].length > 0) {
-        node['properties']['classificationId'] = classification['records'][0]['_fields'][0]['identity'].low;
+        node['properties']['classificationKey'] = classification['records'][0]['_fields'][0]['properties'].key;
       }
       const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
       return result;
