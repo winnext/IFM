@@ -157,10 +157,10 @@ const Contact = () => {
 
         setEmail(res.data.properties.email || "");
         setDepartment(res.data.properties.department || "");
-        setCategory(res.data.properties.classificationId || "");
+        setCategory(res.data.properties.classificationKey || "");
         setCompany(res.data.properties.company || "");
         setPhone(res.data.properties.phone || "");
-        setCreatedBy(res.data.properties.createdById || "");
+        setCreatedBy(res.data.properties.createdByKey || "");
         setFormTypeId(res.data.properties.formTypeId);
         setOrganizationCode(res.data.properties.organizationCode || "");
         setGivenName(res.data.properties.givenName || "");
