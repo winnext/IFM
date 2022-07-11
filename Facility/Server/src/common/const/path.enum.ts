@@ -3,4 +3,5 @@ export enum PathEnums {
   CLASSIFICATION = '/classification',
   STRUCTURE = '/structure',
   ROOM = '/room',
+  STRUCTURE_ASSET_LISTENER = '/asset',
 }

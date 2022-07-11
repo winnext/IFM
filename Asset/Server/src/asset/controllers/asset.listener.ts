@@ -22,6 +22,7 @@ export class AssetListenerController {
       throw new HttpException('key is not available on kafka object', 400);
     }
 
+    //check if facilityStructure exist
     const structurePromise = await this.httpService
       .get(`${process.env.STRUCTURE_URL}/${message.value?.referenceKey}`)
       .pipe(
@@ -31,7 +32,7 @@ export class AssetListenerController {
       )
       .pipe(map((response) => response.data));
     const structure = await firstValueFrom(structurePromise);
-    console.log(structure);
+
     if (!structure) {
       return 'structure not found';
     }

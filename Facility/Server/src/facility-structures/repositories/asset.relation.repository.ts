@@ -6,12 +6,12 @@ import {
 } from '../../common/notFoundExceptions/not.found.exception';
 import { FacilityStructure } from '../entities/facility-structure.entity';
 import { CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
-import { nodeHasChildException } from 'ifmcommon';
+import { NestKafkaService, nodeHasChildException } from 'ifmcommon';
 import { VirtualNodeInterface } from 'src/common/interface/relation.node.interface';
 import { CreateAssetRelationDto } from '../dto/asset.relation.dto';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
-import { KafkaService } from 'src/kafka/kafka.service';
+
 import { assignDtoPropToEntity } from 'sgnm-neo4j/dist';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
 import {
@@ -24,7 +24,7 @@ import { successResponse } from 'src/sgnm-neo4j/src/constant/success.response.ob
 export class AssetRelationRepository implements VirtualNodeInterface<FacilityStructure> {
   constructor(
     private readonly neo4jService: Neo4jService,
-    private readonly kafkaService: KafkaService,
+    private readonly kafkaService: NestKafkaService,
     private readonly httpService: HttpService,
   ) {}
 
