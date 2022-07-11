@@ -3,6 +3,7 @@
   "FACILITY_NOT_FOUND": "#{id} no lu tesis bulunamadı",
   "FACILITY_STRUCTURE_NOT_FOUND": "#{id} no lu bina bulunamadı",
   "CLASSIFICATION_NOT_FOUND": " id #{id} no lu sınıflandırma bulunamadı ",
+  "ASSET_NOT_FOUND":" id #{id} no'lu asset bulunamadı",
   "USER_NOT_HAVE_PERMISSION": "kullanıcı '{username}' bu işlem için izniniz yoktur.Yöneticinizle irtibata geçiniz ",
   "OBJECTID_NOT_VALID": "girdiğiniz ıd #{id} geçerli değil",
   "GOODBYE_MESSAGE": "İyi günler {username}",

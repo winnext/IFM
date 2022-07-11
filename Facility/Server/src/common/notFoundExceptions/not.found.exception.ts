@@ -29,3 +29,7 @@ export function ContactNotFoundException(id) {
 export function hasRelationException(id) {
   throw new HttpException({ key: I18NEnums.HAS_RELATİON, args: { id: id } }, HttpStatus.NOT_FOUND);
 }
+
+export function AssetNotFoundException(id) {
+  throw new HttpException({ key: I18NEnums.ASSET_NOT_FOUND, args: { id: id } }, HttpStatus.NOT_FOUND);
+}

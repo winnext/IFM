@@ -3,21 +3,18 @@ import {
   AssetNotFoundException,
   FacilityStructureNotFountException,
 } from '../../common/notFoundExceptions/not.found.exception';
-
 import { Asset } from '../entities/asset.entity';
-
-//import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
 import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
-
-import { nodeHasChildException } from 'ifmcommon';
+import { NestKafkaService, nodeHasChildException } from 'ifmcommon';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 import { CreateAssetDto } from '../dto/create-asset.dto';
 import { UpdateAssetDto } from '../dto/update-asset.dto';
-import { KafkaService } from 'src/kafka/kafka.service';
+import { find_one_node_by_key_must_entered_error, node_not_found } from 'src/sgnm-neo4j/src/constant/custom.error.object';
+
 
 @Injectable()
 export class AssetRepository implements GeciciInterface<Asset> {
-  constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: KafkaService) {}
+  constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: NestKafkaService) {}
 
   async findOneByRealm(label: string, realm: string) {
     let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
@@ -75,11 +72,20 @@ export class AssetRepository implements GeciciInterface<Asset> {
 
   async delete(_id: string) {
     try {
+      const node=await this.neo4jService.read(`match(n) where id(n)=$id return n`,{id:parseInt(_id)})
+      if(!node.records[0]){
+        throw new HttpException({code:5005},404)
+      }
       await this.neo4jService.getParentById(_id);
       let deletedNode;
 
       const hasChildren = await this.neo4jService.findChildrenById(_id);
+  
       if (hasChildren['records'].length == 0) {
+        await this.kafkaService.producerSendMessage(
+          'deleteAsset',
+          JSON.stringify({ referenceKey: node.records[0]['_fields'][0].properties.key }),
+        );
         deletedNode = await this.neo4jService.delete(_id);
         if (!deletedNode) {
           throw new AssetNotFoundException(_id);
@@ -94,7 +100,10 @@ export class AssetRepository implements GeciciInterface<Asset> {
       const { code, message } = error.response;
       if (code === CustomNeo4jError.HAS_CHILDREN) {
         nodeHasChildException(_id);
-      } else {
+      }else if(code===5005){
+        AssetNotFoundException(_id)
+      } 
+      else {
         throw new HttpException(message, code);
       }
     }
@@ -122,11 +131,34 @@ export class AssetRepository implements GeciciInterface<Asset> {
   }
 
   async findOneNodeByKey(key: string) {
-    const node = await this.neo4jService.findOneNodeByKey(key);
+    const node = await this.findOneNodeByKey1(key);
     if (!node) {
       return null;
     }
     const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
     return result;
   }
+
+
+////////////////////////////////////////////////////////////////////////// isDeleted:false koşulu kaldırıldı
+  async findOneNodeByKey1(key: string) {
+    try {
+      if (!key) {
+        throw new HttpException(find_one_node_by_key_must_entered_error, 400);
+      }
+      //find node by key
+      const result = await this.neo4jService.read('match (n) where n.key=$key return n', { key: key });
+
+      if (!result['records'].length) {
+        throw new HttpException(node_not_found, 404);
+      }
+      var node = result['records'][0]['_fields'][0];
+
+      return node;
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException({ message: error.response.message, code: error.response.code }, error.status);
+      }
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }}
 }

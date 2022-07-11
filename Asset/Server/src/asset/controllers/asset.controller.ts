@@ -55,4 +55,5 @@ export class AssetController {
   findOneNode(@Param('key') key: string) {
     return this.assetService.findOneNode(key);
   }
+
 }

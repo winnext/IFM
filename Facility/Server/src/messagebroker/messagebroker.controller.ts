@@ -31,7 +31,7 @@ export class MessagebrokerController {
 
   @EventPattern(FacilityTopics.FACILITY_OPERATION)
   async operationListener(@Payload() message): Promise<any> {
-    // console.log(message.key);
+     console.log(message.key);
     const { responseBody, user, requestInformation } = message.value;
 
     switch (message.key) {
@@ -66,6 +66,11 @@ export class MessagebrokerController {
         await this.roomHistoryService.create(roomHistory);
         console.log('room topic added');
         break;
+        case PathEnums.STRUCTURE_ASSET_LISTENER:
+          console.log('structure asset listener  topic');
+        
+         
+          break;
       default:
         console.log('undefined history call from facility microservice');
         break;

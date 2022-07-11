@@ -4,6 +4,7 @@
   "ROOM_NOT_FOUND": "Room with this id #{id} not found ",
   "FACILITY_STRUCTURE_NOT_FOUND": "Facility Structure with this id #{id} not found ",
   "CLASSIFICATION_NOT_FOUND": "Classification with this id #{id} not found ",
+  "ASSET_NOT_FOUND":"Asset with this id #{id} not found",
   "USER_NOT_HAVE_PERMISSION": "user '{username}' has no permission. Plese contact with admin ",
   "OBJECTID_NOT_VALID": "given ıd #{id} is not valid",
   "GOODBYE_MESSAGE": "Goodbye {username}",
@@ -21,4 +22,5 @@
   "RELATION_NOT_FOUND": "relation not found",
   "CONTACT_NOT_FOUND": "contact not found (id=#{id})",
   "HAS_RELATİON": " {id} this node already has relation"
+  
 }
