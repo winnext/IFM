@@ -122,20 +122,5 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     }
   }
 
-  async findOneNodeById(id: string) {
-    //Virtual node olmayan nodeları id ile bulma querisi
-    const node = await this.neo4jService.read(`match (n) where id(n)= $id and NOT n:Virtual return n`, {
-      id: parseInt(id),
-    });
-
-    if (!node.records[0] || node.records[0].length === 0) {
-      return null;
-    }
-    const result = {
-      id: node.records[0]['_fields'][0]['identity'].low,
-      labels: node.records[0]['_fields'][0]['labels'],
-      properties: node.records[0]['_fields'][0]['properties'],
-    };
-    return result;
-  }
+  
 }

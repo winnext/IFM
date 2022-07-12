@@ -11,7 +11,6 @@ import { VirtualNodeInterface } from 'src/common/interface/relation.node.interfa
 import { CreateAssetRelationDto } from '../dto/asset.relation.dto';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
-
 import { assignDtoPropToEntity } from 'sgnm-neo4j/dist';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
 import {
@@ -19,6 +18,7 @@ import {
   add_relation_with_relation_name__must_entered_error,
 } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { successResponse } from 'src/sgnm-neo4j/src/constant/success.response.object';
+import { Console } from 'console';
 
 @Injectable()
 export class AssetRelationRepository implements VirtualNodeInterface<FacilityStructure> {
@@ -26,32 +26,31 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     private readonly neo4jService: Neo4jService,
     private readonly kafkaService: NestKafkaService,
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
 
-  async findOneById(id: string) {
-    const node = await this.neo4jService.write(`match(p) where p.key=$id return p`, {
-      id,
-    });
-    if (!node.records[0]) {
+  async findOneNodeByKey(key: string) {
+    const node = await this.findByKey(key)
+    if (!node) {
       //throw new HttpException('uygun node id si giriniz', 400);
-      throw new RelationNotFountException(id);
+      throw new RelationNotFountException(key);
     }
 
-    //find by id with specific relation name which node has that specific relations
-    const relations = await this.neo4jService.write(
-      `match(p) where p.key=$id match (c) match (p)-[:HAS]->(c) return c`,
-      {
-        id,
-      },
-    );
-    if (relations.records.length === 0) {
+    //find by key with specific relation name which node has that specific relations
+    const relations = await this.findRelationsByKeyWithRelationName(key,'HAS')
+
+    
+    if (relations.length === 0) {
       //throw new HttpException('hiç ilişkisi yok', 400);
-      throw new RelationNotFountException(id);
+      throw new RelationNotFountException(key);
     }
 
     const assetArray = await Promise.all(
-      relations.records[0]['_fields'].map(async (i) => {
-        const asset = await this.httpService.get(i.properties.url).pipe(map((response) => response.data));
+      relations.map(async (virtualAsset) => {
+        const asset = await this.httpService.get(virtualAsset['_fields'][0].properties.url) .pipe(
+          catchError(() => {
+            throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
+          }),
+        ).pipe(map((response) => response.data));
         return await firstValueFrom(asset);
       }),
     );
@@ -59,48 +58,9 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     return assetArray;
   }
 
-  //find all asset virtual nodes and get them from asset microservice
-  async findAllById(id: string) {
-    const node = await this.neo4jService.write(`match(p) where id(p)=$id return p`, {
-      id: parseInt(id),
-    });
-    if (!node.records[0]) {
-      //throw new HttpException('uygun node id si giriniz', 400);
-      throw new RelationNotFountException(id);
-    }
-
-    //find by id with specific relation name which node has that specific relations
-    const relations = await this.neo4jService.write(
-      `match(p) where id(p)=$id match (c) match (p)-[:HAS]->(c) return c`,
-      {
-        id: parseInt(id),
-      },
-    );
-    if (relations.records.length === 0) {
-      //throw new HttpException('hiç ilişkisi yok', 400);
-      throw new RelationNotFountException(id);
-    }
-
-    const assetArray = await Promise.all(
-      relations.records[0]['_fields'].map(async (i) => {
-        const y = await this.httpService
-          .get(i.properties.url)
-
-          .pipe(map((response) => response.data));
-        return await firstValueFrom(y);
-      }),
-    );
-
-    return assetArray;
-  }
   async create(key: string, createAssetRelationDto: CreateAssetRelationDto) {
-    const node = await this.neo4jService.read(
-      `match(p) where p.key=$key and p.isDeleted=false AND NOT p:Virtual return p`,
-      {
-        key,
-      },
-    );
-    if (!node.records[0]) {
+    const node = await this.findByKey(key)
+    if (!node) {
       //throw new HttpException('uygun node id si giriniz', 400);
       throw new FacilityStructureNotFountException(key);
     }
@@ -114,12 +74,12 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
       )
       .pipe(map((response) => response.data));
     const asset = await firstValueFrom(assetPromise);
-    console.log(asset);
+   
     if (!asset) {
       return 'asset not found';
     }
     const relationExist = await this.neo4jService.read(
-      `match(p) where p.key=$key and p.isDeleted=false match (c) where c.referenceKey=$referenceKey match (p)-[:HAS]->(c) return c`,
+      `match(p {isDeleted:false}) where p.key=$key match (c) where c.referenceKey=$referenceKey match (p)-[:HAS]->(c) return c`,
       {
         key,
         referenceKey: createAssetRelationDto.referenceKey,
@@ -146,9 +106,9 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
 
     await this.addRelationWithRelationNameByKey(key, value.properties.key, 'HAS_VİRTUAL_RELATION');
 
-    const structureUrl = `${process.env.STRUCTURE_URL}/${node.records[0]['_fields'][0].properties.key}`;
-    const kafkaObject = { referencekey: key, parentKey: createAssetRelationDto.referenceKey, url: structureUrl };
-    await this.kafkaService.producerSendMessage('createAssetRelation', JSON.stringify(kafkaObject));
+    const structureUrl = `${process.env.STRUCTURE_URL}/${node.properties.key}`;
+    const kafkaObject = { referenceKey: key, parentKey: createAssetRelationDto.referenceKey, url: structureUrl };
+    await this.kafkaService.producerSendMessage('createStructureAssetRelation', JSON.stringify(kafkaObject));
 
     return 'succes';
   }
@@ -175,36 +135,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     }
   }
 
-  async findOneNodeByKey(key: string) {
-    const node = await this.neo4jService.read(`match(p) where p.key=$key and p.isDeleted=false return p`, {
-      key,
-    });
-    if (!node.records[0]) {
-      //throw new HttpException('uygun node id si giriniz', 400);
-      throw new RelationNotFountException(key);
-    }
-
-    //find by id with specific relation name which node has that specific relations
-    const relations = await this.neo4jService.read(
-      `match(p) where p.key=$key match (c) where c.isDeleted=false match (p)-[:HAS]->(c) return c`,
-      {
-        key,
-      },
-    );
-    if (relations.records.length === 0) {
-      //throw new HttpException('hiç ilişkisi yok', 400);
-      throw new RelationNotFountException(key);
-    }
-
-    const assetArray = await Promise.all(
-      relations.records.map(async (i) => {
-        const asset = await this.httpService.get(i['_fields'][0].properties.url).pipe(map((response) => response.data));
-        return await firstValueFrom(asset);
-      }),
-    );
-
-    return assetArray;
-  }
+  
 
   //---------------------------------------------------------
   async addRelationWithRelationNameByKey(first_node_key, second_node_key, relationName) {
@@ -232,5 +163,38 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  }
+
+  async findByKey(key: string) {
+
+    if (!key) {
+      throw new HttpException('id must entered', 400)
+    }
+    const node = await this.neo4jService.read(`match(p {key:$key,isDeleted:false}) where NOT p:Virtual  return p`, {
+      key,
+    });
+    if (!node.records[0]) {
+      //throw new HttpException('uygun node id si giriniz', 400);
+      return null
+    }
+    return node.records[0]['_fields'][0]
+  }
+
+  async findRelationsByKeyWithRelationName(key:string,relationName:string){
+
+    const relations = await this.neo4jService.read(
+      `match(p {key:$key}) match (c) where c.isDeleted=false match (p)-[:${relationName}]->(c) return c`,
+      {
+        key,
+      },
+    );
+  
+    if (relations.records.length === 0) {
+      //throw new HttpException('hiç ilişkisi yok', 400);
+      throw new RelationNotFountException(key);
+    }
+
+    return relations.records
+
   }
 }

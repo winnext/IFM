@@ -31,6 +31,6 @@ export class AssetService {
   }
 
   async findOneNode(key: string) {
-    return await this.assetRepository.findOneNodeByKey(key);
+    return await this.assetRepository.findByKey(key);
   }
 }
