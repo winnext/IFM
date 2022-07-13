@@ -16,9 +16,10 @@ import { successResponse } from 'src/sgnm-neo4j/src/constant/success.response.ob
 export class AssetListenerController {
   constructor(private readonly neo4jService: Neo4jService, private readonly httpService: HttpService) {}
 
-  @EventPattern('createAssetRelation')
+  @EventPattern('createStructureAssetRelation')
   async createAssetListener(@Payload() message) {
-    if (message.value?.referenceKey || message.value?.parentKey) {
+    
+    if (!message.value?.referenceKey || !message.value?.parentKey) {
       throw new HttpException('key is not available on kafka object', 400);
     }
 
@@ -46,10 +47,42 @@ export class AssetListenerController {
 
     const value = await this.neo4jService.createNode(virtualNode, ['Virtual', 'Structure']);
 
-    await this.addRelationWithRelationNameByKey(value.properties.key, parentKey, 'INSIDE_IN');
+    await this.addRelationWithRelationNameByKey(parentKey,value.properties.key, 'INSIDE_IN');
 
-    await this.addRelationWithRelationNameByKey(value.properties.key, parentKey, 'HAS_VİRTUAL_RELATION');
-    console.log(message.value);
+    await this.addRelationWithRelationNameByKey( parentKey,value.properties.key, 'HAS_VIRTUAL_RELATION');
+    
+  }
+
+  @EventPattern('deleteStructure')
+  async deleteAssetListener(@Payload() message) {
+  
+    if (!message.value?.referenceKey ) {
+      throw new HttpException('key is not provided by service', 400);
+    }
+
+     //check if asset exist
+    const structurePromise = await this.httpService
+    .get(`${process.env.STRUCTURE_URL}/${message.value?.referenceKey}`)
+    .pipe(
+      catchError(() => {
+        throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
+      }),
+    )
+    .pipe(map((response) => response.data));
+
+    const structure = await firstValueFrom(structurePromise);
+
+    if (!structure) {
+      return 'structure not found';
+    }
+
+     await this.neo4jService.write(
+      `match (n:Virtual ) where n.referenceKey=$key set n.isDeleted=true return n`,
+      {
+        key: message.value.referenceKey,
+      },
+    );
+    
   }
 
   async addRelationWithRelationNameByKey(first_node_key, second_node_key, relationName) {
@@ -59,19 +92,20 @@ export class AssetListenerController {
       }
 
       const res = await this.neo4jService.write(
-        `MATCH (c {isDeleted: false}) where c.key= $first_node_key MATCH (p {isDeleted: false}) where p.key= $second_node_key MERGE (c)-[:${relationName}]-> (p)`,
+        `MATCH (c ) where c.key= $first_node_key MATCH (p {isDeleted: false}) where p.key= $second_node_key MERGE (c)-[:${relationName}]-> (p)`,
         {
           first_node_key,
           second_node_key,
         },
       );
       const { relationshipsCreated } = await res.summary.updateStatistics.updates();
+  
       if (relationshipsCreated === 0) {
         throw new HttpException(add_relation_with_relation_name__create_relation_error, 400);
       }
       return successResponse(res);
     } catch (error) {
-      if (error?.response?.code) {
+      if (error.response?.code) {
         throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
       } else {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);

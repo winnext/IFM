@@ -130,7 +130,7 @@ export class AssetRepository implements GeciciInterface<Asset> {
     }
   }
 
-  async findOneNodeByKey(key: string) {
+  async findByKey(key: string) {
     const node = await this.findOneNodeByKey1(key);
     if (!node) {
       return null;
@@ -147,9 +147,9 @@ export class AssetRepository implements GeciciInterface<Asset> {
         throw new HttpException(find_one_node_by_key_must_entered_error, 400);
       }
       //find node by key
-      const result = await this.neo4jService.read('match (n) where n.key=$key return n', { key: key });
+      const result = await this.neo4jService.read('match (n ) where n.key=$key and NOT n:Virtual return n', { key: key });
 
-      if (!result['records'].length) {
+      if (result['records'].length==0) {
         throw new HttpException(node_not_found, 404);
       }
       var node = result['records'][0]['_fields'][0];

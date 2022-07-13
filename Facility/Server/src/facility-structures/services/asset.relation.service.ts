@@ -12,11 +12,6 @@ export class AssetRelationService {
   async create(id: string, createAssetRelationDto: CreateAssetRelationDto) {
     return await this.AssetRelationsRepository.create(id, createAssetRelationDto);
   }
-
-  findOne(id: string) {
-    return this.AssetRelationsRepository.findOneById(id);
-  }
-
   remove(id: string) {
     return this.AssetRelationsRepository.delete(id);
   }

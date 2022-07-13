@@ -4,5 +4,5 @@ export interface GeciciInterface<T> {
   findOneByRealm(label: string, realm: string): any;
   delete(id: string): any;
   changeNodeBranch(id: string, target_parent_id: string): any;
-  findOneNodeByKey(key: string): any;
+  findByKey(key: string): any;
 }
