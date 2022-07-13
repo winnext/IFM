@@ -20,5 +20,5 @@
   "DUBLICATE_ERROR": "girilen değerler  #{errorProperties} sistemde zaten mevcut",
   "RELATION_NOT_FOUND": "relation bulunamadı",
   "CONTACT_NOT_FOUND": "#{id} no lu iletişim bilgisi bulunamadı",
-  "HAS_RELATİON": " {id} bu node zaten ilişkiye sahip"
+  "HAS_RELATION": " {id} bu node zaten ilişkiye sahip"
 }

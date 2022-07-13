@@ -53,6 +53,38 @@ export class AssetListenerController {
     
   }
 
+  @EventPattern('deleteStructure')
+  async deleteAssetListener(@Payload() message) {
+  
+    if (!message.value?.referenceKey ) {
+      throw new HttpException('key is not provided by service', 400);
+    }
+
+     //check if asset exist
+    const structurePromise = await this.httpService
+    .get(`${process.env.STRUCTURE_URL}/${message.value?.referenceKey}`)
+    .pipe(
+      catchError(() => {
+        throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
+      }),
+    )
+    .pipe(map((response) => response.data));
+
+    const structure = await firstValueFrom(structurePromise);
+
+    if (!structure) {
+      return 'structure not found';
+    }
+
+     await this.neo4jService.write(
+      `match (n:Virtual ) where n.referenceKey=$key set n.isDeleted=true return n`,
+      {
+        key: message.value.referenceKey,
+      },
+    );
+    
+  }
+
   async addRelationWithRelationNameByKey(first_node_key, second_node_key, relationName) {
     try {
       if (!first_node_key || !second_node_key || !relationName) {
