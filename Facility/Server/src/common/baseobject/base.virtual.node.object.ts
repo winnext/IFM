@@ -5,6 +5,7 @@ export abstract class BaseOfVirtualNode {
   key: string = generateUuid();
   createdAt = moment().format('YYYY-MM-DD HH:mm:ss');
   updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
+  canDelete = true;
   isDeleted = false;
 }
 

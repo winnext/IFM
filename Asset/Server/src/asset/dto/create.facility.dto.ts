@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ValidateNested } from 'class-validator';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 import { SetupNode } from '../entities/setupnode.entity';
