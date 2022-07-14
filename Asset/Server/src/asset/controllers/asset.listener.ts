@@ -4,18 +4,40 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { Unprotected } from 'nest-keycloak-connect';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
-import { assignDtoPropToEntity, Neo4jService } from 'src/sgnm-neo4j/src';
+import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
+import { assignDtoPropToEntity, createDynamicCyperCreateQuery, Neo4jService } from 'src/sgnm-neo4j/src';
 import {
   add_relation_with_relation_name__must_entered_error,
   add_relation_with_relation_name__create_relation_error,
 } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { successResponse } from 'src/sgnm-neo4j/src/constant/success.response.object';
+import { Facility } from '../entities/facility.entity';
 
 @Controller('assetListener')
 @Unprotected()
 export class AssetListenerController {
   constructor(private readonly neo4jService: Neo4jService, private readonly httpService: HttpService) {}
 
+  @EventPattern('createFacility')
+  async createFacilityListener(@Payload() message) {
+
+    const facilityInfo=message.value
+    const assetInfo={name:'Asset',realm:facilityInfo.realm}
+
+    const facility = new Facility();
+    const asset = new Facility();
+
+    const finalFacilityObject = assignDtoPropToEntity(facility, facilityInfo);
+    const finalAssetObject = assignDtoPropToEntity(asset, assetInfo);
+
+    const facilityNode = await this.neo4jService.createNode( finalFacilityObject,[Neo4jLabelEnum.ROOT]);
+    const assetNode = await this.neo4jService.createNode( finalAssetObject,[Neo4jLabelEnum.ASSET]);
+
+    await this.neo4jService.addRelations(
+      assetNode.identity.low,
+      facilityNode.identity.low,
+    );
+  }
   @EventPattern('createStructureAssetRelation')
   async createAssetListener(@Payload() message) {
     

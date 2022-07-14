@@ -18,7 +18,6 @@ import {
   add_relation_with_relation_name__must_entered_error,
 } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { successResponse } from 'src/sgnm-neo4j/src/constant/success.response.object';
-import { Console } from 'console';
 
 @Injectable()
 export class AssetRelationRepository implements VirtualNodeInterface<FacilityStructure> {

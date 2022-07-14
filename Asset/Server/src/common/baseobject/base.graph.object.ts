@@ -8,6 +8,7 @@ export abstract class BaseGraphObject {
   description = '';
   isActive = true;
   isDeleted = false;
+  canDelete=true;
   name: string;
   tag: string[] = [];
   formTypeId: string;
