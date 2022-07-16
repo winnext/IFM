@@ -369,63 +369,32 @@ const Contact = () => {
     let updateNode: any = {};
     ContactService.nodeInfo(key)
       .then((res) => {
-        if (labels.length > 0) {
-          updateNode = {
-            key: uuidv4(),
-            parentId: res.data.id,
-            email: email,
-            name: email,
-            category: category,
-            company: company,
-            phone: phone,
-            createdBy: createdBy,
-            formTypeId: formTypeId,
-            department: department,
-            organizationCode: organizationCode,
-            givenName: givenName,
-            familyName: familyName,
-            street: street,
-            postalBox: postalBox,
-            town: town,
-            stateRegion: stateRegion,
-            postalCode: postalCode,
-            country: country,
-            tag: tag,
-            description: "",
-            createdById: createdByNodeId,
-            classificationId: categoryNodeId,
-            isActive: isActive,
-          };
-        } else {
-          updateNode = {
-            key: uuidv4(),
-            parentId: res.data.id,
-            email: email,
-            name: email,
-            category: category,
-            company: company,
-            phone: phone,
-            createdBy: createdBy,
-            formTypeId: formTypeId,
-            department: department,
-            organizationCode: organizationCode,
-            givenName: givenName,
-            familyName: familyName,
-            street: street,
-            postalBox: postalBox,
-            town: town,
-            stateRegion: stateRegion,
-            postalCode: postalCode,
-            country: country,
-            tag: tag,
-            description: "",
-            createdById: createdByNodeId,
-            classificationId: categoryNodeId,
-            isActive: isActive,
-          }
-        }
-        console.log(updateNode);
-
+        updateNode = {
+          key: uuidv4(),
+          parentId: res.data.id,
+          email: email,
+          name: email,
+          category: category,
+          company: company,
+          phone: phone,
+          createdBy: createdBy,
+          formTypeId: formTypeId,
+          department: department,
+          organizationCode: organizationCode,
+          givenName: givenName,
+          familyName: familyName,
+          street: street,
+          postalBox: postalBox,
+          town: town,
+          stateRegion: stateRegion,
+          postalCode: postalCode,
+          country: country,
+          tag: tag,
+          description: "",
+          createdById: createdByNodeId,
+          classificationId: categoryNodeId,
+          isActive: isActive,
+        };
 
         ContactService.update(res.data.id, updateNode)
           .then((res) => {
@@ -653,8 +622,9 @@ const Contact = () => {
       <Dialog
         header="Add New Item"
         visible={addDia}
-        style={{ width: "60vw" }}
+        style={{ width: "40vw" }}
         footer={renderFooterAdd}
+        className="dial"
         onHide={() => {
           setTag([]);
           setFormTypeId(undefined);
@@ -677,7 +647,7 @@ const Contact = () => {
         }}
       >
         <div className="grid p-fluid">
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Email</h5>
               <InputText
@@ -688,7 +658,18 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
+              <InputText
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Category</h5>
               <TreeSelect
@@ -696,9 +677,11 @@ const Contact = () => {
                 options={classification}
                 onChange={(e) => {
                   setCategory(e.value);
+                  console.log(e);
                   let nodeKey: any = e.value;
                   ClassificationsService.nodeInfo(nodeKey)
                     .then((res) => {
+                      console.log(res.data);
                       setCategoryNodeId(res.data.id);
                     })
                     .catch((err) => {
@@ -716,29 +699,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
-              <InputText
-                value={company}
-                onChange={(event) => setCompany(event.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
-              <InputText
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
               <TreeSelect
@@ -746,9 +707,11 @@ const Contact = () => {
                 options={formData}
                 onChange={(e) => {
                   setFormTypeId(e.value);
+                  console.log(e);
                   let nodeKey: any = e.value;
                   FormTypeService.nodeInfo(nodeKey)
                     .then((res) => {
+                      console.log(res.data);
                       setLabels([res.data.properties.name])
                     })
                     .catch((err) => {
@@ -766,7 +729,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Department</h5>
               <InputText
@@ -775,10 +738,7 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
+            <div className="field ml-3">
               <h5 style={{ marginBottom: "0.5em" }}>Organization Code</h5>
               <InputText
                 value={organizationCode}
@@ -788,7 +748,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Given Name</h5>
               <InputText
@@ -797,10 +757,7 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
+            <div className="field ml-3">
               <h5 style={{ marginBottom: "0.5em" }}>Family Name</h5>
               <InputText
                 value={familyName}
@@ -810,7 +767,26 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
+              <InputText
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="field ml-3">
+              <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
+              <InputText
+                value={country}
+                onChange={(event) => setCountry(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
               <InputText
@@ -821,18 +797,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
-              <InputText
-                value={postalBox}
-                onChange={(event) => setPostalBox(event.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Town</h5>
               <InputText
@@ -841,10 +806,7 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
+            <div className="field ml-3">
               <h5 style={{ marginBottom: "0.5em" }}>State Region</h5>
               <InputText
                 value={stateRegion}
@@ -854,7 +816,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Postal Code</h5>
               <InputText
@@ -863,27 +825,24 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
+            <div className="field ml-3">
+              <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
               <InputText
-                value={country}
-                onChange={(event) => setCountry(event.target.value)}
+                value={postalBox}
+                onChange={(event) => setPostalBox(event.target.value)}
                 style={{ width: '100%' }}
               />
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field structureChips">
               <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
               <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "100%" }} />
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Created By</h5>
               <TreeSelect
@@ -894,6 +853,7 @@ const Contact = () => {
                   let nodeKey: any = e.value;
                   ContactService.nodeInfo(nodeKey)
                     .then((res) => {
+                      console.log(res.data);
                       setCreatedByNodeId(res.data.id);
                     })
                     .catch((err) => {
@@ -916,7 +876,7 @@ const Contact = () => {
       <Dialog
         header="Edit Item"
         visible={editDia}
-        style={{ width: "60vw" }}
+        style={{ width: "40vw" }}
         footer={renderFooterEdit}
         onHide={() => {
           setTag([]);
@@ -940,7 +900,7 @@ const Contact = () => {
         }}
       >
         <div className="grid p-fluid">
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Email</h5>
               <InputText
@@ -951,7 +911,18 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
+              <InputText
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Category</h5>
               <TreeSelect
@@ -981,29 +952,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Company</h5>
-              <InputText
-                value={company}
-                onChange={(event) => setCompany(event.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
-              <InputText
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Type</h5>
               <TreeSelect
@@ -1033,7 +982,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Department</h5>
               <InputText
@@ -1042,10 +991,7 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
+            <div className="field ml-3">
               <h5 style={{ marginBottom: "0.5em" }}>Organization Code</h5>
               <InputText
                 value={organizationCode}
@@ -1055,7 +1001,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Given Name</h5>
               <InputText
@@ -1064,10 +1010,7 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
+            <div className="field ml-3">
               <h5 style={{ marginBottom: "0.5em" }}>Family Name</h5>
               <InputText
                 value={familyName}
@@ -1077,7 +1020,26 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
+            <div className="field">
+              <h5 style={{ marginBottom: "0.5em" }}>Phone</h5>
+              <InputText
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+            <div className="field ml-3">
+              <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
+              <InputText
+                value={country}
+                onChange={(event) => setCountry(event.target.value)}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
+
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Street</h5>
               <InputText
@@ -1088,18 +1050,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
-              <InputText
-                value={postalBox}
-                onChange={(event) => setPostalBox(event.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Town</h5>
               <InputText
@@ -1108,10 +1059,7 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
+            <div className="field ml-3">
               <h5 style={{ marginBottom: "0.5em" }}>State Region</h5>
               <InputText
                 value={stateRegion}
@@ -1121,7 +1069,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6 flex">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Postal Code</h5>
               <InputText
@@ -1130,27 +1078,24 @@ const Contact = () => {
                 style={{ width: '100%' }}
               />
             </div>
-          </div>
-
-          <div className="col-12 md:col-4">
-            <div className="field">
-              <h5 style={{ marginBottom: "0.5em" }}>Country</h5>
+            <div className="field ml-3">
+              <h5 style={{ marginBottom: "0.5em" }}>Postal Box</h5>
               <InputText
-                value={country}
-                onChange={(event) => setCountry(event.target.value)}
+                value={postalBox}
+                onChange={(event) => setPostalBox(event.target.value)}
                 style={{ width: '100%' }}
               />
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field structureChips">
               <h5 style={{ marginBottom: "0.5em" }}>Tag</h5>
               <Chips value={tag} onChange={(e) => setTag(e.value)} style={{ width: "100%" }} />
             </div>
           </div>
 
-          <div className="col-12 md:col-4">
+          <div className="col-12 md:col-6">
             <div className="field">
               <h5 style={{ marginBottom: "0.5em" }}>Created By</h5>
               <TreeSelect
@@ -1178,6 +1123,7 @@ const Contact = () => {
               />
             </div>
           </div>
+
           <div className="col-12">
             <div className="field flex">
               <h5 style={{ marginBottom: "0.5em" }}>Is Active</h5>
