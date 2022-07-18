@@ -1458,11 +1458,12 @@ async findByRealm(
         throw new HttpException(find_by_name_and_labels_with_active_child_nodes__not_found_error,404);
       }
       let cypher = "";
+      ////////////////////////////////////////////// GEÇİCİ DÜZENLEME (einform için)
       if (orderbyprop) {
-        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: true})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive: true}) where c.name=$name return n order by n.${orderbyprop} ${orderbytype}`;
+        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: true})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive: true}) where c.name=$name and not n:TypeProperty return n order by n.${orderbyprop} ${orderbytype}`;
       }
       else {
-        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: true})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive: true}) where c.name=$name return n`;
+        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: true})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive: true}) where c.name=$name and not n:TypeProperty return n`;
       } 
       const result = await this.read(cypher, { name });
    
