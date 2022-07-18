@@ -9,9 +9,12 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
+import { TabView, TabPanel } from "primereact/tabview";
+
 import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
-import { TabView, TabPanel } from "primereact/tabview";
+import "./FormGenerate.css";
+
 
 const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
 const Input = ({ value, onChange, type, ...rest }) => {
@@ -117,71 +120,46 @@ const FormGenerate = () => {
   const params = useParams();
   const searchParameters = new URLSearchParams(location.search);
   const nodeId = params.id;
-  const typeId = searchParameters.get("typeId");
-  // const typeName =searchParameters.get("typeName");
+  const formType = searchParameters.get("formType");
 
-  // console.log(typeId, typeName);
+  console.log(nodeId, formType);
 
   const history = useNavigate();
 
   useEffect(() => {
-    // if (params.state) {
-    //   localStorage.setItem("nodeId", params.state.data._id.low);
-    //   localStorage.setItem("typeId", params.state.data.typeId);
-    //   localStorage.setItem("rootId", params.state.data.rootId);
-    // }
-    if (typeId === "undefined" || typeId === null || typeId === "") {
-      // console.log("typeId undefined");
+    if (formType === "undefined" || formType === null || formType === "") {
       return setHasForm(false);
     }
-    FormTypeService.nodeInfo(typeId)
-      .then(async (responsenodeInfo) => {
-        console.log(responsenodeInfo.data);
-        // const responsegetData = await deneme.getData(nodeId);
-        // console.log(responsegetData);
-        FormBuilderService.getPropertiesWithName(
-          responsenodeInfo.data.properties.name
-        )
-          .then((responsegetProperties) => {
-            console.log(responsegetProperties.data);
+    FormBuilderService.getPropertiesWithName(formType)
+      .then((responsegetProperties) => {
+        console.log(responsegetProperties.data);
 
-            const convertedData = responsegetProperties.data.map(function (
-              item
-            ) {
-              // console.log(formData[`'${item.label}'`]);
-              return {
-                ...item,
-                // defaultValue:
-                //   responsegetData.data.length > 0
-                //     ? responsegetData.data[0].data[item.label]
-                //       ? responsegetData.data[0].data[item.label]
-                //       : item.defaultValue
-                //     : item.defaultValue,
-                rules: { required: item.rules[0] },
-                options: item.options.map(function (option) {
-                  return { optionsName: option };
-                }),
-              };
-            });
-            setItems(convertedData);
-          })
-          .catch((err) => {
-            return setHasForm(false);
-            toast.current.show({
-              severity: "error",
-              summary: "Error",
-              detail: err.responsegetProperties
-                ? err.responsegetProperties.data.message
-                : err.message,
-              life: 2000,
-            });
-          });
+        const convertedData = responsegetProperties.data.map(function (item) {
+          // console.log(formData[`'${item.label}'`]);
+          return {
+            ...item,
+            // defaultValue:
+            //   responsegetData.data.length > 0
+            //     ? responsegetData.data[0].data[item.label]
+            //       ? responsegetData.data[0].data[item.label]
+            //       : item.defaultValue
+            //     : item.defaultValue,
+            rules: { required: item.rules[0] },
+            options: item.options.map(function (option) {
+              return { optionsName: option };
+            }),
+          };
+        });
+        setItems(convertedData);
       })
       .catch((err) => {
+        return setHasForm(false);
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
+          detail: err.responsegetProperties
+            ? err.responsegetProperties.data.message
+            : err.message,
           life: 2000,
         });
       });

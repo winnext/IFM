@@ -612,7 +612,7 @@ const SetFacilityStructure = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data: FormNode, options) => <span className="flex align-items-center font-bold">{data.label} {
+          nodeTemplate={(data: Node, options) => <span className="flex align-items-center font-bold">{data.label} {
             <>
               <span className="ml-4 ">
                 <Button
@@ -656,9 +656,10 @@ const SetFacilityStructure = () => {
                   //   }
                   // }
                   // )} 
-                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?formTypeId=${data.formTypeId}`)}
+                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?formType=${data.labels}`)}
                   title="Edit Form"
                 />
+                
                 {/* } */}
 
                 {/* <Button
