@@ -12,7 +12,7 @@ import Toolbox2 from './ToolBox2';
 import DropZone from './DropZone';
 import ITEMS from './Items';
 import ITEMS2 from './Items2';
-import FormGenerate from '../FormGenerate/FormGenerate';
+import FormGenerateDemo from '../FormGenerateDemo/FormGenerateDemo';
 import FormBuilderService from '../../services/formBuilder';
 
 function FormBuilderCreate() {
@@ -265,7 +265,7 @@ function FormBuilderCreate() {
             breakpoints={{ '960px': '75vw' }}
             style={{ width: '40vw' }}
           >
-            <FormGenerate items={items} />
+            <FormGenerateDemo items={items} />
           </Dialog>
         </div>
       </div>
