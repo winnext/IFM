@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateFacilityDto } from '../dtos/create.facility.dto';
 import { UpdateFacilityDto } from '../dtos/update.facility.dto';
 import { BaseInterfaceRepository } from 'src/common/interface/base.facility.interface';
-import { assignDtoPropToEntity, createDynamicCyperCreateQuery, Neo4jService } from 'src/sgnm-neo4j/src';
 import { Facility } from '../entities/facility.entity';
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { NestKafkaService } from 'ifmcommon';
+import { Neo4jService, assignDtoPropToEntity } from 'sgnm-neo4j/dist';
 
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
@@ -32,20 +32,16 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
     const finalStructureObject = assignDtoPropToEntity(structure, structureInfo);
     const finalClassificationObject = assignDtoPropToEntity(classification, classificationInfo);
 
-    //create  node with multi or single label 
-    const facilityNode = await this.neo4jService.createNode( finalFacilityObject,[Neo4jLabelEnum.ROOT]);
-    const structureNode = await this.neo4jService.createNode( finalStructureObject, [Neo4jLabelEnum.FACILITY_STRUCTURE]);
-    const classificationNode = await this.neo4jService.createNode(finalClassificationObject,  [Neo4jLabelEnum.CLASSIFICATION]);
+    //create  node with multi or single label
+    const facilityNode = await this.neo4jService.createNode(finalFacilityObject, [Neo4jLabelEnum.ROOT]);
+    const structureNode = await this.neo4jService.createNode(finalStructureObject, [Neo4jLabelEnum.FACILITY_STRUCTURE]);
+    const classificationNode = await this.neo4jService.createNode(finalClassificationObject, [
+      Neo4jLabelEnum.CLASSIFICATION,
+    ]);
 
-    await this.neo4jService.addRelations(
-      structureNode.identity.low,
-      facilityNode.identity.low,
-    );
-    await this.neo4jService.addRelations(
-      classificationNode.identity.low,
-      facilityNode.identity.low,
-    );
-    await this.kafkaService.producerSendMessage('createFacility',JSON.stringify(facilityInfo))
+    await this.neo4jService.addRelations(structureNode.identity.low, facilityNode.identity.low);
+    await this.neo4jService.addRelations(classificationNode.identity.low, facilityNode.identity.low);
+    await this.kafkaService.producerSendMessage('createFacility', JSON.stringify(facilityInfo));
     return facilityNode;
   }
   async update(_id: string, updateFacilityDto: UpdateFacilityDto) {
@@ -60,5 +56,4 @@ export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   async findOneById(id: string): Promise<any> {
     return 'facility';
   }
-
 }

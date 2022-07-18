@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 //import { CustomNeo4jError, Neo4jService } from 'sgnm-neo4j';
-import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'src/sgnm-neo4j/src';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 import { has_children_error } from 'src/common/const/custom.error.object';
 import { CustomTreeError } from 'src/common/const/custom.error.enum';
@@ -9,6 +8,7 @@ import { Contact } from '../entities/contact.entity';
 import { CreateContactDto } from '../dto/create-contact.dto';
 import { UpdateContactDto } from '../dto/update-contact.dto';
 import { ContactNotFoundException } from 'src/common/notFoundExceptions/not.found.exception';
+import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'sgnm-neo4j/dist';
 
 @Injectable()
 export class ContactRepository implements GeciciInterface<Contact> {
@@ -76,31 +76,39 @@ export class ContactRepository implements GeciciInterface<Contact> {
       await this.neo4jService.updateLabel(_id, updateContactDto['labels']);
     }
     if (updateContactDto['createdById']) {
-        const result = await this.neo4jService.findByRelationWithRelation(_id, 'CREATED_BY','leftToRight');
-        //if there is a "CREATED_BY" relation 
-        if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
-          if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['createdById']) {
-            await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low );
-            await this.neo4jService.addRelationWithRelationName(_id,updateContactDto['createdById'], "CREATED_BY");
-          }
-        }
-        //if there is not "CREATED_BY" relation 
-        else {
-          await this.neo4jService.addRelationWithRelationName(_id,updateContactDto['createdById'], "CREATED_BY");
-        }
-    }
-    if (updateContactDto['classificationId']) {
-      const result = await this.neo4jService.findByRelationWithRelation(_id, 'CLASSIFICATION_OF','rightToLeft');
-      //if there is a "CLASSIFICATION_OF" relation 
+      const result = await this.neo4jService.findByRelationWithRelation(_id, 'CREATED_BY', 'leftToRight');
+      //if there is a "CREATED_BY" relation
       if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
-        if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['classificationId']) {
-          await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low );
-          await this.neo4jService.addRelationWithRelationName(updateContactDto['classificationId'],_id, "CLASSIFICATION_OF");
+        if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['createdById']) {
+          await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low);
+          await this.neo4jService.addRelationWithRelationName(_id, updateContactDto['createdById'], 'CREATED_BY');
         }
       }
-      //if there is not "CLASSIFICATION_OF" relation 
+      //if there is not "CREATED_BY" relation
       else {
-        await this.neo4jService.addRelationWithRelationName(updateContactDto['classificationId'],_id, "CLASSIFICATION_OF");
+        await this.neo4jService.addRelationWithRelationName(_id, updateContactDto['createdById'], 'CREATED_BY');
+      }
+    }
+    if (updateContactDto['classificationId']) {
+      const result = await this.neo4jService.findByRelationWithRelation(_id, 'CLASSIFICATION_OF', 'rightToLeft');
+      //if there is a "CLASSIFICATION_OF" relation
+      if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
+        if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['classificationId']) {
+          await this.neo4jService.deleteRelationByRelationId(result['records'][0]['_fields'][1]['identity'].low);
+          await this.neo4jService.addRelationWithRelationName(
+            updateContactDto['classificationId'],
+            _id,
+            'CLASSIFICATION_OF',
+          );
+        }
+      }
+      //if there is not "CLASSIFICATION_OF" relation
+      else {
+        await this.neo4jService.addRelationWithRelationName(
+          updateContactDto['classificationId'],
+          _id,
+          'CLASSIFICATION_OF',
+        );
       }
     }
     return result;
@@ -153,12 +161,28 @@ export class ContactRepository implements GeciciInterface<Contact> {
       if (!node) {
         throw new ContactNotFoundException(key);
       }
-      const createdBy = await this.neo4jService.findByRelationWithRelation(node["identity"].low, 'CREATED_BY','leftToRight');
-      const classification = await this.neo4jService.findByRelationWithRelation(node["identity"].low, 'CLASSIFICATION_OF','rightToLeft');
-      if (createdBy['records'][0] && createdBy['records'][0]['_fields'] && createdBy['records'][0]['_fields'].length > 0) {
+      const createdBy = await this.neo4jService.findByRelationWithRelation(
+        node['identity'].low,
+        'CREATED_BY',
+        'leftToRight',
+      );
+      const classification = await this.neo4jService.findByRelationWithRelation(
+        node['identity'].low,
+        'CLASSIFICATION_OF',
+        'rightToLeft',
+      );
+      if (
+        createdBy['records'][0] &&
+        createdBy['records'][0]['_fields'] &&
+        createdBy['records'][0]['_fields'].length > 0
+      ) {
         node['properties']['createdByKey'] = createdBy['records'][0]['_fields'][0]['properties'].key;
       }
-      if (classification['records'][0] && classification['records'][0]['_fields'] && classification['records'][0]['_fields'].length > 0) {
+      if (
+        classification['records'][0] &&
+        classification['records'][0]['_fields'] &&
+        classification['records'][0]['_fields'].length > 0
+      ) {
         node['properties']['classificationKey'] = classification['records'][0]['_fields'][0]['properties'].key;
       }
       const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };

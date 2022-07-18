@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { IsBoolean, IsEmpty, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { CreateFacilityStructureDto } from './create-facility-structure.dto';
 import * as moment from 'moment';
 

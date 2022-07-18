@@ -1450,9 +1450,9 @@
     "uuid" "8.3.2"
 
 "@nestjs/config@^2.0.0":
-  "integrity" "sha512-N1sV9YrkLCgqI3plVWt9tccUfMJ3jsjGMl1KN/WDnDkr9jQ4XHt9vnHhdBeclegRyZN2/0TBAqCIEAoD4TaVag=="
-  "resolved" "https://registry.npmjs.org/@nestjs/config/-/config-2.0.1.tgz"
-  "version" "2.0.1"
+  "integrity" "sha512-78Eg6oMbCy3D/YvqeiGBTOWei1Jwi3f2pSIZcZ1QxY67kYsJzTRTkwRT8Iv30DbK0sGKc1mcloDLD5UXgZAZtg=="
+  "resolved" "https://registry.npmjs.org/@nestjs/config/-/config-2.2.0.tgz"
+  "version" "2.2.0"
   dependencies:
     "dotenv" "16.0.1"
     "dotenv-expand" "8.0.3"
@@ -8179,10 +8179,10 @@
   "resolved" "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   "version" "1.2.0"
 
-"sgnm-neo4j@^0.0.97":
-  "integrity" "sha512-Obl0N+LWbS5jfPBZPgTyV1q17X9Oi8G7xKoyH7xvxccysx5LtlAk5/5MrLQHwk9zdJgVvKuup3ib/2C4UuR4AQ=="
-  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.97.tgz"
-  "version" "0.0.97"
+"sgnm-neo4j@^0.0.103":
+  "integrity" "sha512-Pfa0KSW2WyKm61MpdWBUFVYJr8swyUEfXLEAuN88XI0nukRhLPrTAEnyV5xJP+uLU1E0aXy/c4+gVlPZQ6hR6A=="
+  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.103.tgz"
+  "version" "0.0.103"
   dependencies:
     "@nestjs/common" "^8.4.5"
     "@nestjs/config" "^2.0.0"

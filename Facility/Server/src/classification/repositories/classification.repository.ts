@@ -6,16 +6,12 @@ import { PaginationNeo4jParams } from 'src/common/commonDto/pagination.neo4j.dto
 import { CreateClassificationDto } from '../dto/create-classification.dto';
 import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import { Classification } from '../entities/classification.entity';
-import { BaseGraphDatabaseInterfaceRepository, nodeHasChildException } from 'ifmcommon';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
-
-import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4jService } from 'src/sgnm-neo4j/src';
-
-import { create_node__must_entered_error, create_node__node_not_created_error, find_by_realm_with_tree_structure__not_entered_error, find_by_realm__not_entered_error, find_by_realm__not_found_error, find_with_children_by_realm_as_tree_error, find_with_children_by_realm_as_tree__find_by_realm_error, find_with_children_by_realm_as_tree__not_entered_error, tree_structure_not_found_by_realm_name_error } from 'src/sgnm-neo4j/src/constant/custom.error.object';
 import { GeciciInterface } from 'src/common/interface/gecici.interface';
 import { has_children_error } from 'src/common/const/custom.error.object';
 import { CustomTreeError } from 'src/common/const/custom.error.enum';
+import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'sgnm-neo4j/dist';
 
 @Injectable()
 export class ClassificationRepository implements GeciciInterface<Classification> {
@@ -41,7 +37,7 @@ export class ClassificationRepository implements GeciciInterface<Classification>
 
   async findOneByRealm(label: string, realm: string) {
     let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
-    
+
     if (!node) {
       throw new ClassificationNotFountException(realm);
     }
@@ -50,70 +46,65 @@ export class ClassificationRepository implements GeciciInterface<Classification>
     return node;
   }
 
-    
-  
-
   async create(createClassificationDto: CreateClassificationDto) {
-    let classification = new Classification();
-    let classificationObject = assignDtoPropToEntity(classification, createClassificationDto);
+    const classification = new Classification();
+    const classificationObject = assignDtoPropToEntity(classification, createClassificationDto);
     let value;
     if (classificationObject['labels']) {
       value = await this.neo4jService.createNode(classificationObject, classificationObject['labels']);
-    }
-    else {
+    } else {
       value = await this.neo4jService.createNode(classificationObject);
     }
     value['properties']['id'] = value['identity'].low;
-    const result = {id:value['identity'].low, labels: value['labels'], properties: value['properties']}
+    const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
     if (createClassificationDto['parentId']) {
-      await this.neo4jService.addRelations(
-        result['id'], createClassificationDto["parentId"]
-      );
+      await this.neo4jService.addRelations(result['id'], createClassificationDto['parentId']);
     }
 
     return result;
   }
 
   async update(_id: string, updateClassificationto: UpdateClassificationDto) {
-    let updateClassificationDtoWithoutLabelsAndParentId={};
-    
+    const updateClassificationDtoWithoutLabelsAndParentId = {};
+
     Object.keys(updateClassificationto).forEach((element) => {
-      if (element != 'labels' && element != 'parentId' ) {
+      if (element != 'labels' && element != 'parentId') {
         updateClassificationDtoWithoutLabelsAndParentId[element] = updateClassificationto[element];
       }
     });
-    
+
     const dynamicObject = createDynamicCyperObject(updateClassificationto);
 
     const updatedNode = await this.neo4jService.updateById(_id, dynamicObject);
     if (!updatedNode) {
       throw new ClassificationNotFountException(_id);
     }
-    const result = {id:updatedNode['identity'].low, labels: updatedNode['labels'], properties: updatedNode['properties']} 
-    if (updateClassificationto['labels'] && updateClassificationto['labels'].length > 0) {   
-      await this.neo4jService.removeLabel(_id,result["labels"]);
-      await this.neo4jService.updateLabel(_id,updateClassificationto['labels']);
+    const result = {
+      id: updatedNode['identity'].low,
+      labels: updatedNode['labels'],
+      properties: updatedNode['properties'],
+    };
+    if (updateClassificationto['labels'] && updateClassificationto['labels'].length > 0) {
+      await this.neo4jService.removeLabel(_id, result['labels']);
+      await this.neo4jService.updateLabel(_id, updateClassificationto['labels']);
     }
     return result;
   }
   async delete(_id: string) {
     try {
-     
       let deletedNode;
-         let hasChildren =  await this.neo4jService.findChildrenById(_id);       
-         if (hasChildren['records'].length == 0) {
-           deletedNode = await this.neo4jService.delete(_id);
-         }
-         else {
-          throw new HttpException(has_children_error, 400);
-        }
- 
+      const hasChildren = await this.neo4jService.findChildrenById(_id);
+      if (hasChildren['records'].length == 0) {
+        deletedNode = await this.neo4jService.delete(_id);
+      } else {
+        throw new HttpException(has_children_error, 400);
+      }
+
       return deletedNode;
     } catch (error) {
       if (error.response?.code == CustomTreeError.HAS_CHILDREN) {
         throw new HttpException(has_children_error, 400);
-      }
-      else {
+      } else {
         throw new HttpException(error.response?.message, error.response?.code);
       }
     }
@@ -143,15 +134,10 @@ export class ClassificationRepository implements GeciciInterface<Classification>
       if (!node) {
         throw new ClassificationNotFountException(key);
       }
-      const result = {id:node['identity'].low, labels: node['labels'], properties: node['properties']}
+      const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
       return result;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
-
-
 }
-
-
