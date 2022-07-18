@@ -1424,7 +1424,7 @@
     "webpack" "5.66.0"
     "webpack-node-externals" "3.0.0"
 
-"@nestjs/common@*", "@nestjs/common@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.8 || ^8.0.0", "@nestjs/common@^8.0.0", "@nestjs/common@^8.3.1", "@nestjs/common@^8.4.5":
+"@nestjs/common@*", "@nestjs/common@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.0 || ^8.0.0 || ^9.0.0", "@nestjs/common@^7.0.8 || ^8.0.0", "@nestjs/common@^8.0.0", "@nestjs/common@^8.3.1", "@nestjs/common@^8.4.5":
   "integrity" "sha512-INp1ERDrLiQ4GwRc3zotTwBLZm2sIwcJwnBE2yXqsth17KijmoVmY8UB5Tares0IlwjsqlRFWkCX8uWE5rzbSA=="
   "resolved" "https://registry.npmjs.org/@nestjs/common/-/common-8.4.6.tgz"
   "version" "8.4.6"
@@ -1469,6 +1469,16 @@
   "integrity" "sha512-wUpt1/QJEN7xnJl4pM3c9rHrY1widq2yPOZfjaMD1//XAP9LLHTaW+RxSEG6BSGIm3w4wGtjco+gKNB2WL7yRg=="
   "resolved" "https://registry.npmjs.org/@nestjs/config/-/config-2.1.0.tgz"
   "version" "2.1.0"
+  dependencies:
+    "dotenv" "16.0.1"
+    "dotenv-expand" "8.0.3"
+    "lodash" "4.17.21"
+    "uuid" "8.3.2"
+
+"@nestjs/config@^2.2.0":
+  "integrity" "sha512-78Eg6oMbCy3D/YvqeiGBTOWei1Jwi3f2pSIZcZ1QxY67kYsJzTRTkwRT8Iv30DbK0sGKc1mcloDLD5UXgZAZtg=="
+  "resolved" "https://registry.npmjs.org/@nestjs/config/-/config-2.2.0.tgz"
+  "version" "2.2.0"
   dependencies:
     "dotenv" "16.0.1"
     "dotenv-expand" "8.0.3"
@@ -5528,12 +5538,13 @@
   "resolved" "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   "version" "1.2.1"
 
-"ifmcommon@^0.0.36":
-  "integrity" "sha512-kCxRtAeN0BPgf24izZ2Io1VQeIXWOXGnbXT41YF/HE9lrGxOqmzKo02/yD1d+MzBH4QECTYgRlNgK6JJeBIayQ=="
-  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.36.tgz"
-  "version" "0.0.36"
+"ifmcommon@^0.0.38":
+  "integrity" "sha512-T3XJ8HB6mZykdZG6a4/XscYZSgu58QU3EnumUudaxbPPmo3JFGlY+Hf7OdYDkWK7dlT13Fps2SVSZiQ+6Ypetw=="
+  "resolved" "https://registry.npmjs.org/ifmcommon/-/ifmcommon-0.0.38.tgz"
+  "version" "0.0.38"
   dependencies:
     "@nestjs/common" "^8.0.0"
+    "@nestjs/config" "^2.2.0"
     "@nestjs/core" "^8.0.0"
     "@nestjs/microservices" "^8.4.4"
     "@nestjs/mongoose" "^9.0.3"
