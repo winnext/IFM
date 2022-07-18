@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Toast } from 'primereact/toast';
-import './FormGenerate.css';
+import './FormGenerateDemo.css';
 
 const Error = ({ children }) => <p style={{ color: 'red' }}>{children}</p>;
 const Input = ({ value, onChange, type, ...rest }) => {
@@ -104,7 +104,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
   }
 };
 
-const Dynamic = (props) => {
+const FormGenerateDemo = (props) => {
   console.log(props);
 
   const [items, setItems] = useState([]);
@@ -164,4 +164,4 @@ const Dynamic = (props) => {
   );
 };
 
-export default Dynamic;
+export default FormGenerateDemo;
