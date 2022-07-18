@@ -9,15 +9,11 @@ import { MulterModule } from '@nestjs/platform-express';
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
-
-//import { Neo4jModule } from 'sgnm-neo4j';
-import { Neo4jModule } from './sgnm-neo4j/src';
-
+import { Neo4jModule } from 'sgnm-neo4j';
 import { i18nOptions } from './common/configs/i18n.options';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { HttpCacheInterceptor, KafkaModule } from 'ifmcommon';
 import { AssetModule } from './asset/asset.module';
-
 
 @Module({
   imports: [
