@@ -199,7 +199,6 @@ const SetFacilityStructure = () => {
       fixNodes(i.children)
       i.icon = "pi pi-fw pi-building";
       i.label = i.name;
-      i.children = i.children || [];
     }
   };
 
@@ -612,7 +611,7 @@ const SetFacilityStructure = () => {
           filter
           filterBy="name,code"
           filterPlaceholder="Search"
-          nodeTemplate={(data: FormNode, options) => <span className="flex align-items-center font-bold">{data.label} {
+          nodeTemplate={(data: Node, options) => <span className="flex align-items-center font-bold">{data.label} {
             <>
               <span className="ml-4 ">
                 <Button
@@ -656,9 +655,24 @@ const SetFacilityStructure = () => {
                   //   }
                   // }
                   // )} 
-                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?formTypeId=${data.formTypeId}`)}
+                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?formType=${data.labels}`)}
                   title="Edit Form"
                 />
+                <Button
+                  icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
+                  // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
+                  // {
+                  //   state: {
+                  //     data: data,
+                  //     rootId: structure.root._id.low,
+                  //   }
+                  // }
+                  // )} 
+                  onClick={(e) => console.log(data)}
+                  
+                  title="Edit Form"
+                />
+                
                 {/* } */}
 
                 {/* <Button

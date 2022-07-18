@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_URL + "structure";
+const url = process.env.REACT_APP_API_URL + "asset";
 
 interface PaginationParams {
     page?: number;
@@ -28,7 +28,7 @@ const findAll = async (query: PaginationParams) => {
 };
 
 const findOne = async (id: string) => {
-    return axios.get(url + "/FacilityStructure/" + id);
+    return axios.get(url + "/Asset/" + id);
 };
 
 const create = async (structure: StructureInterface) => {

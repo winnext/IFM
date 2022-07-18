@@ -12,6 +12,24 @@ code {
     monospace;
 }
 
-.structureChips ul{
+.structureChips ul {
   width: 100%;
 }
+
+.p-dialog .p-dialog-header {
+  background-color: #fafafa;
+}
+
+.p-dialog .p-dialog-content {
+  background-color: #fafafa;
+}
+
+.p-dialog .p-dialog-footer {
+  background-color: #fafafa;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title {
+  font-size: 1.5rem;
+  text-decoration:underline;
+}
+

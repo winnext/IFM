@@ -9,13 +9,12 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import { TabView, TabPanel } from "primereact/tabview";
-
 import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
 import "./FormGenerate.css";
-
-
+//**********
+import deneme from "../../services/deneme";
+//*************
 const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
 const Input = ({ value, onChange, type, ...rest }) => {
   const options2 = rest?.options?.map((item) => {
@@ -111,7 +110,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
   }
 };
 
-const FormGenerate = () => {
+const Dynamic = () => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
   const toast = React.useRef(null);
@@ -120,46 +119,69 @@ const FormGenerate = () => {
   const params = useParams();
   const searchParameters = new URLSearchParams(location.search);
   const nodeId = params.id;
-  const formType = searchParameters.get("formType");
+  const typeId = searchParameters.get("typeId");
+  // const typeName =searchParameters.get("typeName");
 
-  console.log(nodeId, formType);
+  // console.log(typeId, typeName);
 
   const history = useNavigate();
 
   useEffect(() => {
-    if (formType === "undefined" || formType === null || formType === "") {
+    // if (params.state) {
+    //   localStorage.setItem("nodeId", params.state.data._id.low);
+    //   localStorage.setItem("typeId", params.state.data.typeId);
+    //   localStorage.setItem("rootId", params.state.data.rootId);
+    // }
+    if (typeId === "undefined"||typeId === null||typeId === "") {
+      // console.log("typeId undefined");
       return setHasForm(false);
     }
-    FormBuilderService.getPropertiesWithName(formType)
-      .then((responsegetProperties) => {
-        console.log(responsegetProperties.data);
+    FormTypeService.nodeInfo(typeId)
+      .then(async (responsenodeInfo) => {
+        console.log(responsenodeInfo.data);
+        // const responsegetData = await deneme.getData(nodeId);
+        // console.log(responsegetData);
+        FormBuilderService.getPropertiesWithName(responsenodeInfo.data.properties.name)
+          .then((responsegetProperties) => {
+            console.log(responsegetProperties.data);
 
-        const convertedData = responsegetProperties.data.map(function (item) {
-          // console.log(formData[`'${item.label}'`]);
-          return {
-            ...item,
-            // defaultValue:
-            //   responsegetData.data.length > 0
-            //     ? responsegetData.data[0].data[item.label]
-            //       ? responsegetData.data[0].data[item.label]
-            //       : item.defaultValue
-            //     : item.defaultValue,
-            rules: { required: item.rules[0] },
-            options: item.options.map(function (option) {
-              return { optionsName: option };
-            }),
-          };
-        });
-        setItems(convertedData);
+            const convertedData = responsegetProperties.data.map(function (
+              item
+            ) {
+              // console.log(formData[`'${item.label}'`]);
+              return {
+                ...item,
+                // defaultValue:
+                //   responsegetData.data.length > 0
+                //     ? responsegetData.data[0].data[item.label]
+                //       ? responsegetData.data[0].data[item.label]
+                //       : item.defaultValue
+                //     : item.defaultValue,
+                rules: { required: item.rules[0] },
+                options: item.options.map(function (option) {
+                  return { optionsName: option };
+                }),
+              };
+            });
+            setItems(convertedData);
+          })
+          .catch((err) => {
+            return setHasForm(false);
+            toast.current.show({
+              severity: "error",
+              summary: "Error",
+              detail: err.responsegetProperties
+                ? err.responsegetProperties.data.message
+                : err.message,
+              life: 2000,
+            });
+          });
       })
       .catch((err) => {
-        return setHasForm(false);
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: err.responsegetProperties
-            ? err.responsegetProperties.data.message
-            : err.message,
+          detail: err.response ? err.response.data.message : err.message,
           life: 2000,
         });
       });
@@ -208,88 +230,74 @@ const FormGenerate = () => {
     history(`/facilitystructure`);
   };
 
-  return (
-    <div className="tabview-demo">
-      <div className="card">
-        <TabView>
-          <TabPanel header="Type Form">
-            <TabView>
-              <TabPanel header="Active Data">
-                <div>
-                  <Toast ref={toast} position="top-right" />
+  const formNotFound = () => {
+    return (
+      <>
+        <h1>test</h1>
+      </>
+    );
+  };
 
-                  {hasForm ? (
-                    <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
-                      {items &&
-                        Object.keys(items).map((e) => {
-                          console.log(items[e]);
-                          const { rules, defaultValue, label } = items[e];
-                          return (
-                            <section key={e}>
-                              <label className="mb-4">{label}</label>
-                              <Controller
-                                // name={label.replaceAll(" ", "")}
-                                name={label}
-                                control={control}
-                                rules={rules}
-                                defaultValue={defaultValue}
-                                render={({ field }) => (
-                                  <div>
-                                    <Input
-                                      value={field.value || ""}
-                                      onChange={field.onChange}
-                                      {...items[e]}
-                                    />
-                                  </div>
-                                )}
-                              />
-                              {errors[label] && (
-                                <Error>This field is required</Error>
-                              )}
-                            </section>
-                          );
-                        })}
+  formNotFound();
+
+  return (
+    <div>
+      <Toast ref={toast} position="top-right" />
+
+      {hasForm ? (
+        <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
+          {items &&
+            Object.keys(items).map((e) => {
+              console.log(items[e]);
+              const { rules, defaultValue, label } = items[e];
+              return (
+                <section key={e}>
+                  <label className="mb-4">{label}</label>
+                  <Controller
+                    // name={label.replaceAll(" ", "")}
+                    name={label}
+                    control={control}
+                    rules={rules}
+                    defaultValue={defaultValue}
+                    render={({ field }) => (
                       <div>
-                        {items.length > 0 && (
-                          <>
-                            <div className="mt-4">
-                              <Button className="ml-3" type="submit">
-                                Submit
-                              </Button>
-                              <Button
-                                className="ml-4"
-                                onClick={() => backPage()}
-                              >
-                                Back
-                              </Button>
-                            </div>
-                          </>
-                        )}
+                        <Input
+                          value={field.value || ""}
+                          onChange={field.onChange}
+                          {...items[e]}
+                        />
                       </div>
-                    </form>
-                  ) : (
-                    <div>
-                      <h4>There is no form for this structure.</h4>
-                      <Button className="" onClick={() => backPage()}>
-                        Back
-                      </Button>
-                    </div>
-                  )}
+                    )}
+                  />
+                  {errors[label] && <Error>This field is required</Error>}
+                </section>
+              );
+            })}
+          <div>
+            {items.length > 0 && (
+              <>
+                <div className="mt-4">
+                  <Button className="ml-3" type="submit">
+                    Submit
+                  </Button>
+                  <Button className="ml-4" onClick={() => backPage()}>
+                    Back
+                  </Button>
                 </div>
-              </TabPanel>
-              <TabPanel header="Passive Data"></TabPanel>
-            </TabView>
-          </TabPanel>
-          <TabPanel header="Extra Form">
-            <TabView>
-              <TabPanel header="Active Data"></TabPanel>
-              <TabPanel header="Passive Data"></TabPanel>
-            </TabView>
-          </TabPanel>
-        </TabView>
-      </div>
+              </>
+            )}
+          </div>
+        </form>
+      ) : (
+        <div>
+          <h4>There is no form for this structure.</h4>
+          <Button className="" onClick={() => backPage()}>
+            Back
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default FormGenerate;
+export default Dynamic;
