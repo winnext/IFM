@@ -1,8 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_URL2 + "type/properties/";
-// const url = "http://localhost:3002/";
-
+const url = process.env.REACT_APP_API_URL + "type/properties/";
 
 const findAll = async () => {
   return axios.get(url);
@@ -10,6 +8,10 @@ const findAll = async () => {
 
 const getProperties = async (id: string) => {
   return axios.get(url + id);
+};
+
+const getPropertiesWithName = async (name: string) => {
+  return axios.get(url + "active/" + "name/" + name);
 };
 
 const create = async (form: any) => {
@@ -27,7 +29,7 @@ const remove = async (id: string) => {
 
 
 
-const service = { findAll, getProperties, create, remove, update };
+const service = { findAll, getProperties, getPropertiesWithName, create, remove, update };
 
 export default service;
 

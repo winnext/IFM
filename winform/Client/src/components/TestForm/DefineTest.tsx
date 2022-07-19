@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import TestFormService from '../../services/testForm';
-import FormBuilderService from '../../services/formBuilder';
+import FormBuilderService from '../../services/formProperties';
 import { Dropdown } from 'primereact/dropdown';
 
 interface Params {

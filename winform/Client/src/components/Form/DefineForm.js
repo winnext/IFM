@@ -8,7 +8,7 @@ import { Calendar } from "primereact/calendar";
 import { RadioButton } from "primereact/radiobutton";
 import { Checkbox } from "primereact/checkbox";
 import { Dialog } from "primereact/dialog";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formProperties";
 
 const InputComponent = (props) => {
   console.log(props);

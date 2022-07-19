@@ -10,7 +10,7 @@ import { Calendar } from "primereact/calendar";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import FormTypeService from "../../services/formType";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formProperties";
 import "./FormGenerate.css";
 //**********
 import deneme from "../../services/deneme";

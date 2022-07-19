@@ -13,9 +13,18 @@ import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4
 @Injectable()
 export class AssetRepository implements GeciciInterface<Asset> {
   constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: NestKafkaService) {}
-  findByKey(key: string) {
-    throw new Error('Method not implemented.');
+ async findByKey(key: string) {
+    try {
+      const node = await this.neo4jService.findOneNodeByKey(key);
+      if (!node) {
+        throw new AssetNotFoundException(key);
+      }
+      return node;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
+  
 
   async findOneByRealm(label: string, realm: string) {
     let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);

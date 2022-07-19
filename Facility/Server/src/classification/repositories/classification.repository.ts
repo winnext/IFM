@@ -15,7 +15,7 @@ import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 's
 
 @Injectable()
 export class ClassificationRepository implements GeciciInterface<Classification> {
-  constructor(private readonly neo4jService: Neo4jService) {}
+  constructor(private readonly neo4jService: Neo4jService) { }
   findOneNodeById(id: string) {
     throw new Error('Method not implemented.');
   }
@@ -134,8 +134,8 @@ export class ClassificationRepository implements GeciciInterface<Classification>
       if (!node) {
         throw new ClassificationNotFountException(key);
       }
-      const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
-      return result;
+
+      return node;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

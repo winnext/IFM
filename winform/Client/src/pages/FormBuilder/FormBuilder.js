@@ -9,7 +9,7 @@ import { FileUpload } from "primereact/fileupload";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formProperties";
 import axios from "axios";
 import { Menu } from 'primereact/menu';
 import { useNavigate } from "react-router-dom";

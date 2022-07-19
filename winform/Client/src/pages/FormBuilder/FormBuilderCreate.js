@@ -13,7 +13,7 @@ import DropZone from './DropZone';
 import ITEMS from './Items';
 import ITEMS2 from './Items2';
 import FormGenerateDemo from '../FormGenerateDemo/FormGenerateDemo';
-import FormBuilderService from '../../services/formBuilder';
+import FormPropertiesService from '../../services/formProperties';
 
 function FormBuilderCreate() {
   const [items, setItems] = useState([]);
@@ -55,7 +55,7 @@ function FormBuilderCreate() {
   }, []);
 
   useEffect(() => {
-    FormBuilderService.getProperties(paramsId.id)
+    FormPropertiesService.getProperties(paramsId.id)
       .then((res) => {
         console.log(res.data);
 
@@ -220,7 +220,7 @@ function FormBuilderCreate() {
                         });
                       } else {
                         if (dataNeo4j.length > 0) {
-                          FormBuilderService.create(dataNeo4j)
+                          FormPropertiesService.create(dataNeo4j)
                             .then((res) => {
                               navigate('/formtree');
                             })

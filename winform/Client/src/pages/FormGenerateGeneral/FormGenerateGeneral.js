@@ -12,7 +12,7 @@ import { Toast } from "primereact/toast";
 import { TabView, TabPanel } from "primereact/tabview";
 
 import FormTypeService from "../../services/formType";
-import FormBuilderService from "../../services/formBuilder";
+import FormPropertiesService from "../../services/formProperties";
 import "./FormGenerateGeneral.css";
 
 
@@ -130,7 +130,7 @@ const FormGenerate = () => {
     if (formType === "undefined" || formType === null || formType === "") {
       return setHasForm(false);
     }
-    FormBuilderService.getPropertiesWithName(formType)
+    FormPropertiesService.getPropertiesWithName(formType)
       .then((responsegetProperties) => {
         console.log(responsegetProperties.data);
 

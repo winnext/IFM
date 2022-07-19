@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Dropdown } from "primereact/dropdown";
-import FormBuilderService from "../../services/formBuilder";
+import FormBuilderService from "../../services/formProperties";
 
 const FormType = () => {
   const [formData, setFormData] = useState([]);
