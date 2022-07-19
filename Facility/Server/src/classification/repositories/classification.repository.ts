@@ -15,10 +15,7 @@ import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 's
 
 @Injectable()
 export class ClassificationRepository implements GeciciInterface<Classification> {
-  constructor(private readonly neo4jService: Neo4jService) { }
-  findOneNodeById(id: string) {
-    throw new Error('Method not implemented.');
-  }
+  constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneById(id: string) {
     const tree = await this.neo4jService.findByIdWithTreeStructure(id);

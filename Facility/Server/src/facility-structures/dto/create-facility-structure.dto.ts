@@ -35,6 +35,4 @@ export class CreateFacilityStructureDto {
   @ApiProperty()
   @IsOptional()
   parentId?: string;
-
-
 }
