@@ -11,7 +11,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { TabView, TabPanel } from "primereact/tabview";
 
-import FormTypeService from "../../services/formType";
+// import FormTypeService from "../../services/formType";
 import FormPropertiesService from "../../services/formProperties";
 import "./FormGenerateGeneral.css";
 
@@ -111,7 +111,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
   }
 };
 
-const FormGenerate = () => {
+const FormGenerateGeneral = () => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
   const toast = React.useRef(null);
@@ -292,4 +292,4 @@ const FormGenerate = () => {
   );
 };
 
-export default FormGenerate;
+export default FormGenerateGeneral;
