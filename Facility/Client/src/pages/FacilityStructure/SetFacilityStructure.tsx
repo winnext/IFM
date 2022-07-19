@@ -35,6 +35,7 @@ interface Node {
   label?: string;
   labels?: string[]; // for form type
   parentId?: string;
+  className?: string;
 }
 
 interface FormNode {
@@ -655,10 +656,12 @@ const SetFacilityStructure = () => {
                   //   }
                   // }
                   // )} 
-                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?formType=${data.labels}`)}
+                  onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
+
+
                   title="Edit Form"
                 />
-                <Button
+                {/* <Button
                   icon="pi pi-book" className="p-button-rounded p-button-secondary p-button-text" aria-label="Edit Form"
                   // onClick={(e) => navigate(`/formgenerate/${data.key}?id=${data._id.low}`, 
                   // {
@@ -669,19 +672,10 @@ const SetFacilityStructure = () => {
                   // }
                   // )} 
                   onClick={(e) => console.log(data)}
-                  
+
                   title="Edit Form"
-                />
-                
-                {/* } */}
-
-                {/* <Button
-                  icon="pi pi-plus" className="p-button-rounded p-button-secondary p-button-text" aria-label="Delete"
-                  onClick={() => {
-                    console.log(data);
-
-                  }}
                 /> */}
+
               </span>
             </>
           }
