@@ -162,12 +162,12 @@ export class ContactRepository implements GeciciInterface<Contact> {
         throw new ContactNotFoundException(key);
       }
       const createdBy = await this.neo4jService.findByRelationWithRelation(
-        node['identity'].low,
+        node.id,
         'CREATED_BY',
         'leftToRight',
       );
       const classification = await this.neo4jService.findByRelationWithRelation(
-        node['identity'].low,
+        node.id,
         'CLASSIFICATION_OF',
         'rightToLeft',
       );
@@ -176,16 +176,16 @@ export class ContactRepository implements GeciciInterface<Contact> {
         createdBy['records'][0]['_fields'] &&
         createdBy['records'][0]['_fields'].length > 0
       ) {
-        node['properties']['createdByKey'] = createdBy['records'][0]['_fields'][0]['properties'].key;
+        node.properties['createdByKey'] = createdBy['records'][0]['_fields'][0]['properties'].key;
       }
       if (
         classification['records'][0] &&
         classification['records'][0]['_fields'] &&
         classification['records'][0]['_fields'].length > 0
       ) {
-        node['properties']['classificationKey'] = classification['records'][0]['_fields'][0]['properties'].key;
+        node.properties['classificationKey'] = classification['records'][0]['_fields'][0]['properties'].key;
       }
-      const result = { id: node['identity'].low, labels: node['labels'], properties: node['properties'] };
+      const result = { id: node.id, labels: node.labels, properties: node.properties };
       return result;
     } catch (error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
