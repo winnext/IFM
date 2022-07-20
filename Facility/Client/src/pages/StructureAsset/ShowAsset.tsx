@@ -13,7 +13,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useNavigate, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import * as url from 'url';
 
 import FacilityStructureService from "../../services/facilitystructure";
 import AssetService from "../../services/asset";
@@ -46,7 +45,7 @@ const ShowAsset = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Node[]>([]);
-  const [name, setName] = useState("");
+  const [nodeName, setNodeName] = useState("");
   const [assetKey, setAssetKey] = useState<any>(undefined);
   const [labels, setLabels] = useState<string[]>([]);
   const [tag, setTag] = useState<string[]>([]);
@@ -65,38 +64,34 @@ const ShowAsset = () => {
   // const nodeKey = searchParameters.get("nodeKey");
   // console.log(nodeKey);
   const searchParameters = new URLSearchParams(window.location.search);
-  
 
-  const getAssetList = async () => {
-    await AssetService.findOne(realm).then((res) => {
-      let temp = JSON.parse(JSON.stringify([res.data.root] || []));
-      const iconAssetNodes = (nodes: Node[]) => {
-        if (!nodes || nodes.length === 0) {
-          return;
-        }
-        for (let i of nodes) {
-          iconAssetNodes(i.children)
-          i.icon = "pi pi pi-cog";
-          i.label = i.name;
-        }
-      };
-      iconAssetNodes(temp);
 
-      setAssetData(temp);
-    });
-  };
 
-  useEffect(() => {
-    getAssetList();
-  }, []);
+  const getFacilityStructure = () => {
 
-  const getNodeInfoAndEdit = (selectedNodeKey: string) => {
-    FacilityStructureService.nodeInfo(selectedNodeKey)
+    const nodeKey: any = searchParameters.get("nodeKey");
+
+    FacilityStructureService.findAssets(nodeKey).then((res) => {
+      console.log(res.data);
+      setData(res.data);
+      setLoading(false);
+    }).catch(err => {
+      if (err.response.status === 500) {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Asset not found",
+          life: 3000,
+        });
+        setTimeout(() => {
+          navigate("/structure-asset")
+        }, 3000)
+      }
+    })
+
+    FacilityStructureService.nodeInfo(nodeKey)
       .then((res) => {
-        setName(res.data.properties.name || "");
-        setTag(res.data.properties.tag || []);
-        setIsActive(res.data.properties.isActive);
-        setAssetKey(res.data.properties.formTypeId);
+        setNodeName(res.data.properties.name + " Assets" || "");
       })
       .catch((err) => {
         toast.current.show({
@@ -106,65 +101,6 @@ const ShowAsset = () => {
           life: 2000,
         });
       });
-  }
-
-  const menu = [
-    {
-      label: "Add Asset",
-      icon: "pi pi-plus",
-      command: () => {
-        setAddDia(true);
-      },
-    },
-    {
-      label: "Show Assets",
-      icon: "pi pi-pencil",
-      command: () => {
-
-        navigate(`/formgenerate/${selectedNodeKey}?`)
-      },
-    },
-    // {
-    //   label: "Delete",
-    //   icon: "pi pi-trash",
-    //   command: () => {
-    //     setDelDia(true);
-    //   },
-    // },
-  ];
-
-
-  const getFacilityStructure = () => {
-
-    
-
-    const nodeKey: any= searchParameters.get("nodeKey");
-    FacilityStructureService.findAssets(nodeKey).then((res) => {
-
-      if (!res.data.root.children) {
-        setData([res.data.root.properties] || []);
-        let temp = JSON.parse(JSON.stringify([res.data.root.properties] || []));
-        setData(temp)
-      }
-      else if (res.data.root.children) {
-        setData([res.data.root] || []);
-        let temp = JSON.parse(JSON.stringify([res.data.root] || []));
-        setData(temp)
-      }
-      setLoading(false);
-    }).catch(err => {
-      if (err.response.status === 500) {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: "Facility Structure not found",
-          life: 3000,
-        });
-        setTimeout(() => {
-          navigate("/facility")
-        }, 3000)
-      }
-    })
   }
 
   useEffect(() => {
@@ -177,12 +113,11 @@ const ShowAsset = () => {
   return (
     <div className="container">
       <Toast ref={toast} position="top-right" />
-      <ContextMenu model={menu} ref={cm} />
-
 
       <div className="card">
-        <DataTable value={data} header="Assets" showGridlines responsiveLayout="scroll">
-          <Column field="name" header="Name"></Column>
+        <DataTable value={data} header={nodeName} showGridlines responsiveLayout="scroll">
+          <Column field="properties.name" header="Name"></Column>
+          <Column field="properties.createdAt" header="Created Time"></Column>
         </DataTable>
       </div>
 
