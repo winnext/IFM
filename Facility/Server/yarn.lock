@@ -8179,10 +8179,10 @@
   "resolved" "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   "version" "1.2.0"
 
-"sgnm-neo4j@^0.0.107":
-  "integrity" "sha512-m/6TjV1OY0Y1xfm4TethZWMptypB8GMYXsCulXIq04Y1yWi9R331lHF3eDlOfkolM4gVXlBNPipakHBYZiJZpQ=="
-  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.107.tgz"
-  "version" "0.0.107"
+"sgnm-neo4j@^0.0.109":
+  "integrity" "sha512-u25xhnryPn/jVpi71nd2AxHxuiuNR5Dw3X37Rptk1ovQgGW116pT4IfBpojwJbjRiZFPo/HtGYEHKUl28/0jMg=="
+  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.109.tgz"
+  "version" "0.0.109"
   dependencies:
     "@nestjs/common" "^8.4.5"
     "@nestjs/config" "^2.0.0"

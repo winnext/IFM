@@ -28,9 +28,9 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     let value;
     if (createFacilityStructureDto['labels']) {
       createFacilityStructureDto.labels.push('FacilityStructure');
-      value = await this.neo4jService.createNode(facilityStructureObject, createFacilityStructureDto['labels']);
+      value = await this.neo4jService.createNode(facilityStructureObject, createFacilityStructureDto.labels);
     } else {
-      value = await this.neo4jService.createNode(facilityStructureObject);
+      value = await this.neo4jService.createNode(facilityStructureObject, ['FacilityStructure']);
     }
     value['properties']['id'] = value['identity'].low;
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
