@@ -13,7 +13,7 @@ import { assignDtoPropToEntity, createDynamicCyperObject, CustomNeo4jError, Neo4
 @Injectable()
 export class AssetRepository implements GeciciInterface<Asset> {
   constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: NestKafkaService) {}
- async findByKey(key: string) {
+  async findByKey(key: string) {
     try {
       const node = await this.neo4jService.findOneNodeByKey(key);
       if (!node) {
@@ -24,7 +24,6 @@ export class AssetRepository implements GeciciInterface<Asset> {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
 
   async findOneByRealm(label: string, realm: string) {
     let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
@@ -41,14 +40,13 @@ export class AssetRepository implements GeciciInterface<Asset> {
     let value;
 
     if (createAssetDto['labels']) {
-      value = await this.neo4jService.createNode(assetObject, createAssetDto['labels']);
+      createAssetDto.labels.push('Asset');
+      value = await this.neo4jService.createNode(assetObject, createAssetDto.labels);
     } else {
-      value = await this.neo4jService.createNode(assetObject);
+      value = await this.neo4jService.createNode(assetObject, ['Asset']);
     }
     value['properties']['id'] = value['identity'].low;
     const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
-    console.log(result.id);
-    console.log(createAssetDto);
     if (createAssetDto['parentId']) {
       await this.neo4jService.addRelations(String(result['id']), createAssetDto['parentId']);
     }
