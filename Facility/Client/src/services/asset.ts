@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const url = process.env.REACT_APP_API_URL + "structure";
-const url2 = process.env.REACT_APP_API_URL + "structureAssetRelation/";
+const url = process.env.REACT_APP_API_URL3 + "asset";
 
 interface PaginationParams {
     page?: number;
@@ -12,16 +11,6 @@ interface PaginationParams {
 }
 
 interface StructureInterface {
-    key: string;
-    parentId?: string;
-    name: string;
-    tag: string[];
-    description?: string;
-    labels?: string[];
-    formTypeId?: string;
-}
-
-interface AssetInterface {
     assetKey: string;
 }
 
@@ -33,21 +22,11 @@ const findAll = async (query: PaginationParams) => {
 };
 
 const findOne = async (id: string) => {
-    return axios.get(url + "/FacilityStructure/" + id);
+    return axios.get(url + "/Asset/" + id);
 };
 
-const findAssets = async (key: string) => {
-    return axios.get(url2 + key);
-};
-
-const create = async (structure: StructureInterface) => {
-    return axios.post(url, structure);
-};
-
-const createAsset = async (key:string, asset: AssetInterface) => {
-    console.log(asset);
-    
-    return axios.post(url2 + key, asset);
+const create = async (key:string, structure: StructureInterface) => {
+    return axios.post(url + "/Asset/" + key, structure);
 };
 
 const update = async (id: string, structure: StructureInterface) => {
@@ -66,6 +45,6 @@ const nodeInfo = async (key: string) => {
     return axios.get(`${url}/${key}`);
 };
 
-const service = { findAll, findOne, findAssets, create, createAsset, update, remove, relation, nodeInfo };
+const service = { findAll, findOne, create, update, remove, relation, nodeInfo };
 
 export default service;
