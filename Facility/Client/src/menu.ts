@@ -9,6 +9,7 @@ export default [
       { label: 'Classifications', icon: 'pi pi-fw pi-align-left', to: '/classifications' },
       { label: 'Facility Structure', icon: 'pi pi-fw pi-building', to: '/facilitystructure' },
       { label: 'Contact', icon: 'pi pi-id-card', to: '/contact' },
+      { label: 'Structure-Asset', icon: 'pi pi-share-alt', to: '/structure-asset' },
     ],
   },
   // {
