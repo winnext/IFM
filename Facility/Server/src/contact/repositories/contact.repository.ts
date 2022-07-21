@@ -9,6 +9,7 @@ import { CreateContactDto } from '../dto/create-contact.dto';
 import { UpdateContactDto } from '../dto/update-contact.dto';
 import { ContactNotFoundException } from 'src/common/notFoundExceptions/not.found.exception';
 import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'sgnm-neo4j/dist';
+import { RelationDirection } from 'sgnm-neo4j/dist/constant/relation.direction.enum';
 
 @Injectable()
 export class ContactRepository implements GeciciInterface<Contact> {
@@ -76,7 +77,7 @@ export class ContactRepository implements GeciciInterface<Contact> {
       await this.neo4jService.updateLabel(_id, updateContactDto['labels']);
     }
     if (updateContactDto['createdById']) {
-      const result = await this.neo4jService.findByRelationWithRelation(_id, 'CREATED_BY', 'leftToRight');
+      const result = await this.neo4jService.findNodeAndRelationByRelationNameAndId(_id, 'CREATED_BY', RelationDirection.RIGHT);
       //if there is a "CREATED_BY" relation
       if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
         if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['createdById']) {
@@ -90,7 +91,7 @@ export class ContactRepository implements GeciciInterface<Contact> {
       }
     }
     if (updateContactDto['classificationId']) {
-      const result = await this.neo4jService.findByRelationWithRelation(_id, 'CLASSIFICATION_OF', 'rightToLeft');
+      const result = await this.neo4jService.findNodeAndRelationByRelationNameAndId(_id, 'CLASSIFICATION_OF', RelationDirection.LEFT);
       //if there is a "CLASSIFICATION_OF" relation
       if (result['records'][0] && result['records'][0]['_fields'] && result['records'][0]['_fields'].length > 0) {
         if (result['records'][0]['_fields'][0]['identity'].low != updateContactDto['classificationId']) {
@@ -161,15 +162,15 @@ export class ContactRepository implements GeciciInterface<Contact> {
       if (!node) {
         throw new ContactNotFoundException(key);
       }
-      const createdBy = await this.neo4jService.findByRelationWithRelation(
+      const createdBy = await this.neo4jService.findNodeAndRelationByRelationNameAndId(
         node.id,
         'CREATED_BY',
-        'leftToRight',
+        RelationDirection.RIGHT,
       );
-      const classification = await this.neo4jService.findByRelationWithRelation(
+      const classification = await this.neo4jService.findNodeAndRelationByRelationNameAndId(
         node.id,
         'CLASSIFICATION_OF',
-        'rightToLeft',
+        RelationDirection.LEFT,
       );
       if (
         createdBy['records'][0] &&
