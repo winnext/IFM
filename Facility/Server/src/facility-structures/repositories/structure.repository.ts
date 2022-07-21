@@ -131,14 +131,10 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
   }
 
   async findOneNodeByKey(key: string) {
-    try {
-      const node = await this.neo4jService.findOneNodeByKey(key);
-      if (!node) {
-        throw new FacilityStructureNotFountException(key);
-      }
-      return node;
-    } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    const node = await this.neo4jService.findOneNodeByKey(key);
+    if (!node) {
+      throw new FacilityStructureNotFountException(key);
     }
+    return node;
   }
 }

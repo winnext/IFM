@@ -5,13 +5,15 @@ import {
   RelationNotFountException,
 } from '../../common/notFoundExceptions/not.found.exception';
 import { FacilityStructure } from '../entities/facility-structure.entity';
-import { NestKafkaService, nodeHasChildException } from 'ifmcommon';
+import { NestKafkaService } from 'ifmcommon';
 import { VirtualNodeInterface } from 'src/common/interface/relation.node.interface';
 import { CreateAssetRelationDto } from '../dto/asset.relation.dto';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
-import { assignDtoPropToEntity, CustomNeo4jError, Neo4jService } from 'sgnm-neo4j/dist';
+import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
+import { RelationName } from 'src/common/const/relation.name.enum';
+import { StructureService } from '../services/structure.service';
 
 @Injectable()
 export class AssetRelationRepository implements VirtualNodeInterface<FacilityStructure> {
@@ -19,6 +21,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     private readonly neo4jService: Neo4jService,
     private readonly kafkaService: NestKafkaService,
     private readonly httpService: HttpService,
+    private readonly structureService: StructureService,
   ) {}
 
   async findOneNodeByKey(key: string) {
@@ -29,7 +32,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     }
 
     //find by key with specific relation name which node has that specific relations
-    const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, 'HAS');
+    const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS);
 
     if (relations.length === 0) {
       //throw new HttpException('hiç ilişkisi yok', 400);
@@ -60,7 +63,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
       throw new FacilityStructureNotFountException(key);
     }
 
-    const assetPromise = await this.httpService
+    const assetObservableObject = await this.httpService
       .get(`${process.env.ASSET_URL}/${createAssetRelationDto.referenceKey}`)
       .pipe(
         catchError(() => {
@@ -68,19 +71,26 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
         }),
       )
       .pipe(map((response) => response.data));
-    const asset = await firstValueFrom(assetPromise);
 
-    if (!asset) {
-      return 'asset not found';
+    const asset = await firstValueFrom(assetObservableObject);
+
+    //ilgili assetin başka bir structureda tanımlı olup olmadığını gösteren query
+    const virtualNodeCountInDbByReferenceKey = await this.checkSpecificVirtualNodeCountInDb(
+      createAssetRelationDto.referenceKey,
+      RelationName.HAS,
+    );
+
+    if (virtualNodeCountInDbByReferenceKey.length > 0) {
+      throw new HttpException('already has relation with other nodes', 400);
     }
 
-    const relationExist = await this.neo4jService.findNodeByKeysAndRelationName(
+    const relationExistanceBetweenVirtualNodeAndNodeByKey = await this.neo4jService.findNodeByKeysAndRelationName(
       key,
       createAssetRelationDto.referenceKey,
-      'HAS',
+      RelationName.HAS,
     );
-    console.log(relationExist);
-    if (relationExist.length > 0) {
+
+    if (relationExistanceBetweenVirtualNodeAndNodeByKey.length > 0) {
       throw new hasRelationException(key);
     }
     let virtualNode = new VirtualNode();
@@ -88,42 +98,95 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     virtualNode = assignDtoPropToEntity(virtualNode, createAssetRelationDto);
     const assetUrl = `${process.env.ASSET_URL}/${createAssetRelationDto.referenceKey}`;
 
-    virtualNode['url'] = assetUrl;
+    virtualNode.url = assetUrl;
     const value = await this.neo4jService.createNode(virtualNode, ['Virtual', 'Asset']);
 
-    //  value['properties']['id'] = value['identity'].low;
-    // const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
-    console.log(value.properties.key);
-    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, 'HAS');
-
-    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, 'HAS_VİRTUAL_RELATION');
+    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, RelationName.HAS);
+    await this.neo4jService.addRelationWithRelationNameByKey(
+      key,
+      value.properties.key,
+      RelationName.HAS_VIRTUAL_RELATION,
+    );
 
     const structureUrl = `${process.env.STRUCTURE_URL}/${node.properties.key}`;
-    const kafkaObject = { referenceKey: key, parentKey: createAssetRelationDto.referenceKey, url: structureUrl };
+    const kafkaObject = { referenceKey: key, key: createAssetRelationDto.referenceKey, url: structureUrl };
     await this.kafkaService.producerSendMessage('createStructureAssetRelation', JSON.stringify(kafkaObject));
 
-    return 'succes';
+    const response = { structure: node, asset: asset };
+
+    return response;
   }
 
-  async delete(_id: string) {
+  async delete(key: string, referenceKey: string) {
     try {
-      let deletedNode;
+      await this.structureService.findOneNode(key);
 
-      const hasChildren = await this.neo4jService.findChildrenById(_id);
-      if (hasChildren['records'].length == 0) {
-        deletedNode = await this.neo4jService.delete(_id);
-        if (!deletedNode) {
-          throw new FacilityStructureNotFountException(_id);
-        }
+      const assetObservableObject = await this.httpService
+        .get(`${process.env.ASSET_URL}/${referenceKey}`)
+        .pipe(
+          catchError(() => {
+            throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
+          }),
+        )
+        .pipe(map((response) => response.data));
+
+      const asset = await firstValueFrom(assetObservableObject);
+
+      //check 2 nodes has a relation
+      const relationExistanceBetweenVirtualNodeAndNodeByKey = await this.neo4jService.findNodeByKeysAndRelationName(
+        key,
+        referenceKey,
+        RelationName.HAS,
+      );
+
+      if (!relationExistanceBetweenVirtualNodeAndNodeByKey.length) {
+        throw new RelationNotFountException(key);
       }
-      return deletedNode;
+
+      const virtualAssetNode = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].properties;
+      if (virtualAssetNode.isDeleted) {
+        throw new RelationNotFountException(referenceKey);
+      }
+      const virtualNodeId = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].identity.low;
+      await this.deleteVirtualNode(virtualNodeId);
+
+      await this.kafkaService.producerSendMessage(
+        'deleteAssetFromStructure',
+        JSON.stringify({ referenceKey: key, key: referenceKey }),
+      );
+
+      return asset;
     } catch (error) {
-      const { code, message } = error.response;
-      if (code === CustomNeo4jError.HAS_CHILDREN) {
-        nodeHasChildException(_id);
+      console.log(error);
+      if (error.response?.code) {
       } else {
-        throw new HttpException(message, code);
+        throw new HttpException(error.response, error.status);
       }
+    }
+  }
+
+  //-----------------------------------------------Will Add to sgnm-neo4j library----------------
+
+  async checkSpecificVirtualNodeCountInDb(referenceKey: string, relationName: string) {
+    try {
+      const node = await this.neo4jService.read(
+        `match(p) match (c {referenceKey:$referenceKey,isDeleted:false}) match (p)-[:${relationName}]->(c) return c`,
+        { referenceKey },
+      );
+      return node.records;
+    } catch (error) {
+      throw new HttpException(error, 500);
+    }
+  }
+
+  async deleteVirtualNode(id: number) {
+    try {
+      const node = await this.neo4jService.write(`match (n:Virtual ) where id(n)=$id set n.isDeleted=true return n`, {
+        id,
+      });
+      return node.records[0]['_fields'][0];
+    } catch (error) {
+      throw new HttpException(error, 500);
     }
   }
 }

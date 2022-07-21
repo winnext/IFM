@@ -12,8 +12,8 @@ export class AssetRelationService {
   async create(id: string, createAssetRelationDto: CreateAssetRelationDto) {
     return await this.AssetRelationsRepository.create(id, createAssetRelationDto);
   }
-  remove(id: string) {
-    return this.AssetRelationsRepository.delete(id);
+  remove(key: string, referenceKey: string) {
+    return this.AssetRelationsRepository.delete(key, referenceKey);
   }
 
   async findOneNode(key: string) {
