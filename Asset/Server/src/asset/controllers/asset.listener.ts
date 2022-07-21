@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, HttpException } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { Unprotected } from 'nest-keycloak-connect';
 import { catchError, firstValueFrom, map } from 'rxjs';
