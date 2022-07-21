@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, HttpException } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { Unprotected } from 'nest-keycloak-connect';
 import { catchError, firstValueFrom, map } from 'rxjs';
@@ -122,6 +122,6 @@ export class AssetListenerController {
     const virtualNodeId = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].identity.low;
     console.log(relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].identity.low);
 
-    await this.neo4jService.write(`match (n:Virtual ) where id(n)=${virtualNodeId} set n.isDeleted=true return n`);
+    await this.neo4jService.deleteVirtualNode(virtualNodeId);
   }
 }

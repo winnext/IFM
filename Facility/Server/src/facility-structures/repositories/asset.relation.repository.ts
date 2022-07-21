@@ -76,7 +76,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     const asset = await firstValueFrom(assetObservableObject);
 
     //ilgili assetin başka bir structureda tanımlı olup olmadığını gösteren query
-    const virtualNodeCountInDbByReferenceKey = await this.checkSpecificVirtualNodeCountInDb(
+    const virtualNodeCountInDbByReferenceKey = await this.neo4jService.checkSpecificVirtualNodeCountInDb(
       createAssetRelationDto.referenceKey,
       RelationName.HAS,
     );
@@ -149,7 +149,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
         throw new RelationNotFountException(referenceKey);
       }
       const virtualNodeId = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].identity.low;
-      await this.deleteVirtualNode(virtualNodeId);
+      await this.neo4jService.deleteVirtualNode(virtualNodeId);
 
       await this.kafkaService.producerSendMessage(
         'deleteAssetFromStructure',
@@ -167,27 +167,4 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
   }
 
   //-----------------------------------------------Will Add to sgnm-neo4j library----------------
-
-  async checkSpecificVirtualNodeCountInDb(referenceKey: string, relationName: string) {
-    try {
-      const node = await this.neo4jService.read(
-        `match(p) match (c {referenceKey:$referenceKey,isDeleted:false}) match (p)-[:${relationName}]->(c) return c`,
-        { referenceKey },
-      );
-      return node.records;
-    } catch (error) {
-      throw new HttpException(error, 500);
-    }
-  }
-
-  async deleteVirtualNode(id: number) {
-    try {
-      const node = await this.neo4jService.write(`match (n:Virtual ) where id(n)=$id set n.isDeleted=true return n`, {
-        id,
-      });
-      return node.records[0]['_fields'][0];
-    } catch (error) {
-      throw new HttpException(error, 500);
-    }
-  }
 }
