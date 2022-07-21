@@ -17,6 +17,7 @@ import FormTypeService from "../../services/formType";
 import { useAppSelector } from "../../app/hook";
 
 import axios from "axios";
+import FormGenerate from "../FormGenerate/FormGenerate";
 
 interface Node {
   cantDeleted: boolean;
@@ -78,6 +79,7 @@ const SetFacilityStructure = () => {
   const [addDia, setAddDia] = useState(false);
   const [editDia, setEditDia] = useState(false);
   const [delDia, setDelDia] = useState<boolean>(false);
+  const [formDia, setFormDia] = useState<boolean>(false);
   const toast = React.useRef<any>(null);
   const cm: any = React.useRef(null);
   const navigate = useNavigate()
@@ -515,6 +517,27 @@ const SetFacilityStructure = () => {
     );
   };
 
+  const renderFooterForm = () => {
+    return (
+      <div>
+        <Button
+          label="Cancel"
+          icon="pi pi-times"
+          onClick={() => {
+            setFormDia(false);
+          }}
+          className="p-button-text"
+        />
+        <Button
+          label="Save"
+          icon="pi pi-check"
+          onClick={() => editItem(selectedNodeKey)}
+          autoFocus
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="container">
       <Toast ref={toast} position="top-right" />
@@ -638,6 +661,22 @@ const SetFacilityStructure = () => {
           <Checkbox className="ml-3" onChange={e => setIsActive(e.checked)} checked={isActive}></Checkbox>
         </div>
       </Dialog>
+
+      <Dialog
+        header="Form"
+        visible={formDia}
+        style={{ width: "25vw" }}
+        footer={renderFooterForm}
+        onHide={() => {
+         
+          setFormDia(false);
+        }}
+      >
+        <FormGenerate />
+        
+        
+        
+      </Dialog>
       <h1>Edit Facility Structure</h1>
       <div className="field">
         <Tree
@@ -710,7 +749,8 @@ const SetFacilityStructure = () => {
                   // }
                   // )} 
                   // onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
-                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.formTypeId}`)}
+                  // onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.formTypeId}`)}
+                  onClick={()=>setFormDia(true)}
 
 
                   title="Edit Form"
