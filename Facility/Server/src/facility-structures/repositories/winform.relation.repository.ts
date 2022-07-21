@@ -5,16 +5,15 @@ import {
   RelationNotFountException,
 } from '../../common/notFoundExceptions/not.found.exception';
 import { FacilityStructure } from '../entities/facility-structure.entity';
-import { NestKafkaService, nodeHasChildException } from 'ifmcommon';
+import { NestKafkaService } from 'ifmcommon';
 import { VirtualNodeInterface } from 'src/common/interface/relation.node.interface';
 
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
-import { assignDtoPropToEntity, CustomNeo4jError, Neo4jService } from 'sgnm-neo4j/dist';
+import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
 import { CreateWinformRelationDto } from '../dto/winform.relation.dto';
-import { RelationDirection } from 'sgnm-neo4j/dist/constant/relation.direction.enum';
-import { WinformRelationService } from '../services/winform.relation.service';
+
 import { RelationName } from 'src/common/const/relation.name.enum';
 
 @Injectable()
@@ -35,7 +34,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
     //find by key with specific relation name which node has that specific relations
     const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, 'HAS_FORM');
 
-    if (relations.length === 0) {
+    if (!relations || relations.length === 0) {
       //throw new HttpException('hiç ilişkisi yok', 400);
       throw new RelationNotFountException(key);
     }

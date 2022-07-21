@@ -33,8 +33,9 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
 
     //find by key with specific relation name which node has that specific relations
     const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS);
+    console.log(relations);
 
-    if (relations.length === 0) {
+    if (!relations || relations.length === 0) {
       //throw new HttpException('hiç ilişkisi yok', 400);
       throw new RelationNotFountException(key);
     }
@@ -109,7 +110,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     );
 
     const structureUrl = `${process.env.STRUCTURE_URL}/${node.properties.key}`;
-    const kafkaObject = { referenceKey: key, key: createAssetRelationDto.referenceKey, url: structureUrl };
+    const kafkaObject = { referenceKey: key, parentKey: createAssetRelationDto.referenceKey, url: structureUrl };
     await this.kafkaService.producerSendMessage('createStructureAssetRelation', JSON.stringify(kafkaObject));
 
     const response = { structure: node, asset: asset };

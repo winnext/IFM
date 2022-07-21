@@ -36,10 +36,10 @@ export class AssetListenerController {
   }
   @EventPattern('createStructureAssetRelation')
   async createAssetListener(@Payload() message) {
-    if (!message.value?.referenceKey || !message.value?.key) {
+    if (!message.value?.referenceKey || !message.value?.parentKey) {
       throw new HttpException('key is not available on kafka object', 400);
     }
-    const asset = await this.assetService.findOneNode(message.value?.key);
+    const asset = await this.assetService.findOneNode(message.value?.parentKey);
     //check if facilityStructure exist
     const structurePromise = await this.httpService
       .get(`${process.env.STRUCTURE_URL}/${message.value?.referenceKey}`)
