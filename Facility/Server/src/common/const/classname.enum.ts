@@ -4,5 +4,5 @@
 export enum ClassNames {
   CL = 'Classification',
   FS = 'FacilityStructure',
-  FC = 'Facility'
+  FC = 'Facility',
 }
