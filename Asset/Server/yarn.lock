@@ -8179,10 +8179,17 @@
   "resolved" "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz"
   "version" "1.2.0"
 
+<<<<<<< HEAD
 "sgnm-neo4j@^0.0.109":
   "integrity" "sha512-u25xhnryPn/jVpi71nd2AxHxuiuNR5Dw3X37Rptk1ovQgGW116pT4IfBpojwJbjRiZFPo/HtGYEHKUl28/0jMg=="
   "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.109.tgz"
   "version" "0.0.109"
+=======
+"sgnm-neo4j@^0.0.104":
+  "integrity" "sha512-J5V3LYirxZjKW69nEtd8HtntAE0hqu8gclmhI9CJFfUNIzWhwqOlvANMl+cPTehLQpRn+2t544zC5GHs0yjESQ=="
+  "resolved" "https://registry.npmjs.org/sgnm-neo4j/-/sgnm-neo4j-0.0.104.tgz"
+  "version" "0.0.104"
+>>>>>>> atamer
   dependencies:
     "@nestjs/common" "^8.4.5"
     "@nestjs/config" "^2.0.0"
