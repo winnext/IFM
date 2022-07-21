@@ -24,10 +24,10 @@ export class WinformRelationController {
     return this.structureRelationService.create(key, createWinformRelationDto);
   }
 
-  @Delete(':id')
+  @Delete('/:key/:referenceKey')
   @Unprotected()
-  remove(@Param('id') id: string) {
-    return this.structureRelationService.remove(id);
+  remove(@Param('key') key: string, @Param('referenceKey') referenceKey: string) {
+    return this.structureRelationService.remove(key, referenceKey);
   }
 
   @Unprotected()

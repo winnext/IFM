@@ -12,8 +12,8 @@ export class WinformRelationService {
   async create(id: string, createWinformRelationDto: CreateWinformRelationDto) {
     return await this.WinformRelationsRepository.create(id, createWinformRelationDto);
   }
-  remove(id: string) {
-    return this.WinformRelationsRepository.delete(id);
+  remove(key: string, referenceKey) {
+    return this.WinformRelationsRepository.delete(key, referenceKey);
   }
 
   async findOneNode(key: string) {
