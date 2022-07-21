@@ -16,6 +16,8 @@ import FacilityStructureService from "../../services/facilitystructure";
 import FormTypeService from "../../services/formType";
 import { useAppSelector } from "../../app/hook";
 
+import axios from "axios";
+
 interface Node {
   cantDeleted: boolean;
   children: Node[];
@@ -109,8 +111,36 @@ const SetFacilityStructure = () => {
     });
   };
 
+  function handleClick() {
+
+  const headers = {
+    'api-key': '<API_KEY>',
+    'Access-Control-Allow-Origin': true,
+  }
+  
+  const data = {
+    to: '<TO_NUMBER>',
+    sender: '<FROM_NUMBER>',
+    body: '<MESSAGE>',
+    type: 'OTP',
+  }
+  
+  axios.post('http://localhost:3001/formgenerate', data, {
+    headers: headers
+  })
+  .then((response) => {
+    console.log() 
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+
+  }
+
   useEffect(() => {
     getForms();
+    handleClick();
+
   }, []);
 
   const getNodeInfoAndEdit = (selectedNodeKey: string) => {
@@ -239,6 +269,28 @@ const SetFacilityStructure = () => {
               detail: "Structure Created",
               life: 3000,
             });
+            let newForm: any = {};
+            newForm = {
+              referenceKey: formTypeId,
+            };
+            FacilityStructureService.createForm(res.data.properties.key, newForm)
+              .then((res) => {
+                toast.current.show({
+                  severity: "success",
+                  summary: "Successful",
+                  detail: "Structure Created",
+                  life: 3000,
+                });
+                getFacilityStructure();
+              })
+              .catch((err) => {
+                toast.current.show({
+                  severity: "error",
+                  summary: "Error",
+                  detail: err.response ? err.response.data.message : err.message,
+                  life: 2000,
+                });
+              });
             getFacilityStructure();
           })
           .catch((err) => {
@@ -249,6 +301,7 @@ const SetFacilityStructure = () => {
               life: 2000,
             });
           });
+
       })
       .catch((err) => {
         toast.current.show({

@@ -2,6 +2,7 @@ import axios from "axios";
 
 const url = process.env.REACT_APP_API_URL + "structure";
 const url2 = process.env.REACT_APP_API_URL + "structureAssetRelation/";
+const url3 = process.env.REACT_APP_API_URL + "structureWinformRelation/";
 
 interface PaginationParams {
     page?: number;
@@ -25,6 +26,10 @@ interface AssetInterface {
     assetKey: string;
 }
 
+interface FormInterface {
+    formKey: string;
+}
+
 const findAll = async (query: PaginationParams) => {
     return axios.get(
         url +
@@ -45,9 +50,13 @@ const create = async (structure: StructureInterface) => {
 };
 
 const createAsset = async (key:string, asset: AssetInterface) => {
-    console.log(asset);
     
     return axios.post(url2 + key, asset);
+};
+
+const createForm = async (key:string, form: FormInterface) => {
+
+    return axios.post(url3 + key, form);
 };
 
 const update = async (id: string, structure: StructureInterface) => {
@@ -66,6 +75,6 @@ const nodeInfo = async (key: string) => {
     return axios.get(`${url}/${key}`);
 };
 
-const service = { findAll, findOne, findAssets, create, createAsset, update, remove, relation, nodeInfo };
+const service = { findAll, findOne, findAssets, create, createAsset, createForm, update, remove, relation, nodeInfo };
 
 export default service;
