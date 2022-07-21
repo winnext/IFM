@@ -23,7 +23,6 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
     private readonly neo4jService: Neo4jService,
     private readonly kafkaService: NestKafkaService,
     private readonly httpService: HttpService,
-    private readonly winformService: WinformRelationService,
   ) {}
 
   async findOneNodeByKey(key: string) {
@@ -103,8 +102,6 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
 
   async delete(key: string, referenceKey) {
     try {
-      await this.winformService.findOneNode(key);
-
       const assetObservableObject = await this.httpService
         .get(`${process.env.ASSET_URL}/${referenceKey}`)
         .pipe(
