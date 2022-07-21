@@ -15,7 +15,6 @@ import { LoggerModule } from './trace_logger/trace.logger.module';
 import { OpenTelemetryModuleConfig } from './common/configs/opentelemetry.options';
 //import { Neo4jModule } from 'sgnm-neo4j';
 import { i18nOptions } from './common/configs/i18n.options';
-import { RoomModule } from './rooms/room.module';
 import { KeycloakModule } from './common/keycloak/keycloak.module';
 import { ClassificationModule } from './classification/classification.module';
 import { HttpCacheInterceptor, KafkaModule } from 'ifmcommon';
@@ -90,17 +89,6 @@ import { Neo4jModule } from 'sgnm-neo4j/dist';
       }),
     }),
 
-    MongooseModule.forRootAsync({
-      connectionName: ConnectionEnums.ROOM,
-      useFactory: (config: ConfigService) => ({
-        uri: config.get('DATABASE_LINK'),
-        dbName: config.get('ROOM_DB_NAME'),
-        user: config.get('DB_USER'),
-        pass: config.get('DB_PASS'),
-      }),
-      inject: [ConfigService],
-    }),
-
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -115,8 +103,6 @@ import { Neo4jModule } from 'sgnm-neo4j/dist';
     StructureModule,
 
     HistoryModule,
-
-    RoomModule,
 
     ClassificationModule,
 

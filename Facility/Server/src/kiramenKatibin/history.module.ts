@@ -14,10 +14,6 @@ import { FacilityStructureHistoryController } from './controllers/facility.struc
 import { ClassificationHistoryService } from './services/classification.history.service';
 import { FacilityHistoryService } from './services/facility.history.service';
 import { FacilityStructureHistoryService } from './services/facilitystructure.history.service';
-import { RoomHistory, RoomHistorySchema } from './entities/room.history.entity';
-import { RoomHistoryService } from './services/room.history.service';
-import { RoomHistoryRepository } from './repositories/room.history.repository';
-import { RoomHistoryController } from './controllers/room.history.controller';
 
 @Module({
   imports: [
@@ -44,27 +40,13 @@ import { RoomHistoryController } from './controllers/room.history.controller';
       ],
       ConnectionEnums.CLASSIFICATION,
     ),
-    MongooseModule.forFeature(
-      [
-        {
-          name: RoomHistory.name,
-          schema: RoomHistorySchema,
-        },
-      ],
-      ConnectionEnums.ROOM,
-    ),
   ],
-  controllers: [
-    FacilityHistoryController,
-    ClassificationHistoryController,
-    FacilityStructureHistoryController,
-    RoomHistoryController,
-  ],
+  controllers: [FacilityHistoryController, ClassificationHistoryController, FacilityStructureHistoryController],
   providers: [
     FacilityHistoryService,
     ClassificationHistoryService,
     FacilityStructureHistoryService,
-    RoomHistoryService,
+
     {
       provide: RepositoryEnums.FACILITY_HISTORY,
       useClass: FacilityHistoryRepository,
@@ -77,11 +59,7 @@ import { RoomHistoryController } from './controllers/room.history.controller';
       provide: RepositoryEnums.FACILITY_STRUCTURE_HISTORY,
       useClass: FacilityStructureHistoryRepository,
     },
-    {
-      provide: RepositoryEnums.ROOM_HISTORY,
-      useClass: RoomHistoryRepository,
-    },
   ],
-  exports: [FacilityHistoryService, ClassificationHistoryService, FacilityStructureHistoryService, RoomHistoryService],
+  exports: [FacilityHistoryService, ClassificationHistoryService, FacilityStructureHistoryService],
 })
 export class HistoryModule {}
