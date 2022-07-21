@@ -111,35 +111,35 @@ const SetFacilityStructure = () => {
     });
   };
 
-  function handleClick() {
+  // function handleClick() {
 
-  const headers = {
-    'api-key': '<API_KEY>',
-    'Access-Control-Allow-Origin': true,
-  }
-  
-  const data = {
-    to: '<TO_NUMBER>',
-    sender: '<FROM_NUMBER>',
-    body: '<MESSAGE>',
-    type: 'OTP',
-  }
-  
-  axios.post('http://localhost:3001/formgenerate', data, {
-    headers: headers
-  })
-  .then((response) => {
-    console.log() 
-  })
-  .catch((error) => {
-    console.log(error)
-  })
+  //   const headers = {
+  //     'api-key': '<API_KEY>',
+  //     'Access-Control-Allow-Origin': true,
+  //   }
 
-  }
+  //   const data = {
+  //     to: '<TO_NUMBER>',
+  //     sender: '<FROM_NUMBER>',
+  //     body: '<MESSAGE>',
+  //     type: 'OTP',
+  //   }
+
+  //   axios.post('http://localhost:3001/formgenerate', data, {
+  //     headers: headers
+  //   })
+  //     .then((response) => {
+  //       console.log()
+  //     })
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+
+  // }
 
   useEffect(() => {
     getForms();
-    handleClick();
+    // handleClick();
 
   }, []);
 
@@ -709,7 +709,8 @@ const SetFacilityStructure = () => {
                   //   }
                   // }
                   // )} 
-                  onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
+                  // onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
+                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.formTypeId}`)}
 
 
                   title="Edit Form"
