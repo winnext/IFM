@@ -1511,4 +1511,81 @@ async findByRealm(
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////// sonra npm deki lirary ye eklenecek /////////////////////
+  async findByKeyAndLabelsWithActiveChildNodes(
+    key: string,
+    label1: string,
+    label2: string,
+    orderbyprop?: string,
+    orderbytype?: string
+  ) {
+    try {
+      if (!key || !label1 || !label2) {
+        throw new HttpException(
+          find_by_id_and_labels_with_active_child_nodes__must_entered_error,
+          400
+        );
+      }
+      const node = await this.findByKey(key);
+      if (!node) {
+        throw new HttpException(
+          find_by_id_and_labels_with_active_child_nodes__not_found_error,
+          404
+        );
+      }
+      
+      let cypher = "";
+      if (orderbyprop) {
+        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: true})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive: true}) where c.key=$key return n order by n.${orderbyprop} ${orderbytype}`;
+      } else {
+        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: true})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive: true}) where c.key=$key return n`;
+      }
+      const result = await this.read(cypher, { key });
+
+      if (!result["records"].length) {
+        throw new HttpException(
+          find_by_id_and_labels_with_active_child_node__not_found_error,
+          404
+        );
+      }
+      return result["records"];
+    } catch (error) {
+      if (error.response?.code) {
+        throw new HttpException(
+          { message: error.response?.message, code: error.response?.code },
+          error.status
+        );
+      } else {
+        throw newError(error, "500");
+      }
+    }
+  }
+  async findByKey(key: string, databaseOrTransaction?: string | Transaction) {
+    try {
+      if (!key) {
+        throw new HttpException(find_by_id__must_entered_error, 400);
+      }
+   
+
+      const cypher =
+        "MATCH (n {isDeleted: false}) where n.key = $key return n";
+
+      const result = await this.read(cypher, { key });
+      if (!result["records"].length) {
+        throw new HttpException(node_not_found, 404);
+      }
+      return result["records"][0]["_fields"][0];
+    } catch (error) {
+      if (error.response?.code) {
+        throw new HttpException(
+          { message: error.response?.message, code: error.response?.code },
+          error.status
+        );
+      } else {
+        throw newError(error, "500");
+      }
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////
 }

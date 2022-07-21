@@ -1,6 +1,3 @@
-
-
-
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
 import { Type } from '../entities/type.entity';
 import { TypeNotFountException } from 'src/common/notFoundExceptions/not.found.Exceptions';
@@ -12,13 +9,13 @@ import { TypeProperty } from '../entities/type.property.entity';
 import { CreateTypePropertyDto } from '../dtos/create.type.property.dto';
 import { UpdateTypeDto } from '../dtos/update.type.dto';
 import { assignDtoPropToEntity, Neo4jService } from 'src/sgnm-neo4j/src';
-import { Neo4jService as LibrayNeo4jService} from 'sgnm-neo4j';
+
 //import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
 
 
 @Injectable()
 export class TypeRepository implements GeciciTypeInterface {
-  constructor(private readonly neo4jService: Neo4jService, private readonly librayNeo4jService: LibrayNeo4jService ) {}
+  constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneById(id: string) {
     return null;
@@ -619,7 +616,7 @@ export class TypeRepository implements GeciciTypeInterface {
   
   async findTypeActivePropertiesByNodeKey(key: string) {
     
-    const nodeType = await this.librayNeo4jService.findByKeyAndLabelsWithActiveChildNodes(key, "ChildNode" , "Type"); 
+    const nodeType = await this.neo4jService.findByKeyAndLabelsWithActiveChildNodes(key, "ChildNode" , "Type"); 
     
     if (nodeType && nodeType[0]) {
        const type_node_id = nodeType[0]['_fields'][0]["identity"]["low"];
