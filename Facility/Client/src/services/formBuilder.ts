@@ -16,6 +16,10 @@ const getPropertiesWithName = async (name: string) => {
   return axios.get(url + "name/" + name);
 };
 
+const getPropertiesWithKey = async (name: string) => {
+  return axios.get(url + "name/" + name);
+};
+
 const create = async (form: any) => {
   return axios.post(url, form);
 };
