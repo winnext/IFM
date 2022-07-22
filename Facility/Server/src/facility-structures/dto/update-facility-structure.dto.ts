@@ -16,4 +16,8 @@ export class UpdateFacilityStructureDto extends OmitType(CreateFacilityStructure
 
   @IsOptional()
   updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
+
+  @ApiProperty()
+  @IsOptional()
+  parentId: string;
 }
