@@ -326,7 +326,6 @@ const SetFacilityStructure = () => {
       .then((res) => {
         if (labels.length > 0) {
           updateNode = {
-            key: uuidv4(),
             name: name,
             tag: tag,
             isActive: isActive,
@@ -336,7 +335,6 @@ const SetFacilityStructure = () => {
           };
         } else {
           updateNode = {
-            key: uuidv4(),
             name: name,
             tag: tag,
             isActive: isActive,
@@ -344,6 +342,8 @@ const SetFacilityStructure = () => {
             formTypeId: formTypeId,
           }
         }
+        console.log(updateNode);
+        
 
         FacilityStructureService.update(res.data.id, updateNode)
           .then((res) => {
@@ -749,8 +749,10 @@ const SetFacilityStructure = () => {
                   // }
                   // )} 
                   // onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
-                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.formTypeId}`)}
-                  // onClick={()=>setFormDia(true)}
+                  // onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeKey=${data.formTypeId}`)}
+                  onClick={()=>{
+                    setFormDia(true)
+                  }}
 
 
                   title="Edit Form"
