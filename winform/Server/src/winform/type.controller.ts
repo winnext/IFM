@@ -83,7 +83,7 @@ export class TypeController {
   }
 
   @Unprotected()
-  @Get('/properties/active/nodes:key')
+  @Get('/properties/active/nodes/:key')
   @NoCache()
   findTypeActivePropertiesByNodeKey(@Param('key') key: string)  {
     return this.typeService.findTypeActivePropertiesByNodeKey(key);
