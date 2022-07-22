@@ -120,7 +120,7 @@ const FormGenerate = () => {
   const params = useParams();
   const searchParameters = new URLSearchParams(location.search);
   const nodeId = params.id;
-  const formType = searchParameters.get("formType");
+  const formType = searchParameters.get("typeId");
 
   console.log(nodeId, formType);
 

@@ -749,8 +749,8 @@ const SetFacilityStructure = () => {
                   // }
                   // )} 
                   // onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
-                  // onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.formTypeId}`)}
-                  onClick={()=>setFormDia(true)}
+                  onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeId=${data.formTypeId}`)}
+                  // onClick={()=>setFormDia(true)}
 
 
                   title="Edit Form"
