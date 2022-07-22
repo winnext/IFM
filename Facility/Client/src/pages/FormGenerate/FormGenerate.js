@@ -120,17 +120,17 @@ const FormGenerate = () => {
   const params = useParams();
   const searchParameters = new URLSearchParams(location.search);
   const nodeId = params.id;
-  const formType = searchParameters.get("typeId");
+  const typeKey = searchParameters.get("typeKey");
 
-  console.log(nodeId, formType);
+  console.log(nodeId, typeKey);
 
   const history = useNavigate();
 
   useEffect(() => {
-    if (formType === "undefined" || formType === null || formType === "") {
+    if (typeKey === "undefined" || typeKey === null || typeKey === "") {
       return setHasForm(false);
     }
-    FormBuilderService.getPropertiesWithName(formType)
+    FormBuilderService.getPropertiesWithKey(typeKey)
       .then((responsegetProperties) => {
         console.log(responsegetProperties.data);
 
