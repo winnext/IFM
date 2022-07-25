@@ -6,4 +6,6 @@ export enum Neo4jLabelEnum {
   CLASSIFICATION = 'Classification',
   ROOT = 'Root',
   ASSET = 'Asset',
+  VIRTUAL = 'Virtual',
+  WINFORM = 'Winform'
 }

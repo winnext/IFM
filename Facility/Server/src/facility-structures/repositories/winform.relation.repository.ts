@@ -15,6 +15,7 @@ import { VirtualNode } from 'src/common/baseobject/virtual.node';
 import { CreateWinformRelationDto } from '../dto/winform.relation.dto';
 
 import { RelationName } from 'src/common/const/relation.name.enum';
+import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 
 @Injectable()
 export class WinformRelationRepository implements VirtualNodeInterface<FacilityStructure> {
@@ -32,7 +33,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
     }
 
     //find by key with specific relation name which node has that specific relations
-    const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, 'HAS_FORM');
+    const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS_FORM);
 
     if (!relations || relations.length === 0) {
       //throw new HttpException('hiç ilişkisi yok', 400);
@@ -59,7 +60,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
       throw new FacilityStructureNotFountException(key);
     }
 
-    await this.httpService
+    const winformObservableObject = await this.httpService
       .get(`${process.env.WINFORM_URL}/${createWinformRelationDto.referenceKey}`)
       .pipe(
         catchError(() => {
@@ -67,14 +68,24 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
         }),
       )
       .pipe(map((response) => response.data));
+      
+      const winform = await firstValueFrom(winformObservableObject);
 
-    const relationExist = await this.neo4jService.findNodeByKeysAndRelationName(
+      //ilgili formun başka bir structureda tanımlı olup olmadığını gösteren query
+      // const virtualNodeCountInDbByReferenceKey = await this.neo4jService.checkSpecificVirtualNodeCountInDb(
+      //   createWinformRelationDto.referenceKey,
+      // RelationName.HAS_FORM,
+      // );
+      // if (virtualNodeCountInDbByReferenceKey.length > 0) {
+      // throw new HttpException('already has relation with other nodes', 400);
+      // }
+
+    const relationExistanceBetweenVirtualNodeAndNodeByKey = await this.neo4jService.findNodeByKeysAndRelationName(
       key,
       createWinformRelationDto.referenceKey,
-      'HAS',
+      RelationName.HAS_FORM,
     );
-    console.log(relationExist);
-    if (relationExist.length > 0) {
+    if (relationExistanceBetweenVirtualNodeAndNodeByKey.length > 0) {
       throw new hasRelationException(key);
     }
     let virtualNode = new VirtualNode();
@@ -83,20 +94,19 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
     const winformUrl = `${process.env.WINFORM_URL}/${createWinformRelationDto.referenceKey}`;
 
     virtualNode['url'] = winformUrl;
-    const value = await this.neo4jService.createNode(virtualNode, ['Virtual', 'Winform']);
+    const value = await this.neo4jService.createNode(virtualNode, [Neo4jLabelEnum.VIRTUAL, Neo4jLabelEnum.WINFORM]);
 
-    //  value['properties']['id'] = value['identity'].low;
-    // const result = { id: value['identity'].low, labels: value['labels'], properties: value['properties'] };
     console.log(value.properties.key);
-    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, 'HAS_FORM');
-
-    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, 'HAS_VİRTUAL_RELATION');
+    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, RelationName.HAS_FORM);
+    await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, RelationName.HAS_VIRTUAL_RELATION);
 
     // const structureUrl = `${process.env.STRUCTURE_URL}/${node.properties.key}`;
     // const kafkaObject = { referenceKey: key, parentKey: createWinformRelationDto.referenceKey, url: structureUrl };
     // await this.kafkaService.producerSendMessage('createStructureWinformRelation', JSON.stringify(kafkaObject));
 
-    return 'succes';
+    const response = { structure: node, asset: winform };
+
+   return response;
   }
 
   async delete(key: string, referenceKey) {
@@ -116,7 +126,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
       const relationExistanceBetweenVirtualNodeAndNodeByKey = await this.neo4jService.findNodeByKeysAndRelationName(
         key,
         referenceKey,
-        RelationName.HAS,
+        RelationName.HAS_FORM,
       );
 
       if (!relationExistanceBetweenVirtualNodeAndNodeByKey.length) {

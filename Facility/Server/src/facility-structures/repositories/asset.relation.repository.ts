@@ -14,6 +14,7 @@ import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
 import { VirtualNode } from 'src/common/baseobject/virtual.node';
 import { RelationName } from 'src/common/const/relation.name.enum';
 import { StructureService } from '../services/structure.service';
+import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 
 @Injectable()
 export class AssetRelationRepository implements VirtualNodeInterface<FacilityStructure> {
@@ -100,7 +101,7 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
     const assetUrl = `${process.env.ASSET_URL}/${createAssetRelationDto.referenceKey}`;
 
     virtualNode.url = assetUrl;
-    const value = await this.neo4jService.createNode(virtualNode, ['Virtual', 'Asset']);
+    const value = await this.neo4jService.createNode(virtualNode, [Neo4jLabelEnum.VIRTUAL , Neo4jLabelEnum.ASSET]);
 
     await this.neo4jService.addRelationWithRelationNameByKey(key, value.properties.key, RelationName.HAS);
     await this.neo4jService.addRelationWithRelationNameByKey(
