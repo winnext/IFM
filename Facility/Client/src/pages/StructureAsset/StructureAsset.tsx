@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import FacilityStructureService from "../../services/facilitystructure";
 import AssetService from "../../services/asset";
+import StructureAssetService from "../../services/structureAsset";
 import FormTypeService from "../../services/formType";
 import { useAppSelector } from "../../app/hook";
 
@@ -184,7 +185,7 @@ const StructureAsset = () => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
-              detail: "Structure Created",
+              detail: "Asset Created",
               life: 3000,
             });
             getFacilityStructure();

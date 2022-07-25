@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import FacilityStructureService from "../../services/facilitystructure";
 import FormTypeService from "../../services/formType";
+import StructureWinformService from "../../services/structureWinform";
 import { useAppSelector } from "../../app/hook";
 
 import axios from "axios";
@@ -275,24 +276,9 @@ const SetFacilityStructure = () => {
             newForm = {
               referenceKey: formTypeId,
             };
-            FacilityStructureService.createForm(res.data.properties.key, newForm)
+            StructureWinformService.createForm(res.data.properties.key, newForm)
               .then((res) => {
-                toast.current.show({
-                  severity: "success",
-                  summary: "Successful",
-                  detail: "Structure Created",
-                  life: 3000,
-                });
-                getFacilityStructure();
               })
-              .catch((err) => {
-                toast.current.show({
-                  severity: "error",
-                  summary: "Error",
-                  detail: err.response ? err.response.data.message : err.message,
-                  life: 2000,
-                });
-              });
             getFacilityStructure();
           })
           .catch((err) => {
@@ -343,7 +329,19 @@ const SetFacilityStructure = () => {
           }
         }
         console.log(updateNode);
-        
+
+        if (res.data.formTypeId) {
+          StructureWinformService.removeForm(key, res.data.formTypeId)
+            .then((res) => {
+            })
+            StructureWinformService.createForm(key, formTypeId)
+            .then((res) => {
+            })
+        } else {
+          StructureWinformService.createForm(key, formTypeId)
+            .then((res) => {
+            })
+        }
 
         FacilityStructureService.update(res.data.id, updateNode)
           .then((res) => {
@@ -668,14 +666,14 @@ const SetFacilityStructure = () => {
         style={{ width: "25vw" }}
         footer={renderFooterForm}
         onHide={() => {
-         
+
           setFormDia(false);
         }}
       >
         <FormGenerate />
-        
-        
-        
+
+
+
       </Dialog>
       <h1>Edit Facility Structure</h1>
       <div className="field">
@@ -750,7 +748,7 @@ const SetFacilityStructure = () => {
                   // )} 
                   // onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
                   // onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeKey=${data.formTypeId}`)}
-                  onClick={()=>{
+                  onClick={() => {
                     setFormDia(true)
                   }}
 
