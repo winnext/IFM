@@ -309,7 +309,7 @@ const SetFacilityStructure = () => {
   const editItem = (key: string) => {
     let updateNode: any = {};
     FacilityStructureService.nodeInfo(key)
-      .then((res) => {
+      .then((responseStructure) => {
         if (labels.length > 0) {
           updateNode = {
             name: name,
@@ -328,22 +328,36 @@ const SetFacilityStructure = () => {
             formTypeId: formTypeId,
           }
         }
-        console.log(updateNode);
+        console.log(responseStructure.data);
 
-        if (res.data.formTypeId) {
-          StructureWinformService.removeForm(key, res.data.formTypeId)
-            .then((res) => {
-            })
-            StructureWinformService.createForm(key, formTypeId)
-            .then((res) => {
-            })
-        } else {
-          StructureWinformService.createForm(key, formTypeId)
-            .then((res) => {
-            })
-        }
+        StructureWinformService.findForm(key)
+          .then((res) => {
+            StructureWinformService.removeForm(key, responseStructure.data.properties.formTypeId)
+              .then((res) => {
+              })
+            let newForm: any = {};
+            newForm = {
+              referenceKey: formTypeId,
+            };
+            StructureWinformService.createForm(key, newForm)
+              .then((res) => {
+              })
+          }
+          )
+          .catch((err) => {
+            if (err.response.status === 404) {
+              let newForm: any = {};
+              newForm = {
+                referenceKey: formTypeId,
+              };
+              StructureWinformService.createForm(key, newForm)
+                .then((res) => {
+                })
+            }
+          }
+          )
 
-        FacilityStructureService.update(res.data.id, updateNode)
+        FacilityStructureService.update(responseStructure.data.id, updateNode)
           .then((res) => {
             toast.current.show({
               severity: "success",
