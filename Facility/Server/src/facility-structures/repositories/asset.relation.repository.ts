@@ -166,6 +166,4 @@ export class AssetRelationRepository implements VirtualNodeInterface<FacilityStr
       }
     }
   }
-
-  //-----------------------------------------------Will Add to sgnm-neo4j library----------------
 }

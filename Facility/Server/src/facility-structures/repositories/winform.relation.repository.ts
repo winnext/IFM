@@ -16,6 +16,7 @@ import { CreateWinformRelationDto } from '../dto/winform.relation.dto';
 
 import { RelationName } from 'src/common/const/relation.name.enum';
 import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
+import { StructureService } from '../services/structure.service';
 
 @Injectable()
 export class WinformRelationRepository implements VirtualNodeInterface<FacilityStructure> {
@@ -23,6 +24,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
     private readonly neo4jService: Neo4jService,
     private readonly kafkaService: NestKafkaService,
     private readonly httpService: HttpService,
+    private readonly structureService: StructureService,
   ) {}
 
   async findOneNodeByKey(key: string) {
@@ -111,8 +113,9 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
 
   async delete(key: string, referenceKey) {
     try {
-      const assetObservableObject = await this.httpService
-        .get(`${process.env.ASSET_URL}/${referenceKey}`)
+      await this.structureService.findOneNode(key);
+      const winformObservableObject = await this.httpService
+        .get(`${process.env.WINFORM_URL}/${referenceKey}`)
         .pipe(
           catchError(() => {
             throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
@@ -120,7 +123,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
         )
         .pipe(map((response) => response.data));
 
-      const asset = await firstValueFrom(assetObservableObject);
+      const winform = await firstValueFrom(winformObservableObject);
 
       //check 2 nodes has a relation
       const relationExistanceBetweenVirtualNodeAndNodeByKey = await this.neo4jService.findNodeByKeysAndRelationName(
@@ -133,35 +136,25 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
         throw new RelationNotFountException(key);
       }
 
-      const virtualAssetNode = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].properties;
-      if (virtualAssetNode.isDeleted) {
+      const virtualWinformNode = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].properties;
+      if (virtualWinformNode.isDeleted) {
         throw new RelationNotFountException(referenceKey);
       }
       const virtualNodeId = relationExistanceBetweenVirtualNodeAndNodeByKey[0]['_fields'][1].identity.low;
-      await this.deleteVirtualNode(virtualNodeId);
+      await this.neo4jService.deleteVirtualNode(virtualNodeId);
 
-      await this.kafkaService.producerSendMessage(
-        'deleteAssetFromStructure',
-        JSON.stringify({ referenceKey: key, key: referenceKey }),
-      );
+      // await this.kafkaService.producerSendMessage(
+      //   'deleteAssetFromStructure',
+      //   JSON.stringify({ referenceKey: key, key: referenceKey }),
+      // );
 
-      return asset;
+      return winform;
     } catch (error) {
       console.log(error);
       if (error.response?.code) {
       } else {
         throw new HttpException(error.response, error.status);
       }
-    }
-  }
-  async deleteVirtualNode(id: number) {
-    try {
-      const node = await this.neo4jService.write(`match (n:Virtual ) where id(n)=$id set n.isDeleted=true return n`, {
-        id,
-      });
-      return node.records[0]['_fields'][0];
-    } catch (error) {
-      throw new HttpException(error, 500);
     }
   }
 }
