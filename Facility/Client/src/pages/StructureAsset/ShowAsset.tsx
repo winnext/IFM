@@ -153,7 +153,8 @@ const ShowAsset = () => {
           dataKey="_id"
           header={nodeName}
           showGridlines
-          responsiveLayout="scroll">
+          emptyMessage="No available asset"
+          responsiveLayout="scroll"> 
           <Column field="properties.name" header="Name"></Column>
           <Column field="properties.createdAt" header="Created Time"></Column>
           <Column body={actionBodyTemplate}></Column>

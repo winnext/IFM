@@ -10,6 +10,7 @@ import { Calendar } from "primereact/calendar";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { TabView, TabPanel } from "primereact/tabview";
+import { v4 as uuidv4 } from "uuid";
 
 import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
@@ -27,6 +28,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 interface Params {
   nodeKey: string;
   formKey: any;
+  nodeName: any;
 }
 
 const Error: React.FC = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
@@ -123,7 +125,7 @@ const Input = ({ value, onChange, type, ...rest }: InputProps) => {
   }
 };
 
-const FormGenerate = ({ nodeKey, formKey }: Params) => {
+const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
   const toast = React.useRef<any>(null);
@@ -188,11 +190,14 @@ const FormGenerate = ({ nodeKey, formKey }: Params) => {
 
   const onSubmit = (data: any) => {
     // console.log(data);
-    const formData = {
-      nodeKey: nodeKey,
-      data: data,
-    };
-    console.log(formData);
+    const key=uuidv4();
+    // data.key = key;
+    // const formData = {
+    //   nodeKey: nodeKey,
+    //   data: data,
+    // };
+    console.log(data);
+    // console.log(formData);
     // console.log(formData);
 
     // deneme
@@ -230,9 +235,10 @@ const FormGenerate = ({ nodeKey, formKey }: Params) => {
         <TabPanel header="Active Data">
           <div>
             <Toast ref={toast} position="top-right" />
-
+            
             {hasForm ? (
               <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
+                <h4 className="flex justify-content-center">{nodeName} Extra Form</h4>
                 {items &&
                   Object.keys(items).map((e: any) => {
                     console.log(items[e]);
@@ -282,10 +288,10 @@ const FormGenerate = ({ nodeKey, formKey }: Params) => {
               </form>
             ) : (
               <div>
-                <h4>There is no form for this structure.</h4>
-                <Button className="" onClick={() => backPage()}>
+                <h4>There is no extra form for this structure.</h4>
+                {/* <Button className="" onClick={() => backPage()}>
                   Back
-                </Button>
+                </Button> */}
               </div>
             )}
           </div>

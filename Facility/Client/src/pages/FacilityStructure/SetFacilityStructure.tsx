@@ -89,6 +89,7 @@ const SetFacilityStructure = () => {
   const [realm, setRealm] = useState(auth.auth.realm);
   const [generateNodeKey, setGenerateNodeKey] = useState("");
   const [generateFormTypeKey, setGenerateFormTypeKey] = useState<string | undefined>("");
+  const [generateNodeName, setGenerateNodeName] = useState<string | undefined>("");
 
   const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
@@ -671,7 +672,7 @@ const SetFacilityStructure = () => {
       </Dialog>
 
       <Dialog
-        header="Form"
+        // header="Form"
         visible={formDia}
         style={{ width: "40vw" }}
         // footer={renderFooterForm}
@@ -680,7 +681,7 @@ const SetFacilityStructure = () => {
           setFormDia(false);
         }}
       >
-        <FormGenerate nodeKey={generateNodeKey} formKey={generateFormTypeKey} />
+        <FormGenerate nodeKey={generateNodeKey} formKey={generateFormTypeKey} nodeName={generateNodeName} />
 
       </Dialog>
       <h1>Edit Facility Structure</h1>
@@ -760,6 +761,7 @@ const SetFacilityStructure = () => {
                     console.log(data);
                     setGenerateNodeKey(data.key);
                     setGenerateFormTypeKey(data.formTypeId);
+                    setGenerateNodeName(data.label);
                     setFormDia(true)
                   }}
 
