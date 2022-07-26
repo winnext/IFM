@@ -6,7 +6,7 @@ interface AssetInterface {
     assetKey: string;
 }
 
-const findAssets = async (key: string) => {
+const findAsset = async (key: string) => {
     return axios.get(url + key);
 };
 
@@ -19,6 +19,6 @@ const removeAsset = async (key: string, referenceKey: string) => {
     return axios.delete(url + key + "/" + referenceKey);
 };
 
-const service = { findAssets, createAsset, removeAsset };
+const service = { findAsset, createAsset, removeAsset };
 
 export default service;
