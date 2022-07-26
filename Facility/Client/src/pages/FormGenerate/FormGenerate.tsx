@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
+import StructureWinformDataService from "../../services/structureWinformData";
 import "./FormGenerate.css";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -190,8 +191,8 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
 
   const onSubmit = (data: any) => {
     // console.log(data);
-    const key=uuidv4();
-    // data.key = key;
+    const key = uuidv4();
+    data.key = key;
     // const formData = {
     //   nodeKey: nodeKey,
     //   data: data,
@@ -200,25 +201,24 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
     // console.log(formData);
     // console.log(formData);
 
-    // deneme
-    //   .create(formData)
-    //   .then((res) => {
-    //     toast.current.show({
-    //       severity: "success",
-    //       summary: "Successful",
-    //       detail: "Form Data Created",
-    //       life: 3000,
-    //     });
-    //     history(`/facilitystructure`);
-    //   })
-    //   .catch((err) => {
-    //     toast.current.show({
-    //       severity: "error",
-    //       summary: "Error",
-    //       detail: err.response ? err.response.data.message : err.message,
-    //       life: 2000,
-    //     });
-    //   });
+    StructureWinformDataService
+      .createFormData(nodeKey, data)
+      .then((res) => {
+        toast.current.show({
+          severity: "success",
+          summary: "Successful",
+          detail: "Form Data Created",
+          life: 3000,
+        });
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
   };
 
   const backPage = () => {
@@ -235,7 +235,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
         <TabPanel header="Active Data">
           <div>
             <Toast ref={toast} position="top-right" />
-            
+
             {hasForm ? (
               <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
                 <h4 className="flex justify-content-center">{nodeName} Extra Form</h4>
