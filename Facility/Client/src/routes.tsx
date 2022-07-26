@@ -33,7 +33,7 @@ export default function Router() {
         { path: "classifications", element: <SetClassification /> },
         // { path: "facilitystructure", element: <FacilityStructure /> },
         { path: "facilitystructure", element: <SetFacilityStructure /> },
-        { path: "formgenerate", element: <FormGenerate />},
+        // { path: "formgenerate", element: <FormGenerate />},
         { path: "contact", element: <Contact />},
         { path: "structure-asset", element: <StructureAsset />},
       ],
@@ -58,11 +58,11 @@ export default function Router() {
       element: <AppLayout />,
       children: [{ path: "fileimport", element: <ClassificationFileImport /> }],
     },
-    {
-      path: "/formgenerate",
-      element: <AppLayout />,
-      children: [{ path: ":id", element: <FormGenerate/> }],
-    },
+    // {
+    //   path: "/formgenerate",
+    //   element: <AppLayout />,
+    //   children: [{ path: ":id", element: <FormGenerate/> }],
+    // },
     {
       path: "/structure-asset",
       element: <AppLayout />,

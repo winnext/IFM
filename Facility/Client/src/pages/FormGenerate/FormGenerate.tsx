@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect, InputHTMLAttributes } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -15,13 +15,26 @@ import FormTypeService from "../../services/formType";
 import FormBuilderService from "../../services/formBuilder";
 import "./FormGenerate.css";
 
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  value: any;
+  onChange: any;
+  type: any;
+  options?: any;
+  label2: string;
+  label: any;
+}
 
-const Error = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
-const Input = ({ value, onChange, type, ...rest }) => {
-  const options2 = rest?.options?.map((item) => {
+interface Params {
+  nodeKey: string;
+  formKey: any;
+}
+
+const Error: React.FC = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
+const Input = ({ value, onChange, type, ...rest }: InputProps) => {
+  const options2 = rest?.options?.map((item: any | null) => {
     return Object.values(item);
   });
-  var merged = [].concat.apply([], options2);
+  var merged: any = [].concat.apply([], options2);
   switch (type) {
     case "text":
       return (
@@ -45,7 +58,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
       );
     case "radio":
     case "gender":
-      return merged?.map((e, index) => {
+      return merged?.map((e: any, index: any) => {
         console.log(e, index);
         return (
           <span key={e} className={index === 0 ? "mt-3" : "mt-3 ml-3"}>
@@ -81,8 +94,7 @@ const Input = ({ value, onChange, type, ...rest }) => {
           <label>{rest?.label2}</label>
           <Checkbox
             className="mt-1 ml-2"
-            type="checkbox"
-            label={rest?.label2}
+            // label={rest?.label2}
             onChange={(e) => onChange(e.target.checked)}
             checked={value}
           />
@@ -111,30 +123,30 @@ const Input = ({ value, onChange, type, ...rest }) => {
   }
 };
 
-const FormGenerate = () => {
+const FormGenerate = ({ nodeKey, formKey }: Params) => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
-  const toast = React.useRef(null);
+  const toast = React.useRef<any>(null);
 
-  const location = useLocation();
-  const params = useParams();
-  const searchParameters = new URLSearchParams(location.search);
-  const nodeId = params.id;
-  const typeKey = searchParameters.get("typeKey");
+  // const location = useLocation();
+  // const params = useParams();
+  // const searchParameters = new URLSearchParams(location.search);
 
-  console.log(nodeId, typeKey);
+  // const typeKey = searchParameters.get("typeKey");
+
+  console.log(nodeKey, formKey);
 
   const history = useNavigate();
 
   useEffect(() => {
-    if (typeKey === "undefined" || typeKey === null || typeKey === "") {
+    if (formKey === "undefined" || formKey === null || formKey === "") {
       return setHasForm(false);
     }
-    FormBuilderService.getPropertiesWithKey(typeKey)
+    FormBuilderService.getPropertiesWithKey(formKey)
       .then((responsegetProperties) => {
         console.log(responsegetProperties.data);
 
-        const convertedData = responsegetProperties.data.map(function (item) {
+        const convertedData = responsegetProperties.data.map(function (item: any) {
           // console.log(formData[`'${item.label}'`]);
           return {
             ...item,
@@ -145,7 +157,7 @@ const FormGenerate = () => {
             //       : item.defaultValue
             //     : item.defaultValue,
             rules: { required: item.rules[0] },
-            options: item.options.map(function (option) {
+            options: item.options.map(function (option: any) {
               return { optionsName: option };
             }),
           };
@@ -174,10 +186,10 @@ const FormGenerate = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     // console.log(data);
     const formData = {
-      nodeId: nodeId,
+      nodeKey: nodeKey,
       data: data,
     };
     console.log(formData);
@@ -210,84 +222,88 @@ const FormGenerate = () => {
 
   return (
     <div className="tabview-demo">
-      <div className="card">
-        <TabView>
-          <TabPanel header="Type Form">
-            <TabView>
-              <TabPanel header="Active Data">
-                <div>
-                  <Toast ref={toast} position="top-right" />
 
-                  {hasForm ? (
-                    <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
-                      {items &&
-                        Object.keys(items).map((e) => {
-                          console.log(items[e]);
-                          const { rules, defaultValue, label } = items[e];
-                          return (
-                            <section key={e}>
-                              <label className="mb-4">{label}</label>
-                              <Controller
-                                // name={label.replaceAll(" ", "")}
-                                name={label}
-                                control={control}
-                                rules={rules}
-                                defaultValue={defaultValue}
-                                render={({ field }) => (
-                                  <div>
-                                    <Input
-                                      value={field.value || ""}
-                                      onChange={field.onChange}
-                                      {...items[e]}
-                                    />
-                                  </div>
-                                )}
+      {/* <TabView>
+          <TabPanel header="Type Form"> */}
+      <TabView>
+
+        <TabPanel header="Active Data">
+          <div>
+            <Toast ref={toast} position="top-right" />
+
+            {hasForm ? (
+              <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
+                {items &&
+                  Object.keys(items).map((e: any) => {
+                    console.log(items[e]);
+                    const { rules, defaultValue, label } = items[e];
+                    return (
+                      <section key={e}>
+                        <label className="mb-4">{label}</label>
+                        <Controller
+                          // name={label.replaceAll(" ", "")}
+                          name={label}
+                          control={control}
+                          rules={rules}
+                          defaultValue={defaultValue}
+                          render={({ field }) => (
+                            <div>
+                              <Input
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                {...items[e] as any}
                               />
-                              {errors[label] && (
-                                <Error>This field is required</Error>
-                              )}
-                            </section>
-                          );
-                        })}
-                      <div>
-                        {items.length > 0 && (
-                          <>
-                            <div className="mt-4">
-                              <Button className="ml-3" type="submit">
-                                Submit
-                              </Button>
-                              <Button
+                            </div>
+                          )}
+                        />
+                        {errors[label] && (
+                          <Error>This field is required</Error>
+                        )}
+                      </section>
+                    );
+                  })}
+                <div>
+                  {items.length > 0 && (
+                    <>
+                      <div className="mt-4 flex justify-content-center">
+                        <Button className="p-button-success" type="submit">
+                          Save
+                        </Button>
+                        {/* <Button
                                 className="ml-4"
                                 onClick={() => backPage()}
                               >
                                 Back
-                              </Button>
-                            </div>
-                          </>
-                        )}
+                              </Button> */}
                       </div>
-                    </form>
-                  ) : (
-                    <div>
-                      <h4>There is no form for this structure.</h4>
-                      <Button className="" onClick={() => backPage()}>
-                        Back
-                      </Button>
-                    </div>
+                    </>
                   )}
                 </div>
-              </TabPanel>
-              <TabPanel header="Passive Data"></TabPanel>
-            </TabView>
-          </TabPanel>
-          <TabPanel header="Extra Form">
+              </form>
+            ) : (
+              <div>
+                <h4>There is no form for this structure.</h4>
+                <Button className="" onClick={() => backPage()}>
+                  Back
+                </Button>
+              </div>
+            )}
+          </div>
+        </TabPanel>
+        <TabPanel header="Passive Data"></TabPanel>
+
+      </TabView>
+      {/* </TabPanel> */}
+
+      {/* <TabPanel header="Extra Form">
             <TabView>
               <TabPanel header="Active Data"></TabPanel>
               <TabPanel header="Passive Data"></TabPanel>
             </TabView>
-          </TabPanel>
-        </TabView>
-      </div>
+          </TabPanel> */}
+
+      {/* </TabView> */}
+
     </div>
   );
 };

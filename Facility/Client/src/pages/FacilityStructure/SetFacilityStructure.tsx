@@ -87,6 +87,8 @@ const SetFacilityStructure = () => {
   const [formData, setFormData] = useState<FormNode[]>([]);
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
+  const [generateNodeKey, setGenerateNodeKey] = useState("");
+  const [generateFormTypeKey, setGenerateFormTypeKey] = useState<string | undefined>("");
 
   const facilityTypes = ["Facility", "Building", "Block", "Floor", "Room", "Open Area", "Park Area", "Garden", "Other"];
 
@@ -529,26 +531,20 @@ const SetFacilityStructure = () => {
     );
   };
 
-  const renderFooterForm = () => {
-    return (
-      <div>
-        <Button
-          label="Cancel"
-          icon="pi pi-times"
-          onClick={() => {
-            setFormDia(false);
-          }}
-          className="p-button-text"
-        />
-        <Button
-          label="Save"
-          icon="pi pi-check"
-          onClick={() => editItem(selectedNodeKey)}
-          autoFocus
-        />
-      </div>
-    );
-  };
+  // const renderFooterForm = () => {
+  //   return (
+  //     <div>
+  //       <Button
+  //         label="Cancel"
+  //         icon="pi pi-times"
+  //         onClick={() => {
+  //           setFormDia(false);
+  //         }}
+  //         className="p-button-text"
+  //       />
+  //     </div>
+  //   );
+  // };
 
   return (
     <div className="container">
@@ -677,16 +673,14 @@ const SetFacilityStructure = () => {
       <Dialog
         header="Form"
         visible={formDia}
-        style={{ width: "25vw" }}
-        footer={renderFooterForm}
+        style={{ width: "40vw" }}
+        // footer={renderFooterForm}
         onHide={() => {
 
           setFormDia(false);
         }}
       >
-        <FormGenerate />
-
-
+        <FormGenerate nodeKey={generateNodeKey} formKey={generateFormTypeKey} />
 
       </Dialog>
       <h1>Edit Facility Structure</h1>
@@ -763,6 +757,9 @@ const SetFacilityStructure = () => {
                   // onClick={() => window.open(`http://localhost:3001/formgenerate/${data._id.low}?formType=${data.labels}?className=${data.className}`, '_blank')}
                   // onClick={(e) => navigate(`/formgenerate/${data._id.low}?typeKey=${data.formTypeId}`)}
                   onClick={() => {
+                    console.log(data);
+                    setGenerateNodeKey(data.key);
+                    setGenerateFormTypeKey(data.formTypeId);
                     setFormDia(true)
                   }}
 
