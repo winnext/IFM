@@ -11,14 +11,18 @@ import { StructureListenerController } from './controllers/structure.listener';
 import { WinformRelationController } from './controllers/winform.relation.controller';
 import { WinformRelationService } from './services/winform.relation.service';
 import { WinformRelationRepository } from './repositories/winform.relation.repository';
+import { WinformDataOperationController } from './controllers/winform.data_operation.controller';
+import { WinformDataOperationService } from './services/winform.data_operation.service';
+import { WinformDataOperationRepository } from './repositories/winform.data_opreation.repository';
 
 @Module({
   imports: [HttpModule],
-  controllers: [StructureController, AssetRelationController, StructureListenerController, WinformRelationController],
+  controllers: [StructureController, AssetRelationController, StructureListenerController, WinformRelationController, WinformDataOperationController],
   providers: [
     StructureService,
     AssetRelationService,
     WinformRelationService,
+    WinformDataOperationService,
     {
       provide: RepositoryEnums.FACILITY_STRUCTURE,
       useClass: FacilityStructureRepository,
@@ -30,6 +34,10 @@ import { WinformRelationRepository } from './repositories/winform.relation.repos
     {
       provide: RepositoryEnums.WINFORM_STRUCTURE_RELATION,
       useClass: WinformRelationRepository,
+    },
+    {
+      provide: RepositoryEnums.WINFORM_STRUCTURE_DATA_OPERATION,
+      useClass: WinformDataOperationRepository,
     },
   ],
   exports: [StructureService],

@@ -22,7 +22,6 @@ import { StructureService } from '../services/structure.service';
 export class WinformRelationRepository implements VirtualNodeInterface<FacilityStructure> {
   constructor(
     private readonly neo4jService: Neo4jService,
-    private readonly kafkaService: NestKafkaService,
     private readonly httpService: HttpService,
     private readonly structureService: StructureService,
   ) {}
@@ -106,7 +105,7 @@ export class WinformRelationRepository implements VirtualNodeInterface<FacilityS
     // const kafkaObject = { referenceKey: key, parentKey: createWinformRelationDto.referenceKey, url: structureUrl };
     // await this.kafkaService.producerSendMessage('createStructureWinformRelation', JSON.stringify(kafkaObject));
 
-    const response = { structure: node, asset: winform };
+    const response = { structure: node, winform: winform };
 
    return response;
   }
