@@ -39,7 +39,7 @@ export class WinformDataOperationRepository implements WinformdataNodeInterface<
      if (!formData || !formData.length) {
        throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK (form data nodu bulunamadı olacak) 
      }
-     return formData;   
+     return formData[0]["_fields"][0]["properties"];   
   }
 
   async create(key: string, winformData: Object) {
@@ -101,15 +101,15 @@ export class WinformDataOperationRepository implements WinformdataNodeInterface<
 
 
 
-  async delete(key: string) {
-    try {
-      return null;
-    } catch (error) {
-      console.log(error);
-      if (error.response?.code) {
-      } else {
-        throw new HttpException(error.response, error.status);
-      }
-    }
-  }
+  // async delete(key: string) {
+  //   try {
+  //     return null;
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (error.response?.code) {
+  //     } else {
+  //       throw new HttpException(error.response, error.status);
+  //     }
+  //   }
+  // }
 }

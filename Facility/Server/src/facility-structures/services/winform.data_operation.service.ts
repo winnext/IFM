@@ -15,9 +15,9 @@ export class WinformDataOperationService {
   async update(id: string, winformData: Object) {
     return await this.WinformDataOperationRepository.update(id, winformData);
   }
-   async remove(key: string) {
-     return this.WinformDataOperationRepository.delete(key);
-   }
+  //  async remove(key: string) {
+  //    return this.WinformDataOperationRepository.delete(key);
+  //  }
   async findOneNode(key: string) {
     //checkObjectIddİsValid(id);
     return await this.WinformDataOperationRepository.findOneNodeByKey(key);
