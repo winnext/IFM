@@ -635,7 +635,7 @@ const SetFacilityStructure = () => {
           />
         </div>
         <div className="field">
-          <h5 style={{ marginBottom: "0.5em" }}>Form Type</h5>
+          <h5 style={{ marginBottom: "0.5em" }}>Facility Type</h5>
           <TreeSelect
             value={formTypeId}
             options={formData}
@@ -681,7 +681,7 @@ const SetFacilityStructure = () => {
           setFormDia(false);
         }}
       >
-        <FormGenerate nodeKey={generateNodeKey} formKey={generateFormTypeKey} nodeName={generateNodeName} />
+        <FormGenerate nodeKey={generateNodeKey} formKey={generateFormTypeKey} nodeName={generateNodeName} setFormDia={setFormDia} />
 
       </Dialog>
       <h1>Edit Facility Structure</h1>

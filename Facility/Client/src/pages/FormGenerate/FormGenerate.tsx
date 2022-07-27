@@ -30,6 +30,7 @@ interface Params {
   nodeKey: string;
   formKey: any;
   nodeName: any;
+  setFormDia: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Error: React.FC = ({ children }) => <p style={{ color: "red" }}>{children}</p>;
@@ -126,7 +127,7 @@ const Input = ({ value, onChange, type, ...rest }: InputProps) => {
   }
 };
 
-const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
+const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
   const toast = React.useRef<any>(null);
@@ -210,6 +211,9 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
           detail: "Form Data Created",
           life: 3000,
         });
+        setTimeout(() => {
+          setFormDia(false);
+        }, 1500);
       })
       .catch((err) => {
         toast.current.show({
@@ -221,8 +225,8 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
       });
   };
 
-  const backPage = () => {
-    history(`/facilitystructure`);
+  const cancelForm = () => {
+    setFormDia(false);
   };
 
   return (
@@ -242,13 +246,13 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
                 {items &&
                   Object.keys(items).map((e: any) => {
                     console.log(items[e]);
-                    const { rules, defaultValue, label } = items[e];
+                    const { rules, defaultValue, label }: any = items[e];
                     return (
                       <section key={e}>
                         <label className="mb-4">{label}</label>
                         <Controller
-                          // name={label.replaceAll(" ", "")}
-                          name={label}
+                          name={label.replaceAll(" ", "")}
+                          // name={label}
                           control={control}
                           rules={rules}
                           defaultValue={defaultValue}
@@ -262,7 +266,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
                             </div>
                           )}
                         />
-                        {errors[label] && (
+                        {errors[label.replaceAll(" ", "")] && (
                           <Error>This field is required</Error>
                         )}
                       </section>
@@ -271,16 +275,16 @@ const FormGenerate = ({ nodeKey, formKey, nodeName }: Params) => {
                 <div>
                   {items.length > 0 && (
                     <>
-                      <div className="mt-4 flex justify-content-center">
+                      <div className="mt-4 ml-3 flex">
                         <Button className="p-button-success" type="submit">
                           Save
                         </Button>
-                        {/* <Button
-                                className="ml-4"
-                                onClick={() => backPage()}
-                              >
-                                Back
-                              </Button> */}
+                        <Button
+                          className="ml-4 p-button-danger"
+                          onClick={() => cancelForm()}
+                        >
+                          Cancel
+                        </Button>
                       </div>
                     </>
                   )}
