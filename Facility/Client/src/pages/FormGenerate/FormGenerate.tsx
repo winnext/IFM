@@ -130,6 +130,7 @@ const Input = ({ value, onChange, type, ...rest }: InputProps) => {
 const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
+  const [formData, setFormData] = useState([]);
   const toast = React.useRef<any>(null);
 
   // const location = useLocation();
@@ -146,12 +147,20 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
     if (formKey === "undefined" || formKey === null || formKey === "") {
       return setHasForm(false);
     }
+    // const responsegetData = StructureWinformDataService.getFormData(nodeKey);
+    // console.log(responsegetData);
+
     FormBuilderService.getPropertiesWithKey(formKey)
       .then((responsegetProperties) => {
         console.log(responsegetProperties.data);
 
         const convertedData = responsegetProperties.data.map(function (item: any) {
           // console.log(formData[`'${item.label}'`]);
+          StructureWinformDataService.getFormData(nodeKey)
+            .then((responsegetData) => {
+              console.log(responsegetData.data[0]._fields[0].properties[item.label.replaceAll(" ", "")]);
+            })
+
           return {
             ...item,
             // defaultValue:
@@ -181,6 +190,22 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
       });
   }, []);
 
+  useEffect(() => {
+    StructureWinformDataService.getFormData(nodeKey)
+      .then((res) => {
+        console.log(res.data[0]._fields[0].properties);
+        setFormData(res.data[0]._fields[0].properties);
+      })
+      .catch((err) => {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.response ? err.response.data.message : err.message,
+          life: 2000,
+        });
+      });
+  }, [])
+
   const {
     handleSubmit,
     control,
@@ -202,8 +227,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
     // console.log(formData);
     // console.log(formData);
 
-    StructureWinformDataService
-      .createFormData(nodeKey, data)
+    StructureWinformDataService.createFormData(nodeKey, data)
       .then((res) => {
         toast.current.show({
           severity: "success",
@@ -223,10 +247,6 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
           life: 2000,
         });
       });
-  };
-
-  const cancelForm = () => {
-    setFormDia(false);
   };
 
   return (
@@ -281,7 +301,11 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
                         </Button>
                         <Button
                           className="ml-4 p-button-danger"
-                          onClick={() => cancelForm()}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setFormDia(false);
+                          }
+                          }
                         >
                           Cancel
                         </Button>

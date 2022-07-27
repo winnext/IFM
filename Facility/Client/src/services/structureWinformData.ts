@@ -6,21 +6,17 @@ interface FormInterface {
     
 }
 
-
-const findForm = async (key: string) => {
-    return axios.get(url + key);
-};
-
 const createFormData = async (key: string, formData: FormInterface) => {
-    console.log(formData);
-    
+
     return axios.post(url + key, formData);
 };
 
-const removeForm = async (key: string, referenceKey: string) => {
-    return axios.delete(url + key + "/" + referenceKey);
+const getFormData = async (key: string) => {
+
+    return axios.get(url + key);
 };
 
-const service = { findForm, createFormData, removeForm };
+
+const service = { createFormData, getFormData};
 
 export default service;
