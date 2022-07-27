@@ -1587,5 +1587,39 @@ async findByRealm(
       }
     }
   }
+  async findByIdLabelsAndIsActivesWithChildNodes(id: string, label1: string, label2: string, isActive1: boolean, isActive2: boolean, orderbyprop?: string,  orderbytype?: string) {
+    try {
+      if(!id || !label1 || !label2){
+        throw new HttpException(find_by_id_and_labels_with_active_child_nodes__must_entered_error,400);  //Değişecek
+      }
+      const node = await this.findById(id);
+      if (!node) {
+        throw new HttpException(find_by_id_and_labels_with_active_child_nodes__not_found_error,404);  //Değişecek
+      }
+      const idNum = parseInt(id);
+      let cypher = "";
+      if (orderbyprop) {
+        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: ${isActive1}})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive:  ${isActive2}}) where id(c)=$idNum return n order by n.${orderbyprop} ${orderbytype}`;
+      }
+      else {
+        cypher = `MATCH (c: ${label1} {isDeleted: false, isActive: ${isActive1}})-[:CHILDREN]->(n: ${label2} {isDeleted: false, isActive:  ${isActive2}}) where id(c)=$idNum return n`;
+      } 
+      const result = await this.read(cypher, { idNum });
+   
+      if (!result["records"].length) {
+        throw new HttpException(find_by_id_and_labels_with_active_child_node__not_found_error,404)  //Değişecek
+      }
+      return result["records"];
+    } catch (error) {
+      if (error.response.code) {
+        throw new HttpException(
+          { message: error.response.message, code: error.response.code },
+          error.status
+        );
+      }else {
+         throw newError(error, "500");
+      }
+    }
+  }
   //////////////////////////////////////////////////////////////////////////////////////////
 }

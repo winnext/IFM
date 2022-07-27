@@ -31,11 +31,11 @@ export class WinformDataOperationController {
     return this.winformDataOperationService.update(key, winformData);
   }
 
-  @Delete('/:key')
-  @Unprotected()
-  remove(@Param('key') key: string) {
-    return this.winformDataOperationService.remove(key);
-  }
+  // @Delete('/:key')
+  // @Unprotected()
+  // remove(@Param('key') key: string) {
+  //   return this.winformDataOperationService.remove(key);
+  // }
 
   @Unprotected()
   @Get('/:key')
