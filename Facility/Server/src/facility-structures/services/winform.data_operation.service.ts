@@ -13,7 +13,7 @@ export class WinformDataOperationService {
     return await this.WinformDataOperationRepository.create(id, winformData);
   }
   async update(id: string, winformData: Object) {
-    return await this.WinformDataOperationRepository.create(id, winformData);
+    return await this.WinformDataOperationRepository.update(id, winformData);
   }
    async remove(key: string) {
      return this.WinformDataOperationRepository.delete(key);

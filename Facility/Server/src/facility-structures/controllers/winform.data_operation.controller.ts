@@ -22,7 +22,10 @@ export class WinformDataOperationController {
   createWinformData(@Param('key') key: string, @Body() winformData: Object) {
     return this.winformDataOperationService.create(key, winformData);
   }
-   
+  @Unprotected()
+  @ApiBody({
+    description: 'update  structure-winform data node',
+  })
   @Patch('/:key')
   updateWinformData(@Param('key') key: string, @Body() winformData: Object) {
     return this.winformDataOperationService.update(key, winformData);

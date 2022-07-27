@@ -6,7 +6,7 @@ import {
 
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom, map } from 'rxjs';
-import { assignDtoPropToEntity, Neo4jService } from 'sgnm-neo4j/dist';
+import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'sgnm-neo4j/dist';
 import { CreateWinformRelationDto } from '../dto/winform.relation.dto';
 
 import { RelationName } from 'src/common/const/relation.name.enum';
@@ -14,6 +14,7 @@ import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 import { WinformdataNodeInterface } from 'src/common/interface/winformdata.node.interface';
 import { WinformDataOperationService } from '../services/winform.data_operation.service';
 import { BaseFormdataObject } from 'src/common/baseobject/base.formdata.object';
+import * as moment from 'moment';
 
 @Injectable()
 export class WinformDataOperationRepository implements WinformdataNodeInterface<any> {
@@ -23,30 +24,22 @@ export class WinformDataOperationRepository implements WinformdataNodeInterface<
   ) {}
 
   async findOneNodeByKey(key: string) {
-    const node = await this.neo4jService.findOneNodeByKey(key);
-    if (!node) {
-      //throw new HttpException('uygun node id si giriniz', 400);
-      throw new RelationNotFountException(key);
-    }
-
-    //find by key with specific relation name which node has that specific relations
-    const relations = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS_FORM);
-
-    if (!relations || relations.length === 0) {
-      //throw new HttpException('hiç ilişkisi yok', 400);
-      throw new RelationNotFountException(key);
-    }
-
-    const form = await this.httpService
-      .get(relations[0]['_fields'][0].properties.url)
-      .pipe(
-        catchError(() => {
-          throw new HttpException('connection refused due to connection lost or wrong data provided', 502);
-        }),
-      )
-      .pipe(map((response) => response.data));
-    return await firstValueFrom(form);
-
+     //is there facility-structure node 
+     const node = await this.neo4jService.findOneNodeByKey(key);
+     if (!node) {
+       throw new FacilityStructureNotFountException(key);
+     }
+     // has facility-structure-node a form?
+     const formNode = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS_FORM);
+     if (!formNode || !formNode.length) {
+       throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK*  (winform virtual nodu bulunamadı olacak) 
+     }
+     // has facility-structure-node a form data?
+     const formData = await this.neo4jService.findNodesByKeyWithRelationName(formNode[0]['_fields'][0]['properties'].key, RelationName.HAS_FORM_DATA);
+     if (!formData || !formData.length) {
+       throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK (form data nodu bulunamadı olacak) 
+     }
+     return formData;   
   }
 
   async create(key: string, winformData: Object) {
@@ -58,7 +51,7 @@ export class WinformDataOperationRepository implements WinformdataNodeInterface<
     // has facility-structure-node a form?
     const formNode = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS_FORM);
     if (!formNode || !formNode.length) {
-      throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK
+      throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK*  (winform virtual nodu bulunamadı olacak) 
     }
     //create form data node
     let baseFormdataObject = new BaseFormdataObject();
@@ -72,8 +65,38 @@ export class WinformDataOperationRepository implements WinformdataNodeInterface<
 
 
 
-  async update(key: string, createWinformRelationDto: CreateWinformRelationDto) {
-    return null;
+  async update(key: string, winformData: Object) {
+     //is there facility-structure node 
+     const node = await this.neo4jService.findOneNodeByKey(key);
+     if (!node) {
+       throw new FacilityStructureNotFountException(key);
+     }
+     // has facility-structure-node a form?
+     const formNode = await this.neo4jService.findNodesByKeyWithRelationName(key, RelationName.HAS_FORM);
+     if (!formNode || !formNode.length) {
+       throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK*  (winform virtual nodu bulunamadı olacak) 
+     }
+     // has facility-structure-node a form data?
+     const formData = await this.neo4jService.findNodesByKeyWithRelationName(formNode[0]['_fields'][0]['properties'].key, RelationName.HAS_FORM_DATA);
+     if (!formData || !formData.length) {
+       throw new FacilityStructureNotFountException(key);  //DEĞİŞECEK (form data nodu bulunamadı olacak)
+     }
+     //update form data node
+     const updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
+     winformData['updatedAt'] = updatedAt;
+     const dynamicObject = createDynamicCyperObject(winformData);
+     const updatedNode = await this.neo4jService.updateById(formData[0]['_fields'][0]['identity'].low, dynamicObject);
+ 
+     if (!updatedNode) {
+       throw new FacilityStructureNotFountException(node.id);  //DEĞİŞECEK
+     }
+     const response = {
+       id: updatedNode['identity'].low,
+       labels: updatedNode['labels'],
+       properties: updatedNode['properties'],
+     };
+
+    return response;
   }
 
 
