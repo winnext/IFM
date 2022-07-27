@@ -710,29 +710,35 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  async addChildrenRelationById(child_id: string, target_parent_id: string) {
+  //PARENT_OF (lirary ye eklendi)
+  async addChildrenRelationById(child_id: string, parent_id: string) {
     try {
-      if(! child_id || ! target_parent_id){
-        throw new HttpException(add_children_relation_by_id_error,404);
+      if (!child_id || !parent_id) {
+        throw new HttpException(
+          add_parent_relation_by_id__must_entered_error,
+          400
+        );
       }
       const res = await this.write(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:CHILDREN]-> (c)",
-        { id: parseInt(child_id), target_parent_id: parseInt(target_parent_id) }
+        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:PARENT_OF]-> (c)",
+        { id: parseInt(child_id), target_parent_id: parseInt(parent_id) }
       );
-      let {relationshipsCreated} = await res.summary.updateStatistics.updates()
-        if(relationshipsCreated===0){
-
-          throw new HttpException(add_children_relation_by_id__relationship_not_created,400);
-        }
+      const { relationshipsCreated } = res.summary.updateStatistics.updates();
+      if (relationshipsCreated === 0) {
+        throw new HttpException(
+          add_parent_relation_by_id__not_created_error,
+          400
+        );
+      }
       return successResponse(res);
     } catch (error) {
-      if (error.response.code) {
+      if (error.response?.code) {
         throw new HttpException(
-          { message: error.response.message, code: error.response.code },
+          { message: error.response?.message, code: error.response?.code },
           error.status
         );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        throw newError(error, "500");
       }
     }
   }
@@ -927,25 +933,26 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
+  //PARENT_OF (lirary ye eklendi)
   async deleteChildrenRelation(id: string) {
     try {
       const res = await this.write(
-        "MATCH (node {isDeleted: false})<-[r:CHILDREN]-(p {isDeleted: false}) where id(node)= $id delete r",
+        "MATCH (node {isDeleted: false})<-[r:PARENT_OF]-(p {isDeleted: false}) where id(node)= $id delete r",
         { id: parseInt(id) }
       );
-let {relationshipsDeleted}=res.summary.updateStatistics.updates()
-      if(relationshipsDeleted===0){
-        throw new HttpException(delete_children_relation_error,400);
+      const { relationshipsDeleted } = res.summary.updateStatistics.updates();
+      if (relationshipsDeleted === 0) {
+        throw new HttpException(delete_children_relation_error, 400);
       }
       return successResponse(res);
     } catch (error) {
-      if (error.response.code) {
+      if (error.response?.code) {
         throw new HttpException(
-          { message: error.response.message, code: error.response.code },
+          { message: error.response?.message, code: error.response?.code },
           error.status
         );
-      }else {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
@@ -1440,6 +1447,9 @@ async findWithChildrenByRealmAsTree(realm: string) {
      }
   }
 
+  
+
+
 async findByRealmWithTreeStructure(realm: string) {
 
   try {
@@ -1726,5 +1736,6 @@ async findByRealm(
       }
     }
   }
+  
   //////////////////////////////////////////////////////////////////////////////////////////
 }
