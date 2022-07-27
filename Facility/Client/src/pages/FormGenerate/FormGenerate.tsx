@@ -130,7 +130,7 @@ const Input = ({ value, onChange, type, ...rest }: InputProps) => {
 const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
   const [items, setItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
-  const [formData, setFormData] = useState([]);
+  const [hasFormData, setHasFormData] = useState(false);
   const toast = React.useRef<any>(null);
 
   // const location = useLocation();
@@ -149,35 +149,67 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
     }
     // const responsegetData = StructureWinformDataService.getFormData(nodeKey);
     // console.log(responsegetData);
-
-    FormBuilderService.getPropertiesWithKey(formKey)
-      .then((responsegetProperties) => {
+    (async()=>{
+      FormBuilderService.getPropertiesWithKey(formKey)
+      .then( async (responsegetProperties) => {
         console.log(responsegetProperties.data);
+        await StructureWinformDataService.getFormData(nodeKey)
+          .then((res) => {
+            console.log("testttttt");
+            
+            setHasFormData(true);
+          })
+          .catch((err) => {
+            setHasFormData(false);
+          });
 
-        const convertedData = responsegetProperties.data.map(function (item: any) {
-          // console.log(formData[`'${item.label}'`]);
-          StructureWinformDataService.getFormData(nodeKey)
-            .then((responsegetData) => {
-              console.log(responsegetData.data[0]._fields[0].properties[item.label.replaceAll(" ", "")]);
-            })
+        if (hasFormData === true) {
+          console.log("hasFormData");
+          
+          const responsegetData = await StructureWinformDataService.getFormData(nodeKey);
+          console.log(responsegetData);
+          const convertedData = responsegetProperties.data.map(function (item: any) {
+            // console.log(formData[`'${item.label}'`]);
+            console.log(responsegetData.data[item.label.replaceAll(" ", "")]);
+            console.log([responsegetData.data].length);
 
-          return {
-            ...item,
-            // defaultValue:
-            //   responsegetData.data.length > 0
-            //     ? responsegetData.data[0].data[item.label]
-            //       ? responsegetData.data[0].data[item.label]
-            //       : item.defaultValue
-            //     : item.defaultValue,
-            rules: { required: item.rules[0] },
-            options: item.options.map(function (option: any) {
-              return { optionsName: option };
-            }),
-          };
-        });
-        setItems(convertedData);
+            return {
+              ...item,
+              defaultValue:
+                [responsegetData.data].length > 0
+                  ? responsegetData.data[item.label.replaceAll(" ", "")]
+                    ? responsegetData.data[item.label.replaceAll(" ", "")]
+                    : item.defaultValue
+                  : item.defaultValue,
+              rules: { required: item.rules[0] },
+              options: item.options.map(function (option: any) {
+                return { optionsName: option };
+              }),
+            };
+          });
+          setItems(convertedData);
+        } else {
+          console.log("noFormData");
+          const convertedData = responsegetProperties.data.map(function (item: any) {
+            // console.log(formData[`'${item.label}'`]);
+
+            return {
+              ...item,
+              rules: { required: item.rules[0] },
+              options: item.options.map(function (option: any) {
+                return { optionsName: option };
+              }),
+            };
+          });
+          setItems(convertedData);
+        }
+
+
+
       })
       .catch((err) => {
+        console.log("ana catch");
+
         return setHasForm(false);
         toast.current.show({
           severity: "error",
@@ -188,23 +220,28 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
           life: 2000,
         });
       });
+    })();
+    
   }, []);
 
-  useEffect(() => {
-    StructureWinformDataService.getFormData(nodeKey)
-      .then((res) => {
-        console.log(res.data[0]._fields[0].properties);
-        setFormData(res.data[0]._fields[0].properties);
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
-        });
-      });
-  }, [])
+  // useEffect(() => {
+  //   StructureWinformDataService.getFormData(nodeKey)
+  //     .then((res) => {
+  //       console.log("denemeget");
+
+  //       setHasFormData(true);
+
+  //     })
+  //     .catch((err) => {
+  //       setHasFormData(false);
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "Error",
+  //         detail: err.response ? err.response.data.message : err.message,
+  //         life: 2000,
+  //       });
+  //     });
+  // }, [])
 
   const {
     handleSubmit,
@@ -227,26 +264,49 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
     // console.log(formData);
     // console.log(formData);
 
-    StructureWinformDataService.createFormData(nodeKey, data)
-      .then((res) => {
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Form Data Created",
-          life: 3000,
+    if (hasFormData === false) {
+      StructureWinformDataService.createFormData(nodeKey, data)
+        .then((res) => {
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Form Data Created",
+            life: 3000,
+          });
+          setTimeout(() => {
+            setFormDia(false);
+          }, 1500);
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
         });
-        setTimeout(() => {
-          setFormDia(false);
-        }, 1500);
-      })
-      .catch((err) => {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.response ? err.response.data.message : err.message,
-          life: 2000,
+    } else {
+      StructureWinformDataService.updateFormData(nodeKey, data)
+        .then((res) => {
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Form Data Updated",
+            life: 3000,
+          });
+          setTimeout(() => {
+            setFormDia(false);
+          }, 1500);
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.response ? err.response.data.message : err.message,
+            life: 2000,
+          });
         });
-      });
+    }
   };
 
   return (
