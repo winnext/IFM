@@ -180,7 +180,7 @@ const StructureAsset = () => {
           referenceKey: assetKey,
         };
 
-        FacilityStructureService.createAsset(key,newAsset)
+        StructureAssetService.createAsset(key,newAsset)
           .then((res) => {
             toast.current.show({
               severity: "success",
@@ -273,8 +273,6 @@ const StructureAsset = () => {
       </div>
     );
   };
-
-
 
   return (
     <div className="container">

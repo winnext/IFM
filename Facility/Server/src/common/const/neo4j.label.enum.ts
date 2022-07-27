@@ -9,4 +9,5 @@ export enum Neo4jLabelEnum {
   ASSET = 'Asset',
   VIRTUAL = 'Virtual',
   WINFORM = 'Winform',
+  WINFORM_DATA = 'WinformData'
 }
