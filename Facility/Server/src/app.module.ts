@@ -20,6 +20,7 @@ import { ClassificationModule } from './classification/classification.module';
 import { HttpCacheInterceptor, KafkaModule } from 'ifmcommon';
 import { ContactModule } from './contact/structure.module';
 import { Neo4jModule } from 'sgnm-neo4j/dist';
+import { OrganizationModule } from './init.organization/organization.module';
 
 @Module({
   imports: [
@@ -107,6 +108,8 @@ import { Neo4jModule } from 'sgnm-neo4j/dist';
     ClassificationModule,
 
     ContactModule,
+
+    OrganizationModule,
   ],
   providers: [
     //to cache all get request

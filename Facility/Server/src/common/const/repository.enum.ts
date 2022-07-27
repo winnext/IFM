@@ -1,5 +1,6 @@
 export enum RepositoryEnums {
   FACILITY = 'facility',
+  ORGANIZATION = 'organization',
   CLASSIFICATION = 'classification',
   FACILITY_STRUCTURE = 'facility_structure',
   FACILITY_HISTORY = 'facility_history',

@@ -12,6 +12,9 @@ import { Neo4jService, assignDtoPropToEntity } from 'sgnm-neo4j/dist';
 @Injectable()
 export class FacilityRepository implements BaseInterfaceRepository<Facility> {
   constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: NestKafkaService) {}
+  findOneByRealmAndLabel(label: string, realm: string) {
+    throw new Error('Method not implemented.');
+  }
 
   async findOneByRealm(realm: string): Promise<Facility> {
     const facility = await this.neo4jService.read(`match (n:Root ) where n.realm=$realm return n`, { realm });
