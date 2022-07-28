@@ -22,11 +22,137 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
   }
 
   async findOneByRealmAndLabel(label: string, realm: string) {
-    let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
+    const obj = {
+      canDelete: false,
+      isDeleted: false,
+      name: '',
+      realm: 'Signum',
+    };
 
-    node = await this.neo4jService.changeObjectChildOfPropToChildren(node);
+    //create  node with multi or single label
+    const infraNode = await this.neo4jService.createNode(
+      { canDelete: false, isDeleted: false, name: 'Infra', realm: 'Signum' },
+      ['Infra'],
+    );
+    const classificationNode = await this.neo4jService.createNode(
+      { canDelete: false, isDeleted: false, name: 'Classification', realm: 'Signum' },
+      ['Classification'],
+    );
+    const typeNode = await this.neo4jService.createNode(
+      { canDelete: false, isDeleted: false, name: 'Types', realm: 'Signum' },
+      ['Types'],
+    );
+    console.log(typeNode);
 
-    return node;
+    await this.neo4jService.addRelations(classificationNode.identity.low, infraNode.identity.low);
+    await this.neo4jService.addRelations(typeNode.identity.low, infraNode.identity.low);
+
+    const omni11Node = await this.neo4jService.createNode(
+      {
+        canDelete: false,
+        isDeleted: false,
+        name: 'OmniClass11',
+        realm: 'Signum',
+        isRoot: true,
+        canCopied: true,
+      },
+      ['OmniClass11'],
+    );
+
+    const facilityStatusNode = await this.neo4jService.createNode(
+      {
+        canDelete: false,
+        isDeleted: false,
+        name: 'FacilityStatus',
+        realm: 'Signum',
+        isRoot: true,
+        canCopied: true,
+      },
+      ['FacilityStatus'],
+    );
+
+    const FacilityDocTypesNode = await this.neo4jService.createNode(
+      {
+        canDelete: false,
+        isDeleted: false,
+        name: 'FacilityDocTypes',
+        realm: 'Signum',
+        isRoot: true,
+        canCopied: true,
+      },
+      ['FacilityDocTypes'],
+    );
+    await this.neo4jService.addRelations(omni11Node.identity.low, classificationNode.identity.low);
+    await this.neo4jService.addRelations(facilityStatusNode.identity.low, classificationNode.identity.low);
+    await this.neo4jService.addRelations(FacilityDocTypesNode.identity.low, classificationNode.identity.low);
+
+    const facilityTypesNode = await this.neo4jService.createNode(
+      {
+        canDelete: false,
+        isDeleted: false,
+        name: 'FacilityTypes',
+        realm: 'Signum',
+        isRoot: true,
+        canCopied: true,
+      },
+      ['FacilityTypes'],
+    );
+
+    await this.neo4jService.addRelations(facilityTypesNode.identity.low, typeNode.identity.low);
+
+    const facilityStatusNode1 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Kullanımda',
+      name_EN: 'In used',
+    });
+    const facilityStatusNode2 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Kullanım dışı',
+      name_EN: 'out of use',
+    });
+
+    const facilityStatusNode3 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Kiralık',
+      name_EN: 'rented',
+    });
+    const facilityStatusNode4 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Satıldı',
+      name_EN: 'sold',
+    });
+    await this.neo4jService.addRelations(facilityStatusNode1.identity.low, facilityStatusNode.identity.low);
+    await this.neo4jService.addRelations(facilityStatusNode2.identity.low, facilityStatusNode.identity.low);
+    await this.neo4jService.addRelations(facilityStatusNode3.identity.low, facilityStatusNode.identity.low);
+    await this.neo4jService.addRelations(facilityStatusNode4.identity.low, facilityStatusNode.identity.low);
+
+    const facilityTypesNode1 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Bina',
+      name_EN: 'Building',
+    });
+    const facilityTypesNode2 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Kat',
+      name_EN: 'Floor',
+    });
+    const facilityTypesNode3 = await this.neo4jService.createNode({
+      canDelete: true,
+      isDeleted: false,
+      name_TR: 'Room',
+      name_EN: 'Oda',
+    });
+    await this.neo4jService.addRelations(facilityTypesNode1.identity.low, facilityTypesNode.identity.low);
+    await this.neo4jService.addRelations(facilityTypesNode2.identity.low, facilityTypesNode.identity.low);
+    await this.neo4jService.addRelations(facilityTypesNode3.identity.low, facilityTypesNode.identity.low);
+
+    return facilityTypesNode;
   }
 
   async create(createFacilityDto: CreateOrganizationDto) {
@@ -57,7 +183,6 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
     await this.neo4jService.addRelations(structureNode.identity.low, organizationNode.identity.low);
     await this.neo4jService.addRelations(classificationNode.identity.low, organizationNode.identity.low);
     await this.neo4jService.addRelations(typeNode.identity.low, organizationNode.identity.low);
-    await this.kafkaService.producerSendMessage('createFacility', JSON.stringify(organizationInfo));
 
     const infraFirstLevelChildren = await this.getInfraChildren();
 
@@ -72,12 +197,14 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
         replicableNode.properties.realm = realm;
         const createdNodes = await this.neo4jService.createNode(replicableNode.properties, replicableNode.labels);
 
-        await this.neo4jService.addRelations(targetRealmNode.identity.low, createdNodes.identity.low);
+        await this.neo4jService.addRelations(createdNodes.identity.low, targetRealmNode.identity.low);
 
         await this.copySubGrapFromOneNodetOaNOTHER(replicableNode.labels[0], realm, replicableNode.properties.name);
         return replicableNode;
       });
     });
+
+    await this.kafkaService.producerSendMessage('createFacility', JSON.stringify(organizationNode.properties));
 
     return organizationNode;
   }
@@ -107,7 +234,7 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
   //----------------------------------------This funcs will add to  neo4j Service-------------------------
   async getInfraChildren() {
     const nodes = await this.neo4jService.read(
-      `match(n:FacilityInfra {realm:'Signum'} ) match (p ) MATCH(n)-[:PARENT_OF]->(p) return p`,
+      `match(n:Infra {realm:'Signum'} ) match (p ) MATCH(n)-[:PARENT_OF]->(p) return p`,
       {},
     );
 
@@ -120,7 +247,7 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
 
   async getReplicableNodesFromFirstLvlNode(id) {
     const nodes = await this.neo4jService.read(
-      `match(n) where id(n)=$id match (p {isCopied:true,isRoot:true}) MATCH(n)-[:PARENT_OF]->(p) return p`,
+      `match(n) where id(n)=$id match (p {canCopied:true,isRoot:true}) MATCH(n)-[:PARENT_OF]->(p) return p`,
       { id },
     );
 
@@ -182,8 +309,6 @@ YIELD input, output, error
 RETURN input, output, error`;
 
       const result = await this.neo4jService.write(cypher, { realm, name });
-
-      console.log(result);
     } catch (error) {
       if (error.response?.code) {
         throw new HttpException({ message: error.response?.message, code: error.response?.code }, error.status);
