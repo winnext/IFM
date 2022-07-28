@@ -93,12 +93,6 @@ export class Neo4jService implements OnApplicationShutdown {
     return session.run(cypher, params);
   }
 
-  async getAllLabels():Promise<string[]>{
-    const cypher = "CALL db.labels();";
-    const result = await this.read(cypher);
-    return result.records.map(x=>(x["_fields"][0]));
-    
-  }
 
   async findByIdWithError( id: string): Promise<any> {
     const idNum = parseInt(id);
@@ -435,7 +429,6 @@ export class Neo4jService implements OnApplicationShutdown {
       if(!params || !label){
         throw new HttpException(create_node__must_entered_error,400);
       }
-      // let labels = await this.getAllLabels();
       // if(!labels.includes(label)){
       //   throw new HttpException(invalid_label_error,400)
       // }  
