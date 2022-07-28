@@ -129,6 +129,7 @@ const Input = ({ value, onChange, type, ...rest }: InputProps) => {
 
 const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
   const [items, setItems] = useState([]);
+  const [passiveItems, setPassiveItems] = useState([]);
   const [hasForm, setHasForm] = useState(true);
   const [hasFormData, setHasFormData] = useState(false);
   const toast = React.useRef<any>(null);
@@ -150,7 +151,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
     // const responsegetData = StructureWinformDataService.getFormData(nodeKey);
     // console.log(responsegetData);
     (async () => {
-      FormBuilderService.getPropertiesWithKey(formKey)
+      FormBuilderService.getActivePropertiesWithKey(formKey)
         .then(async (responsegetProperties) => {
           console.log(responsegetProperties.data);
           let isFormData;
@@ -230,24 +231,73 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
 
   }, []);
 
-  // useEffect(() => {
-  //   StructureWinformDataService.getFormData(nodeKey)
-  //     .then((res) => {
-  //       console.log("denemeget");
+  useEffect(() => {
+    (async () => {
+      FormBuilderService.getPassivePropertiesWithKey(formKey)
+        .then(async (responsegetProperties) => {
+          let isFormData;
+          await StructureWinformDataService.getFormData(nodeKey)
+            .then((res) => {
+              if (res.data.isActive) {
+                isFormData = true;
+              } else {
+                isFormData = false;
+              }
+            })
+            .catch((err) => {
+            });
 
-  //       setHasFormData(true);
+          if (isFormData === true) {
 
-  //     })
-  //     .catch((err) => {
-  //       setHasFormData(false);
-  //       toast.current.show({
-  //         severity: "error",
-  //         summary: "Error",
-  //         detail: err.response ? err.response.data.message : err.message,
-  //         life: 2000,
-  //       });
-  //     });
-  // }, [])
+            const responsegetData = await StructureWinformDataService.getFormData(nodeKey);
+            console.log(responsegetData);
+            const convertedData = responsegetProperties.data.map(function (item: any) {
+              // console.log(formData[`'${item.label}'`]);
+              console.log(responsegetData.data[item.label.replaceAll(" ", "")]);
+              console.log([responsegetData.data].length);
+
+              return {
+                ...item,
+                defaultValue:
+                  [responsegetData.data].length > 0
+                    ? responsegetData.data[item.label.replaceAll(" ", "")]
+                      ? responsegetData.data[item.label.replaceAll(" ", "")]
+                      : item.defaultValue
+                    : item.defaultValue,
+                rules: { required: item.rules[0] },
+                options: item.options.map(function (option: any) {
+                  return { optionsName: option };
+                }),
+              };
+            });
+            setPassiveItems(convertedData);
+          } else {
+            console.log("noFormData");
+            const convertedData = responsegetProperties.data.map(function (item: any) {
+              return {
+                ...item,
+                rules: { required: item.rules[0] },
+                options: item.options.map(function (option: any) {
+                  return { optionsName: option };
+                }),
+              };
+            });
+            setPassiveItems(convertedData);
+          }
+
+        })
+        .catch((err) => {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.responsegetProperties
+              ? err.responsegetProperties.data.message
+              : err.message,
+            life: 2000,
+          });
+        });
+    })();
+  }, [])
 
   const {
     handleSubmit,
@@ -390,7 +440,50 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
             )}
           </div>
         </TabPanel>
-        <TabPanel header="Passive Data"></TabPanel>
+        <TabPanel header="Passive Data">
+          {passiveItems.length>0 ? (
+            <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
+              <h4 className="flex justify-content-center">{nodeName} Extra Form</h4>
+              {passiveItems &&
+                Object.keys(passiveItems).map((e: any) => {
+                  console.log(passiveItems[e]);
+                  const { rules, defaultValue, label }: any = passiveItems[e];
+                  return (
+                    <section key={e}>
+                      <label className="mb-4">{label}</label>
+                      <Controller
+                        name={label.replaceAll(" ", "")}
+                        // name={label}
+                        control={control}
+                        rules={rules}
+                        defaultValue={defaultValue}
+                        render={({ field }) => (
+                          <div>
+                            <Input
+                              value={field.value || ""}
+                              // onChange={field.onChange}
+                              {...passiveItems[e] as any}
+                            />
+                          </div>
+                        )}
+                      />
+                      {errors[label.replaceAll(" ", "")] && (
+                        <Error>This field is required</Error>
+                      )}
+                    </section>
+                  );
+                })}
+
+            </form>
+          ) : (
+            <div>
+              <h4>There is no passive data</h4>
+              {/* <Button className="" onClick={() => backPage()}>
+                  Back
+                </Button> */}
+            </div>
+          )}
+        </TabPanel>
 
       </TabView>
       {/* </TabPanel> */}
