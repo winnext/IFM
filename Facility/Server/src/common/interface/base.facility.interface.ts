@@ -21,4 +21,6 @@ export interface BaseInterfaceRepository<T> {
    * FindOneByRealm method for Repository
    */
   findOneByRealm(realm: string);
+
+  findOneByRealmAndLabel(label: string, realm: string);
 }
