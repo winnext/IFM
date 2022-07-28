@@ -536,8 +536,7 @@ export class Neo4jService implements OnApplicationShutdown {
       if(!_id || !_target_parent_id){
         throw new HttpException(add_relation_must_entered_error,400)
       }
-      await this.addChildrenRelationById(_id, _target_parent_id);
-
+     
       await this.addParentRelationById(_id, _target_parent_id);
 
       //update 1 property of node
@@ -710,38 +709,6 @@ export class Neo4jService implements OnApplicationShutdown {
     }
   }
 
-  //PARENT_OF (lirary ye eklendi)
-  async addChildrenRelationById(child_id: string, parent_id: string) {
-    try {
-      if (!child_id || !parent_id) {
-        throw new HttpException(
-          add_parent_relation_by_id__must_entered_error,
-          400
-        );
-      }
-      const res = await this.write(
-        "MATCH (c {isDeleted: false}) where id(c)= $id MATCH (p {isDeleted: false}) where id(p)= $target_parent_id  MERGE (p)-[:PARENT_OF]-> (c)",
-        { id: parseInt(child_id), target_parent_id: parseInt(parent_id) }
-      );
-      const { relationshipsCreated } = res.summary.updateStatistics.updates();
-      if (relationshipsCreated === 0) {
-        throw new HttpException(
-          add_parent_relation_by_id__not_created_error,
-          400
-        );
-      }
-      return successResponse(res);
-    } catch (error) {
-      if (error.response?.code) {
-        throw new HttpException(
-          { message: error.response?.message, code: error.response?.code },
-          error.status
-        );
-      } else {
-        throw newError(error, "500");
-      }
-    }
-  }
 
   // async addParentRelationById(child_id: string, parent_id: string) {
   //   try {
