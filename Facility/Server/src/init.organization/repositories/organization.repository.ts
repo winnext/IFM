@@ -22,13 +22,6 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
   }
 
   async findOneByRealmAndLabel(label: string, realm: string) {
-    const obj = {
-      canDelete: false,
-      isDeleted: false,
-      name: '',
-      realm: 'Signum',
-    };
-
     //create  node with multi or single label
     const infraNode = await this.neo4jService.createNode(
       { canDelete: false, isDeleted: false, name: 'Infra', realm: 'Signum' },
