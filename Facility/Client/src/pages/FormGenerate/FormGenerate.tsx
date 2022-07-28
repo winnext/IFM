@@ -149,79 +149,85 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
     }
     // const responsegetData = StructureWinformDataService.getFormData(nodeKey);
     // console.log(responsegetData);
-    (async()=>{
+    (async () => {
       FormBuilderService.getPropertiesWithKey(formKey)
-      .then( async (responsegetProperties) => {
-        console.log(responsegetProperties.data);
-        await StructureWinformDataService.getFormData(nodeKey)
-          .then((res) => {
-            console.log("testttttt");
-            
-            setHasFormData(true);
-          })
-          .catch((err) => {
-            setHasFormData(false);
-          });
+        .then(async (responsegetProperties) => {
+          console.log(responsegetProperties.data);
+          let isFormData;
+          await StructureWinformDataService.getFormData(nodeKey)
+            .then((res) => {
+              console.log("testttttt");
+              console.log(res.data);
+              if (res.data.isActive) {
+                isFormData = true;
+                setHasFormData(true);
+              } else {
+                isFormData = false;
+                setHasFormData(false);
+              }
+            })
+            .catch((err) => {
+            });
 
-        if (hasFormData === true) {
-          console.log("hasFormData");
-          
-          const responsegetData = await StructureWinformDataService.getFormData(nodeKey);
-          console.log(responsegetData);
-          const convertedData = responsegetProperties.data.map(function (item: any) {
-            // console.log(formData[`'${item.label}'`]);
-            console.log(responsegetData.data[item.label.replaceAll(" ", "")]);
-            console.log([responsegetData.data].length);
+          if (isFormData === true) {
+            console.log("hasFormData");
 
-            return {
-              ...item,
-              defaultValue:
-                [responsegetData.data].length > 0
-                  ? responsegetData.data[item.label.replaceAll(" ", "")]
+            const responsegetData = await StructureWinformDataService.getFormData(nodeKey);
+            console.log(responsegetData);
+            const convertedData = responsegetProperties.data.map(function (item: any) {
+              // console.log(formData[`'${item.label}'`]);
+              console.log(responsegetData.data[item.label.replaceAll(" ", "")]);
+              console.log([responsegetData.data].length);
+
+              return {
+                ...item,
+                defaultValue:
+                  [responsegetData.data].length > 0
                     ? responsegetData.data[item.label.replaceAll(" ", "")]
-                    : item.defaultValue
-                  : item.defaultValue,
-              rules: { required: item.rules[0] },
-              options: item.options.map(function (option: any) {
-                return { optionsName: option };
-              }),
-            };
+                      ? responsegetData.data[item.label.replaceAll(" ", "")]
+                      : item.defaultValue
+                    : item.defaultValue,
+                rules: { required: item.rules[0] },
+                options: item.options.map(function (option: any) {
+                  return { optionsName: option };
+                }),
+              };
+            });
+            setItems(convertedData);
+          } else {
+            console.log("noFormData");
+            const convertedData = responsegetProperties.data.map(function (item: any) {
+              // console.log(formData[`'${item.label}'`]);
+
+              return {
+                ...item,
+                rules: { required: item.rules[0] },
+                options: item.options.map(function (option: any) {
+                  return { optionsName: option };
+                }),
+              };
+            });
+            setItems(convertedData);
+          }
+
+
+
+        })
+        .catch((err) => {
+          console.log("ana catch");
+
+          return setHasForm(false);
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: err.responsegetProperties
+              ? err.responsegetProperties.data.message
+              : err.message,
+            life: 2000,
           });
-          setItems(convertedData);
-        } else {
-          console.log("noFormData");
-          const convertedData = responsegetProperties.data.map(function (item: any) {
-            // console.log(formData[`'${item.label}'`]);
-
-            return {
-              ...item,
-              rules: { required: item.rules[0] },
-              options: item.options.map(function (option: any) {
-                return { optionsName: option };
-              }),
-            };
-          });
-          setItems(convertedData);
-        }
-
-
-
-      })
-      .catch((err) => {
-        console.log("ana catch");
-
-        return setHasForm(false);
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: err.responsegetProperties
-            ? err.responsegetProperties.data.message
-            : err.message,
-          life: 2000,
         });
-      });
     })();
-    
+
   }, []);
 
   // useEffect(() => {
@@ -275,7 +281,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
           });
           setTimeout(() => {
             setFormDia(false);
-          }, 1500);
+          }, 1000);
         })
         .catch((err) => {
           toast.current.show({
@@ -296,7 +302,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
           });
           setTimeout(() => {
             setFormDia(false);
-          }, 1500);
+          }, 1000);
         })
         .catch((err) => {
           toast.current.show({
