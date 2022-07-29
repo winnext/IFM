@@ -9,6 +9,6 @@ export abstract class BaseOfVirtualNode {
   isDeleted = false;
 }
 
-function generateUuid() {
+export function generateUuid() {
   return uuidv4();
 }

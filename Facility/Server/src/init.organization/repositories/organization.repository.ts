@@ -8,6 +8,7 @@ import { Neo4jLabelEnum } from 'src/common/const/neo4j.label.enum';
 import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 import { NestKafkaService } from 'ifmcommon';
 import { Neo4jService, assignDtoPropToEntity, Transaction } from 'sgnm-neo4j/dist';
+import { generateUuid } from 'src/common/baseobject/base.virtual.node.object';
 
 @Injectable()
 export class OrganizationRepository implements BaseInterfaceRepository<Facility> {
@@ -35,8 +36,6 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
       { canDelete: false, isDeleted: false, name: 'Types', realm: 'Signum' },
       ['Types'],
     );
-    console.log(typeNode);
-
     await this.neo4jService.addRelations(classificationNode.identity.low, infraNode.identity.low);
     await this.neo4jService.addRelations(typeNode.identity.low, infraNode.identity.low);
 
@@ -159,11 +158,22 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
     classification.realm = realm;
     const types = new Facility();
     types.realm = realm;
+    const contact = new Facility();
+    contact.realm = realm;
+
+    const typeInfo = {
+      name: 'Type',
+    };
+
+    const contactInfo = {
+      name: 'Contact',
+    };
 
     const finalOrganizationObject = assignDtoPropToEntity(facility, organizationInfo);
     const finalStructureObject = assignDtoPropToEntity(structure, structureInfo);
     const finalClassificationObject = assignDtoPropToEntity(classification, classificationInfo);
-    const finalTypesObject = assignDtoPropToEntity(types, classificationInfo);
+    const finalTypesObject = assignDtoPropToEntity(types, typeInfo);
+    const finalContactObject = assignDtoPropToEntity(contact, contactInfo);
 
     //create  node with multi or single label
     const organizationNode = await this.neo4jService.createNode(finalOrganizationObject, [Neo4jLabelEnum.ROOT]);
@@ -172,12 +182,14 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
       Neo4jLabelEnum.CLASSIFICATION,
     ]);
     const typeNode = await this.neo4jService.createNode(finalTypesObject, [Neo4jLabelEnum.TYPES]);
+    const contactNode = await this.neo4jService.createNode(finalContactObject, [Neo4jLabelEnum.CONTACT]);
 
     await this.neo4jService.addRelations(structureNode.identity.low, organizationNode.identity.low);
     await this.neo4jService.addRelations(classificationNode.identity.low, organizationNode.identity.low);
     await this.neo4jService.addRelations(typeNode.identity.low, organizationNode.identity.low);
+    await this.neo4jService.addRelations(contactNode.identity.low, organizationNode.identity.low);
 
-    const infraFirstLevelChildren = await this.getInfraChildren();
+    const infraFirstLevelChildren = await this.getFirstLvlChildren('Infra','Signum');
 
     infraFirstLevelChildren.map(async (node) => {
       //from lvl 1 to lvl 2 which nodes are replicable
@@ -186,14 +198,28 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
       //target realm node(Classification,Types)
       const targetRealmNode = await this.findByRealm(node.labels[0], realm);
 
-      const replicableNodeWithRealm = replicableNodes.map(async (replicableNode) => {
+      replicableNodes.map(async (replicableNode) => {
         replicableNode.properties.realm = realm;
+        const key=generateUuid()
+        replicableNode.properties.key = key;
         const createdNodes = await this.neo4jService.createNode(replicableNode.properties, replicableNode.labels);
 
         await this.neo4jService.addRelations(createdNodes.identity.low, targetRealmNode.identity.low);
 
         await this.copySubGrapFromOneNodetOaNOTHER(replicableNode.labels[0], realm, replicableNode.properties.name);
-        return replicableNode;
+
+       const replicableNodesChilds= await this.neo4jService.read(
+          `match(n:${createdNodes.labels[0]} {realm:$realm} ) match (p ) MATCH(n)-[:PARENT_OF]->(p) return p`,
+          {realm},
+        );
+
+        if(replicableNodesChilds.records?.length){
+          replicableNodesChilds.records.map(async node=>{
+            const key=generateUuid()
+            await this.neo4jService.updateById(node['_fields'][0].identity?.low,{key})
+          })
+        }
+
       });
     });
 
@@ -225,12 +251,11 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
   }
 
   //----------------------------------------This funcs will add to  neo4j Service-------------------------
-  async getInfraChildren() {
+  async getFirstLvlChildren(label,realm) {
     const nodes = await this.neo4jService.read(
-      `match(n:Infra {realm:'Signum'} ) match (p ) MATCH(n)-[:PARENT_OF]->(p) return p`,
-      {},
+      `match(n:${label} {realm:$realm} ) match (p ) MATCH(n)-[:PARENT_OF]->(p) return p`,
+      {realm},
     );
-
     const nodesChildren = nodes.records.map((children) => {
       return children['_fields'][0];
     });
@@ -244,6 +269,7 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
       { id },
     );
 
+   
     const nodesChildren = nodes.records.map((children) => {
       return children['_fields'][0];
     });
