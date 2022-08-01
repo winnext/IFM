@@ -251,7 +251,7 @@ const Contact = () => {
     }
     for (let i of nodes) {
       fixNodes(i.children)
-      i.label = i.email;
+      i.label = i.name;
     }
   };
 

@@ -34,6 +34,7 @@ interface Node {
   label?: string;
   labels?: string[]; // for form type
   parentId?: string;
+  name_EN?: string;
 }
 
 const SetClassification = () => {
@@ -135,7 +136,7 @@ const SetClassification = () => {
     }
     for (let i of nodes) {
       fixNodes(i.children)
-      i.label = i.name;;
+      i.label = i.name||i.name_EN;
     }
   };
 
