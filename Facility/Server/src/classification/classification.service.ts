@@ -19,12 +19,6 @@ export class ClassificationService {
     return await this.classificationRepository.create(createClassificationDto);
   }
 
-  // @Span('find all classifications')
-  // @OtelMethodCounter()
-  // async findAll(query) {
-  //   return await this.classificationRepository.findAll(query);
-  // }
-
   @Span('find a classification by id')
   @OtelMethodCounter()
   async findOne(label: string, realm: string) {

@@ -17,21 +17,6 @@ import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 's
 export class ClassificationRepository implements GeciciInterface<Classification> {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async findOneById(id: string) {
-    const tree = await this.neo4jService.findByIdWithTreeStructure(id);
-
-    if (!tree) {
-      throw new ClassificationNotFountException(id);
-    }
-
-    return tree;
-  }
-
-  async findAll(data: PaginationNeo4jParams) {
-    const nodes = await this.neo4jService.findAllByClassName(data);
-    return nodes;
-  }
-
   async findOneByRealm(label: string, realm: string) {
     let node = await this.neo4jService.findByRealmWithTreeStructure(label, realm);
 
