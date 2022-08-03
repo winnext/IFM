@@ -35,6 +35,7 @@ interface Node {
   labels?: string[]; // for form type
   parentId?: string;
   name_EN?: string;
+  name_TR?: string;
 }
 
 const SetClassification = () => {
@@ -69,7 +70,7 @@ const SetClassification = () => {
       command: () => {
         ClassificationsService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            setName(res.data.properties.name || "");
+            setName(res.data.properties.name || res.data.properties.name_EN || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
             setIsActive(res.data.properties.isActive);
@@ -136,7 +137,7 @@ const SetClassification = () => {
     }
     for (let i of nodes) {
       fixNodes(i.children)
-      i.label = i.name||i.name_EN;
+      i.label = i.name || i.name_TR || i.name_EN;
     }
   };
 
@@ -152,7 +153,7 @@ const SetClassification = () => {
             code: code,
             tag: tag,
             description: "",
-            labels: []
+            labels: [],
           }
         } else {
           newNode = {
@@ -261,7 +262,9 @@ const SetClassification = () => {
   const deleteItem = (key: string) => {
     ClassificationsService.nodeInfo(key)
       .then((res) => {
-        if (res.data.properties.hasParent === false) {
+        console.log(res.data);
+
+        if (res.data.properties.canDelete === true) {
           ClassificationsService.remove(res.data.id)
             .then(() => {
               toast.current.show({
@@ -270,7 +273,7 @@ const SetClassification = () => {
                 detail: "Classification Deleted",
                 life: 2000,
               });
-              navigate("/classifications")
+              getClassification();
             })
             .catch((err) => {
               toast.current.show({
@@ -281,25 +284,14 @@ const SetClassification = () => {
               });
             });
         } else {
-          ClassificationsService.remove(res.data.id)
-            .then(() => {
-              toast.current.show({
-                severity: "success",
-                summary: "Success",
-                detail: "Classification Deleted",
-                life: 2000,
-              });
-              getClassification();
 
-            })
-            .catch((err) => {
-              toast.current.show({
-                severity: "error",
-                summary: "Error",
-                detail: err.response ? err.response.data.message : err.message,
-                life: 2000,
-              });
-            });
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Can not delete this classification",
+            life: 2000,
+          });
+
         }
 
       })
@@ -502,7 +494,7 @@ const SetClassification = () => {
             dragConfirm(event.dragNode._id.low, event.dropNode._id.low)
           }}
           filter
-          filterBy="name,code"
+          filterBy="name,name_EN,name_TR,code"
           filterPlaceholder="Search"
           className="font-bold"
         />

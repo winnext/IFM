@@ -37,6 +37,7 @@ interface Node {
   labels?: string[]; // for form type
   parentId?: string;
   email?: string;
+  name_EN?: string;
 }
 
 interface FormNode {
@@ -104,7 +105,7 @@ const Contact = () => {
   const [phone, setPhone] = useState<string>("");
 
   const getForms = async () => {
-    await FormTypeService.findOne('398').then((res) => {
+    await FormTypeService.findOne('135').then((res) => {
       let temp = JSON.parse(JSON.stringify([res.data.root] || []));
       const iconFormNodes = (nodes: FormNode[]) => {
         if (!nodes || nodes.length === 0) {
@@ -136,7 +137,7 @@ const Contact = () => {
         }
         for (let i of nodes) {
           classificationNodes(i.children)
-          i.label = i.name;
+          i.label = i.name||i.name_EN;
         }
       };
       classificationNodes(temp);
@@ -212,7 +213,8 @@ const Contact = () => {
 
   const getFacilityStructure = () => {
     ContactService.findOne(realm).then((res) => {
-
+      console.log(res.data);
+      
       if (!res.data.root.children) {
         setData([res.data.root.properties] || []);
         let temp = JSON.parse(JSON.stringify([res.data.root.properties] || []));
@@ -250,8 +252,9 @@ const Contact = () => {
       return;
     }
     for (let i of nodes) {
+      
       fixNodes(i.children)
-      i.label = i.name;
+      i.label = i.name||i.email;
     }
   };
 
