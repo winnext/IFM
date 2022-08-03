@@ -8,13 +8,14 @@ import { UpdateClassificationDto } from '../dto/update-classification.dto';
 import { Classification } from '../entities/classification.entity';
 import { ClassificationNotFountException } from 'src/common/notFoundExceptions/not.found.exception';
 
-import { GeciciInterface } from 'src/common/interface/gecici.interface';
+
 import { has_children_error } from 'src/common/const/custom.error.object';
 import { CustomTreeError } from 'src/common/const/custom.error.enum';
 import { assignDtoPropToEntity, createDynamicCyperObject, Neo4jService } from 'sgnm-neo4j/dist';
+import { classificationInterface } from 'src/common/interface/classification.interface';
 
 @Injectable()
-export class ClassificationRepository implements GeciciInterface<Classification> {
+export class ClassificationRepository implements classificationInterface<Classification> {
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async findOneByRealm(label: string, realm: string) {
