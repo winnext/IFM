@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateOrganizationDto } from './dtos/create.organization.dto';
 import { UpdateOrganizationDto } from './dtos/update.organization.dto';
 import { Facility } from './entities/facility.entity';
@@ -7,6 +7,7 @@ import { OrganizationService } from './organization.service';
 import { Roles, Unprotected } from 'nest-keycloak-connect';
 import { UserRoles } from 'src/common/const/keycloak.role.enum';
 import { NoCache } from 'ifmcommon';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Organization')
 @Controller('organization')
@@ -60,5 +61,30 @@ export class OrganizationController {
   @NoCache()
   findOne(@Param('label') label: string, @Param('realm') realm: string) {
     return this.organizationService.findOne(label, realm);
+  }
+
+
+  @Post('createRealmWithExcelFile')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        language:{
+          type: 'string'
+        }
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({
+    summary: 'Upload a single excel file with a language example you can insert "EN" for English',
+  })
+  @ApiConsumes('multipart/form-data')
+  importClassificationFromExcel(@UploadedFile() file: Express.Multer.File, @Body("language") language?:string){
+    return this.organizationService.importClassificationFromExcel(file,language);
   }
 }

@@ -122,4 +122,34 @@ export class ClassificationRepository implements GeciciInterface<Classification>
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async getClassificationByIsActiveStatus(realm: string,isActive:boolean,language: string){
+
+    let cypher =`MATCH path = (p:Classification {realm:"${realm}"})-[:PARENT_OF*]->(m) where m.isActive=${isActive}\
+    WITH collect(path) AS paths \
+    CALL apoc.convert.toTree(paths) \
+    YIELD value \
+    RETURN value;`
+  
+    let data =await this.neo4jService.read(cypher);
+  
+    return data.records[0]["_fields"][0];
+  }
+
+  async setIsActiveTrueOfClassificationAndItsChild(id:string){
+    let cypher=`MATCH (n) where id(n)=${Number(id)} SET n.isActive=true`
+    await this.neo4jService.write(cypher)
+
+  let cypher2=`MATCH (n) where id(n)=${Number(id)} MATCH (n)-[:PARENT_OF*]->(a) SET a.isActive=true`;
+    await this.neo4jService.write(cypher2)
+  }
+
+
+  async setIsActiveFalseOfClassificationAndItsChild(id:string){
+    let cypher=`MATCH (n) where id(n)=${Number(id)} SET n.isActive=false`
+    await this.neo4jService.write(cypher)
+   
+     let cypher2=`MATCH (n) where id(n)=${Number(id)} MATCH (n)-[:PARENT_OF*]->(a) SET a.isActive=false`;
+     await this.neo4jService.write(cypher2) 
+  };
 }

@@ -49,4 +49,24 @@ export class ClassificationController {
   findOneNode(@Param('key') key: string) {
     return this.classificationService.findOneNode(key);
   }
+
+
+  @Unprotected()
+  @Patch("setIsActiveFalseOfClassificationAndItsChild/:id")
+  async setIsActiveFalseOfClassificationAndItsChild(@Param('id') id:string) {
+    return this.classificationService.setIsActiveFalseOfClassificationAndItsChild(id);
+
+  }
+
+  @Unprotected()
+  @Patch("setIsActiveTrueOfClassificationAndItsChild/:id")
+  async setIsActiveTrueOfClassificationAndItsChild(@Param('id') id:string) {
+    return this.classificationService.setIsActiveTrueOfClassificationAndItsChild(id);
+  }
+
+  @Unprotected()
+  @Get("getClassificationByIsActiveStatus/:realm/:isActive/:language")
+  async getClassificationByIsActiveStatus(realm: string,isActive:boolean,language: string){
+    return this.classificationService.getClassificationByIsActiveStatus(realm,isActive,language);
+  }
 }

@@ -9,6 +9,7 @@ import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.fou
 import { NestKafkaService } from 'ifmcommon';
 import { Neo4jService, assignDtoPropToEntity, Transaction } from 'sgnm-neo4j/dist';
 import { generateUuid } from 'src/common/baseobject/base.virtual.node.object';
+const exceljs = require('exceljs');
 
 @Injectable()
 export class OrganizationRepository implements BaseInterfaceRepository<Facility> {
@@ -317,4 +318,292 @@ RETURN input, output, error`;
       }
     }
   }
+
+
+  async importClassificationFromExcel(file: Express.Multer.File,language:string) {
+
+    let data = [];
+    let columnNames:string[]=[];
+    let columnsLength:number;
+
+    let buffer = new Uint8Array(file.buffer);
+    const workbook = new exceljs.Workbook();
+
+    await workbook.xlsx.load(buffer).then(function async(book) {
+      const instructionsSheet = book.getWorksheet(1);
+      const realmAndValue = instructionsSheet
+        .getRow(1)
+        .values.splice(1)
+        .map((x) => x.toLocaleLowerCase());
+
+      // if (!realmAndValue.includes('realm') || realmAndValue.length != 2) {
+      //   console.log('realm and its value are not');
+      // } else {
+        const sheet = book.getWorksheet(20);
+
+        columnsLength = book.getWorksheet(20)._columns?.length; //column length of specific sheet
+        
+
+        for (let i = 1; i <= columnsLength; i++) {
+          data.push(sheet.getColumn(i).values);
+        }
+
+        //console.log(data.length)
+        // for(let a = 0; a < data.length; a++){
+        //   columnNames.push(data[a][1]);
+        // }
+        
+      //}
+    });
+
+    let [ApprovalBy,AreaUnit,AssetType,category_facility,category_space,category_element,category_product,category_role,...others] = data;
+
+    let firstThree=[ApprovalBy,AreaUnit,AssetType];
+    //let classifications =[category_facility,category_space,category_product,category_role];
+    let classifications =[category_facility];
+    
+    /////////// classifications ////////////////////////////////
+    for (let i = 0; i < classifications.length; i++) {
+      let deneme=[];
+
+      for (let index = 2; index < classifications[i].length; index++) {
+        const element = classifications[i][index].split(new RegExp(/\s{3,}|:\s/g));
+       
+        deneme.push(element);
+      }
+      for(let i=0;i<deneme.length;i++){
+        deneme[i][0]=deneme[i][0].replace(/ /g, '-');
+      }
+      //let sortedValue =this.ascendingSort2(deneme)
+
+      let classificationName2=`OmniClass${deneme[0][0].slice(0,2)}`;
+  
+
+      let newClassification=[]
+      let codearray=[]
+
+
+      
+    for (let q = 0; q < deneme.length; q++) {
+      
+      let parentcode = "";   
+      var z = 0;
+      codearray= await deneme[q][0].split("-");
+
+      for (let j=0; j < codearray.length; j++) {
+        if (codearray[j] == "00") {
+          z=z+1;
+        }
+      }
+
+      if (z == 0) {
+        for (let i=0; i<codearray.length-1; i++ ) {
+          if (parentcode == "") {
+            parentcode = codearray[i];
+          }
+          else {
+            parentcode = parentcode + "-" + codearray[i];
+          }
+          
+        }
+        if (codearray.length == 4) {
+          parentcode = parentcode + "-" +  "00";
+        }  
+      }
+      else {
+        if (z == 1) {
+          for (let i=0; i<codearray.length-2; i++ ) {
+            if (parentcode == "") {
+              parentcode = codearray[i];
+            }
+            else {
+              parentcode = parentcode + "-" + codearray[i];
+            }
+          }
+            parentcode = parentcode + "-" + "00-00"; 
+        }
+        else if (z == 2) {
+          for (let i=0; i<codearray.length-3; i++ ) {
+            if (parentcode == "") {
+              parentcode = codearray[i];
+            }
+            else {
+              parentcode = parentcode + "-" + codearray[i];
+            }
+          }
+            parentcode = parentcode + "-" + "00-00-00"; 
+        }
+        else if (z == 3) {
+          for (let i=0; i<codearray.length-4; i++ ) {
+            if (parentcode == "") {
+              parentcode = codearray[i];
+            } 
+            else {
+              parentcode = parentcode + "-" + codearray[i];
+            }
+          }
+          if (parentcode == "") {
+            parentcode = "00-00-00-00";
+          } 
+          else {
+            parentcode = parentcode + "-" + "00-00-00-00"; 
+          }
+            
+        }
+
+        else if (z == 4) {
+          for (let i=0; i<codearray.length-5; i++ ) {
+            if (parentcode == "") {
+              parentcode = codearray[i];
+            } 
+            else {
+              parentcode = parentcode + "-" + codearray[i];
+            }
+          }
+          if (parentcode == "") {
+            parentcode = "00-00-00-00-00";
+          } 
+          else {
+            parentcode = parentcode + "-" + "00-00-00-00-00"; 
+          }
+            
+        }
+      } 
+    
+      var codestr = "";
+      for (let t=0; t < codearray.length; t++) {
+        if (codestr == "") {
+          codestr =  codearray[t];
+        }
+        else {
+          codestr = codestr + "-" + codearray[t]; 
+        }
+        
+      }
+      
+       
+      let dto = {
+        code: codestr,
+        parentCode: parentcode,
+        name: deneme[q][1],
+        key: generateUuid(),
+        isDeleted:false,
+        isActive:true,
+        canDelete:true,
+      };
+    
+    
+      
+      newClassification.push(dto);
+
+  }
+  const realmName="Signum"
+  ///////// the process start here
+
+      let cypher= `Match (a:Infra {realm:"${realmName}"})-[:PARENT_OF]->(n:Classification {realm:"${realmName}"}) MERGE (b:${classificationName2}_${language} {code:"${newClassification[0].parentCode}",name:"${classificationName2}",isDeleted:${newClassification[i].isDeleted},canCopied:true,canDelete:false,realm:"${realmName}",isRoot:true}) MERGE (n)-[:PARENT_OF]->(b)`;
+      let data =await this.neo4jService.write(cypher);
+        console.log(data)
+      
+
+      for(let i=0;i<newClassification.length;i++){
+
+       let cypher2= `MATCH (n) where n.code="${newClassification[i].parentCode}" MERGE (b {code:"${newClassification[i].code}",parentCode:"${newClassification[i].parentCode}",name:"${newClassification[i].name}",isDeleted:${newClassification[i].isDeleted},isActive:${newClassification[i].isActive},canDelete:${newClassification[i].canDelete}}) MERGE (n)-[:PARENT_OF]->(b)`;
+       let data2= await this.neo4jService.write(cypher2)
+       //console.log(data2);
+      }
+     }
+  ////////////////////////////category element//////////////////////////////////////
+
+  // let cat=await category_element.filter(i=>i!="")  
+
+  // let values=[];
+  // for (let index = 1; index < cat.length; index++) {
+   
+  //   const element = cat[index].split()
+   
+  //   values.push(element);
+  // }
+  
+  // let cat2= this.ascendingSort2(values)
+  // console.log(cat2)
+ 
+    
+  // console.log(values);
+
+  // let cypher= `MERGE (n:PickList {name:"PickList"}) MERGE (b:CategoryElement {name:"CategoryElement",isDeleted:false}) MERGE (n)-[:PARENT_OF]->(b) MERGE (n)<-[:CHILD_OF]-(b)`;
+  // await this.neo4jService.write(cypher);
+
+  // for(let i=0;i<values.length;i++){
+       
+  //   let cypher2= `MATCH (n:CategoryElement {name:"CategoryElement",isDeleted:false}) MERGE (b {code:"${values[i][0]}",name:"${values[i][1]}"}) MERGE (n)<-[:CHILD_OF]-(b) MERGE (n)-[:PARENT_OF]->(b)`;
+  //   await this.neo4jService.write(cypher2)
+  // }
+  
+  /////////////////////////////////////////////////////////////// first three datas ////////////////////////////////////////////////////////////////
+  // let deneme4 = []
+  // const realmName="IFM"
+  // function key(){
+  //   return uuidv4()
+  //   }
+
+   
+  //   for(let i=0;i<firstThree.length;i++){
+  //     let deneme5=[];
+  //      let dto ={}
+  //     for (let index = 1; index < firstThree[i].length; index++) {
+      
+  //       dto={name_EN:firstThree[i][index],key:key(),isDeleted:false,isActive:true,canDelete:true}
+  //       deneme5.push(dto);
+     
+  //     }
+  //    deneme4.push(deneme5);
+  //     }
+  
+
+  //     for(let i=0;i < deneme4.length;i++){
+  //       let cypher= `match (n:Classification {realm:"${realmName}"}) MERGE (b:${deneme4[i][0].name_EN} {name:"${deneme4[i][0].name_EN}",isDeleted:${deneme4[i][0].isDeleted},key:"${deneme4[i][0].key}",realm:"${realmName}",canDelete:false,isActive:true})  MERGE (n)-[:PARENT_OF]->(b)`;
+  //       await this.neo4jService.write(cypher);
+
+  //       for (let index = 1; index < deneme4[i].length; index++) {
+          
+  //      //console.log(deneme4[i][0].name_EN)
+  //     let cypher3= `Match (n:${deneme4[i][0].name_EN} {isDeleted:false}) MERGE (b {name_EN:"${deneme4[i][index].name_EN}",isDeleted:${deneme4[i][index].isDeleted},key:"${deneme4[i][index].key}",canDelete:${deneme4[i][index].canDelete},})  MERGE (n)-[:PARENT_OF]->(b)`;
+  //      let data =await this.neo4jService.write(cypher3)
+  //      console.log(data);
+  //       }
+  //     }
+
+  //   }
+    ////////////////////////////////////////////////////////////// the rest of the process //////////////////////////////////////////////////////////////////
+
+
+    //  let deneme2 = []
+    // function key2(){
+    //   return uuidv4()
+    //   }
+
+    // for (let i = 0; i < others.length; i++) {
+    //   let deneme3 = [];
+    //     let dto ={}
+    //   for (let index = 1; index < others[i].length; index++) {
+    //   dto={name_EN:others[i][index],key:key(),isDeleted:false,isActive:true,canDelete:true}
+    //     deneme3.push(dto);
+    //   }
+    //   deneme2.push(deneme3);
+    // }
+
+    //  for(let i=0;i<deneme2.length;i++){
+
+    //   let cypher= `match (n:Classification {realm:"${realmName}"}) MERGE  (b:${deneme2[i][0].name_EN}  {name:"${deneme2[i][0].name_EN}",isDeleted:${deneme2[i][0].isDeleted},key:"${deneme2[i][0].key}",isActive:true,canDelete:false}) MERGE (n)-[:PARENT_OF]->(b)`;
+    //   await this.neo4jService.write(cypher)
+
+    //   for (let index = 1; index < deneme2[i].length; index++) {
+       
+           
+    //         let cypher2= `Match  (n:${deneme2[i][0].name_EN} {isDeleted:false}) MERGE (b {name_EN:"${deneme2[i][index].name_EN}",isDeleted:${deneme2[i][index].isDeleted},key:"${deneme2[i][index].key}",isActive:{deneme2[i][0].isActive},canDelete:{deneme2[i][0].canDelete}}) MERGE (n)-[:PARENT_OF]->(b)`;
+    //       await this.neo4jService.write(cypher2)
+    //   }
+    //  }
+    ////////////////////////////////
+}
 }

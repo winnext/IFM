@@ -51,4 +51,26 @@ export class ClassificationService {
     //checkObjectIddİsValid(id);
     return await this.classificationRepository.findOneNodeByKey(key);
   }
+
+  @Span('change isActive status a node and if its has children change isActive status of children')
+  @OtelMethodCounter()
+  async setIsActiveTrueOfClassificationAndItsChild(id:string){
+    return await this.classificationRepository.setIsActiveTrueOfClassificationAndItsChild(id);
+  }
+
+
+  @Span('change isActive status a node and if its has children change isActive status of children')
+  @OtelMethodCounter()
+  async setIsActiveFalseOfClassificationAndItsChild(id:string){
+    return await this.classificationRepository.setIsActiveFalseOfClassificationAndItsChild(id);
+  }
+
+  @Span('get all classifications by realm, isActive and language')
+  @OtelMethodCounter()
+  async getClassificationByIsActiveStatus(realm: string,isActive:boolean,language: string){
+    return await this.classificationRepository.getClassificationByIsActiveStatus(realm,isActive,language);
+  }
+
+
+  
 }
