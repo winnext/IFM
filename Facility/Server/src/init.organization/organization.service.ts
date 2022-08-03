@@ -5,12 +5,13 @@ import { UpdateOrganizationDto } from './dtos/update.organization.dto';
 import { Facility } from './entities/facility.entity';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
 import { BaseInterfaceRepository } from 'src/common/interface/base.facility.interface';
+import { OrganizationInterface } from 'src/common/interface/organization.interface';
 
 @Injectable()
 export class OrganizationService {
   constructor(
     @Inject(RepositoryEnums.ORGANIZATION)
-    private readonly organizationRepository: BaseInterfaceRepository<Facility>,
+    private readonly organizationRepository: OrganizationInterface<Facility>,
   ) {}
 
   @Span('find a facility by realm')

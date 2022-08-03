@@ -9,10 +9,11 @@ import { FacilityNotFountException } from 'src/common/notFoundExceptions/not.fou
 import { NestKafkaService } from 'ifmcommon';
 import { Neo4jService, assignDtoPropToEntity, Transaction } from 'sgnm-neo4j/dist';
 import { generateUuid } from 'src/common/baseobject/base.virtual.node.object';
+import { OrganizationInterface } from 'src/common/interface/organization.interface';
 const exceljs = require('exceljs');
 
 @Injectable()
-export class OrganizationRepository implements BaseInterfaceRepository<Facility> {
+export class OrganizationRepository implements OrganizationInterface<Facility> {
   constructor(private readonly neo4jService: Neo4jService, private readonly kafkaService: NestKafkaService) {}
 
   async findOneByRealm(realm: string): Promise<Facility> {

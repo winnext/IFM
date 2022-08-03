@@ -23,5 +23,5 @@ export interface BaseInterfaceRepository<T> {
   findOneByRealm(realm: string);
 
   findOneByRealmAndLabel(label: string, realm: string);
-  importClassificationFromExcel(file: Express.Multer.File, language: string);
+  
 }
