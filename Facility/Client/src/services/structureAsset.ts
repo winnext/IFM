@@ -10,7 +10,6 @@ const findAsset = async (key: string) => {
     return axios.get(url + key);
 };
 
-
 const createAsset = async (key: string, asset: AssetInterface) => {
     return axios.post(url + key, asset);
 };

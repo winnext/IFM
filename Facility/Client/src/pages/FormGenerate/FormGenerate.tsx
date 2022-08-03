@@ -234,7 +234,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
   useEffect(() => {
     (async () => {
       FormBuilderService.getPassivePropertiesWithKey(formKey)
-        .then(async (responsegetProperties) => {
+        .then(async (responsegetPropertiesPassive) => {
           let isFormData;
           await StructureWinformDataService.getFormData(nodeKey)
             .then((res) => {
@@ -248,11 +248,15 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
             });
 
           if (isFormData === true) {
+            console.log("11");
+
 
             const responsegetData = await StructureWinformDataService.getFormData(nodeKey);
             console.log(responsegetData);
-            const convertedData = responsegetProperties.data.map(function (item: any) {
-              // console.log(formData[`'${item.label}'`]);
+            console.log(responsegetPropertiesPassive);
+
+            const convertedData = responsegetPropertiesPassive.data?.map(function (item: any) {
+
               console.log(responsegetData.data[item.label.replaceAll(" ", "")]);
               console.log([responsegetData.data].length);
 
@@ -271,27 +275,17 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
               };
             });
             setPassiveItems(convertedData);
-          } else {
-            console.log("noFormData");
-            const convertedData = responsegetProperties.data.map(function (item: any) {
-              return {
-                ...item,
-                rules: { required: item.rules[0] },
-                options: item.options.map(function (option: any) {
-                  return { optionsName: option };
-                }),
-              };
-            });
-            setPassiveItems(convertedData);
           }
 
         })
         .catch((err) => {
+          console.log(err);
+          return;
           toast.current.show({
             severity: "error",
             summary: "Error",
-            detail: err.responsegetProperties
-              ? err.responsegetProperties.data.message
+            detail: err.responsegetPropertiesPassive
+              ? err.responsegetPropertiesPassive.data.message
               : err.message,
             life: 2000,
           });
@@ -441,7 +435,7 @@ const FormGenerate = ({ nodeKey, formKey, nodeName, setFormDia }: Params) => {
           </div>
         </TabPanel>
         <TabPanel header="Passive Data">
-          {passiveItems.length>0 ? (
+          {passiveItems.length > 0 ? (
             <form onSubmit={handleSubmit(onSubmit)} className="wrapper">
               <h4 className="flex justify-content-center">{nodeName} Extra Form</h4>
               {passiveItems &&
