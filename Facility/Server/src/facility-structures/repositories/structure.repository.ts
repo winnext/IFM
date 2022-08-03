@@ -137,4 +137,14 @@ export class FacilityStructureRepository implements GeciciInterface<FacilityStru
     }
     return node;
   }
+
+  async findOneFirstLevelByRealm(label: string, realm: string) {
+    let node = await this.neo4jService.findByRealmWithTreeStructureOneLevel(label, realm);
+    if (!node) {
+      throw new FacilityStructureNotFountException(realm);
+    }
+    node = await this.neo4jService.changeObjectChildOfPropToChildren(node);
+
+    return node['root']['children'];
+  }
 }

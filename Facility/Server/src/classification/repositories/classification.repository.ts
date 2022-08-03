@@ -153,4 +153,7 @@ export class ClassificationRepository implements classificationInterface<Classif
      let cypher2=`MATCH (n) where id(n)=${Number(id)} MATCH (n)-[:PARENT_OF*]->(a) SET a.isActive=false`;
      await this.neo4jService.write(cypher2) 
   };
+  async findOneFirstLevelByRealm(label: string, realm: string) {
+    return null;
+  }
 }
