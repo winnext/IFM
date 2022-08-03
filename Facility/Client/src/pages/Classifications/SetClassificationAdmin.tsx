@@ -38,7 +38,7 @@ interface Node {
   name_TR?: string;
 }
 
-const SetClassification = () => {
+const SetClassificationAdmin = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Node[]>([]);
@@ -55,6 +55,8 @@ const SetClassification = () => {
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
   const [labels, setLabels] = useState<string[]>([]);
+  console.log(auth);
+  
 
   const menu = [
     {
@@ -506,4 +508,4 @@ const SetClassification = () => {
   );
 };
 
-export default SetClassification;
+export default SetClassificationAdmin;

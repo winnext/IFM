@@ -68,7 +68,7 @@ interface FormNode {
   icon?: string;
 }
 
-const SetFacilityStructure = () => {
+const SetFacilityStructure2 = () => {
   const [selectedNodeKey, setSelectedNodeKey] = useState<any>("");
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<Node[]>([]);
@@ -794,4 +794,4 @@ const SetFacilityStructure = () => {
   );
 };
 
-export default SetFacilityStructure;
+export default SetFacilityStructure2;

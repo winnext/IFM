@@ -8,7 +8,7 @@ import Dashboard from "./layouts/App/components/Dashboard";
 import Facility from "./pages/Facility";
 import Classifications from "./pages/Classifications/Classifications";
 import { NotFound } from "./layouts/App/pages/NotFound";
-import SetClassification from "./pages/Classifications/SetClassification";
+import SetClassificationAdmin from "./pages/Classifications/SetClassificationAdmin";
 import FacilityFileImport from "./pages/FacilityFileImport";
 import ClassificationFileImport from "./pages/ClassificationFileImport";
 import FacilityStructure from "./pages/FacilityStructure/FacilityStructure";
@@ -18,9 +18,14 @@ import Facility2 from "./pages/Facility2";
 import Contact from "./pages/Contact/Contact";
 import StructureAsset from "./pages/StructureAsset/StructureAsset";
 import ShowAsset from "./pages/StructureAsset/ShowAsset";
+import { useAppSelector } from "./app/hook";
+import SetClassificationUser from "./pages/Classifications/SetClassificationUser";
+import SetFacilityStructure2 from "./pages/FacilityStructure/SetFacilityStructure2";
 // import Main from './pages/Main';
 
 export default function Router() {
+  const auth = useAppSelector((state) => state.auth);
+  
   return useRoutes([
     {
       path: "/",
@@ -30,18 +35,18 @@ export default function Router() {
         // { path: "facility", element: <Facility /> },
         { path: "facility", element: <Facility2 /> },
         // { path: "classifications", element: <Classifications /> },
-        { path: "classifications", element: <SetClassification /> },
+        { path: "classifications", element: auth.auth.type === "facility_client_role_admin" ? <SetClassificationAdmin /> : <SetClassificationUser /> },
         // { path: "facilitystructure", element: <FacilityStructure /> },
-        { path: "facilitystructure", element: <SetFacilityStructure /> },
+        { path: "facilitystructure", element: <SetFacilityStructure2 /> },
         // { path: "formgenerate", element: <FormGenerate />},
-        { path: "contact", element: <Contact />},
-        { path: "structure-asset", element: <StructureAsset />},
+        { path: "contact", element: <Contact /> },
+        { path: "structure-asset", element: <StructureAsset /> },
       ],
     },
     {
       path: "/classifications",
       element: <AppLayout />,
-      children: [{ path: ":id", element: <SetClassification /> }],
+      children: [{ path: ":id", element: <SetClassificationAdmin /> }],
     },
     {
       path: "/facilitystructure",
@@ -66,7 +71,7 @@ export default function Router() {
     {
       path: "/structure-asset",
       element: <AppLayout />,
-      children: [{ path: "showasset", element: <ShowAsset/> }],
+      children: [{ path: "showasset", element: <ShowAsset /> }],
     },
     {
       path: "/404",
