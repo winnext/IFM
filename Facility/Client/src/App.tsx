@@ -23,7 +23,7 @@ function App() {
           dispatch(
             login({
               id: "123",
-              type: "admin",
+              type: keycloak.resourceAccess ? keycloak.resourceAccess.ifm_facility_client.roles[0] : "",
               name: keycloak.tokenParsed
                 ? keycloak.tokenParsed.given_name
                 : "No Name",
