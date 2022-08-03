@@ -4,13 +4,14 @@ import { CreateClassificationDto } from './dto/create-classification.dto';
 import { UpdateClassificationDto } from './dto/update-classification.dto';
 import { Span, OtelMethodCounter } from 'nestjs-otel';
 import { BaseGraphDatabaseInterfaceRepository } from 'ifmcommon';
-import { GeciciInterface } from 'src/common/interface/gecici.interface';
+
+import { classificationInterface } from 'src/common/interface/classification.interface';
 
 @Injectable()
 export class ClassificationService {
   constructor(
     @Inject(RepositoryEnums.CLASSIFICATION)
-    private readonly classificationRepository: GeciciInterface<any>,
+    private readonly classificationRepository: classificationInterface<any>,
   ) {}
 
   @Span('create a classification')
