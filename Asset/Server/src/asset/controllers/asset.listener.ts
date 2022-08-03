@@ -21,6 +21,14 @@ export class AssetListenerController {
   @EventPattern('createFacility')
   async createFacilityListener(@Payload() message) {
     const facilityInfo = message.value;
+    const facilityExist = await this.neo4jService.read('match (n:Root) where n.realm=$realm return n', {
+      realm: facilityInfo.realm,
+    });
+
+    if (facilityExist.records?.length > 0) {
+      throw new HttpException('facility already exist', 400);
+    }
+
     const assetInfo = { name: 'Asset', realm: facilityInfo.realm };
 
     const facility = new Facility();
