@@ -52,4 +52,11 @@ export class StructureController {
   findOneNode(@Param('key') key: string) {
     return this.facilityStructuresService.findOneNode(key);
   }
+
+  @Get('/structuretypes/:label/:realm')
+  @Unprotected()
+  @NoCache()
+  findOneFirstLevel(@Param('label') label: string, @Param('realm') realm: string) {
+    return this.facilityStructuresService.findOneFirstLevel(label, realm);
+  }
 }

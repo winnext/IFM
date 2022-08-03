@@ -35,4 +35,8 @@ export class StructureService {
     //checkObjectIddİsValid(id);
     return await this.facilityStructureRepository.findOneNodeByKey(key);
   }
+
+  findOneFirstLevel(label: string, realm: string) {
+    return this.facilityStructureRepository.findOneFirstLevelByRealm(label, realm);
+  }
 }

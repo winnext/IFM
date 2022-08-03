@@ -122,4 +122,8 @@ export class ClassificationRepository implements GeciciInterface<Classification>
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async findOneFirstLevelByRealm(label: string, realm: string) {
+    return null;
+  }
 }
