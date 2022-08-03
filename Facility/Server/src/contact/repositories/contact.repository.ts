@@ -192,4 +192,7 @@ export class ContactRepository implements GeciciInterface<Contact> {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  async findOneFirstLevelByRealm(label: string, realm: string) {
+    return null;
+  }
 }

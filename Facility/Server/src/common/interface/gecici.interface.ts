@@ -8,4 +8,5 @@ export interface GeciciInterface<T> {
   setIsActiveTrueOfClassificationAndItsChild(id:string):any;
   setIsActiveFalseOfClassificationAndItsChild(id:string):any;
   getClassificationByIsActiveStatus(realm: string,isActive:boolean,language: string): any;
+  findOneFirstLevelByRealm(label: string, realm: string): any;
 }
