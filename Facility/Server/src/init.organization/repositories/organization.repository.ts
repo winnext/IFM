@@ -190,7 +190,7 @@ export class OrganizationRepository implements BaseInterfaceRepository<Facility>
         await this.copySubGrapFromOneNodetOaNOTHER(replicableNode.labels[0], realm, replicableNode.properties.name);
 
        const replicableNodesChilds= await this.neo4jService.read(
-          `match(n:${createdNodes.labels[0]} {realm:$realm} ) match (p ) MATCH(n)-[:PARENT_OF]->(p) return p`,
+          `match(n:${createdNodes.labels[0]} {realm:$realm} ) match (p ) MATCH(n)-[:PARENT_OF*]->(p) return p`,
           {realm},
         );
 
