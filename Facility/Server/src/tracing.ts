@@ -45,7 +45,7 @@ const tracer = trace.getTracer(name, version);
  */
 const trial = new NodeSDK({
   metricExporter: new PrometheusExporter({
-    port: 8089,
+    port: 8099,
   }),
   metricInterval: 6000,
   spanProcessor: tracer, //new BatchSpanProcessor(new JaegerExporter()),

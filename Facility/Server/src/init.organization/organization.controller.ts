@@ -84,6 +84,7 @@ export class OrganizationController {
     summary: 'Upload a single excel file with a language example you can insert "EN" for English',
   })
   @ApiConsumes('multipart/form-data')
+  @Unprotected()
   importClassificationFromExcel(@UploadedFile() file: Express.Multer.File, @Body("language") language?:string){
     return this.organizationService.importClassificationFromExcel(file,language);
   }

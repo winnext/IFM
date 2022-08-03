@@ -34,8 +34,6 @@ interface Node {
   label?: string;
   labels?: string[]; // for form type
   parentId?: string;
-  name_EN?: string;
-  name_TR?: string;
 }
 
 const SetClassificationAdmin = () => {
@@ -55,8 +53,8 @@ const SetClassificationAdmin = () => {
   const auth = useAppSelector((state) => state.auth);
   const [realm, setRealm] = useState(auth.auth.realm);
   const [labels, setLabels] = useState<string[]>([]);
-  console.log(auth);
-  
+  // console.log(auth);
+
 
   const menu = [
     {
@@ -72,7 +70,7 @@ const SetClassificationAdmin = () => {
       command: () => {
         ClassificationsService.nodeInfo(selectedNodeKey)
           .then((res) => {
-            setName(res.data.properties.name || res.data.properties.name_EN || "");
+            setName(res.data.properties.name || "");
             setCode(res.data.properties.code || "");
             setTag(res.data.properties.tag || []);
             setIsActive(res.data.properties.isActive);
@@ -139,7 +137,7 @@ const SetClassificationAdmin = () => {
     }
     for (let i of nodes) {
       fixNodes(i.children)
-      i.label = i.name || i.name_TR || i.name_EN;
+      i.label = i.name;
     }
   };
 
@@ -208,7 +206,6 @@ const SetClassificationAdmin = () => {
       .then((res) => {
         if (labels.length > 0) {
           updateNode = {
-            key: uuidv4(),
             name: name,
             code: code,
             tag: tag,
@@ -218,7 +215,6 @@ const SetClassificationAdmin = () => {
           };
         } else {
           updateNode = {
-            key: uuidv4(),
             name: name,
             code: code,
             tag: tag,
@@ -228,14 +224,20 @@ const SetClassificationAdmin = () => {
         }
 
         ClassificationsService.update(res.data.id, updateNode)
-          .then((res) => {
+          .then(async(res) => {
             toast.current.show({
               severity: "success",
               summary: "Successful",
               detail: "Classification Updated",
               life: 3000,
             });
-            getClassification();
+            
+            if (res.data.properties.isActive === true) {
+              await ClassificationsService.setActive(res.data.id)
+            } else {
+              await ClassificationsService.setPassive(res.data.id)
+            }
+            await getClassification();
           })
           .catch((err) => {
             toast.current.show({
@@ -264,8 +266,6 @@ const SetClassificationAdmin = () => {
   const deleteItem = (key: string) => {
     ClassificationsService.nodeInfo(key)
       .then((res) => {
-        console.log(res.data);
-
         if (res.data.properties.canDelete === true) {
           ClassificationsService.remove(res.data.id)
             .then(() => {
@@ -293,9 +293,7 @@ const SetClassificationAdmin = () => {
             detail: "Can not delete this classification",
             life: 2000,
           });
-
         }
-
       })
       .catch((err) => {
         toast.current.show({

@@ -74,6 +74,14 @@ const nodeInfo = async (key: string) => {
   return axios.get(url  + "/" + key);
 };
 
-const service = { findAll, findOne, create, update, remove, relation, nodeInfo };
+const setActive = async (id: string) => {
+  return axios.patch(url + "/setIsActiveTrueOfClassificationAndItsChild/" + id);
+};
+
+const setPassive = async (id: string) => {
+  return axios.patch(url + "/setIsActiveFalseOfClassificationAndItsChild/" + id);
+};
+
+const service = { findAll, findOne, create, update, remove, relation, nodeInfo, setActive, setPassive };
 
 export default service;

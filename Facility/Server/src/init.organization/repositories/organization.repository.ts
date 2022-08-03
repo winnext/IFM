@@ -50,6 +50,7 @@ export class OrganizationRepository implements OrganizationInterface<Facility> {
         realm: 'Signum',
         isRoot: true,
         canCopied: true,
+        isActive: true,
       },
       ['FacilityStatus_EN'],
     );
@@ -62,6 +63,7 @@ export class OrganizationRepository implements OrganizationInterface<Facility> {
         realm: 'Signum',
         isRoot: true,
         canCopied: true,
+        isActive: true,
       },
       ['FacilityDocTypes_EN'],
     );
@@ -76,6 +78,7 @@ export class OrganizationRepository implements OrganizationInterface<Facility> {
         realm: 'Signum',
         isRoot: true,
         canCopied: true,
+        isActive: true,
       },
       ['FacilityTypes_EN'],
     );
@@ -86,22 +89,26 @@ export class OrganizationRepository implements OrganizationInterface<Facility> {
       canDelete: true,
       isDeleted: false,
       name: 'In used',
+      isActive: true,
     });
     const facilityStatusNode2 = await this.neo4jService.createNode({
       canDelete: true,
       isDeleted: false,
       name: 'out of use',
+      isActive: true,
     });
 
     const facilityStatusNode3 = await this.neo4jService.createNode({
       canDelete: true,
       isDeleted: false,
       name: 'rented',
+      isActive: true,
     });
     const facilityStatusNode4 = await this.neo4jService.createNode({
       canDelete: true,
       isDeleted: false,
       name: 'sold',
+      isActive: true,
     });
     await this.neo4jService.addRelations(facilityStatusNode1.identity.low, facilityStatusNode.identity.low);
     await this.neo4jService.addRelations(facilityStatusNode2.identity.low, facilityStatusNode.identity.low);
@@ -112,16 +119,19 @@ export class OrganizationRepository implements OrganizationInterface<Facility> {
       canDelete: true,
       isDeleted: false,
       name: 'Building',
+      isActive: true,
     },['FacilityType']);
     const facilityTypesNode2 = await this.neo4jService.createNode({
       canDelete: true,
       isDeleted: false,
       name: 'Floor',
+      isActive: true,
     },['FacilityType']);
     const facilityTypesNode3 = await this.neo4jService.createNode({
       canDelete: true,
       isDeleted: false,
       name: 'Room',
+      isActive: true,
     },['FacilityType']);
     await this.neo4jService.addRelations(facilityTypesNode1.identity.low, facilityTypesNode.identity.low);
     await this.neo4jService.addRelations(facilityTypesNode2.identity.low, facilityTypesNode.identity.low);
