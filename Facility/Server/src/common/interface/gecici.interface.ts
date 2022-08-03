@@ -5,4 +5,5 @@ export interface GeciciInterface<T> {
   delete(id: string): any;
   changeNodeBranch(id: string, target_parent_id: string): any;
   findOneNodeByKey(key: string): any;
+  findOneFirstLevelByRealm(label: string, realm: string): any;
 }
